@@ -10,6 +10,7 @@ r2sq = r2**2
 dx12 = x1-x2
 dy12 = y1-y2
 r12 = sp.sqrt(dx12**2 + dy12**2)
+r12sq = r12**2
 
 psiT = sp.simplify(sp.exp(a*w/2*(r1sq+r2sq))*sp.exp(d*r12/(1+b*r12)))
 
@@ -24,7 +25,8 @@ replaceDict = {r1:sp.symbols('r_1'),
                 dx12:sp.symbols('x_{12}'),
                 dy12:sp.symbols('y_{12}'),
                 r1sq:sp.symbols('r^2_1'),
-                r2sq:sp.symbols('r^2_2')}
+                r2sq:sp.symbols('r^2_2'),
+                r12sq:sp.symbols('r^2_{12}')}
 
 print sp.latex(sp.simplify(sp.simplify(0.5*(sp.simplify(-(diff2PsiTx1 +
     diff2PsiTy1 + diff2PsiTx2 + diff2PsiTy2))/psiT + w**2*(r1sq + r2sq)) +
