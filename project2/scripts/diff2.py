@@ -26,6 +26,6 @@ replaceDict = {r1:sp.symbols('r_1'),
                 r1sq:sp.symbols('r^2_1'),
                 r2sq:sp.symbols('r^2_2')}
 
-total = sp.simplify(sp.simplify(diff2PsiTx1 + diff2PsiTy1 + diff2PsiTx2 + diff2PsiTy2).subs(replaceDict))
-
-print sp.latex(total)
+print sp.latex(sp.simplify(sp.simplify(0.5*(sp.simplify(-(diff2PsiTx1 +
+    diff2PsiTy1 + diff2PsiTx2 + diff2PsiTy2))/psiT + w**2*(r1sq + r2sq)) +
+    1/r12).subs(replaceDict)))
