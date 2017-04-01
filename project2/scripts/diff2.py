@@ -11,7 +11,7 @@ dx12 = x1-x2
 dy12 = y1-y2
 r12 = sp.sqrt(dx12**2 + dy12**2)
 
-psiT = sp.simplify(sp.exp(a*w/2*(r1**2+r2**2))*sp.exp(d*r12/(1+b*r12)))
+psiT = sp.simplify(sp.exp(a*w/2*(r1sq+r2sq))*sp.exp(d*r12/(1+b*r12)))
 
 diff2PsiTx1 = sp.simplify(sp.diff(psiT, x1, 2))
 diff2PsiTy1 = sp.simplify(sp.diff(psiT, y1, 2))
