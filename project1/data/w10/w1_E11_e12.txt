@@ -1,0 +1,16 @@
+Assemble time: 10285037
+Single particles energies:
+7.534418 
+8.147335 
+8.900880 
+9.874051
+10.047080 
+10.847302 
+11.643279 
+12.468406 
+13.419447 
+14.278437 
+15.910286 
+16.993220 
+Hartree-Fock energy after 38 Iterations: 66.911365
+HF time: 194087

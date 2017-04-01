@@ -1,0 +1,519 @@
+\documentclass[a4paper, hidelinks, 10pt]{article}
+\usepackage[utf8]{inputenc}
+% \usepackage[T1]{fontenc}
+% \usepackage{libertine}
+% \usepackage[libertine]{newtxmath}
+\usepackage{charter}
+\usepackage[expert, charter]{mathdesign}
+\usepackage{listings}
+\usepackage[pdftex]{graphicx}
+\usepackage{color}
+\usepackage{mathtools}
+% \usepackage{amssymb}
+\usepackage[margin=0.7in]{geometry}
+\usepackage{hyperref}
+\usepackage{subcaption}
+\usepackage{float}
+\usepackage{caption}
+\usepackage{scrextend}
+\usepackage{ragged2e}
+\usepackage{multirow}
+\usepackage{array}
+\usepackage{physics}
+\usepackage{enumitem}
+\usepackage{varwidth}
+\usepackage{tikz}
+\usepackage{etoolbox}
+\usepackage{fancyhdr}
+\usepackage{dsfont}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+
+%specific reused text
+\newcommand{\mdate}{\today}
+\newcommand{\mtitle}{FYS4411}
+\newcommand{\mauthor}{Alfred Alocias Mariadason}
+\newcommand{\massignn}{Project 2}
+
+\pagestyle{fancy}
+\fancyhf{}
+% \fancyhead[LO, RE]{\small\leftmark}
+\lhead{\small{\mtitle}}
+\chead{\small{\massignn}}
+\rhead{\small{\thesection}}
+% \lfoot{}
+\cfoot{\thepage}
+% \rfoot{}
+
+\patchcmd{\thebibliography}{\section*}{\section}{}{}
+
+%renew title numbering
+\renewcommand{\thesection}{\Roman{section}}
+\renewcommand{\thesubsection}{\thesection.\Alph{subsection}}
+
+%center title and subtitle
+\let\oldsection\section
+\renewcommand{\section}[1]{\centering \oldsection{{#1}} \justifying}
+\let\oldsubsection\subsection
+\renewcommand{\subsection}[1]{\centering \oldsubsection{{#1}} \justifying}
+
+%set counter for algorithm
+\newcommand{\algorithmautorefname}{algorithm}
+
+%title settings
+% \renewcommand{\headrulewidth}{0pt}
+\renewcommand{\sectionautorefname}{section}
+\renewcommand{\subsectionautorefname}{section}
+\renewcommand{\subsubsectionautorefname}{section}
+\renewcommand{\equationautorefname}{equation}
+\renewcommand{\figureautorefname}{figure}
+\renewcommand{\tableautorefname}{table}
+\captionsetup{compatibility=false}
+
+\patchcmd{\smallmatrix}{\thickspace}{\kern1.3em}{}{}
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.3,0.3,0.3}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+\lstdefinestyle{mystyle}{
+        backgroundcolor=\color{backcolour},
+        commentstyle=\color{codegreen},
+        keywordstyle=\color{magenta},
+        numberstyle=\tiny\color{codegray},
+        stringstyle=\color{codepurple},
+        basicstyle=\footnotesize,
+        breakatwhitespace=false,
+        breaklines=true,
+        captionpos=b,
+        keepspaces=true,
+        numbers=left, 
+        numbersep=4pt, 
+        showspaces=false, 
+        showstringspaces=false,
+        showtabs=true, 
+        tabsize=2
+}
+\lstset{style=mystyle}
+
+\hypersetup{
+    allcolors=black
+}
+\urlstyle{same}
+
+\newcommand{\onefigure}[4]{
+    \begin{figure}[H]
+        \centering
+        \textbf{{#1}}\\
+        \includegraphics[scale=0.65]{{#2}}
+        \caption{{#3}}
+        \label{fig:#4}
+    \end{figure}
+    \justifying
+} %one figure {filename}{caption}
+\newcommand{\twofigure}[7]{
+    \begin{figure}[H]
+        \centering
+        \begin{subfigure}[b!]{0.49\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{{#1}}
+            \caption{{#2}}
+            \label{subfig:#3}
+        \end{subfigure}
+        \begin{subfigure}[b!]{0.49\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{{#4}}
+            \caption{{#5}}
+            \label{subfig:#6}
+        \end{subfigure}
+        \caption{#7}
+        \justify
+    \end{figure}
+} %two figure one-line {title}{file1}{caption1}{file2}{caption2}
+
+
+\newcommand{\prtl}{\mathrm{\partial}} %reduce length of partial (less to write)
+\newcommand{\vsp}{\vspace{0.2cm}} %small vertical space
+\newcommand{\txtit}[1]{\textit{{#1}}} %italic text
+\newcommand{\blds}[1]{\boldsymbol{{#1}}} % better bold in mathmode (from amsmath)
+\newcommand{\bigO}{\mathcal{O}} %nice big O
+\newcommand{\me}{\mathrm{e}} %straight e for exp
+\newcommand{\md}{\mathrm{d}} %straight d for differential
+\newcommand{\mRe}[1]{\mathrm{Re}\left({#1}\right)}%nice real
+\newcommand{\munit}[1]{\;\ensuremath{\, \mathrm{#1}}} %straight units in math
+\newcommand{\Rarr}{\Rightarrow} %reduce lenght of Rightarrow (less to write)
+\newcommand{\ecp}[1]{\left< {#1} \right>} %expected value
+\newcommand{\urw}{\uparrow} % up arrow
+\newcommand{\drw}{\downarrow} % up arrow
+\newcommand{\pt}[1]{\textbf{\txtit{#1}}\justify}
+\newcommand{\infint}{\int\limits^{\infty}_{-\infty}}
+\newcommand{\oinfint}{\int\limits^{\infty}_0}
+\newcommand{\sint}{\int\limits^{2\pi}_0\int\limits^{\pi}_0\oinfint}
+\newcommand{\arcsinh}[1]{\text{arcsinh}\left(#1\right)}
+\newcommand{\I}{\scalebox{1.2}{$\mathds{1}$}}
+
+\newcommand\numberthis{\addtocounter{equation}{1}\tag{\theequation}}
+
+\newcommand{\infoTabs}[2]{
+    \begin{tabular}{crl}
+        \multicolumn{3}{c}{\textbf{$\blds{N=#1}$}} \\
+        \multicolumn{1}{c}{$R$} & \multicolumn{1}{c}{$E_0[au]$} &
+        \multicolumn{1}{c}{$I$} \\
+        \hline
+        \input{#2}
+    \end{tabular}
+}
+
+\newcommand{\infoTables}[7]{
+    \begin{table}[H]
+        \centering
+        \textbf{Energies with $\blds{\omega=#1}$} \\
+        \hrule \vspace{1.5pt} \hrule \vspace{0.7pt}
+        \infoTabs{2}{#2}
+        \infoTabs{6}{#3}
+        \infoTabs{12}{#4}
+        \infoTabs{20}{#5}
+        \hrule \vspace{1.5pt} \hrule \vspace{0.7pt}
+        \caption{#6}
+        \justifying
+        \label{tab:#7}
+    \end{table}
+}
+
+\makeatletter
+% define a macro \Autoref to allow multiple references to be passed to \autoref
+\newcommand\Autoref[1]{\@first@ref#1,@}
+\def\@throw@dot#1.#2@{#1}% discard everything after the dot
+\def\@set@refname#1{%    % set \@refname to autoefname+s using \getrefbykeydefault
+    \edef\@tmp{\getrefbykeydefault{#1}{anchor}{}}%
+    \def\@refname{\@nameuse{\expandafter\@throw@dot\@tmp.@autorefname}s}%
+}
+\def\@first@ref#1,#2{%
+  \ifx#2@\autoref{#1}\let\@nextref\@gobble% only one ref, revert to normal \autoref
+  \else%
+    \@set@refname{#1}%  set \@refname to autoref name
+    \@refname~\ref{#1}% add autoefname and first reference
+    \let\@nextref\@next@ref% push processing to \@next@ref
+  \fi%
+  \@nextref#2%
+}
+\def\@next@ref#1,#2{%
+   \ifx#2@ and~\ref{#1}\let\@nextref\@gobble% at end: print and+\ref and stop
+   \else, \ref{#1}% print  ,+\ref and continue
+   \fi%
+   \@nextref#2%
+}
+\makeatother
+
+\begin{document}
+\thispagestyle{empty}
+\begin{center} \vspace{1cm}
+    \textbf{\Large{\mtitle\hspace{0.01pt} - Computational Physics II: Quantum
+    Mechanical Systems}}\\ \vspace{0.5cm}
+    \textbf{\large{\massignn}}\\ \vspace{1cm}
+    \textbf{\large{\mauthor}}\\ \vspace{0.5cm}
+    \large{\url{https://www.github.com/Oo1Insane1oO/FYS4411}} \\ \vspace{0.5cm}
+    \Large{\mdate}\\ \vfill
+\end{center}
+
+\clearpage
+\setcounter{page}{1}
+
+\begin{center}
+    \textbf{Abstract} \\
+\end{center}
+
+\section{INTRODUCTION}
+\label{sec:introduction}
+    Using the Variational Monte Carlo, this project aims to find and analyze
+    quantities such as the ground state energy and single-particle densities of
+    quantum dots for so-called closed shell systems.
+
+    We use the usual approach by estimating expectation value of the ground
+    state energy with the variational principle and minimizing. The algorithm
+    used for the Monte Carlo method is the well known Metropolis algorithm.
+
+    The reason for using a Monte Carlo method for minimizing the trial ground
+    state energy is because the expectation value would in general be a
+    multi-dimensional integral depending on the number of particles and number
+    of parameters involved in the total wave function. Such an integral is not
+    adequately solved by traditional methods(i.e Gaussian-quadrature).
+
+    The desired result is that the Metropolis algorithm with importance
+    sampling yields a better result both from a computational point of view.
+    That is it finds a good estimate for the ground state energy efficiently
+    without wasting to much time on the configuration space. The wave function
+    only has small values in this large space meaning a homogeneous
+    distribution of calculation points would yield a poor result, a
+    non-homogeneous approach(such as with the Metropolis algorithm) would then,
+    hopefully, gives a better result.
+
+\section{THEORY}
+\label{sec:theory}
+
+\subsection{HERMITE POLYNOMIALS}
+\label{sub:hermite_polynomials}
+    Hermite polynomials $H(x)$ are solutions to the differential equation
+        \begin{equation}
+            \frac{\md^2 H}{\md x^2} -2x\frac{\md H}{\md x} + \left(\lambda
+            -1\right)H = 0
+            \label{eq:hermitediffeq}
+        \end{equation}
+    The polynomials fulfill the orthogonality relation 
+        \begin{equation}
+            \infint \me^{-x^2}H^2_n\md x = 2^nn!\sqrt{\pi}
+            \label{eq:hermiteOrth}
+        \end{equation}
+    with the recurrence relation
+        \begin{equation}
+            H_{n+1} = H_n - 2nH_{n-1}
+            \label{eq:hermiteReq}
+        \end{equation}
+
+\subsection{HARMONIC OSCILLATOR}
+\label{sub:harmonic_oscillator}
+\subsubsection{Cartesian Coordinates}
+\label{ssub:Cartesian Coordinates}
+    The harmonic oscillator system in $2$ dimensions and in natural units is
+    given by the following Hamiltonian
+        \begin{equation}
+            \hat{H_0} = \frac{1}{2}\sum^N_{i=1}\left(-\nabla^2_i + \omega^2
+            r^2_i\right)
+            \label{eq:cartHarmOsc}
+        \end{equation}
+    The wave functions in this case is then:
+        \begin{equation}
+            \phi_{n_x,n_y}(x,y) =
+            AH_{n_x}(\sqrt{\omega}x)H_{n_y}(\sqrt{\omega}y)
+            \exp(-\frac{\omega}{2}(x^2+y^2))
+            \label{eq:cartUarmOscWavef}
+        \end{equation}
+    where $H_n$ is a hermite polynomial of order $n$ and $A$ is a normalization
+    constant. The quantum numbers $n_x$ and $n_y$ go as $n_x,n_y=0,1,2\dots$.
+    While $\omega$ is the oscillator frequency. \\
+    The energies is 
+        \begin{equation}
+            E = \hbar\omega\left(n_x + n_y + 1\right)
+            \label{eq:cartHarmOscE}
+        \end{equation}
+
+\subsubsection{Polar Coordinates}
+\label{ssub:Polar Coordinates}
+    In order to change to polar coordinates $(r,\theta)$ we introduce the usual
+    transformations for Cartesian
+        \begin{equation}
+            \begin{aligned}
+                x &= r\cos{\theta} \\
+                y &= r\sin{\theta} \\
+                r &= \sqrt{x^2 + y^2}
+            \end{aligned}
+            \label{eq:polar}
+        \end{equation}
+    Introducing a separable solution in the radial and angular coordinates as
+    an ansatz ($\psi(r,\theta)=R(r)Y(\theta)$) gives
+        \begin{equation}
+            \begin{aligned}
+                R_{nm}(r) &= \sqrt{\frac{2n!}{(n+\abs{m})!}}
+                \left(\frac{m_q\omega}{\hbar}\right)^{\frac{1}{2}\left(\abs{m}+1\right)}
+                r^{\abs{m}} \me^{-\frac{m_q\omega}{2\hbar}r^2}
+                L^{\abs{m}}_n\left(\frac{m_q\omega}{\hbar}r^2\right) \\
+                Y_m(\theta) &= \frac{1}{\sqrt{2\pi}}\me^{im\theta}
+            \end{aligned},\;\;
+            \begin{aligned}
+                n &= 0,1,2\dots \\
+                m &= 0,\pm 1,\pm 2,\dots
+            \end{aligned}
+            \label{eq:polWavef}
+        \end{equation}
+    where $m_q$ is the particle mass, $L^{\abs{m}}_n$ is the associated
+    Laguerre polynomials. \\
+    The eigenfunction is thus
+        \begin{equation}
+            \psi_{nm}(r,\theta) = \sqrt{\frac{n!}{\pi(n+\abs{m})!}}
+            \left(\frac{m_q\omega}{\hbar}\right)^{\frac{1}{2}\left(\abs{m}+1\right)}
+            r^{\abs{m}} \me^{-\frac{m_q\omega}{2\hbar}r^2}
+            L^{\abs{m}}_n\left(\frac{m_q\omega}{\hbar}r^2\right) \me^{im\theta}
+            \label{eq:polEigf}
+        \end{equation}
+    with eigenenergies
+        \begin{equation}
+            E = \hbar\omega\left(2n + \abs{m} + 1\right)
+            \label{eq:polE}
+        \end{equation}
+
+\subsection{VARIATIONAL PRINCIPLE}
+\label{sub:variational_principle}
+    The variational principle states the following restriction on the ground
+    state energy for a given symmetry
+        \begin{equation}
+            E_0 \leq \ecp{E[\Phi_T]} = \int \phi^{*}_T\hat{H}\phi_T\md\tau =
+            \bra{\phi_T}\hat{H}\ket{\phi_T}
+            \label{eq:HFvarE}
+        \end{equation}
+    that is the ground state energy $E_0$ is bounded by the expectation value
+    of the trial energy.
+
+
+\subsection{VMC}
+\label{sub:vmc}
+    This section will explain and derive the equations involved in the
+    variational Monte Carlo method. The whole section will assume that we have
+    the following trial wave function, $\psi_T$
+        \begin{equation}
+            \psi_T(\vec{r}_1,\dots,\vec{r}_N) \equiv
+            \det(\phi_1(\vec{r}_1,\alpha),\dots,\phi(\vec{r}_N,\alpha))
+            \prod^N_{i<j} \exp(\frac{ar_{ij}}{1+\beta r_{ij}})
+            \label{eq:psiT}
+        \end{equation}
+    with the $\vec{r}$'s being the position of the electrons and the $\phi$'s
+    being the wave function to some known system(i.e harmonic oscillator). The
+    position $r_{ij}$ is a relative distance $\abs{\vec{r}_i-\vec{r}_j}$ while
+    $\alpha$ and $\beta$ are variational parameters and $a$ is a specific
+    constant dependant of the total spin symmetry of electron $i$ and $j$ as
+        \begin{equation}
+            a = \left\{
+                    \begin{aligned}
+                        1, & \indent \text{anti-parallel spin} \\
+                        \frac{1}{3}, & \indent \text{parallel spin}
+                    \end{aligned}
+                \right.
+            \label{eq:a}
+        \end{equation}
+    We also define the total Hamiltonian of the system for the quantum dot case
+    as
+        \begin{equation}
+            \hat{H} = \hat{H}_O + \hat{H}_I
+            \label{eq:totalHamil}
+        \end{equation}
+    with $\hat{H}_O$ being the harmonic oscillator defined in
+    \Autoref{eq:cartHarmOsc} and $\hat{H}_I$ being the Hamiltonian for the
+    electron interactions(Coulomb interaction) defined as
+        \begin{equation}
+            \hat{H}_I = \sum_{i<j}\frac{1}{r_{ij}}
+            \label{eq:hamilCou}
+        \end{equation}
+    Lastly, we work in natural units setting $\hbar=c=1$, and all the above
+    equations(\Autoref{eq:psiT,eq:a,eq:totalHamil,eq:hamilCou}) also assume
+    natural units.
+
+\subsection{ANALYTICAL EXPRESSION FOR LOCAL ENERGY}
+\label{ssub:ANALYTICAL EXPRESSION FOR LOCAL ENERGY}
+    We use the Metropolis algorithm to find an estimate for the expectation
+    value to the energy. In this expression we have a so-called local energy
+    defined as
+        \begin{equation}
+            E_L \equiv \frac{1}{\psi_T}\hat{H}\psi_T
+            \label{eq:ELdef}
+        \end{equation}
+    This expression shows up in the integrand as the multiplied function to the
+    probability distribution function(PDF) which is used in the Metropolis
+    algorithm.
+
+\subsubsection{Two Electron Case}
+\label{ssub:Two Electron Case}
+    We start by finding the local energy in the case with two electrons. The
+    trial wave function is in this case(related to
+    \Autoref{eq:cartUarmOscWavef}) using \Autoref{eq:psiT}
+        \begin{equation}
+            \psi_T(\vec{r}_1,\vec{r_2}) =
+            A\exp(-\frac{\alpha\omega}{2}\left(r^2_1+r^2_2\right))
+            \exp(\frac{ar_{12}}{1+\beta r_{12}})
+            \label{eq:TECpsiT}
+        \end{equation}
+    Using the definition of the trial wave function, \Autoref{eq:ELdef} and the
+    total Hamiltonian(\Autoref{eq:totalHamil}) the local energy with
+    \Autoref{eq:ELdef} is
+        \begin{equation}
+            E_L = \frac{1}{\psi_T}\left(\hat{H}_O\psi_T +
+            \hat{H}_I\psi_T\right)
+            \label{eq:EL2}
+        \end{equation}
+    we solve the first part $\hat{H}_O\psi_T$
+        \begin{equation}
+            \hat{H}_O\psi_T = \frac{1}{2}\left(-\nabla^2_1 - \nabla^2_2 +
+            \omega^2\left(r^2_1 + r^2_2\right)\right)\psi_T
+            \label{eq:locF}
+        \end{equation}
+    Starting with the Laplacian for electron $1$
+        \begin{equation}
+            \nabla^2_1\psi_T = \frac{\md^2\psi_T}{\md x^2_1} +
+            \frac{\md^2\psi_T}{\md y^2_1}
+            \label{eq:locFF}
+        \end{equation}
+    The first differential is
+        \begin{equation}
+            \frac{\md^2\psi_T}{\md x^2_1} = A\exp(-\frac{\alpha\omega}{2}r^2_2)
+            \exp(-\frac{\alpha\omega}{2}y^2_1) \frac{\md^2}{\md x^2_1}\left[
+                \exp(-\frac{\alpha\omega}{2}x^2_1) \exp(\frac{ar_{12}}{1+\beta
+                r_{12}})\right]
+        \end{equation}
+    using the product rule for differentiation we get
+        \begin{equation}
+            \frac{\md^2}{\md x^2_1}\left[\exp(-\frac{\alpha\omega}{2}x^2_1)
+            \exp(\frac{ar_{12}}{1+\beta r_{12}})\right] = \frac{\md}{\md x}\left[\exp(\frac{ar_{12}}{1+\beta r_{12}})\frac{\md}{\md x}\exp(-\frac{\alpha\omega}{2}x^2_1) + \exp(-\frac{\alpha\omega}{2}x^2_1) \frac{\md}{\md x}\exp(\frac{ar_{12}}{1+\beta r_{12}})\right]
+        \end{equation}
+%             r_{12} = \sqrt{(x_1-x_2)^2 + (y_1-y_2)^2}
+
+        \begin{align*}
+            \input{analyticEL2full.tex}
+        \end{align*}
+    
+%     Before we arrive at the final expression for the expectation value(which
+%     the Metropolis algorithm will be applied on) we start by defining a trial
+%     wave function $\psi_T$ as
+%         \begin{equation}
+%             \psi_T(\vec{r}_1,\dots,\vec{r}_N;\alpha_1,\dots)
+%         \end{equation}
+%     where the $r$'s are the position for the individual particles and the
+%     $\alpha$'s are variational parameters, and use the variational principle to
+%     arrive at
+%         \begin{equation}
+%             E_0 \leq \ecp{E(\alpha_1,\dots)} =
+%             \frac{\int\psi^{*}_T\hat{H}\psi_T\md^N\vec{r}}
+%             {\abs{\psi_T}^2\md^N\vec{r}}
+%             \label{eq:vmcVarE}
+%         \end{equation}
+%     with $\hat{H}$ being the Hamiltonian and $\md^N\vec{r}$ is a short hand for
+%     an integral over $\vec{r}_1,\dots,\vec{r}_N$.
+
+\section{SETUP}
+\label{sec:setup}
+\section{RESULTS}
+\label{sec:results}
+\section{DISCUSSION}
+\label{sec:discussion}
+\section{CONCLUSION}
+\label{sec:conclusion}
+
+\begin{thebibliography}{}
+    \bibitem{GriffQuan}
+        David J. Griffiths Chapters 2, 4 and 7,
+        \textit{Introduction to Quantum Mechanics Second Edition},
+        Pearson, 2005, ISBN 0-13-111892-7.
+    \bibitem{basicMB}
+        Morten Hjort-Jensen,
+        \textit{Computational Physics: Hartree-Fock methods and introduction to Many-Body Theory.} \\
+        \url{https://www.github.com/CompPhysics/ComputationalPhysics2/blob/gh-pages/doc/pub/basicMB/pdf}, 2017
+    \bibitem{vmc}
+        Morten Hjort-Jensen,
+        \textit{Computational Physics: Variational Monte Carlo methods.} \\
+        \url{https://www.github.com/CompPhysics/ComputationalPhysics2/blob/gh-pages/doc/pub/vmc/pdf}, 2017
+    \bibitem{taut}
+        M. Taut, 
+        \textit{Two Electrons in an External Oscillator Potential; Particular analytic solutions of a Coulomb Correlation Problem},
+        Physical Review A 48, 3561, 1993.
+    \bibitem{NeOr}
+        Negele and Orland,
+        \textit{Quantum Many-Particle Systems},
+        Addison-Wesley.
+    \bibitem{FeWa}
+        Fetter and Walecka,
+        \textit{Quantum Theory of Many-Particle Systems},
+        Mcgraw-Hill, 1971.
+    \bibitem{DiVNe}
+        Dickhoss and Van Neck,
+        \textit{Many-Body Theory Exposed},
+        World Scientific, 2006
+\end{thebibliography}
+
+\end{document}

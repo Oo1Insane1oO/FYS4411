@@ -1,0 +1,1154 @@
+\documentclass[a4paper, hidelinks, 10pt]{article}
+\usepackage[utf8]{inputenc}
+% \usepackage[T1]{fontenc}
+% \usepackage{libertine}
+% \usepackage[libertine]{newtxmath}
+\usepackage{charter}
+\usepackage[expert, charter]{mathdesign}
+\usepackage{listings}
+\usepackage[pdftex]{graphicx}
+\usepackage{color}
+\usepackage{mathtools}
+% \usepackage{amssymb}
+\usepackage[margin=0.7in]{geometry}
+\usepackage{hyperref}
+\usepackage{subcaption}
+\usepackage{float}
+\usepackage{caption}
+\usepackage{scrextend}
+\usepackage{ragged2e}
+\usepackage{multirow}
+\usepackage{array}
+\usepackage{physics}
+\usepackage{enumitem}
+\usepackage{varwidth}
+\usepackage{tikz}
+\usepackage{etoolbox}
+\usepackage{fancyhdr}
+\usepackage{dsfont}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+
+%specific reused text
+\newcommand{\mdate}{March 22, 2017}
+\newcommand{\mtitle}{FYS4411}
+\newcommand{\mauthor}{Alfred Alocias Mariadason}
+\newcommand{\massignn}{Project 1}
+
+\pagestyle{fancy}
+\fancyhf{}
+% \fancyhead[LO, RE]{\small\leftmark}
+\lhead{\small{\mtitle}}
+\chead{\small{\massignn}}
+\rhead{\small{\thesection}}
+% \lfoot{}
+\cfoot{\thepage}
+% \rfoot{}
+
+\patchcmd{\thebibliography}{\section*}{\section}{}{}
+
+%renew title numbering
+\renewcommand{\thesection}{\Roman{section}}
+\renewcommand{\thesubsection}{\thesection.\Alph{subsection}}
+
+%center title and subtitle
+\let\oldsection\section
+\renewcommand{\section}[1]{\centering \oldsection{{#1}} \justifying}
+\let\oldsubsection\subsection
+\renewcommand{\subsection}[1]{\centering \oldsubsection{{#1}} \justifying}
+
+%set counter for algorithm
+\newcommand{\algorithmautorefname}{algorithm}
+
+%title settings
+% \renewcommand{\headrulewidth}{0pt}
+\renewcommand{\sectionautorefname}{section}
+\renewcommand{\subsectionautorefname}{section}
+\renewcommand{\subsubsectionautorefname}{section}
+\renewcommand{\equationautorefname}{equation}
+\renewcommand{\figureautorefname}{figure}
+\renewcommand{\tableautorefname}{table}
+\captionsetup{compatibility=false}
+
+\patchcmd{\smallmatrix}{\thickspace}{\kern1.3em}{}{}
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.3,0.3,0.3}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+\lstdefinestyle{mystyle}{
+        backgroundcolor=\color{backcolour},
+        commentstyle=\color{codegreen},
+        keywordstyle=\color{magenta},
+        numberstyle=\tiny\color{codegray},
+        stringstyle=\color{codepurple},
+        basicstyle=\footnotesize,
+        breakatwhitespace=false,
+        breaklines=true,
+        captionpos=b,
+        keepspaces=true,
+        numbers=left, 
+        numbersep=4pt, 
+        showspaces=false, 
+        showstringspaces=false,
+        showtabs=true, 
+        tabsize=2
+}
+\lstset{style=mystyle}
+
+\hypersetup{
+    allcolors=black
+}
+\urlstyle{same}
+
+\newcommand{\onefigure}[4]{
+    \begin{figure}[H]
+        \centering
+        \textbf{{#1}}\\
+        \includegraphics[scale=0.65]{{#2}}
+        \caption{{#3}}
+        \label{fig:#4}
+    \end{figure}
+    \justifying
+} %one figure {filename}{caption}
+\newcommand{\twofigure}[7]{
+    \begin{figure}[H]
+        \centering
+        \begin{subfigure}[b!]{0.49\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{{#1}}
+            \caption{{#2}}
+            \label{subfig:#3}
+        \end{subfigure}
+        \begin{subfigure}[b!]{0.49\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{{#4}}
+            \caption{{#5}}
+            \label{subfig:#6}
+        \end{subfigure}
+        \caption{#7}
+        \justify
+    \end{figure}
+} %two figure one-line {title}{file1}{caption1}{file2}{caption2}
+
+
+\newcommand{\prtl}{\mathrm{\partial}} %reduce length of partial (less to write)
+\newcommand{\vsp}{\vspace{0.2cm}} %small vertical space
+\newcommand{\txtit}[1]{\textit{{#1}}} %italic text
+\newcommand{\blds}[1]{\boldsymbol{{#1}}} % better bold in mathmode (from amsmath)
+\newcommand{\bigO}{\mathcal{O}} %nice big O
+\newcommand{\me}{\mathrm{e}} %straight e for exp
+\newcommand{\md}{\mathrm{d}} %straight d for differential
+\newcommand{\mRe}[1]{\mathrm{Re}\left({#1}\right)}%nice real
+\newcommand{\munit}[1]{\;\ensuremath{\, \mathrm{#1}}} %straight units in math
+\newcommand{\Rarr}{\Rightarrow} %reduce lenght of Rightarrow (less to write)
+\newcommand{\ecp}[1]{\left< {#1} \right>} %expected value
+\newcommand{\urw}{\uparrow} % up arrow
+\newcommand{\drw}{\downarrow} % up arrow
+\newcommand{\pt}[1]{\textbf{\txtit{#1}}\justify}
+\newcommand{\infint}{\int\limits^{\infty}_{-\infty}}
+\newcommand{\oinfint}{\int\limits^{\infty}_0}
+\newcommand{\sint}{\int\limits^{2\pi}_0\int\limits^{\pi}_0\oinfint}
+\newcommand{\arcsinh}[1]{\text{arcsinh}\left(#1\right)}
+\newcommand{\I}{\scalebox{1.2}{$\mathds{1}$}}
+
+\newcommand\numberthis{\addtocounter{equation}{1}\tag{\theequation}}
+
+\newcommand{\infoTabs}[2]{
+    \begin{tabular}{crl}
+        \multicolumn{3}{c}{\textbf{$\blds{N=#1}$}} \\
+        \multicolumn{1}{c}{$R$} & \multicolumn{1}{c}{$E_0[au]$} &
+        \multicolumn{1}{c}{$I$} \\
+        \hline
+        \input{#2}
+    \end{tabular}
+}
+
+\newcommand{\infoTables}[7]{
+    \begin{table}[H]
+        \centering
+        \textbf{Energies with $\blds{\omega=#1}$} \\
+        \hrule \vspace{1.5pt} \hrule \vspace{0.7pt}
+        \infoTabs{2}{#2}
+        \infoTabs{6}{#3}
+        \infoTabs{12}{#4}
+        \infoTabs{20}{#5}
+        \hrule \vspace{1.5pt} \hrule \vspace{0.7pt}
+        \caption{#6}
+        \justifying
+        \label{tab:#7}
+    \end{table}
+}
+
+\makeatletter
+% define a macro \Autoref to allow multiple references to be passed to \autoref
+\newcommand\Autoref[1]{\@first@ref#1,@}
+\def\@throw@dot#1.#2@{#1}% discard everything after the dot
+\def\@set@refname#1{%    % set \@refname to autoefname+s using \getrefbykeydefault
+    \edef\@tmp{\getrefbykeydefault{#1}{anchor}{}}%
+    \def\@refname{\@nameuse{\expandafter\@throw@dot\@tmp.@autorefname}s}%
+}
+\def\@first@ref#1,#2{%
+  \ifx#2@\autoref{#1}\let\@nextref\@gobble% only one ref, revert to normal \autoref
+  \else%
+    \@set@refname{#1}%  set \@refname to autoref name
+    \@refname~\ref{#1}% add autoefname and first reference
+    \let\@nextref\@next@ref% push processing to \@next@ref
+  \fi%
+  \@nextref#2%
+}
+\def\@next@ref#1,#2{%
+   \ifx#2@ and~\ref{#1}\let\@nextref\@gobble% at end: print and+\ref and stop
+   \else, \ref{#1}% print  ,+\ref and continue
+   \fi%
+   \@nextref#2%
+}
+\makeatother
+
+\begin{document}
+\thispagestyle{empty}
+\begin{center} \vspace{1cm}
+    \textbf{\Large{\mtitle\hspace{0.01pt} - Computational Physics II: Quantum
+    Mechanical Systems}}\\ \vspace{0.5cm}
+    \textbf{\large{\massignn}}\\ \vspace{1cm}
+    \textbf{\large{\mauthor}}\\ \vspace{0.1cm}
+    \large{\url{https://www.github.com/Oo1Insane1oO/FYS4411}} \\ \vspace{0.5cm}
+    \Large{\mdate}\\ \vfill
+\end{center}
+
+\clearpage
+\setcounter{page}{1}
+
+\begin{center}
+    \textbf{Abstract} \\
+\end{center}
+    In this project we have used Hartree-Fock theory to estimate single
+    particle energies in a quantum-dot system using a harmonic oscillator (in
+    two dimensions) as basis and analyzed the convergence rate for the
+    Hartree-Fock method. The convergence was seemingly good for most
+    parameters, however some was seen to converge quite slowly. The
+    Hartree-Fock limit was not reached for all calculations where the
+    oscillator frequency was low. The degeneracies were not preserved. Tables
+    of calculated ground state energies are given. \justify
+
+\section{INTRODUCTION}
+\label{sec:introduction}
+    In this project we will look at properties of confined interacting systems
+    of electrons in 2 dimension, called quantum dots. The systems will be
+    closed shell systems. The main basis used will be the harmonic
+    oscillator(in two dimensions) and the method to be examined is the
+    Hartree-Fock method. We use the Hartree-Fock method to modify the harmonic
+    oscillator potential to account for the Coulomb interaction between the
+    electrons. \\
+
+    \noindent
+    Motivation for using Hartree-Fock theory is the desire to find the ground
+    state energy for a given Hamiltonian. Hartree-Fock methods gives an
+    estimation for this energy. The method also introduces a so-called
+    Hartree-Fock potential(in reality just an operator) which can be thought of
+    as introducing an explicit medium dependence for the two-body interaction
+    between the fermions. This effectively creates a mean field in which the
+    fermions move, meaning no apparent external potential is present in the
+    calculations. Therefore Hartree-Fock theory does not care about external
+    one-body potentials which would be present in a non-approximate nuclear
+    system, making it possible to find an expression for the expectation value
+    of the Hamiltonian(as will be shown).
+
+\section{THEORY}
+\label{sec:theory}
+
+\subsection{HERMITE POLYNOMIALS}
+\label{sub:hermite_polynomials}
+    Hermite polynomials $H(x)$ are solutions to the differential equation
+        \begin{equation}
+            \frac{\md^2 H}{\md x^2} -2x\frac{\md H}{\md x} + \left(\lambda
+            -1\right)H = 0
+            \label{eq:hermitediffeq}
+        \end{equation}
+    The polynomials fulfill the orthogonality relation 
+        \begin{equation}
+            \infint \me^{-x^2}H^2_n\md x = 2^nn!\sqrt{\pi}
+            \label{eq:hermiteOrth}
+        \end{equation}
+    with the recurrence relation
+        \begin{equation}
+            H_{n+1} = H_n - 2nH_{n-1}
+            \label{eq:hermiteReq}
+        \end{equation}
+
+\subsection{ASSOCIATED LAGUERRE POLYNOMIALS}
+\label{sub:associated_laguerre_polynomials}
+    The associated Laguerre polynomials are solutions to the differential
+    equation
+        \begin{equation}
+            x\frac{\md^2 L}{\md x^2} + \left(\alpha + 1 -x\right)\frac{\md
+            L}{\md x} + nL = 0
+            \label{eq:laguerrediffeq}
+        \end{equation}
+    with $\alpha$ and $n$ being real numbers. \\
+    The polynomials are orthogonal with respect to the inner product and follow
+    the recurrence relation
+        \begin{equation}
+            L^{(\alpha)}_{k+1} =
+            \frac{\left(2k+1+\alpha-x\right)L^{(\alpha)}_{k} -
+            \left(k+\alpha\right)L^{(\alpha)}_{k-1}}{k+1}
+            \label{eq:laguerreReq}
+        \end{equation}
+
+\subsection{HARMONIC OSCILLATOR}
+\label{sub:harmonic_oscillator}
+\subsubsection{Cartesian Coordinates}
+\label{ssub:Cartesian Coordinates}
+    The harmonic oscillator system in $2$ dimensions and in natural units is
+    given by the following Hamiltonian
+        \begin{equation}
+            \hat{H_0} = \frac{1}{2}\sum^N_{i=1}\left(-\nabla^2_i + \omega^2
+            r^2_i\right)
+            \label{eq:cartHarmOsc}
+        \end{equation}
+    The wave functions in this case is then:
+        \begin{equation}
+            \phi_{n_x,n_y}(x,y) =
+            AH_{n_x}(\sqrt{\omega}x)H_{n_y}(\sqrt{\omega}y)\me^{-\frac{\omega}{2}(x^2+y^2)}
+            \label{eq:cartUarmOscWavef}
+        \end{equation}
+    where $H_n$ is a hermite polynomial of order $n$ and $A$ is a normalization
+    constant. The quantum numbers $n_x$ and $n_y$ go as $n_x,n_y=0,1,2\dots$.
+    While $\omega$ is the oscillator frequency. \\
+    The energies is 
+        \begin{equation}
+            E = \hbar\omega\left(n_x + n_y + 1\right)
+            \label{eq:cartHarmOscE}
+        \end{equation}
+
+\subsubsection{Polar Coordinates}
+\label{ssub:Polar Coordinates}
+    In order to change to polar coordinates $(r,\theta)$ we introduce the usual
+    transformations for Cartesian
+        \begin{equation}
+            \begin{aligned}
+                x &= r\cos{\theta} \\
+                y &= r\sin{\theta} \\
+                r &= \sqrt{x^2 + y^2}
+            \end{aligned}
+            \label{eq:polar}
+        \end{equation}
+    Introducing a separable solution in the radial and angular coordinates as
+    an ansatz ($\psi(r,\theta)=R(r)Y(\theta)$) gives
+        \begin{equation}
+            \begin{aligned}
+                R_{nm}(r) &= \sqrt{\frac{2n!}{(n+\abs{m})!}}
+                \left(\frac{m_q\omega}{\hbar}\right)^{\frac{1}{2}\left(\abs{m}+1\right)}
+                r^{\abs{m}} \me^{-\frac{m_q\omega}{2\hbar}r^2}
+                L^{\abs{m}}_n\left(\frac{m_q\omega}{\hbar}r^2\right) \\
+                Y_m(\theta) &= \frac{1}{\sqrt{2\pi}}\me^{im\theta}
+            \end{aligned},\;\;
+            \begin{aligned}
+                n &= 0,1,2\dots \\
+                m &= 0,\pm 1,\pm 2,\dots
+            \end{aligned}
+            \label{eq:polWavef}
+        \end{equation}
+    where $m_q$ is the particle mass, $L^{\abs{m}}_n$ is the associated
+    Laguerre polynomials. \\
+    The eigenfunction is thus
+        \begin{equation}
+            \psi_{nm}(r,\theta) = \sqrt{\frac{n!}{\pi(n+\abs{m})!}}
+            \left(\frac{m_q\omega}{\hbar}\right)^{\frac{1}{2}\left(\abs{m}+1\right)}
+            r^{\abs{m}} \me^{-\frac{m_q\omega}{2\hbar}r^2}
+            L^{\abs{m}}_n\left(\frac{m_q\omega}{\hbar}r^2\right) \me^{im\theta}
+            \label{eq:polEigf}
+        \end{equation}
+    with eigenenergies
+        \begin{equation}
+            E = \hbar\omega\left(2n + \abs{m} + 1\right)
+            \label{eq:polE}
+        \end{equation}
+
+\subsection{LAGRANGE MULTIPLIERS}
+\label{sub:lagrange_multipliers}
+    See \cite{calcVar,calcVarSpring}. The optimization method of Lagrange
+    multipliers maximizes(or minimizes) a function
+    $f:\mathbb{R}^N\rightarrow\mathbb{R}$ with a constraint
+    $g:\mathbb{R}^N\rightarrow\mathbb{R}$ We assume that $f$ and $g$ have
+    continuous first derivatives in all variables(continuous first partial
+    derivatives). \\
+    Given the above we can define a so-called Lagrangian
+    $\mathcal{L}$
+        \begin{equation}
+            \mathcal{L}[x_1,\dots,x_N,\lambda_1,\dots,\lambda_M] =
+            f(x_1,\dots,x_N) - \lambda g(x_1,\dots,x_N)
+            \label{eq:lagrangian}
+        \end{equation}
+    where the $\lambda$ is called a Lagrange-multiplier. We now state that if
+    $f(x^0_1,\dots,x^0_N)$ is a maxima of $f(x_1,\dots,x_N)$ then there exists
+    a Lagrange-multiplier $\lambda_0$ such that
+    $(x^0_1,\dots,x^0_N,\lambda_0)$ is a stationary point
+    for the Lagrangian. This then yields the $N+1$ Lagrange-equations
+        \begin{align}
+            \sum^N_{i=1} \frac{\prtl\mathcal{L}}{\prtl x_i} +
+            \frac{\prtl\mathcal{L}}{\prtl \lambda} = 0
+            \label{eq:lagrangeEQ}
+        \end{align}
+    to be solved for $x_1,\dots,x_N$ and $\lambda$.
+
+\subsection{LEIBNIZ FORMULA}
+\label{sub:leibniz_formula}
+    See\cite{encMat}. Given a square $N\times N$ matrix $M$ with elements
+    $m_{ij}$ being the entry of $i$'th row and $j$'th column of $M$. The
+    Leibniz formula states that the determinant of $M$ is
+        \begin{equation}
+            \det(M) = \sum_{\sigma\in
+            S_n}\text{sgn}(\sigma)\prod^N_{j=1}m_{\sigma(i),i}
+            \label{eq:Leibniz}
+        \end{equation}
+    where $S_n$ is $+1$ for even permutations and $-1$ for odd.\\
+    Defining the $n$-fold Levi-Civita symbol $\varepsilon_{\{i_N\}}$(gives $+1$
+    for even permutations and $-1$ for odd and $0$ if no permutation exists)
+    with $\{i_N\}$ being the row(or column) indices of $M$, we may rewrite
+    Leibniz formula as
+        \begin{equation}
+            \det{M} =
+            \sum^N_{i\in\{i_N\}}\varepsilon_{\{i_N\}}\prod^N_{j=1}m_{ji_j}
+            \label{eq:LeviLeibniz}
+        \end{equation}
+
+\subsection{DETERMINANT OF UNITARY MATRICES}
+\label{sub:determinant_of_unitary_matrices}
+    Assume we have a square unitary matrix $U$ of size $N$ meaning
+        \begin{equation}
+            U^{\dagger} = U^{-1} \Leftrightarrow U^{\dagger}U = I
+            \label{eq:unitaryDef}
+        \end{equation}
+    According to the spectral theorem\cite{linearAlgebra}, matrix $U$ can be
+    decomposed as
+        \begin{equation}
+            U = VDV^{-1} = VDV^{\dagger}
+            \label{eq:unitaryDecomp}
+        \end{equation}
+    where $V$ is a unitary matrix and $D$ is a diagonal unitary matrix, both of
+    size $N$. Taking the determinant of \Autoref{eq:unitaryDecomp} gives
+        \begin{align}
+            \det{U} &= \det{VDV^{-1}} \nonumber \\
+            &= \det{V}\det{D}\det{V^{-1}} \nonumber \\
+            &= \det{VV^{-1}}\det{D} \nonumber \\
+            &= \det{I}\det{D} \nonumber \\
+            \det{U} &= \det{D}
+            \label{eq:unitaryDecompDet}
+        \end{align}
+    where we have used that $\det{AB}=\det{A}\det{B}$ and the fact that $V$ is
+    unitary. Since $D$ is unitary we have
+        \begin{equation}
+            DD^{\dagger} = \I \Rarr D^2 = \I \Rarr D =
+            \text{diag}(\me^{i\theta},\me^{i\theta},\dots,\me^{i\theta})
+            \label{eq:unitaryD}
+        \end{equation}
+    that is the elements along the diagonal of $D$ are all equal to a complex
+    number of absolute value $1$. The determinant of $U$ is thus
+        \begin{equation}
+            \det{U} = \prod^N_{k=1}d_{kk} = \me^{i\theta N}
+            \label{eq:unitaryUDet}
+        \end{equation}
+    this new complex number also has absolute value unity
+        \begin{equation}
+            \abs{\me^{i\theta N}} = \me^{i\theta N} \me^{-i\theta N} = \me^{0}
+            = 1
+            \label{eq:unitaryDetAbs}
+        \end{equation}
+
+\subsection{HARTREE-FOCK THEORY}
+\label{sub:hartree_fock}
+    With Hartree-Fock theory one tries to find an estimation for the single
+    particle energy, that is solving Scrödingers equation for the many-body
+    Hamiltonian given by the Born-Oppenheimer approximation for $N$ electrons
+    and assuming the wave-function is given by a single Slater determinant. \\
+
+\subsubsection{Energy Functional}
+\label{ssub:Energy Functional}
+    In order to find the Hartree-Fock equations we first need an expression for
+    energy functional(which will be minimized). \\
+    The variational principle gives us the following restriction on the ground
+    state energy
+        \begin{equation}
+            E_0 \leq E[\phi] = \int \phi^{*}\hat{H}\phi\md\tau =
+            \bra{\phi}\hat{H}\ket{\phi}
+            \label{eq:HFvarE}
+        \end{equation}
+    here $\tau$ is a short-hand notation for the $N$-dimensional differentials
+    $\md r_1,\dots\md r_N$, $\phi$ is a normalized trial wave-function and
+    $\hat{H}$ is the Hamiltonian defined as
+        \begin{equation}
+            \hat{H} = \hat{H}_0 + \hat{H}_I
+            \label{eq:HFhamiltonian}
+        \end{equation}
+    where $\hat{H}_0$ is a Hamiltonian with some known solution(i.e harmonic
+    oscillator) and $\hat{H}_I$ is the Hamiltonian describing particle
+    interactions(i.e Coulomb interaction). We also assume that the interaction
+    Hamiltonian only depends on the relative particle distance
+    $r_{ij}=\abs{\vec{r}_i-\vec{r}_j}$. \\
+    Introducing a permutation operator $\hat{P}$(interchange two particles)
+    we can define an antisymmetrization operator $\hat{A}$
+        \begin{equation}
+            \hat{A} = \frac{1}{N!}\sum_p\left(-1\right)^p\hat{P}
+            \label{eq:HFA}
+        \end{equation}
+    Since $\hat{H}$ is invariant under permutations, $\hat{H}$ and $\hat{A}$
+    commute. We also observe that $\hat{A}^2=\hat{A}$ since permutations of the
+    Slater determinant(applying $\hat{A}$ twice to a state) reproduces
+    $\hat{A}$ again. \\
+    The wave-function ansatz can be expressed in terms of a linear combination
+        \begin{equation}
+            \psi_{\mu} = \sum_jC_{j\mu}\phi_j(r_{\mu})
+            \label{eq:HFpsiGen}
+        \end{equation}
+    We now have that the single Slater determinant for the wave-function $\phi$
+    can be rewritten as
+        \begin{equation}
+            \phi(\vec{r}_1,\dots,\vec{r}_N,\alpha_1,\dots,\alpha_M) =
+            \sqrt{N!}\hat{A}\prod_{i,\rho}\psi_{\alpha_{\rho}}(\vec{r}_i)
+            \label{eq:HFphiSlater}
+        \end{equation}
+    where the $\alpha$'s are all the quantum numbers needed to describe the
+    wave function. \\
+    The expectation value for $H_0$ is now with the rewritten function,
+    \Autoref{eq:HFphiSlater}
+        \begin{equation}
+            \bra{\phi}\hat{H}_0\ket{\phi} = N!\prod_{i,\rho}
+            \bra{\psi_{\alpha_{\rho}}(\vec{r}_i)} \hat{A}\hat{H}_0
+            \ket{\psi_{\alpha_{\rho}}(\vec{r}_i)}
+            \label{eq:HFH0ecp}
+        \end{equation}
+    We replace $\hat{H}_0$ by the sum of the one-body operator $\hat{h}_0$ and
+    use the fact that the single-particle wave-functions $\psi_{\mu}$ are
+    orthogonal to end up with.
+        \begin{equation}
+            \bra{\phi}\hat{H}_0\ket{\phi} =
+            \sum^N_{\mu=1}\bra{\psi_\mu(\vec{r})}\hat{h_0}\ket{\psi_\mu(\vec{r})}
+            = \sum^N_{\mu=1}\bra{\mu}\hat{h_0}\ket{\mu}
+            \label{eq:HFH0ecp2}
+        \end{equation}
+    For the interaction part we have a similar derivation as with
+    $\hat{H}_0$.
+        \begin{equation}
+            \bra{\phi}\hat{H}_I\ket{\phi} =
+            N!\prod_{i,\rho}\bra{\psi_{\alpha_{\rho}}(\vec{r}_i)}
+            \hat{A}\hat{H}_I\hat{A} \ket{\psi_{\alpha_{\rho}}(\vec{r}_i)}
+            \label{eq:HFHIecp}
+        \end{equation}
+    The interaction Hamiltonian $H_I$ and the antisymmetrization operator
+    $\hat{A}$ commute(since $\hat{A}$ commutes with
+    $\hat{H}=\hat{H}_0+\hat{H}_I$) giving
+        \begin{equation}
+            \hat{A}\hat{H}_I\hat{A} =
+            \frac{1}{N!^2}\sum_{i<j,p}\left(-1\right)^{2p}V(r_{ij})\hat{P} =
+            \frac{1}{N!^2}\sum_{i<j}V(r_{ij})\left(1-P_{ij}\right)
+            \label{eq:HFAHIA}
+        \end{equation}
+    where $r_{ij}=\abs{\vec{r}_i - \vec{r}_j}$ and $P_{ij}$ switches particle
+    $i$ and $j$. The jump to $1-P_{ij}$ comes from the fact that we only
+    permute once, all other contributions from applying $\hat{P}$ vanishes due
+    to orthogonality between the $\psi$'s. \\
+    The expectation value is thus
+        \begin{equation}
+            \bra{\phi}\hat{H}_I\ket{\phi} =
+            \sum_{i<j}\prod_{k,\rho}\bra{\psi_{\alpha_{\rho}}(\vec{r}_k)}
+            V(r_{ij})\left(1-P_{ij}\right)
+            \ket{\psi_{\alpha_{\rho}}(\vec{r}_k)}
+            \label{eq:HFHIecp2}
+        \end{equation}
+    Changing summations indices to $\mu$ and $\nu$ and writing out
+    \Autoref{eq:HFHIecp2} we get
+        \begin{align}
+            \bra{\phi}\hat{H}_I\ket{\phi} &= \sum_{i<j}\prod_{k,\rho}
+            \left[\bra{\psi_{\alpha_{\rho}}(\vec{r}_k)} V(r_{ij})
+            \ket{\psi_{\alpha_{\rho}}(\vec{r}_k)} -
+            \bra{\psi_{\alpha_{\rho}}(\vec{r}_k)} V(r_{ij})
+            \ket{\psi_{\alpha_k}(\vec{r}_{\rho})}\right] \nonumber \\
+            \bra{\phi}\hat{H}_I\ket{\phi} &= \frac{1}{2}\sum_{\mu,\nu}
+            \left[\bra{\mu\nu}\hat{v}\ket{\mu\nu} -
+            \bra{\mu\nu}\hat{v}\ket{\nu\mu}\right]
+            \label{eq:HFHIecpFin}
+        \end{align}
+    with $\hat{v} = V(r_{ij})$. The factor $1/2$ is due to double summations
+    over pairs of states. \\
+    Defining the antisymmetric matrix element(for a general element $(p,q,r,s)$
+        \begin{equation}
+            \bra{pq}\hat{v}\ket{rs}_{AS} = \bra{pq}\hat{v}\ket{rs} -
+            \bra{pq}\hat{v}\ket{sr} 
+            \label{eq:HFasymInt}
+        \end{equation}
+    the expectation value is
+        \begin{equation}
+            \bra{\phi}\hat{H}_I\ket{\phi} = \frac{1}{2}\sum_{\mu,\nu}
+            \bra{\mu\nu}\hat{v}\ket{\mu\nu}_{AS}
+            \label{eq:HFHIecpFinasym}
+        \end{equation}
+    and thus the energy functional is finally
+        \begin{equation}
+            E[\phi] = \sum_\mu\bra{\mu}\hat{h}_0\ket{\mu} +
+            \frac{1}{2}\sum_{\mu\nu}\bra{\mu\nu}\hat{v}\ket{\mu\nu}_{AS}
+            \label{eq:HFenergyFuncional}
+        \end{equation}
+
+\subsubsection{Hartree-Fock Equations}
+\label{ssub:Hartree-Fock Equations}
+    We start by expanding the Hartree-Fock wave-function as a linear
+    combination of some known orthonormal basis $\Phi=\{\phi_{\lambda}(\vec{r})\}$.
+        \begin{equation}
+            \psi^{\text{HF}}_p =
+            \sum_{\lambda}C_{p\lambda}\phi_{\lambda}(\vec{r})
+            \label{eq:HFpsi}
+        \end{equation}
+    The expanded basis is also orthonormal since we have, due to the
+    orthonormality of the $\phi_{\lambda}$'s, that
+    \begin{equation}
+        \bra{\psi^{\text{HF}}_p}\ket{\psi^{\text{HF}}_q} =
+        \sum_{\lambda\mu}C^{*}_{p\lambda}C_{q\mu}\bra{\phi_{\lambda}}\ket{\phi_{\mu}}
+        = 0
+        \label{eq:HFpsiOrtho}
+    \end{equation}
+    Writing the total wave function $\Psi^{\text{HF}}$ as a Slater
+    determinant
+        \begin{align}
+            \Psi^{\text{HF}}(\vec{r}) &= \frac{1}{\sqrt{N!}}
+                \begin{vmatrix}
+                    \sum_{\lambda}C_{1\lambda}\phi_{\lambda}(r_1) &
+                    \sum_{\lambda}C_{1\lambda}\phi_{\lambda}(r_2) & \dotsb & \dotsb &
+                    \sum_{\lambda}C_{1\lambda}\phi_{\lambda}(r_N) \\
+                    \sum_{\lambda}C_{2\lambda}\phi_{\lambda}(r_1) &
+                    \sum_{\lambda}C_{2\lambda}\phi_{\lambda}(r_2) & \dotsb & \dotsb &
+                    \sum_{\lambda}C_{2\lambda}\phi_{\lambda}(r_N) \\
+                    \vdots & \vdots & \dotsb & \dotsb & \vdots \\
+                    \sum_{\lambda}C_{N\lambda}\phi_{\lambda}(r_1) &
+                    \sum_{\lambda}C_{N\lambda}\phi_{\lambda}(r_2) & \dotsb & \dotsb &
+                    \sum_{\lambda}C_{N\lambda}\phi_{\lambda}(r_N)
+                \end{vmatrix} \nonumber \\
+            \Psi^{\text{HF}}(\vec{r}) &= \frac{1}{\sqrt{N!}}\det(\hat{C})\det(\Phi)
+            \label{eq:psiSlater}
+        \end{align}
+    with $\hat{C}$ being the collective coefficients matrix and $\det(\Phi)$
+    being the determinant given by $\phi_{\lambda}(r)$. \\
+    The latter equality is better seen if we rewrite $\Psi^{\text{HF}}$ with
+    Leibniz formula(\Autoref{eq:Leibniz})
+        \begin{equation}
+            \begin{aligned}
+                \Psi^{\text{HF}}(\vec{r}) &= \frac{1}{\sqrt{A!}}
+                \sum^A_{\{i_N\}}\varepsilon_{\{i_N\}} \prod^A_{j=1}
+                \sum_{\lambda}C_{i_j\lambda}\phi_{\lambda}(r_{i_j}) \\
+                &= \frac{1}{\sqrt{A!}}
+                \left(\sum^A_{\{i_N\}}\varepsilon_{\{i_N\}} \prod^A_{j=1}
+                \sum_{\lambda}C_{i_j\lambda}\right)\left(
+                \sum^A_{\{i_N\}}\varepsilon_{\{i_N\}} \prod^A_{j=1}
+                \sum_{\lambda} \phi_{\lambda}(r_{i_j})\right) \\
+                &= \frac{1}{\sqrt{A!}}\det(\hat{C})\det(\Phi)
+            \end{aligned}
+            \label{eq:psiSlaterDetCDetPhi}
+        \end{equation}
+    where we applied Leibniz formula again in the last equality. We can see
+    that the new Slater determinants only differ by a complex constant since
+    $\hat{C}$ is unitary. The determinant of unitary matrices are always equal
+    to a complex number $\me^{i\theta}$ whose absolute value is $1$. See
+    \Autoref{sub:determinant_of_unitary_matrices}. \\ 
+    Inserting the new basis functions into the expression for the energy
+    functional, \Autoref{eq:HFenergyFuncional} and using $i,j,k,l$ as indices
+    for states below the Fermi level and $\alpha,\beta,\gamma,\delta$ as all
+    possible single particle states (including the ones below Fermi level) we
+    get.
+        \begin{equation}
+            E\left[\Psi^{\text{HF}}\right] = \sum_{i\alpha\beta}
+            C^{*}_{i\alpha}C_{i\beta}\bra{\alpha}\hat{h}_0\ket{\beta} +
+            \frac{1}{2}\sum_{ij\alpha\beta\gamma\delta}
+            C^{*}_{i\alpha}C^{*}_{j\beta}C_{i\gamma}C_{j\delta}
+            \bra{\alpha\beta}\hat{v}\ket{\gamma\delta}_{AS}
+            \label{eq:HFEfuncPsi}
+        \end{equation}
+    Introducing the Lagrange multiplier and minimizing according to Lagrange
+    multiplier method described in \Autoref{sub:lagrange_multipliers} and
+    noticing that $\bra{\alpha}\ket{\beta}=\delta_{\alpha\beta}$(where
+    $\delta_{\alpha\beta}$ is the Kronecker-delta) we get the constraints
+        \begin{equation}
+            \bra{p}\ket{q} = \sum_{\alpha}C^{*}_{p\alpha}C_{p\alpha}
+            \label{eq:HFConstraints}
+        \end{equation}
+    and the functional to be minimized reads
+        \begin{equation}
+            \mathcal{L}\left[\Psi^{HF}\right] = E\left[\Psi^{HF}\right] -
+            \sum_{i\alpha}\varepsilon_iC^{*}_{i\alpha}C_{i\alpha}
+            \label{eq:HFFuncMinimize}
+        \end{equation}
+    where $\varepsilon_i$ is the Lagrange multiplier (of units energy). \\
+    Minimizing with respect to $C^{*}_{p\alpha}$ we obtain the Euler-Lagrange
+    equations
+        \begin{equation}
+            \frac{\prtl}{\prtl C^{*}_{p\alpha}}\left[ E\left[\Psi^{HF}\right] -
+            \sum_{j\alpha}\varepsilon_jC^{*}_{j\alpha}C_{j\alpha}\right] =
+            \frac{\prtl\mathcal{L}}{\prtl\varepsilon_p}
+            \label{eq:HFEulerLagrangeEQ}
+        \end{equation}
+    Since the constraints are all leveled functions, that is the functions only
+    scale the energy functional $E[\Psi^{\text{HF}}]$, we can effectively
+    ignore the equation regarding the Lagrange multiplier $\varepsilon_p$
+    meaning the Lagrange equations reduces to
+        \begin{equation}
+            \frac{\prtl}{\prtl C^{*}_{p\alpha}}\left[ E\left[\Psi^{HF}\right] -
+            \sum_{j\alpha}\varepsilon_jC^{*}_{j\alpha}C_{j\alpha}\right] = 0
+            \label{eq:HFLagrangeEQ}
+        \end{equation}
+    We solve the individual parts starting with the functional
+    $E[\Psi^{\text{HF}}]$
+        \begin{equation}
+            \begin{aligned}
+                \frac{\prtl}{\prtl C^{*}_{p\alpha}} \left[\sum_{i\alpha\beta}
+                C^{*}_{i\alpha}C_{i\beta}
+                \bra{\alpha}\hat{h}_0\ket{\beta}\right] &=
+                \sum_{\beta}C_{p\beta}\bra{\alpha}\hat{h}_0\ket{\beta} \\
+                \frac{\prtl}{\prtl C^{*}_{p\alpha}}
+                \left[\frac{1}{2}\sum_{ij\alpha\beta\gamma\delta}
+                C^{*}_{i\alpha}C^{*}_{j\beta}C_{i\gamma}C_{j\delta}
+                \bra{\alpha\beta}\hat{v}\ket{\gamma\delta}_{AS}\right] &=
+                \sum_{ij\beta\gamma\delta}
+                C^{*}_{p\beta}C_{i\gamma}C_{j\delta}
+                \bra{\alpha\beta}\hat{v}\ket{\gamma\delta}_{AS}
+            \end{aligned}
+            \label{eq:HFderEFunc}
+        \end{equation}
+    The latter derivation uses the product-rule giving
+        \begin{equation}
+            \frac{\prtl}{\prtl C^{*}_{p\alpha}} \left[\sum_{ij\alpha\beta}
+            C^{*}_{i\alpha}C^{*}_{j\beta}\right] =
+            \delta_{jp}\delta_{ip}\delta_{\alpha\beta} \sum_{ij\alpha\beta}
+            \left(C^{*}_{p\beta} + C^{*}_{p\alpha}\right) = 2\sum_{\beta}
+            C^{*}_{p\beta}
+            \label{eq:HFderEFuncProd}
+        \end{equation}
+    The second term in \Autoref{eq:HFLagrangeEQ} is
+        \begin{equation}
+            \frac{\prtl}{\prtl C^{*}_{p\alpha}}
+            \left[-\sum_{j\alpha}\varepsilon_jC^{*}_{j\alpha}C_{j\alpha}\right]
+            = -\varepsilon_pC_{p\alpha}
+            \label{eq:HFderSecond}
+        \end{equation}
+    Gathering \Autoref{eq:HFderEFunc} and \Autoref{eq:HFderSecond} yields in
+    the Hartree-Fock equations
+        \begin{equation}
+            \sum_{\beta}C_{p\beta}\bra{\alpha}\hat{h}_0\ket{\beta} +
+            \sum_{j\beta\gamma\delta}C^{*}_{j\beta} C_{j\delta}C_{p\gamma}
+            \bra{\alpha\beta}\hat{v}\ket{\gamma\delta}_{AS} =
+            \varepsilon^{\text{HF}}_pC_{p\alpha}
+            \label{eq:HFEquations}
+        \end{equation}
+    Rewriting by pulling the $\beta$ sum out and defining the Hartree-Fock
+    matrix element
+        \begin{equation}
+            h^{\text{HF}}_{\alpha\beta} \equiv \bra{\alpha}\hat{h}_0\ket{\beta}
+            + \sum_{j\gamma\delta} C^{*}_{j\gamma}C_{j\delta}
+            \bra{\alpha\gamma}\hat{v}\ket{\beta\delta}_{AS}
+            \label{eq:HFmatrix}
+        \end{equation}
+    we get the equation
+        \begin{equation}
+            \sum_{\gamma} h^{\text{HF}}_{\alpha\beta}C_{p\beta} =
+            \varepsilon^{\text{HF}}_pC_{p\alpha}
+            \label{eq:HFeqFin}
+        \end{equation}
+    Assuming $\ket{\beta}$ forms an eigenbasis for $\hat{h}_0$ we can set
+    $\bra{\alpha}\hat{h}_0\ket{\beta}=\varepsilon_{\alpha}\delta_{\alpha\beta}$
+    giving
+        \begin{equation}
+            h^{\text{HF}}_{\alpha\beta} =
+            \varepsilon_{\alpha}\delta_{\alpha\beta} + \sum_{j\gamma\delta}
+            C^{*}_{j\gamma}C_{j\delta}
+            \bra{\alpha\gamma}\hat{v}\ket{\beta\delta}_{AS}
+            \label{eq:HFmatrixEig}
+        \end{equation}
+    Giving the eigenvalue problem 
+        \begin{equation}
+            \sum_{\beta} h^{\text{HF}}_{\alpha\beta}C_{p\beta} =
+            \varepsilon^{\text{HF}}_pC_{p\alpha}
+            \label{eq:HFeigen}
+        \end{equation}
+    where the $C$'s are the orthogonal eigenvectors of $h^{\text{HF}}$ and
+    $\varepsilon^{\text{HF}}_p$ are the eigenvalues that represent the
+    single-particle energies. \\
+    The task is then to solve the above equation iteratively until the
+    single-particle energies $\varepsilon^{\text{HF}}_p$ have reached a
+    predefined convergence criteria.
+
+\subsubsection{Convergence Criteria}
+\label{ssub:convergence_criteria}
+    The convergence criteria for the iterative process involved in the
+    eigenvalue problem, \Autoref{eq:HFeigen} is usually given by a simple
+    brute-force difference criteria
+        \begin{equation}
+            \frac{1}{N}\sum_i \abs{\varepsilon^{\text{HF},new}_i -
+            \varepsilon^{\text{HF},old}_i} \leq \lambda
+            \label{eq:conv}
+        \end{equation}
+    with $\lambda$ being a small positive number.
+
+\subsubsection{Rewrite Ground State Energy}
+\label{ssub:rewrite_ground_state_energy}
+    We may rewrite the ground state energy by adding and subtracting
+    $\hat{U}^{\text{HF}} = \sum\limits_{\mu\nu}
+    \bra{\mu}\hat{u}^{\text{HF}}\ket{\nu}$, that
+    is adding and subtracting the so-called Hartree-Fock potential
+        \begin{equation}
+            E\left[\Psi^{\text{HF}}\right] = \sum_{i\alpha\beta}
+            C^{*}_{i\alpha}C_{i\beta}\bra{\alpha}\hat{h}_0\ket{\beta} +
+            \hat{U}^{\text{HF}} + \frac{1}{2}\sum_{ij\alpha\beta\gamma\delta}
+            C^{*}_{i\alpha}C^{*}_{j\beta}C_{i\gamma}C_{j\delta}
+            \bra{\alpha\beta}\hat{u}^{\text{HF}}\ket{\gamma\delta}_{AS} -
+            \hat{U}^{\text{HF}} \\
+            \label{eq:rewE1}
+        \end{equation}
+    with 
+        \begin{equation}
+            \hat{u}^{\text{HF}}\ket{pq} = \sum_{pq}
+            \left(\bra{pq}\hat{v}\ket{pq} -
+            \bra{pq}\hat{v}\ket{qp}\right)\ket{pq} =
+            \sum_{pq}\bra{pq}\hat{v}\ket{pq}_{AS}\ket{pq}
+            \label{eq:rewEuHF}
+        \end{equation}
+    We start by reducing the first two terms in \Autoref{eq:rewE1} giving
+        \begin{align}
+            \sum_{i\alpha\beta} C^{*}_{i\alpha}C_{i\beta}
+            \bra{\alpha}\hat{h}_0\ket{\beta} + \hat{U}^{\text{HF}} &=
+            \sum_{i\alpha\beta} C^{*}_{i\alpha}C_{i\beta}
+            \bra{\alpha}\hat{h}_0+\hat{u}^{\text{HF}}\ket{\beta} \nonumber \\
+            &= \sum_i \varepsilon^{\text{HF}}_i
+            \label{eq:rewEfirst}
+        \end{align} 
+    and the latter two yield
+        \begin{equation}
+            \frac{1}{2}\sum_{ij\alpha\beta\gamma\delta}
+            C^{*}_{i\alpha}C^{*}_{j\beta}C_{i\gamma}C_{j\delta}
+            \bra{\alpha\beta}\hat{v}\ket{\gamma\delta}_{AS} -
+            \hat{U}^{\text{HF}} =
+            -\frac{1}{2}\sum_{ij\alpha\beta\gamma\delta}
+            C^{*}_{i\alpha}C_{i\gamma}C^{*}_{j\beta}C_{j\delta}
+            \bra{\alpha\beta}\hat{v}\ket{\gamma\delta}_{AS}
+            \label{eq:rewEsecond}
+        \end{equation}
+    where we used \Autoref{eq:rewEuHF}. \\
+    The ground state energy estimation is thus by gathering
+    \Autoref{eq:rewEfirst,eq:rewEsecond}
+        \begin{equation}
+            E^{\text{HF}}_0 = \sum_{i} \varepsilon^{\text{HF}}_i -
+            \frac{1}{2}\sum_{ij\alpha\beta\gamma\delta}
+            C^{*}_{i\alpha}C^{*}_{j\beta}C_{i\gamma}C_{j\delta}
+            \bra{\alpha\beta}\hat{v}\ket{\gamma\delta}_{AS}
+            \label{eq:rewEfin}
+        \end{equation}
+
+\subsubsection{Density Matrix}
+\label{ssub:Density Matrix}
+    The coefficients (the $C$'s) involved in the Hartree-Fock equations and the
+    equation for the energy can be rewritten by defining a density matrix
+    $\rho$. The elements are defined as
+        \begin{equation}
+            \rho_{\gamma\delta} \equiv \sum_i C^{*}_{i\gamma}C_{i\delta}
+            \label{eq:rho}
+        \end{equation}
+    the Hartree-Fock matrix element given in \Autoref{eq:HFmatrix} is thus
+        \begin{equation}
+            h^{\text{HF}}_{\alpha\beta} = \bra{\alpha}\hat{h}_0\ket{\beta} +
+            \sum_{\gamma\delta} \rho_{\gamma\delta}
+            \bra{\alpha\gamma}\hat{v}\ket{\beta\delta}_{AS}
+            \label{eq:rhoHFmatrix}
+        \end{equation}
+    and the ground state energy given in \Autoref{eq:rewEfin} is
+        \begin{equation}
+            E^{\text{HF}}_0 = \sum_{i} \varepsilon^{\text{HF}}_i -
+            \frac{1}{2}\sum_{ij\alpha\beta\gamma\delta}
+            \rho_{\alpha\gamma}\rho_{\beta\delta}
+            \bra{\alpha\beta}\hat{v}\ket{\gamma\delta}_{AS}
+            \label{eq:rhoGroundState}
+        \end{equation}
+    The density matrix is useful since one can pre-calculate it in every
+    iteration of the Hartree-Fock algorithm, see
+    \Autoref{ssub:Hartree-Fock_algorithm}.
+
+\subsubsection{Hartree-Fock Algorithm}
+\label{ssub:Hartree-Fock_algorithm}
+    Using the results gained from \Autoref{sub:hartree_fock}, the Hartree-Fock
+    algorithm is as follows
+        \begin{algorithm}[H]
+        \caption{Hartree-Fock algorithm}\label{alg:hartreeFock}
+        \begin{algorithmic}[1]
+            \State assemble interaction elements
+            \Comment{$\bra{pq}\hat{v}\ket{rs}_{AS}$}
+            \State Set density matrix \Comment{Use \Autoref{eq:rho}}
+            \While{count < maxiteration $\And$ difference > $\lambda$}
+                \State Calculate Hartree-Fock matrix \Comment{As given in
+                \Autoref{eq:rhoHFmatrix}}
+                \State Find eigenvalues and eigenvectors of Hartree-Fock matrix
+                \Comment{These are the energies and coefficients}
+                \State Calculate new density matrix
+                \State Calculate difference \Comment{Given in \Autoref{eq:conv}}
+                \State increment count
+            \EndWhile
+            \State Calculate ground state energy \Comment{With
+            \Autoref{eq:rhoGroundState}}
+        \end{algorithmic}
+        \end{algorithm}
+
+\section{SETUP}
+\label{sec:setup}
+    See \url{https://www.github.com/Oo1Insane1oO/FYS4411} for C++ program for the
+    Hartree-Fock algorithm. \\
+    The program sets up a basis in Cartesian coordinates (see class basis.cpp)
+    and converts the quantum numbers when assembling the interaction matrix
+    elements and running the Hartree-Fock algorithm. \\
+    Most methods used are given in class Methods(methods.cpp). Only one is used
+    for the Hartree-Fock calculations is the Kronecker-delta delta function,
+    kronk. \\
+    \textbf{List of files}
+        \begin{itemize}
+            \item basis.cpp: Sets up the basis as mentioned, assembles the
+                interaction matrix and runs the Hartree-Fock algorithm.
+            \item methods.cpp: Contains specific functions for different
+                methods.
+            \item tests.cpp: Module for unit tests.
+            \item main.cpp: Main program.
+        \end{itemize}
+
+    \noindent
+    As mentioned the calculations sets up the interaction matrix before running
+    the Hartree-Fock loop. This is done with a dictionary data-structure
+    (hash-table) where the key is a pair of $(M,M_s)$ that is the conserved
+    quntum numbers and the value is a vector of matrix elements for the
+    possible $(p,q,r,s)$. To extract the values we have another hash-table with
+    the keys being an array of size $4$ with the pair $(p,q,r,s)$ and the value
+    being the index in the mentioned vector. In essence the structure is build
+    using the following function 
+        \begin{algorithm}[H]
+        \caption{Function assemble(run)}\label{alg:setup}
+        \begin{algorithmic}[1]
+            \State integralmap := map<array<int,4>, int> > \Comment{Mapping
+            hash with indices}
+            \State sizes := map<array<int,2>, int> > \Comment{Hash containing
+            sizes}
+            \For{p=0 to states.size}
+                \For{q=p to states.size}
+                    \For{r=0 to states.size}
+                        \For{s=r states.size}
+                            \State M = $m_p+m_q$ \Comment{Quantum number
+                            conservation}
+                            \State S = $\sigma_p+\sigma_q$
+                            \If{$M=m_r+m_s \And S=\sigma_r+\sigma_s$}
+                                \If{run=first} \Comment{Find sizes of vectors}
+                                    \State pqrsSize = sizes[(M,S)]
+                                    \State pqsrSize = sizes[(M,S)] + 1
+                                    \State integralmap.insert($(p,q,r,s)$,
+                                    pqrsSize) \Comment{Set keys and values in
+                                    map hash}
+                                    \State integralmap.insert($(p,q,s,r)$,
+                                    pqsrSize)
+                                    \State integralmap.insert($(q,p,s,r)$,
+                                    pqrsSize)
+                                    \State integralmap.insert($(q,p,r,s)$,
+                                    pqsrSize)
+                                    \State sizes[(M,S)] += 2
+                                    \Comment{Increment sizes}
+                                \ElsIf{run=second}
+                                    \State interactionMatrix[(M,S)] .
+                                    setsize(sizes[(M,S)]) \Comment{Set size of
+                                    interaction matrix}
+                                \Else
+                                    \State temporary = $F(p,q,r,s)$
+                                    \Comment{Function $F$ finding element}
+                                    \State interactionMatrix[(M,S)]
+                                    [integralmap(p,q,r,s)] = tmp \Comment{Set
+                                    value}
+                                    \State interactionMatrix[(M,S)]
+                                    [integralmap(p,q,s,r)] = -tmp \Comment{Set
+                                    symmetric value}
+                                \EndIf
+                            \EndIf
+                        \EndFor
+                    \EndFor
+                \EndFor
+            \EndFor
+            \If{run=first}
+                \State assemble(run=second) \Comment{Call assemble for setting
+                sizes}
+            \ElsIf{run=second}
+                \State assemble(run=third) \Comment{Calls assemble for
+                calculating elements}
+            \Else
+                \State \Return
+            \EndIf
+        \end{algorithmic}
+        \end{algorithm}
+    
+    \noindent
+    This gives a memory efficient
+    mapping by only saving non-zero matrix elements. The only con of using this
+    data structure is the overhead introduced in the look-up time (a binary
+    search of complexity $\bigO(\log(N))$) when extracting the elements. \\
+
+    \noindent
+    Notice also that in \Autoref{alg:setup} we do not calculate the symmetric
+    elements $(q,p,s,r)$ as they just point to $(p,q,r,s)$ in the mapping hash.
+    \\
+
+    \noindent
+    The Hartree-Fock calculations use the definition based on the density
+    matrix described in \Autoref{eq:rhoHFmatrix} and lastly calculates the
+    energy using \Autoref{eq:rhoGroundState}.
+
+\section{RESULTS}
+\label{sec:results}
+    The program was run for $N=2,6,12,20$ electrons using $5-11$ single
+    particle orbitals and $\lambda=10^{-10}$ as the convergence criterion(as
+    explained in \Autoref{eq:conv}). The results are given in
+    \Autoref{tab:01,tab:02,tab:03,tab:04,tab:05,tab:10} below,
+    \infoTables{0.1} {text/tables/w01_e2Table.txt}
+    {text/tables/w01_e6Table.txt} {text/tables/w01_e12Table.txt}
+    {text/tables/w01_e20Table.txt} {Table of Hartree-Fock energies with single
+    particle orbitals $R$, energy $E_0$ and number of
+    iterations $I$.}{01}
+    \infoTables{0.2} {text/tables/w02_e2Table.txt}
+    {text/tables/w02_e6Table.txt} {text/tables/w02_e12Table.txt}
+    {text/tables/w02_e20Table.txt} {Table of Hartree-Fock energies with single
+    particle orbitals $R$, energy $E_0$ and number of
+    iterations $I$.}{02}
+    \infoTables{0.3} {text/tables/w03_e2Table.txt}
+    {text/tables/w03_e6Table.txt} {text/tables/w03_e12Table.txt}
+    {text/tables/w03_e20Table.txt} {Table of Hartree-Fock energies with single
+    particle orbitals $R$, energy $E_0$ and number of
+    iterations $I$.}{03}
+    \infoTables{0.4} {text/tables/w04_e2Table.txt}
+    {text/tables/w04_e6Table.txt} {text/tables/w04_e12Table.txt}
+    {text/tables/w04_e20Table.txt} {Table of Hartree-Fock energies with single
+    particle orbitals $R$, energy $E_0$ and number of
+    iterations $I$.}{04}
+    \infoTables{0.5} {text/tables/w05_e2Table.txt}
+    {text/tables/w05_e6Table.txt} {text/tables/w05_e12Table.txt}
+    {text/tables/w05_e20Table.txt} {Table of Hartree-Fock energies with single
+    particle orbitals $R$, energy $E_0$ and number of
+    iterations $I$.}{05}
+    \infoTables{1.0} {text/tables/w10_e2Table.txt}
+    {text/tables/w10_e6Table.txt} {text/tables/w10_e12Table.txt}
+    {text/tables/w10_e20Table.txt} {Table of Hartree-Fock energies with single
+    particle orbitals $R$, energy $E_0$ and number of
+    iterations $I$.}{10}
+
+\section{DISCUSSION}
+\label{sec:discussion}
+
+\subsection{ENERGY MINIMA}
+\label{sub:energy_minima}
+    We see from the results given in \Autoref{sec:results}, that the energies
+    in some cases increase as we increase the number of single particle states.
+    This behaviour can be traced back to the assumption leading to the
+    Hartree-Fock equations.
+    
+    \noindent
+    Recall that the first ansatz before we acquired the Hartree-Fock equations
+    was from the variational principle. This guaranties only that the
+    expectation value of the total Hamiltonian (estimate for ground state
+    energy) has an extremal, which is not necessarily a minimum. \\
+
+    \noindent
+    One may be tempted to only blame the variational condition for the poor
+    estimation, however the instability only reveals when the oscillator
+    frequency(labeled $\omega$ in \Autoref{eq:cartHarmOscE}) is reduced. When
+    the mentioned frequency is reduced, one effectively reduces the gap between
+    the energy of the single particle states, meaning we blur the difference
+    between states. This is crucial when we look at states above the Fermi
+    level since now it is easier for the electron to jump to the states above
+    Fermi level. In order to account for the possible energy level(to an
+    approximate) we need more single particle states when the energy gap is
+    reduced.
+
+\subsection{CONVERGENCE}
+\label{sub:convergence}
+    Looking at the results we see that the number of iterations needed before
+    the Hartree-Fock energies reach the convergence criterion explained in
+    \Autoref{ssub:convergence_criteria} mostly reach convergence
+    quickly(usually under $100$ iterations), but for some. \\
+
+    \noindent
+    Observe also that the number of iterations needed before convergence also
+    increases as we increase the number of electrons, this may be due to the
+    fact that we use a brute-force criteria. The brute-force criteria is a
+    simple average over all the eigenenergies of the Hartree-Fock matrix. This
+    means we have more and more contributions as we increase the number of
+    particles giving raise to more variations in the individual eigenvalues
+    which in turn gives more variations in the averages. \\
+
+    \noindent
+    The Hartree-Fock limit was not reached for all the calculations, hinting to
+    that we might need more single-particle shells in order for the limit to be
+    reached.
+
+\subsection{DEGENERACY}
+\label{sub:degeneracy}
+    As for the degeneracy of states, we had some. Compared to the original
+    basis, the harmonic oscillator, the same degeneracies were present for the
+    Hartree-Fock energies when only $1$ and $2$ single particle orbitals were
+    set as the cutoff. For more orbitals we had more energy levels present. \\
+
+\section{CONCLUSION}
+\label{sec:conclusion}
+    In conclusion, the calculations for the given parameters were likely to
+    scarce since the Hartree-Fock limit was not reach for all. The reason for
+    this was simply time, that is, the runtime of the program. This can be
+    improved by further parallelization and implementing a different
+    data-structure for the interaction matrix. \\
+
+    \noindent
+    The results were not to bad for $\omega=1$ as the Hartree-Fock limit was
+    actually reached for $2$ and $6$ electrons at least. The degeneracies seen
+    in the Harmonic oscillator case is not always present in the Hartree-Fock
+    energies.
+
+\begin{thebibliography}{}
+    \bibitem{linearAlgebra}
+        David C. Lay, Chapter 7.
+        \textit{Linear Algebra and Its Applications Fourth Edition},
+        Pearson, ISBN 978-1-292-02055-6.
+    \bibitem{GriffQuan}
+        David J. Griffiths Chapters 2, 4 and 7,
+        \textit{Introduction to Quantum Mechanics Second Edition},
+        Pearson, 2005, ISBN 0-13-111892-7.
+    \bibitem{calcVar}
+        Bernard Dacorogna, Chapters 2 and 6,
+        \textit{Introduction to the Calculus of Variations (3rd Edition)},
+        World Scientific, 2014, ISBN 978-1-78326-551-0.
+    \bibitem{calcVarSpring}
+        Bruce Van Brunt,
+        \textit{The Calculus of Variations},
+        Springer, 2004, ISBN 0-387-40247-0.
+    \bibitem{encMat}
+        Michiel Hazewinkel,
+        \textit{Encyclopedia of Mathematics},
+        Springer, 1989, ISBN 978-1-55608-010-4.
+    \bibitem{basicMB}
+        Morten Hjort-Jensen,
+        \textit{Computational Physics: Hartree-Fock methods and introduction to Many-Body Theory.} \\
+        \url{https://www.github.com/CompPhysics/ComputationalPhysics2/blob/gh-pages/doc/pub/basicMB/pdf}, 2017
+    \bibitem{taut}
+        M. Taut, 
+        \textit{Two Electrons in an External Oscillator Potential; Particular analytic solutions of a Coulomb Correlation Problem},
+        Physical Review A 48, 3561, 1993.
+    \bibitem{abinito}
+        M. Pedersen Lohne, G. Hagen, M. Hort-Jensen, S. Kvaal and F. Pederiva,
+        \textit{Ab inito Computation of the Energies of Circular Quantum Dots},
+        Physical Reviews B 84, 032501, 2011.
+    \bibitem{NeOr}
+        Negele and Orland,
+        \textit{Quantum Many-Particle Systems},
+        Addison-Wesley.
+    \bibitem{FeWa}
+        Fetter and Walecka,
+        \textit{Quantum Theory of Many-Particle Systems},
+        Mcgraw-Hill, 1971.
+    \bibitem{DiVNe}
+        Dickhoss and Van Neck,
+        \textit{Many-Body Theory Exposed},
+        World Scientific, 2006
+\end{thebibliography}
+
+\end{document}
