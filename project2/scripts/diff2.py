@@ -28,6 +28,7 @@ diff2PsiTy1 = sp.simplify(sp.simplify(sp.diff(psiT, y1, 2)).subs(replaceDict))
 diff2PsiTx2 = sp.simplify(sp.simplify(sp.diff(psiT, x2, 2)).subs(replaceDict))
 diff2PsiTy2 = sp.simplify(sp.simplify(sp.diff(psiT, y2, 2)).subs(replaceDict))
 
-print sp.latex(sp.simplify(sp.simplify(0.5*(sp.simplify(-(diff2PsiTx1 +
-    diff2PsiTy1 + diff2PsiTx2 + diff2PsiTy2))/psiT + w**2*(r1sq + r2sq)) +
-    1/r12).subs(replaceDict)))
+print
+sp.latex(sp.simplify(sp.simplify(sp.collect(sp.simplify(sp.collect(sp.simplify(0.5*(sp.simplify(-(diff2PsiTx1
+    + diff2PsiTy1 + diff2PsiTx2 + diff2PsiTy2))/psiT + w**2*(r1sq + r2sq)) +
+    1/r12), 2*b**3*a/(b*r12+1)**4)), b*a/(b*r12+1)**2)).subs(replaceDict)))
