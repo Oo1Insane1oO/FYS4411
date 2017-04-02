@@ -12,13 +12,6 @@ dy12 = y1-y2
 r12 = sp.sqrt(dx12**2 + dy12**2)
 r12sq = dx12**2 + dy12**2
 
-psiT = sp.simplify(sp.exp(a*w/2*(r1sq+r2sq))*sp.exp(d*r12/(1+b*r12)))
-
-diff2PsiTx1 = sp.simplify(sp.diff(psiT, x1, 2))
-diff2PsiTy1 = sp.simplify(sp.diff(psiT, y1, 2))
-diff2PsiTx2 = sp.simplify(sp.diff(psiT, x2, 2))
-diff2PsiTy2 = sp.simplify(sp.diff(psiT, y2, 2))
-
 replaceDict = {r1:sp.symbols('r_1'), 
                 r2:sp.symbols('r_2'), 
                 r12:sp.symbols('r_{12}'),
@@ -27,6 +20,13 @@ replaceDict = {r1:sp.symbols('r_1'),
                 r12sq:sp.symbols('r^2_{12}'),
                 dx12:sp.symbols('x_{12}'),
                 dy12:sp.symbols('y_{12}')}
+
+psiT = sp.simplify(sp.exp(a*w/2*(r1sq+r2sq))*sp.exp(d*r12/(1+b*r12)))
+
+diff2PsiTx1 = sp.simplify(sp.simplify(sp.diff(psiT, x1, 2)).subs(replaceDict))
+diff2PsiTy1 = sp.simplify(sp.simplify(sp.diff(psiT, y1, 2)).subs(replaceDict))
+diff2PsiTx2 = sp.simplify(sp.simplify(sp.diff(psiT, x2, 2)).subs(replaceDict))
+diff2PsiTy2 = sp.simplify(sp.simplify(sp.diff(psiT, y2, 2)).subs(replaceDict))
 
 print sp.latex(sp.simplify(sp.simplify(0.5*(sp.simplify(-(diff2PsiTx1 +
     diff2PsiTy1 + diff2PsiTx2 + diff2PsiTy2))/psiT + w**2*(r1sq + r2sq)) +
