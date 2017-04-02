@@ -28,6 +28,6 @@ replaceDict = {r1:sp.symbols('r_1'),
                 dx12:sp.symbols('x_{12}'),
                 dy12:sp.symbols('y_{12}')}
 
-print sp.latex(sp.simplify(sp.factor(sp.simplify(sp.simplify(0.5*(sp.simplify(-(diff2PsiTx1 +
+print sp.latex(sp.simplify(sp.simplify(0.5*(sp.simplify(-(diff2PsiTx1 +
     diff2PsiTy1 + diff2PsiTx2 + diff2PsiTy2))/psiT + w**2*(r1sq + r2sq)) +
-    1/r12).subs(replaceDict)))))
+    1/r12).subs(replaceDict)))
