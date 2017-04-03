@@ -406,6 +406,13 @@
     that is the ground state energy $E_0$ is bounded by the expectation value
     of the trial energy.
 
+\subsection{IMPORTANCE SAMPLING}
+\label{sub:importance_sampling}
+    In order to use the Metropolis algorithm as explained in
+    \Autoref{sub:metropolis_algorithm}, we need to find the proposal
+    probability distribution labeled $\ufij{T}{j}{i}$. This is what is known as
+    importance sampling.
+
 \subsection{VMC}
 \label{sub:vmc}
     This section will explain and derive the equations involved in the
@@ -449,7 +456,7 @@
     equations(\Autoref{eq:psiT,eq:a,eq:totalHamil,eq:hamilCou}) also assume
     natural units.
 
-\subsubsection{EXPECTATION VALUE AND LOCAL ENERGY}
+\subsubsection{Expectation Value and Local Energy}
 \label{ssub:EXPECTATION VALUE AND LOCAL ENERGY}
     Given the Hamiltonian \Autoref{eq:totalHamil} and a trial wave function
     $\Psi_T(R,\Lambda)$ and using the variational principle, as given in
@@ -506,7 +513,7 @@
     which is of the form given in \Autoref{eq:MarkovFormula} and $N$ is the
     number of states(or Monte Carlo cycles).
 
-\subsubsection{ANALYTICAL EXPRESSION FOR LOCAL ENERGY}
+\subsubsection{Analytical Expression for Local Energy}
 \label{ssub:ANALYTICAL EXPRESSION FOR LOCAL ENERGY}
     We use the Metropolis algorithm to find an estimate for the expectation
     value to the energy. In this expression we have a so-called local energy
@@ -564,7 +571,7 @@
 %             r_{12} = \sqrt{(x_1-x_2)^2 + (y_1-y_2)^2}
 
         \begin{align*}
-            \input{analyticEL2All.tex}
+            \input{analyticEL2AllCollect.tex}
         \end{align*}
     
 %     Before we arrive at the final expression for the expectation value(which
