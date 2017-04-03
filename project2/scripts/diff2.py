@@ -11,11 +11,11 @@ dy12 = y1-y2
 r12sq = dx12**2 + dy12**2
 
 replaceDict = {
-        r1sq:sy.symbols('r^2_1', real=True, positive=True)**2,
-        r2sq:sy.symbols('r^2_2', real=True, positive=True)**2,
+        r1sq:sy.symbols('r_1', real=True, positive=True)**2,
+        r2sq:sy.symbols('r_2', real=True, positive=True)**2,
         dx12:sy.symbols('x_{12}', real=True),
         dy12:sy.symbols('y_{12}', real=True),
-        r12sq:sy.symbols('r^2_{12}', real=True, positive=True)**2}
+        r12sq:sy.symbols('r_{12}', real=True, positive=True)**2}
 
 psiT = sy.simplify(sy.exp(a*w/2*(r1sq+r2sq)) *
         sy.exp(d*sy.sqrt(r12sq)/(1+b*sy.sqrt(r12sq))))
