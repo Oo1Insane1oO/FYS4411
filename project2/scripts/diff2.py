@@ -25,6 +25,6 @@ diff2PsiTy1 = sy.simplify(sy.diff(psiT, y1, 2))
 diff2PsiTx2 = sy.simplify(sy.diff(psiT, x2, 2))
 diff2PsiTy2 = sy.simplify(sy.diff(psiT, y2, 2))
 
-print sy.latex(sy.simplify(sy.simplify(0.5*(sy.simplify(-(diff2PsiTx1 +
+print (sy.latex(sy.simplify(sy.simplify(0.5*(sy.simplify(-(diff2PsiTx1 +
     diff2PsiTy1 + diff2PsiTx2 + diff2PsiTy2))/psiT + w**2*(r1sq + r2sq)) +
-    1/sy.sqrt(r12sq)).subs(replaceDict)))
+    1/sy.sqrt(r12sq)).subs(replaceDict))))

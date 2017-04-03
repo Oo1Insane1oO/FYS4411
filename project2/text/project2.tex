@@ -142,6 +142,7 @@
 \newcommand{\mRe}[1]{\mathrm{Re}\left({#1}\right)}%nice real
 \newcommand{\munit}[1]{\;\ensuremath{\, \mathrm{#1}}} %straight units in math
 \newcommand{\Rarr}{\Rightarrow} %reduce lenght of Rightarrow (less to write)
+\newcommand{\rarr}{\rightarrow} %reduce lenght of rightarrow (less to write)
 \newcommand{\ecp}[1]{\left< {#1} \right>} %expected value
 \newcommand{\urw}{\uparrow} % up arrow
 \newcommand{\drw}{\downarrow} % up arrow
@@ -151,6 +152,10 @@
 \newcommand{\sint}{\int\limits^{2\pi}_0\int\limits^{\pi}_0\oinfint}
 \newcommand{\arcsinh}[1]{\text{arcsinh}\left(#1\right)}
 \newcommand{\I}{\scalebox{1.2}{$\mathds{1}$}}
+\newcommand{\veps}{\varepsilon} %\varepsilon is to long :P
+
+\newcommand{\fij}[3]{#1\left(#2\rarr#3\right)}
+\newcommand{\ufij}[3]{#1_{#2\rarr#3}}
 
 \newcommand\numberthis{\addtocounter{equation}{1}\tag{\theequation}}
 
@@ -341,6 +346,43 @@
             \label{eq:polE}
         \end{equation}
 
+\subsection{METROPOLIS-HASTINGS ALGORITHM}
+\label{sub:metropolis_algorithm}
+    The Metropolis algorithm bases itself on moves (also called transitions) as
+    given in a Markov process(or Markov chain). Define a probability
+    distribution function(PDF) $w_j(t)$ with a transition probability
+    $\fij{w}{i}{j}$ which for a given time-step yields in the Markov formula
+        \begin{equation}
+            w_i(t+\veps) = \sum\limits_j \fij{w}{j}{i} w_j(t)
+            \label{eq:MarkovFormula}
+        \end{equation}
+    The transition probability is defined with an acceptance probability
+    distribution $\fij{A}{j}{i}$ and a proposed probability distribution
+    $\fij{T}{j}{i}$ as
+        \begin{equation}
+            \fij{w}{j}{i} = \fij{A}{j}{i}\fij{T}{j}{i}
+            \label{eq:wijdef}
+        \end{equation}
+    The acceptance $A$ is the probability for the move to be accepted and the
+    proposal $T$ is different for each problem. \\
+    In order for this transition chain to reach a desired convergence and
+    reversibility we have the well known condition for detailed balance
+    >>INSERT REF<<. This condition gives us that the probability distribution
+    functions satisfy the following condition
+        \begin{equation}
+            w_i \ufij{T}{i}{j}\ufij{A}{i}{j} = w_j \ufij{T}{j}{i}\ufij{A}{j}{i}
+            \Rarr \frac{w_i}{w_j} =
+            \frac{\ufij{T}{j}{i}\ufij{A}{j}{i}}{\ufij{T}{i}{j}\ufij{A}{i}{j}}
+            \label{eq:detailedBalance}
+        \end{equation}
+    We now need to choose an acceptance which fulfills \Autoref{eq:detBalw} and
+    a common choice is the Metropolis condition
+        \begin{equation}
+            \ufij{A}{j}{i} = \min\left(1,
+            \frac{w_i}{w_j}\frac{\ufij{T}{i}{j}}{\ufij{T}{j}{i}}\right)
+            \label{eq:MetropolisCondition}
+        \end{equation}
+
 \subsection{VARIATIONAL PRINCIPLE}
 \label{sub:variational_principle}
     The variational principle states the following restriction on the ground
@@ -352,7 +394,6 @@
         \end{equation}
     that is the ground state energy $E_0$ is bounded by the expectation value
     of the trial energy.
-
 
 \subsection{VMC}
 \label{sub:vmc}
@@ -379,6 +420,7 @@
                 \right.
             \label{eq:a}
         \end{equation}
+    This is also known as a $Pade-Jatrow$ factor. \\
     We also define the total Hamiltonian of the system for the quantum dot case
     as
         \begin{equation}
@@ -431,8 +473,8 @@
     value. \\
     In order to introduce the transition probability as given in the Metropolis
     algorithm >>INSERT REF<< the expectation value,
-    \Autoref{eq:HupperBoundExpand}, needs to be rewritten in terms of a
-    probability distribution function(PDF). We can define this as
+    \Autoref{eq:HupperBoundExpand}, needs to be rewritten in terms of a PDF. We
+    can define this as
         \begin{equation}
             P(R) \equiv \frac{\abs{\Psi_T(R)}^2}{\int\abs{\Psi_T(R)}^2\md R}
             \label{eq:PDFdef}
@@ -447,7 +489,7 @@
     \Autoref{eq:HupperBoundExpand} can be rewritten as
         \begin{equation}
             E[H] = \int P(R)E_L(R\Lambda) \md R \approx
-            \frac{1}{N}\sum\limits_{i=1}^N P(r_i,\Lambda)E_L(R_i,\Lambda)
+            \frac{1}{N}\sum\limits_{i=1}^N P(r_i,\Lambda)E_L(r_i,\Lambda)
             \label{eq:ecpRew}
         \end{equation}
     which is of the form given in >>INSERT REF HERE<<.
