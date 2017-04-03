@@ -357,7 +357,7 @@
 \subsection{VMC}
 \label{sub:vmc}
     This section will explain and derive the equations involved in the
-    variational Monte Carlo method. The whole section will assume that we have
+    Variational Monte Carlo method. The whole section will assume that we have
     the following trial wave function, $\psi_T$
         \begin{equation}
             \psi_T(\vec{r}_1,\dots,\vec{r}_N) \equiv
@@ -396,18 +396,73 @@
     equations(\Autoref{eq:psiT,eq:a,eq:totalHamil,eq:hamilCou}) also assume
     natural units.
 
-\subsection{ANALYTICAL EXPRESSION FOR LOCAL ENERGY}
+\subsubsection{EXPECTATION VALUE AND LOCAL ENERGY}
+\label{ssub:EXPECTATION VALUE AND LOCAL ENERGY}
+    Given the Hamiltonian \Autoref{eq:totalHamil} and a trial wave function
+    $\Psi_T(R,\Lambda)$ and using the variational principle, as given in
+    \Autoref{eq:HFvarE} the upper bound for the ground state energy $E_0$ if
+    $H(r)$ is
+        \begin{equation}
+            E[\hat{H}(R,\Lambda)] \leq \ecp{\hat{H}} =
+            \frac{\bra{\Psi_T}\hat{H}\ket{\Psi_T}}{\braket{\Psi_T}}
+            \label{eq:HupperBound}
+        \end{equation}
+    where $R=(r_1,\dots,r_N)$ is the positions to $N$ particles and
+    $\Lambda=(\lambda,\dots,\lambda_M)$ are the $M$ variational parameters. \\
+    Now we can expand the trial wave function $\Psi_T(R,\Lambda)$ in the
+    orthonormal eigenstates of the Hamiltonian $\hat{H}$(which form a complete
+    set)
+        \begin{equation}
+            \Psi_T(r) = \sum_ic_i\Psi_i(r)
+            \label{eq:PsiTExpand}
+        \end{equation}
+    and the upper bound given in \Autoref{eq:HupperBound} is
+        \begin{equation}
+            E_0 \leq \frac{\sum\limits_{ij}c_ic^{*}_j
+            \bra{\Psi_j}\hat{H}\ket{\Psi_i}} {\sum\limits_{ij}c_ic^{*}_j
+            \bra{\Psi_j}\ket{\Psi_i}} = \frac{\sum\limits_n
+            a^2_nE_n}{\sum\limits_n a^2_n}
+            \label{eq:HupperBoundExpand}
+        \end{equation}
+    where the eigenequation for the Hamiltonian $\hat{H}\Psi_n=E_n\Psi_n$ was
+    used. The expression given in \Autoref{eq:HupperBound} is the expectation
+    value we evaluate in each variational step that is we choose $\alpha$
+    according to some minimization algorithm and re-evaluate the expectation
+    value. \\
+    In order to introduce the transition probability as given in the Metropolis
+    algorithm >>INSERT REF<< the expectation value,
+    \Autoref{eq:HupperBoundExpand}, needs to be rewritten in terms of a
+    probability distribution function(PDF). We can define this as
+        \begin{equation}
+            P(R) \equiv \frac{\abs{\Psi_T(R)}^2}{\int\abs{\Psi_T(R)}^2\md R}
+            \label{eq:PDFdef}
+        \end{equation}
+    Now we observe that if we define a quantity
+        \begin{equation}
+            E_L(R,\Lambda) \equiv
+            \frac{1}{\Psi_T(R,\Lambda)}\hat{H}\Psi_T(R,\Lambda)
+            \label{eq:ELdef}
+        \end{equation}
+    which is the so-called local energy. The expectation value given in
+    \Autoref{eq:HupperBoundExpand} can be rewritten as
+        \begin{equation}
+            E[H] = \int P(R)E_L(R\Lambda) \md R \approx
+            \frac{1}{N}\sum\limits_{i=1}^N P(r_i,\Lambda)E_L(R_i,\Lambda)
+            \label{eq:ecpRew}
+        \end{equation}
+    which is of the form given in >>INSERT REF HERE<<.
+
+\subsubsection{ANALYTICAL EXPRESSION FOR LOCAL ENERGY}
 \label{ssub:ANALYTICAL EXPRESSION FOR LOCAL ENERGY}
     We use the Metropolis algorithm to find an estimate for the expectation
     value to the energy. In this expression we have a so-called local energy
     defined as
         \begin{equation}
-            E_L \equiv \frac{1}{\psi_T}\hat{H}\psi_T
-            \label{eq:ELdef}
+            E_L = \frac{1}{\psi_T}\hat{H}\psi_T
+            \label{eq:ELana}
         \end{equation}
     This expression shows up in the integrand as the multiplied function to the
-    probability distribution function(PDF) which is used in the Metropolis
-    algorithm.
+    PDF which is used in the Metropolis algorithm.
 
 \subsubsection{Two Electron Case}
 \label{ssub:Two Electron Case}
