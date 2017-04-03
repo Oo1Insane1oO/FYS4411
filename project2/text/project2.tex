@@ -375,13 +375,24 @@
             \frac{\ufij{T}{j}{i}\ufij{A}{j}{i}}{\ufij{T}{i}{j}\ufij{A}{i}{j}}
             \label{eq:detailedBalance}
         \end{equation}
-    We now need to choose an acceptance which fulfills \Autoref{eq:detBalw} and
-    a common choice is the Metropolis condition
+    We now need to choose an acceptance which fulfills
+    \Autoref{eq:detailedBalance} and a common choice is the Metropolis
+    condition
         \begin{equation}
             \ufij{A}{j}{i} = \min\left(1,
-            \frac{w_i}{w_j}\frac{\ufij{T}{i}{j}}{\ufij{T}{j}{i}}\right)
+            \frac{w_i\ufij{T}{i}{j}}{w_j\ufij{T}{j}{i}}\right)
             \label{eq:MetropolisCondition}
         \end{equation}
+    The Metropolis-Hastings algorithm is thus
+        \begin{enumerate}[label=(\roman*)]
+            \item Pick initial state $i$ at random.
+            \item Pick proposed state at random in accordance to
+                $\ufij{T}{j}{i}$.
+            \item Accept state according to $\ufij{A}{j}{i}$.
+            \item Jump to step (ii) until a specified number of states have
+                been generated.
+            \item Save the state $i$ and jump to step (ii).
+        \end{enumerate}
 
 \subsection{VARIATIONAL PRINCIPLE}
 \label{sub:variational_principle}
@@ -472,7 +483,7 @@
     according to some minimization algorithm and re-evaluate the expectation
     value. \\
     In order to introduce the transition probability as given in the Metropolis
-    algorithm >>INSERT REF<< the expectation value,
+    algorithm(see \Autoref{sub:metropolis_algorithm}) the expectation value,
     \Autoref{eq:HupperBoundExpand}, needs to be rewritten in terms of a PDF. We
     can define this as
         \begin{equation}
@@ -492,7 +503,8 @@
             \frac{1}{N}\sum\limits_{i=1}^N P(r_i,\Lambda)E_L(r_i,\Lambda)
             \label{eq:ecpRew}
         \end{equation}
-    which is of the form given in >>INSERT REF HERE<<.
+    which is of the form given in \Autoref{eq:MarkovFormula} and $N$ is the
+    number of states(or Monte Carlo cycles).
 
 \subsubsection{ANALYTICAL EXPRESSION FOR LOCAL ENERGY}
 \label{ssub:ANALYTICAL EXPRESSION FOR LOCAL ENERGY}
