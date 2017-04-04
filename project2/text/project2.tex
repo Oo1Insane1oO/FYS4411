@@ -23,12 +23,13 @@
 \usepackage{enumitem}
 \usepackage{varwidth}
 \usepackage{tikz}
-\usepackage{etoolbox}
 \usepackage{fancyhdr}
 \usepackage{dsfont}
 \usepackage{algorithm}
 \usepackage{algpseudocode}
 \usepackage{xifthen}
+\usepackage{etoolbox}
+\usepackage{xparse}
 
 %specific reused text
 \newcommand{\mdate}{\today}
@@ -132,16 +133,8 @@
     \end{figure}
 } %two figure one-line {title}{file1}{caption1}{file2}{caption2}
 
-
 \newcommand{\prtl}{\mathrm{\partial}} %reduce length of partial (less to write)
-% \newcommand{\prd}[3]{\frac{\prtl^{#3}#1}{\prtl {#2}^{#3}}} %partial derivative specific
-% \newcommand{\prds}[2]{\frac{\prtl #1}{\prtl {#2}}} % partial derivative general
-% \newcommand{\fprds}[1]{\frac{\prtl}{\prtl {#1}}} %reduce length of partial (less to write)
-% \newcommand{\fprd}[2]{\frac{\prtl^{#2}}{\prtl^{#2} {#1}}} %reduce length of partial (less to write)
-
-\newcommand{\prd}[2]{\ifthenelse{\isempty{#2}}{\frac{\prtl^{#2}}{\prtl{#1}^{#2}}}{\frac{\prtl}{\prtl{#1}}}}
-\newcommand{\fprd}[3]{\ifthenelse{\isempty{#3}}{\frac{\prtl^{#3}{#1}}{\prtl{#2}^{#3}}}{\frac{\prtl#1}{\prtl#2}}}
-
+\NewDocumentCommand{\prd}{m O{} O{}}{\frac{\prtl^{#3}{#2}}{\prtl{#1}^{#3}}}
 \newcommand{\vsp}{\vspace{0.2cm}} %small vertical space
 \newcommand{\txtit}[1]{\textit{{#1}}} %italic text
 \newcommand{\blds}[1]{\boldsymbol{{#1}}} % better bold in mathmode (from amsmath)
@@ -382,36 +375,74 @@
     This section will derive the importance sampling by using the Fokker-Planck
     equation for one particle
         \begin{equation}
-            \fprd{P}{t} = D\prd{x} (\prd{x} - F)P(x,t)
+            \prd{t}[P] = D\prd{x} \left(\prd{x} - F\right)P(x,t) 
             \label{eq:FokkerPlanc}
         \end{equation}
-%     where $F$ is a drift term and $D$ is a diffusion constant, and the Langevin
-%     equation
-%         \begin{equation}
-%             \prds{x(t)}{t} = DF(x(t)) + \eta
-%         \end{equation}
-%     where $\eta$ is a random variable. \\
-%     Since we are working with a isotropic diffusion characterized by a
-%     time-dependant probability density our system must obey the summed total
-%     Fokker-Planck equation
-%         \begin{equation}
-%             \prds{P}{t} = \sum\limits_iD\fprd{x_i}\left(\fprd{x_i} -
-%             F_i\right)P(x,t)
-%             \label{eq:FokkerPlancTotal}
-%         \end{equation}
-%     where $F_i$ is now the i'th component of the drift velocity term(given by
-%     an external potential). Since the probability is assumed to be convergent,
-%     that is it converges to a stationary probability density the time
-%     dependence at this point is zero. With other words, the left hand side of
-%     \Autoref{eq:FokkerPlancTotal} is zero we we obtain
-%         \begin{equation}
-%             \fprds{P}{x_i}{2} = 
-%         \end{equation}
-% 
-\subsubsection{Quantum Force}
-\label{ssub:Quantum Force}
-    We rewrite the Fokker-Planc equation(\Autoref{eq:FokkerPlanc}) 
+    where $F$ is a drift term and $D$ is a diffusion constant, and the Langevin
+    equation
+        \begin{equation}
+            \prd{t}[x(t)] = DF(x(t)) + \eta
+            \label{eq:Langevin}
+        \end{equation}
+    where $\eta$ is a random variable.
 
+\subsubsection{Quantum Force}
+\label{ssub:quantum_force}
+    Since we are working with a isotropic diffusion characterized by a
+    time-dependant probability density our system must obey the summed total
+    Fokker-Planck equation
+        \begin{equation}
+            \prd{t}[P] = \sum\limits_iD\prd{x_i}\left(\prd{x_i} -
+            F_i\right)P(x,t)
+            \label{eq:FokkerPlancTotal}
+        \end{equation}
+    where $F_i$ is now the i'th component of the drift velocity term(given by
+    an external potential). Since the probability is assumed to be convergent,
+    that is it converges to a stationary probability density the time
+    dependence at this point is zero for all $i$. With other words, the left
+    hand side of \Autoref{eq:FokkerPlancTotal}. We also know that the drift
+    should be of form $F=g(x)\prd{x}[P]$ giving
+        \begin{equation}
+            \prd{x_i}[P][2] = P\prd{P}[g]\left(\prd{x_i}[P]\right)^2 +
+            Pg\prd{x_i}[P][2] + g\left(\prd{x_i}[P]\right)^2
+            \label{eq:FokkerPlancStationary}
+        \end{equation}
+    Now we may use the condition for stationary density meaning the left hand
+    side of \Autoref{eq:FokkerPlancStationary} must equal zero giving that
+    $g=1/P$(only possibility the derivatives cancel). Inserting in
+    $P=\psi_T$(see >>INSERT REF<<) we get that the expression for the quantum
+    force is
+        \begin{equation}
+            F = \frac{2}{\Psi_T}\nabla\Psi_T
+            \label{eq:quantumForce}
+        \end{equation}
+
+\subsubsection{Solution}
+\label{ssub:Solution}
+    Using Eulers method on the Langevin equation(\Autoref{eq:Langevin} one
+    obtains the new positions
+        \begin{equation}
+            y = x + DF(x)\Delta t + \xi\sqrt{\Delta t}
+            \label{eq:newPos}
+        \end{equation}
+    with $D=1/2$ in natural units due to the kinetic energy term and $\Delta t$
+    is a time-step parameter. The random variable $\xi$ is within a Gaussian
+    distribution. \\
+    Using the force obtained in \Autoref{ssub:quantum_force} given in
+    \Autoref{eq:quantumForce} the solution to the Fokker-Planck equations are
+    given by the Greens function
+        \begin{equation}
+            G(y,x,\Delta t) = \frac{1}{\left(4\pi D\Delta
+            t\right)^{\frac{3N}{2}}} \exp(-\frac{\left(x - \xi\sqrt{\Delta
+            t}\right)^2}{4D\Delta t})
+            \label{eq:FokkerLangevinGreens}
+        \end{equation}
+    which gives us the acceptance
+        \begin{equation}
+            \ufij{A}{y}{x} = \min\left(1, \frac{\abs{\psi_T(y)}^2G(y,x,\Delta
+            t)}{\abs{\psi_T(x)}^2G(x,y,\Delta t)}\right)
+            \label{eq:acceptanceImportance}
+        \end{equation}
 
 \subsection{VMC}
 \label{sub:vmc}
