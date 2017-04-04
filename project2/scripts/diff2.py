@@ -25,7 +25,7 @@ diff2PsiTy2 = sy.simplify(sy.simplify(sy.diff(psiT, y2, 2)).subs(replaceDict))
 
 total = sy.simplify(0.5*(sy.simplify(-(diff2PsiTx1 + diff2PsiTy1 + diff2PsiTx2
     + diff2PsiTy2)/psiT) + w**2*(r1sq + r2sq)) +
-    1/sy.sqrt(r12sq)).factor()
-#.collect(2*b**3*d/(b*sp.sqrt(r12sq) + 1)**4).collect(2*b*a/(b*sy.sqrt(r12sq) + 1)**2)
+    1/sy.sqrt(r12sq)).collect(2*b**3*d/(b*sp.sqrt(r12sq) +
+        1)**4).collect(2*b*a/(b*sy.sqrt(r12sq) + 1)**2)
  
 print sy.latex(sy.simplify(total.subs(replaceDict)))
