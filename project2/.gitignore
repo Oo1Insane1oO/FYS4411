@@ -1,0 +1,4 @@
+# ignore redundant tex files
+text/*.log
+text/*.aux
+text/*.out
