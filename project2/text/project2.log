@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2017.3.22)  4 APR 2017 15:20
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2017.3.22)  4 APR 2017 17:15
 entering extended mode
  \write18 enabled.
  file:line:error style messages enabled.
@@ -2172,39 +2172,45 @@ Document Style algorithmicx 1.2 - a greatly improved `algorithmic' style
 \ALG@tmplength=\skip86
 )
 Document Style - pseudocode environments for use with the `algorithmicx' style
-) (/home/saintz/localStuff/FYS4411/project2/text/project2.aux)
+) (/usr/share/texlive/texmf-dist/tex/latex/xifthen/xifthen.sty
+Package: xifthen 2015/11/05 v1.4.0 Extended ifthen features
+
+(/usr/share/texlive/texmf-dist/tex/latex/ifmtarg/ifmtarg.sty
+Package: ifmtarg 2009/09/02 v1.2a check for an empty argument
+))
+(/home/saintz/localStuff/FYS4411/project2/text/project2.aux)
 \openout1 = `project2.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 215.
-LaTeX Font Info:    ... okay on input line 215.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 215.
-LaTeX Font Info:    ... okay on input line 215.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 215.
-LaTeX Font Info:    ... okay on input line 215.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 215.
-LaTeX Font Info:    ... okay on input line 215.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 215.
-LaTeX Font Info:    ... okay on input line 215.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 215.
-LaTeX Font Info:    ... okay on input line 215.
-LaTeX Font Info:    Checking defaults for MDA/cmr/m/n on input line 215.
-LaTeX Font Info:    Try loading font information for MDA+cmr on input line 215.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 222.
+LaTeX Font Info:    ... okay on input line 222.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 222.
+LaTeX Font Info:    ... okay on input line 222.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 222.
+LaTeX Font Info:    ... okay on input line 222.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 222.
+LaTeX Font Info:    ... okay on input line 222.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 222.
+LaTeX Font Info:    ... okay on input line 222.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 222.
+LaTeX Font Info:    ... okay on input line 222.
+LaTeX Font Info:    Checking defaults for MDA/cmr/m/n on input line 222.
+LaTeX Font Info:    Try loading font information for MDA+cmr on input line 222.
 
 
 (/usr/share/texlive/texmf-dist/tex/latex/mathdesign/mdacmr.fd
 File: mdacmr.fd 
 )
-LaTeX Font Info:    ... okay on input line 215.
-LaTeX Font Info:    Checking defaults for MDB/cmr/m/n on input line 215.
-LaTeX Font Info:    Try loading font information for MDB+cmr on input line 215.
+LaTeX Font Info:    ... okay on input line 222.
+LaTeX Font Info:    Checking defaults for MDB/cmr/m/n on input line 222.
+LaTeX Font Info:    Try loading font information for MDB+cmr on input line 222.
 
 
 (/usr/share/texlive/texmf-dist/tex/latex/mathdesign/mdbcmr.fd
 File: mdbcmr.fd 
 )
-LaTeX Font Info:    ... okay on input line 215.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 215.
-LaTeX Font Info:    ... okay on input line 215.
+LaTeX Font Info:    ... okay on input line 222.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 222.
+LaTeX Font Info:    ... okay on input line 222.
 \c@lstlisting=\count188
 
 (/usr/share/texlive/texmf-dist/tex/context/base/supp-pdf.mkii
@@ -2270,7 +2276,7 @@ e
 * (1in=72.27pt=25.4mm, 1cm=28.453pt)
 
 \AtBeginShipoutBox=\box61
-Package hyperref Info: Link coloring OFF on input line 215.
+Package hyperref Info: Link coloring OFF on input line 222.
 (/usr/share/texlive/texmf-dist/tex/latex/hyperref/nameref.sty
 Package: nameref 2012/10/27 v2.43 Cross-referencing by name of section
 
@@ -2279,9 +2285,9 @@ Package: gettitlestring 2010/12/03 v1.4 Cleanup title references (HO)
 )
 \c@section@level=\count195
 )
-LaTeX Info: Redefining \ref on input line 215.
-LaTeX Info: Redefining \pageref on input line 215.
-LaTeX Info: Redefining \nameref on input line 215.
+LaTeX Info: Redefining \ref on input line 222.
+LaTeX Info: Redefining \pageref on input line 222.
+LaTeX Info: Redefining \nameref on input line 222.
 
 (/home/saintz/localStuff/FYS4411/project2/text/project2.out)
 (/home/saintz/localStuff/FYS4411/project2/text/project2.out)
@@ -2293,171 +2299,166 @@ Package caption Info: float package is loaded.
 Package caption Info: End \AtBeginDocument code.
 
 ABD: EverySelectfont initializing macros
-LaTeX Info: Redefining \selectfont on input line 215.
+LaTeX Info: Redefining \selectfont on input line 222.
  ABD: EveryShipout initializing macros
 LaTeX Font Info:    Font shape `T1/mdbch/b/n' will be
-(Font)              scaled to size 9.60007pt on input line 219.
+(Font)              scaled to size 9.60007pt on input line 226.
 LaTeX Font Info:    Font shape `T1/mdbch/b/n' will be
-(Font)              scaled to size 13.82408pt on input line 219.
+(Font)              scaled to size 13.82408pt on input line 226.
 LaTeX Font Info:    Font shape `T1/mdbch/b/n' will be
-(Font)              scaled to size 11.52008pt on input line 221.
+(Font)              scaled to size 11.52008pt on input line 228.
 LaTeX Font Info:    Font shape `T1/mdbch/m/n' will be
-(Font)              scaled to size 11.52008pt on input line 223.
+(Font)              scaled to size 11.52008pt on input line 230.
 LaTeX Font Info:    Font shape `OT1/mdbch/m/n' will be
-(Font)              scaled to size 11.52008pt on input line 223.
+(Font)              scaled to size 11.52008pt on input line 230.
 LaTeX Font Info:    Font shape `OT1/mdbch/m/n' will be
-(Font)              scaled to size 7.68005pt on input line 223.
+(Font)              scaled to size 7.68005pt on input line 230.
 LaTeX Font Info:    Font shape `OT1/mdbch/m/n' will be
-(Font)              scaled to size 5.76004pt on input line 223.
-LaTeX Font Info:    Try loading font information for OML+mdbch on input line 22
-3.
+(Font)              scaled to size 5.76004pt on input line 230.
+LaTeX Font Info:    Try loading font information for OML+mdbch on input line 23
+0.
 
 (/usr/share/texlive/texmf-dist/tex/latex/mathdesign/mdbch/omlmdbch.fd
 File: omlmdbch.fd 2013/08/29 Fontinst v1.933 font definitions for OML/mdbch.
 )
 LaTeX Font Info:    Font shape `OML/mdbch/m/it' will be
-(Font)              scaled to size 11.52008pt on input line 223.
+(Font)              scaled to size 11.52008pt on input line 230.
 LaTeX Font Info:    Font shape `OML/mdbch/m/it' will be
-(Font)              scaled to size 7.68005pt on input line 223.
+(Font)              scaled to size 7.68005pt on input line 230.
 LaTeX Font Info:    Font shape `OML/mdbch/m/it' will be
-(Font)              scaled to size 5.76004pt on input line 223.
-LaTeX Font Info:    Try loading font information for OMS+mdbch on input line 22
-3.
+(Font)              scaled to size 5.76004pt on input line 230.
+LaTeX Font Info:    Try loading font information for OMS+mdbch on input line 23
+0.
 
 (/usr/share/texlive/texmf-dist/tex/latex/mathdesign/mdbch/omsmdbch.fd
 File: omsmdbch.fd 2013/08/29 Fontinst v1.933 font definitions for OMS/mdbch.
 )
 LaTeX Font Info:    Font shape `OMS/mdbch/m/n' will be
-(Font)              scaled to size 11.52008pt on input line 223.
+(Font)              scaled to size 11.52008pt on input line 230.
 LaTeX Font Info:    Font shape `OMS/mdbch/m/n' will be
-(Font)              scaled to size 7.68005pt on input line 223.
+(Font)              scaled to size 7.68005pt on input line 230.
 LaTeX Font Info:    Font shape `OMS/mdbch/m/n' will be
-(Font)              scaled to size 5.76004pt on input line 223.
-LaTeX Font Info:    Try loading font information for OMX+mdbch on input line 22
-3.
+(Font)              scaled to size 5.76004pt on input line 230.
+LaTeX Font Info:    Try loading font information for OMX+mdbch on input line 23
+0.
 
 (/usr/share/texlive/texmf-dist/tex/latex/mathdesign/mdbch/omxmdbch.fd
 File: omxmdbch.fd 2013/08/29 Fontinst v1.933 font definitions for OMX/mdbch.
 )
 LaTeX Font Info:    Font shape `OMX/mdbch/m/n' will be
-(Font)              scaled to size 11.52008pt on input line 223.
+(Font)              scaled to size 11.52008pt on input line 230.
 LaTeX Font Info:    Font shape `OMX/mdbch/m/n' will be
-(Font)              scaled to size 7.68005pt on input line 223.
+(Font)              scaled to size 7.68005pt on input line 230.
 LaTeX Font Info:    Font shape `OMX/mdbch/m/n' will be
-(Font)              scaled to size 5.76004pt on input line 223.
+(Font)              scaled to size 5.76004pt on input line 230.
 LaTeX Font Info:    Font shape `OML/mdbch/m/n' will be
-(Font)              scaled to size 11.52008pt on input line 223.
+(Font)              scaled to size 11.52008pt on input line 230.
 LaTeX Font Info:    Font shape `OML/mdbch/m/n' will be
-(Font)              scaled to size 7.68005pt on input line 223.
+(Font)              scaled to size 7.68005pt on input line 230.
 LaTeX Font Info:    Font shape `OML/mdbch/m/n' will be
-(Font)              scaled to size 5.76004pt on input line 223.
-LaTeX Font Info:    Try loading font information for MDA+mdbch on input line 22
-3.
+(Font)              scaled to size 5.76004pt on input line 230.
+LaTeX Font Info:    Try loading font information for MDA+mdbch on input line 23
+0.
 
 (/usr/share/texlive/texmf-dist/tex/latex/mathdesign/mdbch/mdamdbch.fd
 File: mdamdbch.fd 2013/08/29 Fontinst v1.933 font definitions for MDA/mdbch.
 )
 LaTeX Font Info:    Font shape `MDA/mdbch/m/n' will be
-(Font)              scaled to size 11.52008pt on input line 223.
+(Font)              scaled to size 11.52008pt on input line 230.
 LaTeX Font Info:    Font shape `MDA/mdbch/m/n' will be
-(Font)              scaled to size 7.68005pt on input line 223.
+(Font)              scaled to size 7.68005pt on input line 230.
 LaTeX Font Info:    Font shape `MDA/mdbch/m/n' will be
-(Font)              scaled to size 5.76004pt on input line 223.
-LaTeX Font Info:    Try loading font information for MDB+mdbch on input line 22
-3.
+(Font)              scaled to size 5.76004pt on input line 230.
+LaTeX Font Info:    Try loading font information for MDB+mdbch on input line 23
+0.
 
 (/usr/share/texlive/texmf-dist/tex/latex/mathdesign/mdbch/mdbmdbch.fd
 File: mdbmdbch.fd 2013/08/29 Fontinst v1.933 font definitions for MDB/mdbch.
 )
 LaTeX Font Info:    Font shape `MDB/mdbch/m/n' will be
-(Font)              scaled to size 11.52008pt on input line 223.
+(Font)              scaled to size 11.52008pt on input line 230.
 LaTeX Font Info:    Font shape `MDB/mdbch/m/n' will be
-(Font)              scaled to size 7.68005pt on input line 223.
+(Font)              scaled to size 7.68005pt on input line 230.
 LaTeX Font Info:    Font shape `MDB/mdbch/m/n' will be
-(Font)              scaled to size 5.76004pt on input line 223.
+(Font)              scaled to size 5.76004pt on input line 230.
 LaTeX Font Info:    Font shape `T1/mdbch/m/n' will be
-(Font)              scaled to size 13.82408pt on input line 224.
+(Font)              scaled to size 13.82408pt on input line 231.
  [1
 
 {/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}]
 LaTeX Font Info:    Font shape `OT1/mdbch/m/n' will be
-(Font)              scaled to size 6.72005pt on input line 265.
+(Font)              scaled to size 6.72005pt on input line 272.
 LaTeX Font Info:    Font shape `OT1/mdbch/m/n' will be
-(Font)              scaled to size 4.80003pt on input line 265.
+(Font)              scaled to size 4.80003pt on input line 272.
 LaTeX Font Info:    Font shape `OML/mdbch/m/it' will be
-(Font)              scaled to size 9.60007pt on input line 265.
+(Font)              scaled to size 9.60007pt on input line 272.
 LaTeX Font Info:    Font shape `OML/mdbch/m/it' will be
-(Font)              scaled to size 6.72005pt on input line 265.
+(Font)              scaled to size 6.72005pt on input line 272.
 LaTeX Font Info:    Font shape `OML/mdbch/m/it' will be
-(Font)              scaled to size 4.80003pt on input line 265.
+(Font)              scaled to size 4.80003pt on input line 272.
 LaTeX Font Info:    Font shape `OMS/mdbch/m/n' will be
-(Font)              scaled to size 9.60007pt on input line 265.
+(Font)              scaled to size 9.60007pt on input line 272.
 LaTeX Font Info:    Font shape `OMS/mdbch/m/n' will be
-(Font)              scaled to size 6.72005pt on input line 265.
+(Font)              scaled to size 6.72005pt on input line 272.
 LaTeX Font Info:    Font shape `OMS/mdbch/m/n' will be
-(Font)              scaled to size 4.80003pt on input line 265.
+(Font)              scaled to size 4.80003pt on input line 272.
 LaTeX Font Info:    Font shape `OMX/mdbch/m/n' will be
-(Font)              scaled to size 9.60007pt on input line 265.
+(Font)              scaled to size 9.60007pt on input line 272.
 LaTeX Font Info:    Font shape `OMX/mdbch/m/n' will be
-(Font)              scaled to size 6.72005pt on input line 265.
+(Font)              scaled to size 6.72005pt on input line 272.
 LaTeX Font Info:    Font shape `OMX/mdbch/m/n' will be
-(Font)              scaled to size 4.80003pt on input line 265.
+(Font)              scaled to size 4.80003pt on input line 272.
 LaTeX Font Info:    Font shape `OML/mdbch/m/n' will be
-(Font)              scaled to size 9.60007pt on input line 265.
+(Font)              scaled to size 9.60007pt on input line 272.
 LaTeX Font Info:    Font shape `OML/mdbch/m/n' will be
-(Font)              scaled to size 6.72005pt on input line 265.
+(Font)              scaled to size 6.72005pt on input line 272.
 LaTeX Font Info:    Font shape `OML/mdbch/m/n' will be
-(Font)              scaled to size 4.80003pt on input line 265.
+(Font)              scaled to size 4.80003pt on input line 272.
 LaTeX Font Info:    Font shape `MDA/mdbch/m/n' will be
-(Font)              scaled to size 9.60007pt on input line 265.
+(Font)              scaled to size 9.60007pt on input line 272.
 LaTeX Font Info:    Font shape `MDA/mdbch/m/n' will be
-(Font)              scaled to size 6.72005pt on input line 265.
+(Font)              scaled to size 6.72005pt on input line 272.
 LaTeX Font Info:    Font shape `MDA/mdbch/m/n' will be
-(Font)              scaled to size 4.80003pt on input line 265.
+(Font)              scaled to size 4.80003pt on input line 272.
 LaTeX Font Info:    Font shape `MDB/mdbch/m/n' will be
-(Font)              scaled to size 9.60007pt on input line 265.
+(Font)              scaled to size 9.60007pt on input line 272.
 LaTeX Font Info:    Font shape `MDB/mdbch/m/n' will be
-(Font)              scaled to size 6.72005pt on input line 265.
+(Font)              scaled to size 6.72005pt on input line 272.
 LaTeX Font Info:    Font shape `MDB/mdbch/m/n' will be
-(Font)              scaled to size 4.80003pt on input line 265.
+(Font)              scaled to size 4.80003pt on input line 272.
 LaTeX Font Info:    Font shape `T1/mdbch/m/n' will be
-(Font)              scaled to size 8.64006pt on input line 325.
+(Font)              scaled to size 8.64006pt on input line 332.
 pdfTeX warning (ext4): destination with the same identifier (name{page.1}) has 
 been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.325         \end{equation}
+l.332         \end{equation}
                              [1
 
 ]
 LaTeX Font Info:    Font shape `T1/mdbch/m/n' will be
-(Font)              scaled to size 6.72005pt on input line 400.
+(Font)              scaled to size 6.72005pt on input line 435.
 LaTeX Font Info:    Font shape `T1/mdbch/m/n' will be
-(Font)              scaled to size 4.80003pt on input line 400.
+(Font)              scaled to size 4.80003pt on input line 435.
  [2] [3]
-(/home/saintz/localStuff/FYS4411/project2/text/analyticEL2AllCollect.tex)
-(/home/saintz/localStuff/FYS4411/project2/text/analyticEL2AllCollect.tex)
-Overfull \hbox (1328.97095pt too wide) in paragraph at lines 540--540
-[] 
- []
-
 LaTeX Font Info:    Font shape `T1/mdbch/m/it' will be
-(Font)              scaled to size 9.60007pt on input line 572.
-[4]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 600.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 600.
- (/home/saintz/localStuff/FYS4411/project2/text/project2.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 600.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 600.
+(Font)              scaled to size 9.60007pt on input line 607.
+ [4]
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 635.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 635.
+
+(/home/saintz/localStuff/FYS4411/project2/text/project2.aux)
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 635.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 635.
 Package rerunfilecheck Info: File `project2.out' has not changed.
 (rerunfilecheck)             Checksum: <no file>.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 600.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 635.
  ) 
 Here is how much of TeX's memory you used:
- 30453 strings out of 494497
- 554895 string characters out of 6172400
- 614696 words of memory out of 5000000
- 33320 multiletter control sequences out of 15000+600000
+ 30508 strings out of 494497
+ 555604 string characters out of 6172400
+ 611781 words of memory out of 5000000
+ 33371 multiletter control sequences out of 15000+600000
  52524 words of font info for 97 fonts, out of 8000000 for 9000
  264 hyphenation exceptions out of 8191
  64i,12n,94p,10410b,341s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -2473,10 +2474,10 @@ onts/type1/public/mathdesign/mdbch/md-chr8t.pfb></usr/share/texlive/texmf-dist/
 fonts/type1/public/mathdesign/mdbch/md-chri7m.pfb></usr/share/texlive/texmf-dis
 t/fonts/type1/public/mathdesign/mdbch/md-chrma.pfb>
 Output written on /home/saintz/localStuff/FYS4411/project2/text/project2.pdf (5
- pages, 89246 bytes).
+ pages, 88709 bytes).
 PDF statistics:
- 219 PDF objects out of 1000 (max. 8388607)
- 200 compressed objects within 2 object streams
- 63 named destinations out of 1000 (max. 500000)
- 149 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 225 PDF objects out of 1000 (max. 8388607)
+ 205 compressed objects within 3 object streams
+ 64 named destinations out of 1000 (max. 500000)
+ 157 words of extra memory for PDF output out of 10000 (max. 10000000)
 

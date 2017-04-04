@@ -6,12 +6,13 @@
 \BOOKMARK [2][-]{subsection.2.3}{METROPOLIS-HASTINGS ALGORITHM}{section.2}% 6
 \BOOKMARK [2][-]{subsection.2.4}{VARIATIONAL PRINCIPLE}{section.2}% 7
 \BOOKMARK [2][-]{subsection.2.5}{IMPORTANCE SAMPLING}{section.2}% 8
-\BOOKMARK [2][-]{subsection.2.6}{VMC}{section.2}% 9
-\BOOKMARK [3][-]{subsubsection.2.6.1}{Expectation Value and Local Energy}{subsection.2.6}% 10
-\BOOKMARK [3][-]{subsubsection.2.6.2}{Analytical Expression for Local Energy}{subsection.2.6}% 11
-\BOOKMARK [3][-]{subsubsection.2.6.3}{Two Electron Case}{subsection.2.6}% 12
-\BOOKMARK [1][-]{section.3}{SETUP}{}% 13
-\BOOKMARK [1][-]{section.4}{RESULTS}{}% 14
-\BOOKMARK [1][-]{section.5}{DISCUSSION}{}% 15
-\BOOKMARK [1][-]{section.6}{CONCLUSION}{}% 16
-\BOOKMARK [1][-]{section.7}{References}{}% 17
+\BOOKMARK [3][-]{subsubsection.2.5.1}{Quantum Force}{subsection.2.5}% 9
+\BOOKMARK [2][-]{subsection.2.6}{VMC}{section.2}% 10
+\BOOKMARK [3][-]{subsubsection.2.6.1}{Expectation Value and Local Energy}{subsection.2.6}% 11
+\BOOKMARK [3][-]{subsubsection.2.6.2}{Analytical Expression for Local Energy}{subsection.2.6}% 12
+\BOOKMARK [3][-]{subsubsection.2.6.3}{Two Electron Case}{subsection.2.6}% 13
+\BOOKMARK [1][-]{section.3}{SETUP}{}% 14
+\BOOKMARK [1][-]{section.4}{RESULTS}{}% 15
+\BOOKMARK [1][-]{section.5}{DISCUSSION}{}% 16
+\BOOKMARK [1][-]{section.6}{CONCLUSION}{}% 17
+\BOOKMARK [1][-]{section.7}{References}{}% 18

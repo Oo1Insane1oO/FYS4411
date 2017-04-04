@@ -28,6 +28,7 @@
 \usepackage{dsfont}
 \usepackage{algorithm}
 \usepackage{algpseudocode}
+\usepackage{xifthen}
 
 %specific reused text
 \newcommand{\mdate}{\today}
@@ -133,8 +134,14 @@
 
 
 \newcommand{\prtl}{\mathrm{\partial}} %reduce length of partial (less to write)
-\newcommand{\prd}[3]{\frac{\prtl^{#3}#1}{\prtl {#2}^{#3}}} %reduce length of partial (less to write)
-\newcommand{\prds}[2]{\frac{\prtl #1}{\prtl {#2}}} %reduce length of partial (less to write)
+% \newcommand{\prd}[3]{\frac{\prtl^{#3}#1}{\prtl {#2}^{#3}}} %partial derivative specific
+% \newcommand{\prds}[2]{\frac{\prtl #1}{\prtl {#2}}} % partial derivative general
+% \newcommand{\fprds}[1]{\frac{\prtl}{\prtl {#1}}} %reduce length of partial (less to write)
+% \newcommand{\fprd}[2]{\frac{\prtl^{#2}}{\prtl^{#2} {#1}}} %reduce length of partial (less to write)
+
+\newcommand{\prd}[2]{\ifthenelse{\isempty{#2}}{\frac{\prtl^{#2}}{\prtl{#1}^{#2}}}{\frac{\prtl}{\prtl{#1}}}}
+\newcommand{\fprd}[3]{\ifthenelse{\isempty{#3}}{\frac{\prtl^{#3}{#1}}{\prtl{#2}^{#3}}}{\frac{\prtl#1}{\prtl#2}}}
+
 \newcommand{\vsp}{\vspace{0.2cm}} %small vertical space
 \newcommand{\txtit}[1]{\textit{{#1}}} %italic text
 \newcommand{\blds}[1]{\boldsymbol{{#1}}} % better bold in mathmode (from amsmath)
@@ -373,10 +380,38 @@
     probability distribution labeled $\ufij{T}{j}{i}$. This is what is known as
     importance sampling. \\
     This section will derive the importance sampling by using the Fokker-Planck
-    equation
+    equation for one particle
         \begin{equation}
-            \prds{P}{t}
+            \fprd{P}{t} = D\prd{x} (\prd{x} - F)P(x,t)
+            \label{eq:FokkerPlanc}
         \end{equation}
+%     where $F$ is a drift term and $D$ is a diffusion constant, and the Langevin
+%     equation
+%         \begin{equation}
+%             \prds{x(t)}{t} = DF(x(t)) + \eta
+%         \end{equation}
+%     where $\eta$ is a random variable. \\
+%     Since we are working with a isotropic diffusion characterized by a
+%     time-dependant probability density our system must obey the summed total
+%     Fokker-Planck equation
+%         \begin{equation}
+%             \prds{P}{t} = \sum\limits_iD\fprd{x_i}\left(\fprd{x_i} -
+%             F_i\right)P(x,t)
+%             \label{eq:FokkerPlancTotal}
+%         \end{equation}
+%     where $F_i$ is now the i'th component of the drift velocity term(given by
+%     an external potential). Since the probability is assumed to be convergent,
+%     that is it converges to a stationary probability density the time
+%     dependence at this point is zero. With other words, the left hand side of
+%     \Autoref{eq:FokkerPlancTotal} is zero we we obtain
+%         \begin{equation}
+%             \fprds{P}{x_i}{2} = 
+%         \end{equation}
+% 
+\subsubsection{Quantum Force}
+\label{ssub:Quantum Force}
+    We rewrite the Fokker-Planc equation(\Autoref{eq:FokkerPlanc}) 
+
 
 \subsection{VMC}
 \label{sub:vmc}
@@ -535,9 +570,9 @@
         \end{equation}
 %             r_{12} = \sqrt{(x_1-x_2)^2 + (y_1-y_2)^2}
 
-        \begin{align*}
-            \input{analyticEL2AllCollect.tex}
-        \end{align*}
+%         \begin{align*}
+%             \input{analyticEL2AllCollect.tex}
+%         \end{align*}
     
 %     Before we arrive at the final expression for the expectation value(which
 %     the Metropolis algorithm will be applied on) we start by defining a trial
