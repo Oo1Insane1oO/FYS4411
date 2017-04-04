@@ -133,6 +133,8 @@
 
 
 \newcommand{\prtl}{\mathrm{\partial}} %reduce length of partial (less to write)
+\newcommand{\prd}[3]{\frac{\prtl^{#3}#1}{\prtl {#2}^{#3}}} %reduce length of partial (less to write)
+\newcommand{\prds}[2]{\frac{\prtl #1}{\prtl {#2}}} %reduce length of partial (less to write)
 \newcommand{\vsp}{\vspace{0.2cm}} %small vertical space
 \newcommand{\txtit}[1]{\textit{{#1}}} %italic text
 \newcommand{\blds}[1]{\boldsymbol{{#1}}} % better bold in mathmode (from amsmath)
@@ -215,7 +217,8 @@
 \begin{center} \vspace{1cm}
     \textbf{\Large{\mtitle\hspace{0.01pt} - Computational Physics II: Quantum
     Mechanical Systems}}\\ \vspace{0.5cm}
-    \textbf{\large{\massignn}}\\ \vspace{1cm}
+    \textbf{\large{\massignn\hspace{0.01pt} - Variatonal Monte Carlo
+    Methods}}\\ \vspace{1cm}
     \textbf{\large{\mauthor}}\\ \vspace{0.5cm}
     \large{\url{https://www.github.com/Oo1Insane1oO/FYS4411}} \\ \vspace{0.5cm}
     \Large{\mdate}\\ \vfill
@@ -255,6 +258,7 @@
 
 \section{THEORY}
 \label{sec:theory}
+    >>INSERT DESCRIPTION<<
 
 \subsection{HERMITE POLYNOMIALS}
 \label{sub:hermite_polynomials}
@@ -300,50 +304,6 @@
         \begin{equation}
             E = \hbar\omega\left(n_x + n_y + 1\right)
             \label{eq:cartHarmOscE}
-        \end{equation}
-
-\subsubsection{Polar Coordinates}
-\label{ssub:Polar Coordinates}
-    In order to change to polar coordinates $(r,\theta)$ we introduce the usual
-    transformations for Cartesian
-        \begin{equation}
-            \begin{aligned}
-                x &= r\cos{\theta} \\
-                y &= r\sin{\theta} \\
-                r &= \sqrt{x^2 + y^2}
-            \end{aligned}
-            \label{eq:polar}
-        \end{equation}
-    Introducing a separable solution in the radial and angular coordinates as
-    an ansatz ($\psi(r,\theta)=R(r)Y(\theta)$) gives
-        \begin{equation}
-            \begin{aligned}
-                R_{nm}(r) &= \sqrt{\frac{2n!}{(n+\abs{m})!}}
-                \left(\frac{m_q\omega}{\hbar}\right)^{\frac{1}{2}\left(\abs{m}+1\right)}
-                r^{\abs{m}} \me^{-\frac{m_q\omega}{2\hbar}r^2}
-                L^{\abs{m}}_n\left(\frac{m_q\omega}{\hbar}r^2\right) \\
-                Y_m(\theta) &= \frac{1}{\sqrt{2\pi}}\me^{im\theta}
-            \end{aligned},\;\;
-            \begin{aligned}
-                n &= 0,1,2\dots \\
-                m &= 0,\pm 1,\pm 2,\dots
-            \end{aligned}
-            \label{eq:polWavef}
-        \end{equation}
-    where $m_q$ is the particle mass, $L^{\abs{m}}_n$ is the associated
-    Laguerre polynomials. \\
-    The eigenfunction is thus
-        \begin{equation}
-            \psi_{nm}(r,\theta) = \sqrt{\frac{n!}{\pi(n+\abs{m})!}}
-            \left(\frac{m_q\omega}{\hbar}\right)^{\frac{1}{2}\left(\abs{m}+1\right)}
-            r^{\abs{m}} \me^{-\frac{m_q\omega}{2\hbar}r^2}
-            L^{\abs{m}}_n\left(\frac{m_q\omega}{\hbar}r^2\right) \me^{im\theta}
-            \label{eq:polEigf}
-        \end{equation}
-    with eigenenergies
-        \begin{equation}
-            E = \hbar\omega\left(2n + \abs{m} + 1\right)
-            \label{eq:polE}
         \end{equation}
 
 \subsection{METROPOLIS-HASTINGS ALGORITHM}
@@ -411,7 +371,12 @@
     In order to use the Metropolis algorithm as explained in
     \Autoref{sub:metropolis_algorithm}, we need to find the proposal
     probability distribution labeled $\ufij{T}{j}{i}$. This is what is known as
-    importance sampling.
+    importance sampling. \\
+    This section will derive the importance sampling by using the Fokker-Planck
+    equation
+        \begin{equation}
+            \prds{P}{t}
+        \end{equation}
 
 \subsection{VMC}
 \label{sub:vmc}
