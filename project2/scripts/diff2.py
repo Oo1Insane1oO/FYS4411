@@ -10,8 +10,6 @@ dx12 = x1-x2
 dy12 = y1-y2
 r12sq = dx12**2 + dy12**2
 
-print r12sq
-
 replaceDict = {
         r1sq:sy.symbols('r_1', real=True, positive=True)**2,
         r2sq:sy.symbols('r_2', real=True, positive=True)**2,
@@ -19,14 +17,12 @@ replaceDict = {
 
 psiT = sy.simplify(sy.exp(a*w/2*(r1sq+r2sq)) *
         sy.exp(d*sy.sqrt(r12sq)/(1+b*sy.sqrt(r12sq))))
-print sy.pretty_print(psiT)
-# 
-diff2PsiTx1 = sy.simplify(sy.diff(psiT, x1, 2))
-sy.pretty_print(diff2PsiTx1)
-# diff2PsiTy1 = sy.simplify(sy.diff(psiT, y1, 2))
-# diff2PsiTx2 = sy.simplify(sy.diff(psiT, x2, 2))
-# diff2PsiTy2 = sy.simplify(sy.diff(psiT, y2, 2))
-# 
-# print (sy.latex(sy.simplify(sy.simplify(0.5*(sy.simplify(-(diff2PsiTx1 +
-#     diff2PsiTy1 + diff2PsiTx2 + diff2PsiTy2))/psiT + w**2*(r1sq + r2sq)) +
-#     1/sy.sqrt(r12sq)).subs(replaceDict))))
+ 
+diff2PsiTx1 = sy.simplify(sy.simplify(sy.diff(psiT, x1, 2)).subs(replaceDict))
+diff2PsiTy1 = sy.simplify(sy.simplify(sy.diff(psiT, y1, 2)).subs(replaceDict))
+diff2PsiTx2 = sy.simplify(sy.simplify(sy.diff(psiT, x2, 2)).subs(replaceDict))
+diff2PsiTy2 = sy.simplify(sy.simplify(sy.diff(psiT, y2, 2)).subs(replaceDict))
+ 
+print (sy.latex(sy.simplify(sy.simplify(0.5*(sy.simplify(-(diff2PsiTx1 +
+    diff2PsiTy1 + diff2PsiTx2 + diff2PsiTy2)/psiT) + w**2*(r1sq + r2sq)) +
+    1/sy.sqrt(r12sq)).subs(replaceDict))))
