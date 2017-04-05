@@ -19,7 +19,10 @@ def collectDenom(expr):
             commons[sy.denom(arg)] = sy.numer(arg)
     for denom in commons:
         commons[denom] = sy.simplify(commons[denom]) / denom
-    return sy.Add(*[commons[i] for i in commons])
+    expr = sy.Add(*[])
+    for c in commons:
+        expr += c
+    return expr
 # end function collectDenom
 
 x1, x2, y1, y2 = sy.symbols('x_1 x_2 y_1 y_2', real=True)
