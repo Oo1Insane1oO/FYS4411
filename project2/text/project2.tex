@@ -419,7 +419,7 @@
 
 \subsubsection{Solution}
 \label{ssub:Solution}
-    Using Eulers method on the Langevin equation(\Autoref{eq:Langevin} one
+    Using Eulers method on the Langevin equation(\Autoref{eq:Langevin}) one
     obtains the new positions
         \begin{equation}
             y = x + DF(x)\Delta t + \xi\sqrt{\Delta t}
@@ -537,7 +537,7 @@
     which is the so-called local energy. The expectation value given in
     \Autoref{eq:HupperBoundExpand} can be rewritten as
         \begin{equation}
-            E[H] = \int P(R)E_L(R\Lambda) \md R \approx
+            E[H] = \int P(R)E_L(R,\Lambda) \md R \approx
             \frac{1}{N}\sum\limits_{i=1}^N P(r_i,\Lambda)E_L(r_i,\Lambda)
             \label{eq:ecpRew}
         \end{equation}
@@ -597,7 +597,11 @@
     using the product rule for differentiation we get
         \begin{equation}
             \frac{\md^2}{\md x^2_1}\left[\exp(-\frac{\alpha\omega}{2}x^2_1)
-            \exp(\frac{ar_{12}}{1+\beta r_{12}})\right] = \frac{\md}{\md x}\left[\exp(\frac{ar_{12}}{1+\beta r_{12}})\frac{\md}{\md x}\exp(-\frac{\alpha\omega}{2}x^2_1) + \exp(-\frac{\alpha\omega}{2}x^2_1) \frac{\md}{\md x}\exp(\frac{ar_{12}}{1+\beta r_{12}})\right]
+            \exp(\frac{ar_{12}}{1+\beta r_{12}})\right] = \frac{\md}{\md
+            x}\left[\exp(\frac{ar_{12}}{1+\beta r_{12}})\frac{\md}{\md
+            x}\exp(-\frac{\alpha\omega}{2}x^2_1) +
+            \exp(-\frac{\alpha\omega}{2}x^2_1) \frac{\md}{\md
+            x}\exp(\frac{ar_{12}}{1+\beta r_{12}})\right]
         \end{equation}
 %             r_{12} = \sqrt{(x_1-x_2)^2 + (y_1-y_2)^2}
 
