@@ -12,13 +12,13 @@ def makeDict(inputDict):
 def collectDenom(expr):
     """ collect input expression in terms of common denominators """
     commons = {}
-    for i in expr.args:
-        if sy.denom(i) in commons:
-            commons[sy.denom(i)] += sy.numer(i)
+    for arg in expr.args:
+        if sy.denom(arg) in commons:
+            commons[sy.denom(arg)] += sy.numer(arg)
         else:
-            commons[sy.denom(i)] = sy.numer(i)
-    for i in commons:
-        commons[i] = sy.simplify(commons[i])
+            commons[sy.denom(arg)] = sy.numer(arg)
+    for denom in commons:
+        commons[denom] = sy.simplify(commons[denom]) / denom
     return sy.Add(*[commons[i] for i in commons])
 # end function collectDenom
 
