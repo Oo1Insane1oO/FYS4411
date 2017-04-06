@@ -7,9 +7,6 @@
 #define BASIS_H
 
 #include <Eigen/Dense>
-#include <unordered_map>
-#include <boost/unordered_map.hpp>
-#include <array>
 
 class Basis {
     private:
@@ -26,6 +23,7 @@ class Basis {
         int s;
         std::vector<int> n, ms, E, M, m;
         std::vector<std::vector<int*>> states;
+        void printStates();
 };
 
 #endif /* BASIS_H */

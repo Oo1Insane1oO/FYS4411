@@ -6,6 +6,8 @@
 class Tests {
     private:
         Basis *b;
+
+        bool test_energies();
     
     public:
         Tests (Basis*);

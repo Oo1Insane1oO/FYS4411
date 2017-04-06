@@ -100,5 +100,23 @@ Basis::Basis(double w, int cut) {
     } // end fori
 } // end constructor
 
+void Basis::printStates() {
+    /* print states */
+    std::vector<int> nm(2);
+    std::cout << "(nx,ny,s,ms,E,N)" << std::endl;
+    for (unsigned int i = 0; i < states.size(); ++i) {
+        std::cout << "(" 
+            << *states[i][0] << ","
+            << *states[i][1] << ","
+            << *states[i][2] << ","
+            << *states[i][3] << ","
+            << *states[i][4] << ","
+            << *states[i][5] << ")"
+            << std::endl;
+    } // end fori
+    std::cout << "(nx,ny,s,ms,E,N)" << std::endl;
+    std::cout << "Number of states: " << states.size() << std::endl;
+} // end function print state
+
 Basis::~Basis() {
 } // end deconstructor
