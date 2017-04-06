@@ -28,6 +28,7 @@ r2sq = x2**2 + y2**2
 dx12 = x1-x2
 dy12 = y1-y2
 r12sq = dx12**2 + dy12**2
+sym05 = sy.Rational(0.5)
 
 replaceDict = makeDict({r1sq:['r_1',2],r2sq:['r_2',2],r12sq:['r_{12}',2]})
 
@@ -39,12 +40,27 @@ psiT = sy.simplify(sy.exp(a*w/2*(r1sq+r2sq)) *
 
 # print collectDenom(1/x1 + y1/x1 + y2/y1 + 0.5)
  
-diff2PsiTx1 = sy.simplify(sy.simplify(sy.diff(psiT, x1, 2)).subs(replaceDict))
-diff2PsiTy1 = sy.simplify(sy.simplify(sy.diff(psiT, y1, 2)).subs(replaceDict))
-diff2PsiTx2 = sy.simplify(sy.simplify(sy.diff(psiT, x2, 2)).subs(replaceDict))
-diff2PsiTy2 = sy.simplify(sy.simplify(sy.diff(psiT, y2, 2)).subs(replaceDict))
+diff2PsiTx1 = sy.simplify(sy.diff(psiT, x1, 2))
+diff2PsiTy1 = sy.simplify(sy.diff(psiT, y1, 2))
+diff2PsiTx2 = sy.simplify(sy.diff(psiT, x2, 2))
+diff2PsiTy2 = sy.simplify(sy.diff(psiT, y2, 2))
 
-total = collectDenom(sy.simplify(0.5*(sy.simplify(-(diff2PsiTx1 + diff2PsiTy1 +
-    diff2PsiTx2 + diff2PsiTy2)/psiT) + w**2*(r1sq + r2sq)) + 1/sy.sqrt(r12sq)))
+sumTotal = diff2PsiTx1 + diff2PsiTy1 + diff2PsiTx2 + diff2PsiTy2
+collectList = (b, b**2, b**3, replaceDict[r12sq], a)
+total = sy.simplify(
+            sy.collect(
+                sy.simplify(
+                    sy.collect(
+                        sy.simplify(
+                            sy.nsimplify(
+                                collectDenom(
+                                    sy.simplify(-sym05*sumTotal/psiT 
+                                                + sym05*w**2*(r1sq + r2sq) 
+                                                + 1/sy.sqrt(r12sq)))
+                                    .subs(replaceDict), rational=True)), 
+                            collectList).subs(replaceDict)), collectList)
+            .subs(collectList))
 
-print sy.latex(sy.simplify(sy.nsimplify(sy.simplify(sy.collect(sy.simplify(total.subs(replaceDict)), (b, b**2, b**3)).subs(replaceDict)).subs(replaceDict), rational=True)))
+print sy.latex(total)
+
+# print sy.latex(sy.collect(sy.simplify(sy.nsimplify(sy.simplify(sy.collect(sy.simplify(total.subs(replaceDict)), (b, b**2, b**3)).subs(replaceDict)).subs(replaceDict), rational=True)).subs(replaceDict), 2*d*(b*sy.sqrt(r12sq+1))**3).subs(replaceDict))
