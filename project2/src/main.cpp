@@ -1,5 +1,5 @@
 #include "tests.h" // test functions
-#include "basis.h" // class basis
+#include "vmc.h" // class basis
 #include <stdlib.h> // atoi
 #include <iostream> // cout
 #include <chrono> // timer
@@ -25,6 +25,7 @@ int main(int argc, const char** argv) {
             std::endl;
         exit(1);
     } // end if
+
     // grab parameters as command line arguments
     double omega = atof(argv[1]);
     int Ec = atoi(argv[2]);
@@ -46,6 +47,8 @@ int main(int argc, const char** argv) {
         exit(1);
     } // end if
 
-    delete b;
+    // set vmc object for calculations
+    VMC vmcObj = VMC(b);
+
     return 0;
 } // end main
