@@ -6,7 +6,7 @@
 //////////////////////////////////////////////////////////////////////////////
 
 #include "tests.h"
-#include <iostream>
+tests#include <iostream>
 
 Tests::Tests(double w, int E, int n) {
     /* set basis and create Methods object */
