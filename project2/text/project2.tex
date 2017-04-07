@@ -134,13 +134,14 @@
 } %two figure one-line {title}{file1}{caption1}{file2}{caption2}
 
 \newcommand{\prtl}{\mathrm{\partial}} %reduce length of partial (less to write)
-\NewDocumentCommand{\prd}{m O{} O{}}{\frac{\prtl^{#3}{#2}}{\prtl{#1}^{#3}}}
+\newcommand{\md}{\mathrm{d}} %straight d for differential
+\NewDocumentCommand{\prd}{m O{} O{}}{\frac{\md^{#3}{#2}}{\md{#1}^{#3}}}
+\NewDocumentCommand{\mprd}{m O{} O{}}{\frac{\md^{#3}{#2}}{\md{#1}^{#3}}}
 \newcommand{\vsp}{\vspace{0.2cm}} %small vertical space
 \newcommand{\txtit}[1]{\textit{{#1}}} %italic text
 \newcommand{\blds}[1]{\boldsymbol{{#1}}} % better bold in mathmode (from amsmath)
 \newcommand{\bigO}{\mathcal{O}} %nice big O
 \newcommand{\me}{\mathrm{e}} %straight e for exp
-\newcommand{\md}{\mathrm{d}} %straight d for differential
 \newcommand{\mRe}[1]{\mathrm{Re}\left({#1}\right)}%nice real
 \newcommand{\munit}[1]{\;\ensuremath{\, \mathrm{#1}}} %straight units in math
 \newcommand{\Rarr}{\Rightarrow} %reduce lenght of Rightarrow (less to write)
@@ -588,25 +589,107 @@
         \end{equation}
     The first differential is
         \begin{equation}
-            \frac{\md^2\psi_T}{\md x^2_1} = A\exp(-\frac{\alpha\omega}{2}r^2_2)
-            \exp(-\frac{\alpha\omega}{2}y^2_1) \frac{\md^2}{\md x^2_1}\left[
-                \exp(-\frac{\alpha\omega}{2}x^2_1) \exp(\frac{ar_{12}}{1+\beta
-                r_{12}})\right]
+            \frac{\md^2\psi_T}{\md x^2_1} =
+            A\exp(-\frac{\alpha\omega}{2}\left(r^2_2+y^2_1\right))
+            \frac{\md^2}{\md x^2_1}\left[\exp(-\frac{\alpha\omega}{2}x^2_1 +
+            \frac{a}{\beta + \frac{1}{r_{12}}})\right]
+            \label{eq:derx1first}
         \end{equation}
-    using the product rule for differentiation we get
+    Starting with the first derivative on the exponential we get
         \begin{equation}
-            \frac{\md^2}{\md x^2_1}\left[\exp(-\frac{\alpha\omega}{2}x^2_1)
-            \exp(\frac{ar_{12}}{1+\beta r_{12}})\right] = \frac{\md}{\md
-            x}\left[\exp(\frac{ar_{12}}{1+\beta r_{12}})\frac{\md}{\md
-            x}\exp(-\frac{\alpha\omega}{2}x^2_1) +
-            \exp(-\frac{\alpha\omega}{2}x^2_1) \frac{\md}{\md
-            x}\exp(\frac{ar_{12}}{1+\beta r_{12}})\right]
+            \left.
+                \begin{aligned}
+                    \mprd{x_1} \left[-\frac{\alpha\omega}{2}x^2_1\right] &=
+                    -2\alpha\omega x_1 \\
+                    \mprd{x_1} \left[\frac{a}{\beta + \frac{1}{r_{12}}}\right]
+                    &= \frac{2a(x_1-x_2)}{\beta r_{12} + 1}
+                \end{aligned}
+            \right\}\Rightarrow
+            \mprd{x_1}[\psi_T] = \left(-2\alpha\omega x_1 +
+            \frac{2a(x_1-x_2)}{\beta r_{12} + 1}\right)\psi_T
+            \label{eq:derx1first2}
         \end{equation}
-%             r_{12} = \sqrt{(x_1-x_2)^2 + (y_1-y_2)^2}
+    meaning \Autoref{eq:derx1first} is
+        \begin{align}
+            \mprd{x_1}[\psi_T][2] &=
+            A\exp(-\frac{\alpha\omega}{2}\left(r^2_2+y^2_1\right))
+            \mprd{x_1}\left[-2\alpha\omega x_1 + \frac{2a(x_1-x_2)}{\beta
+            r_{12} + 1}\right] \exp(-\frac{\alpha\omega}{2}x^2_1 +
+            \frac{a}{\beta + \frac{1}{r_{12}}}) \nonumber \\
+            &= \mprd{x_1}\left[\left(-2\alpha\omega x_1 +
+            \frac{2a(x_1-x_2)}{\beta r_{12} + 1 }\right)\psi_T\right]
+            \label{eq:derx1first3}
+        \end{align}
+    Using the product rule for differentiation and starting with the first
+    expression we get that
+        \begin{align}
+            \mprd{x_1}\left[-2\alpha\omega x_1 + \frac{2a(x_1-x_2)}{\beta
+            r_{12} + 1}\right] &= -2\alpha\omega + \frac{2a(\beta r_{12} + 1) -
+            8a\frac{\beta}{r_{12}}(x_1-x_2)^2}{\left(\beta r_{12} + 1
+            \right)^2} \nonumber \\
+            &= -2\alpha\omega + \frac{2a}{\beta r_{12} + 1} -
+            \frac{8a\beta(x_1-x_2)^2}{r_{12}(\beta r_{12} + 1)^2}
+            \label{eq:derx1first4}
+        \end{align}
+    giving
+        \begin{align}
+            \mprd{x_1}[\psi_T][2] &= \psi_T\mprd{x_1}\left[-2\alpha\omega x_1 +
+            \frac{2a(x_1-x_2)}{\left(\beta r_{12} + 1\right)^2}\right] +
+            \left(-2\alpha\omega x_1 + \frac{2a(x_1-x_2)}{\left(\beta r_{12} +
+            1\right)^2}\right)\mprd{x_1}[\psi_T] \nonumber \\ &=
+            \left[-2\alpha\omega + \frac{2a}{\left(\beta r_{12} + 1\right)^2} -
+            \frac{8a\beta r_{12}(x_1-x_2)^2}{(\beta r_{12} + 1)^3} +
+            \left(-2\alpha\omega x_1 + \frac{2a(x_1-x_2)}{\left(\beta r_{12} +
+            1\right)^2}\right)^2\right]\psi_T
+            \label{eq:derx1first5}
+        \end{align}
+    The second derivative with respect to $y_1$ yields with a similar
+    derivation
+        \begin{equation}
+            \mprd{y_1}[\psi_T][2] = \left[-2\alpha\omega +
+            \frac{2a}{\left(\beta r_{12} + 1\right)^2} - \frac{8a\beta
+            r_{12}(y_1-y_2)^2}{(\beta r_{12} + 1)^3} + \left(-2\alpha\omega y_1
+            + \frac{2a(y_1-y_2)}{\left(\beta r_{12} +
+            1\right)^2}\right)^2\right]\psi_T
+            \label{eq:dery1}
+        \end{equation}
+    The second derivatives with respect to $x_2$ and $y_2$,
+        \begin{equation}
+            \nabla^2_2\psi_T = \frac{\md^2\psi_T}{\md x^2_2} +
+            \frac{\md^2\psi_T}{\md y^2_2}
+            \label{eq:nablax2y2}
+        \end{equation}
+    are derived in a similar manner, only we get a change in signs when
+    differentiating $r_{12}$. This gives
+        \begin{equation}
+            \mprd{x_2}[\psi_T][2] = \left[-2\alpha\omega +
+            \frac{2a}{\left(\beta r_{12} + 1\right)^2} + \frac{8a\beta
+            r_{12}(x_1-x_2)^2}{(\beta r_{12} + 1)^3} + \left(2\alpha\omega x_2
+            + \frac{2a(x_1-x_2)}{\left(\beta r_{12} +
+            1\right)^2}\right)^2\right]\psi_T
+            \label{eq:derx2}
+        \end{equation}
+    and
+        \begin{equation}
+            \mprd{y_2}[\psi_T][2] = \left[-2\alpha\omega +
+            \frac{2a}{\left(\beta r_{12} + 1\right)^2} + \frac{8a\beta
+            r_{12}(y_1-y_2)^2}{(\beta r_{12} + 1)^3} + \left(2\alpha\omega y_2
+            + \frac{2a(y_1-y_2)}{\left(\beta r_{12} +
+            1\right)^2}\right)^2\right]\psi_T
+            \label{eq:dery2}
+        \end{equation}
+    gathering \Autoref{eq:derx1first5,eq:dery1,eq:derx2,eq:dery2} we get
+        \begin{align}
+            \frac{1}{2}\left(\nabla^2_1 + \nabla^2_2\right)\psi_T &=
+            \frac{1}{2}\left(\mprd{x_1}[\psi_T][2] + \mprd{y_1}[\psi_T][2] +
+            \mprd{x_2}[\psi_T][2] + \mprd{y_2}[\psi_T][2]\right) \nonumber \\
+            &= \left[-4\alpha\omega + \frac{4a}{(\beta r_{12} + 1)^2} +
+            2\alpha^2\omega^2\left(r^2_1 + r^2_2\right) - \frac{2a\alpha\omega
+            r^2_{12}}{(\beta r_{12}+1)^2} + \frac{2a^2r^2_{12}}{(\beta r_{12} +
+            1)^4}\right]\psi_T
+            \label{eq:derLast}
+        \end{align}
 
-        \begin{align*}
-            \input{analyticEL2AllCollectNew.tex}
-        \end{align*}
     
 %     Before we arrive at the final expression for the expectation value(which
 %     the Metropolis algorithm will be applied on) we start by defining a trial
