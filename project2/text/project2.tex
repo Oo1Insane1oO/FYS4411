@@ -634,23 +634,22 @@
     giving
         \begin{align}
             \mprd{x_1}[\psi_T][2] &= \psi_T\mprd{x_1}\left[-2\alpha\omega x_1 +
-            \frac{2a(x_1-x_2)}{\left(\beta r_{12} + 1\right)^2}\right] +
-            \left(-2\alpha\omega x_1 + \frac{2a(x_1-x_2)}{\left(\beta r_{12} +
-            1\right)^2}\right)\mprd{x_1}[\psi_T] \nonumber \\ &=
-            \left[-2\alpha\omega + \frac{2a}{\left(\beta r_{12} + 1\right)^2} -
-            \frac{8a\beta r_{12}(x_1-x_2)^2}{(\beta r_{12} + 1)^3} +
-            \left(-2\alpha\omega x_1 + \frac{2a(x_1-x_2)}{\left(\beta r_{12} +
-            1\right)^2}\right)^2\right]\psi_T
+            \frac{2a(x_1-x_2)}{\beta r_{12} + 1}\right] + \left(-2\alpha\omega
+            x_1 + \frac{2a(x_1-x_2)}{\beta r_{12} + 1}\right)\mprd{x_1}[\psi_T]
+            \nonumber \\ 
+            &= \left[-2\alpha\omega + \frac{2a}{\beta r_{12} + 1} -
+            \frac{8a\beta(x_1-x_2)^2}{r_{12}(\beta r_{12} + 1)^2} +
+            \left(-2\alpha\omega x_1 + \frac{2a(x_1-x_2)}{\beta r_{12} +
+            1}\right)^2\right]\psi_T
             \label{eq:derx1first5}
         \end{align}
     The second derivative with respect to $y_1$ yields with a similar
     derivation
         \begin{equation}
-            \mprd{y_1}[\psi_T][2] = \left[-2\alpha\omega +
-            \frac{2a}{\left(\beta r_{12} + 1\right)^2} - \frac{8a\beta
-            r_{12}(y_1-y_2)^2}{(\beta r_{12} + 1)^3} + \left(-2\alpha\omega y_1
-            + \frac{2a(y_1-y_2)}{\left(\beta r_{12} +
-            1\right)^2}\right)^2\right]\psi_T
+            \mprd{y_1}[\psi_T][2] = \left[-2\alpha\omega + \frac{2a}{\beta
+            r_{12} + 1} - \frac{8a\beta (y_1-y_2)^2}{r_{12}(\beta r_{12} +
+            1)^2} + \left(-2\alpha\omega y_1 + \frac{2a(y_1-y_2)}{\beta r_{12}
+            + 1}\right)^2\right]\psi_T
             \label{eq:dery1}
         \end{equation}
     The second derivatives with respect to $x_2$ and $y_2$,
@@ -662,20 +661,18 @@
     are derived in a similar manner, only we get a change in signs when
     differentiating $r_{12}$. This gives
         \begin{equation}
-            \mprd{x_2}[\psi_T][2] = \left[-2\alpha\omega +
-            \frac{2a}{\left(\beta r_{12} + 1\right)^2} + \frac{8a\beta
-            r_{12}(x_1-x_2)^2}{(\beta r_{12} + 1)^3} + \left(2\alpha\omega x_2
-            + \frac{2a(x_1-x_2)}{\left(\beta r_{12} +
-            1\right)^2}\right)^2\right]\psi_T
+            \mprd{x_2}[\psi_T][2] = \left[-2\alpha\omega + \frac{2a}{\beta
+            r_{12} + 1} + \frac{8a\beta (x_1-x_2)^2}{r_{12}(\beta r_{12} +
+            1)^2} + \left(2\alpha\omega x_2 + \frac{2a(x_1-x_2)}{\beta r_{12} +
+            1}\right)^2\right]\psi_T
             \label{eq:derx2}
         \end{equation}
     and
         \begin{equation}
-            \mprd{y_2}[\psi_T][2] = \left[-2\alpha\omega +
-            \frac{2a}{\left(\beta r_{12} + 1\right)^2} + \frac{8a\beta
-            r_{12}(y_1-y_2)^2}{(\beta r_{12} + 1)^3} + \left(2\alpha\omega y_2
-            + \frac{2a(y_1-y_2)}{\left(\beta r_{12} +
-            1\right)^2}\right)^2\right]\psi_T
+            \mprd{y_2}[\psi_T][2] = \left[-2\alpha\omega + \frac{2a}{\beta
+            r_{12} + 1} + \frac{8a\beta (y_1-y_2)^2}{r_{12}(\beta r_{12} +
+            1)^2} + \left(2\alpha\omega y_2 + \frac{2a(y_1-y_2)}{\beta r_{12} +
+            1}\right)^2\right]\psi_T
             \label{eq:dery2}
         \end{equation}
     gathering \Autoref{eq:derx1first5,eq:dery1,eq:derx2,eq:dery2} we get
@@ -683,10 +680,10 @@
             \frac{1}{2}\left(\nabla^2_1 + \nabla^2_2\right)\psi_T &=
             \frac{1}{2}\left(\mprd{x_1}[\psi_T][2] + \mprd{y_1}[\psi_T][2] +
             \mprd{x_2}[\psi_T][2] + \mprd{y_2}[\psi_T][2]\right) \nonumber \\
-            &= \left[-4\alpha\omega + \frac{4a}{(\beta r_{12} + 1)^2} +
+            &= \left[-4\alpha\omega + \frac{4a}{\beta r_{12} + 1} +
             2\alpha^2\omega^2\left(r^2_1 + r^2_2\right) - \frac{2a\alpha\omega
-            r^2_{12}}{(\beta r_{12}+1)^2} + \frac{2a^2r^2_{12}}{(\beta r_{12} +
-            1)^4}\right]\psi_T
+            r^2_{12}}{\beta r_{12} + 1} + \frac{2a^2r^2_{12}}{(\beta r_{12} +
+            1)^2}\right]\psi_T
             \label{eq:derLast}
         \end{align}
 
