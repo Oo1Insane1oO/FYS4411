@@ -2,3 +2,6 @@
 text/*.log
 text/*.aux
 text/*.out
+
+# ignore compiled files
+*main
