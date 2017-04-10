@@ -12,11 +12,12 @@
 class Basis {
     private:
         int ECut;
-        double omega;
+        double omega, alpha, beta, a;
 
         Methods *meth;
 
         double oscillator1D(double, int);
+        double jastrow(double, double);
 
     public:
         Basis(double, int);
