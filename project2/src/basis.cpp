@@ -127,12 +127,9 @@ double Basis::trialWaveFunction(Eigen::MatrixXd r, double alpha, double beta,
     unsigned int N = r.rows();
     Eigen::MatrixXd Phi = Eigen::MatrixXd::Zero(N,N);
     double expInner = 0;
-    double tmpWave = 0;
     for (unsigned int i = 0; i < N; ++i) {
-        tmpWave = harmonicOscillatorWaveFunction(r(i,0), r(i,0), *states[i][0],
-                *states[i][1]);
         for (unsigned int j = 0; j < N; ++j) {
-            Phi(i,j) = tmpWave * harmonicOscillatorWaveFunction(r(j,0), r(j,0),
+            Phi(i,j) = harmonicOscillatorWaveFunction(r(i,0), r(i,1),
                     *states[j][0], *states[j][1]);
             if(i < j) {
                 expInner += jastrow(r(i,0)-r(j,0),r(i,1)-r(j,1));
