@@ -18,6 +18,7 @@
 //////////////////////////////////////////////////////////////////////////////
 
 #include "basis.h" // header
+#include "hermite.h" // hermite polynomials
 #include <iostream>
 #include <fstream>
 #include <Eigen/Eigenvalues>
@@ -102,30 +103,10 @@ Basis::Basis(double w, int cut) {
     } // end fori
 } // end constructor
 
-double Basis::hermiteNormal(int n) {
-    /* normalization constant */
-    return sqrt(omega)/(pow(2,n) * meth->factorial(n) * sqrt(M_PI));
-} // end function hermiteNormal
-
-double Basis::hermite(double x, int n) {
-    /* calculate hermite polynomial of degree n */
-    if(n<0) {
-        /* negative indices dont exist */
-        return 0;
-    } else if(n==0) {
-        /* first value, H0 */
-        return 1;
-    } else {
-        /* recursive relation */
-        return 2*x*hermite(x,n-1) - 2*(n-1)*hermite(x,n-2);
-    } // endifelseifelse
-} // end function hermite
-
 double Basis::harmonicOscillatorWaveFunction(double x, double y, 
         int nx, int ny) {
     /* calculate harmonic oscillator wave function in */
-    return hermiteNormal(nx)*hermiteNormal(y) * hermite(x,nx)*hermite(y,ny) *
-        exp(-(x*x + y*y)/2);
+    return omega * H(x,nx)*H(y,ny) * exp(-(x*x + y*y)/2);
 } // end function harmonicOscillatorWaveFunction
 
 double Basis::trialWaveFunction(Eigen::MatrixXd r, double alpha, double beta,

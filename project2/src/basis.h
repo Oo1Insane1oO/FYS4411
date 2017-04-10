@@ -13,8 +13,6 @@ class Basis {
     private:
         int ECut;
         double omega;
-        double hermiteNormal(int);
-        double hermite(double, int);
 
         Methods *meth;
 
