@@ -49,8 +49,12 @@ int main(int argc, const char** argv) {
 
     // set vmc object for calculations
     VMC vmcObj = VMC(b);
-    std::cout << b->harmonicOscillatorWaveFunction(0,0,0,0) << std::endl;
-    std::cout << b->harmonicOscillatorWaveFunction(1,1,1,0) << std::endl;
+    Eigen::MatrixXd r = Eigen::MatrixXd::Zero(num,2);
+    r(0,0) = 0.1;
+    r(0,1) = 0;
+    r(1,0) = 1.6;
+    r(1,1) = 2.1;
+    std::cout << b->trialWaveFunction(r,1,1,1) << std::endl;
 
     return 0;
 } // end main
