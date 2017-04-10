@@ -49,6 +49,8 @@ int main(int argc, const char** argv) {
 
     // set vmc object for calculations
     VMC vmcObj = VMC(b);
+    std::cout << b->harmonicOscillatorWaveFunction(0,0,0,0) << std::endl;
+    std::cout << b->harmonicOscillatorWaveFunction(1,1,1,0) << std::endl;
 
     return 0;
 } // end main

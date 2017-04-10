@@ -16,6 +16,8 @@ class Basis {
 
         Methods *meth;
 
+        double oscillator1D(double, int);
+
     public:
         Basis(double, int);
         virtual ~Basis();

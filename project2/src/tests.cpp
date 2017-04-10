@@ -20,7 +20,7 @@ bool Tests::test_energies() {
     /* check that energy in state is correct */
     bool t = false;
     for (unsigned int i = 0; i < b->states.size(); ++i) {
-        if (*(b->states)[i][4] == *(b->states)[i][0] + *(b->states)[i][1] + 1) {
+        if (*(b->states)[i][4] == *(b->states)[i][0]+*(b->states)[i][1] + 1) {
             t = true;
         } else {
             t = false;

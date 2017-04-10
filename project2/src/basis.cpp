@@ -103,10 +103,15 @@ Basis::Basis(double w, int cut) {
     } // end fori
 } // end constructor
 
+double Basis::oscillator1D(double x, int n) {
+    /* calculate hermite in 1D */
+    return H(x,n) * exp(-x*x/2);
+} // end function oscillator1D
+
 double Basis::harmonicOscillatorWaveFunction(double x, double y, 
         int nx, int ny) {
-    /* calculate harmonic oscillator wave function in */
-    return omega * H(x,nx)*H(y,ny) * exp(-(x*x + y*y)/2);
+    /* calculate harmonic oscillator wave function in 2D */
+    return omega * oscillator1D(x,nx) * oscillator1D(y,ny);
 } // end function harmonicOscillatorWaveFunction
 
 double Basis::trialWaveFunction(Eigen::MatrixXd r, double alpha, double beta,
