@@ -1,8 +1,9 @@
 LDFLAGS = -fopenmp -lpthread
 CXXFLAGS = -I eigen/ -O3 -std=c++14
 
-ifeq ($(target),debug)
-	LDFLAGS := -fopenmp -lpthread
+DEBUG ?= OFF
+
+ifeq ($(DEBUG),ON)
 	CXXFLAGS := -I eigen/ -g -std=c++14 -Wall
 endif
 
