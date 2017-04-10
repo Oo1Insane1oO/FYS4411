@@ -57,6 +57,6 @@ if __name__ == "__main__":
     # end try-except
 
     x = sp.symbols('x')
-    codes = [turnToCPP(i,normal(i)*hermite(x,i)) for i in range(n+1)]
+    codes = [turnToCPP(i,hermite(x,i)) for i in range(n+1)]
     appendToFile(codes,filename)
 # end ifmain

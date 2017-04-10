@@ -108,34 +108,36 @@ double Basis::jastrow(double x12, double y12) {
     return a/(beta + 1/sqrt(x12*x12 + y12*y12));
 } // end function jastrow
 
-double Basis::oscillator1D(double x, int n) {
-    /* calculate hermite in 1D */
-    return H(x,n) * exp(-alpha*x*x/2);
-} // end function oscillator1D
-
 double Basis::harmonicOscillatorWaveFunction(double x, double y, 
         int nx, int ny) {
     /* calculate harmonic oscillator wave function in 2D */
-    return omega * oscillator1D(x,nx) * oscillator1D(y,ny);
+    return H(x,nx)*H(y,ny) * exp(-alpha*(x*x+y*y)/2);
 } // end function harmonicOscillatorWaveFunction
 
-double Basis::trialWaveFunction(Eigen::MatrixXd r, double alpha, double beta,
-        double a) {
+double Basis::trialWaveFunction(Eigen::MatrixXd r, double alp, double bet,
+        double d) {
     /* given a vector of coordinates, return trial wave function */
-    alpha = alpha;
-    beta = beta;
+    alpha = alp;
+    beta = bet;
+    a = d;
     unsigned int N = r.rows();
     Eigen::MatrixXd Phi = Eigen::MatrixXd::Zero(N,N);
     double expInner = 0;
     for (unsigned int i = 0; i < N; ++i) {
         for (unsigned int j = 0; j < N; ++j) {
-            Phi(i,j) = harmonicOscillatorWaveFunction(r(i,0), r(i,1),
-                    *states[j][0], *states[j][1]);
+            Phi(i,j) = harmonicOscillatorWaveFunction(r(j,0), r(j,1),
+                    *states[i][0], *states[i][1]);
             if(i < j) {
                 expInner += jastrow(r(i,0)-r(j,0),r(i,1)-r(j,1));
             } // end if
         } // end forj
     } // end fori
+    for (int i = 0; i < N; ++i) {
+        for (int j = 0; j < N; ++j) {
+            std::cout << Phi(i,j) << " ";
+        } // end fori
+        std::cout << std::endl;
+    } // end forj
     return Phi.determinant() * exp(expInner);
 } // end function trialWaveFunction
 
