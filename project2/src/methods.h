@@ -15,6 +15,9 @@ class Methods {
         Methods();
 
         int factorial(int);
+        double updateMatrixInverse(Eigen::MatrixXd, Eigen::MatrixXd,
+                Eigen::MatrixXd&);
+        double determinantRatio(Eigen::MatrixXd, Eigen::MatrixXd);
 };
 
 #endif /* METHODS_H */

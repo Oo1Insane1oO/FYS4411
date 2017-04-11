@@ -28,6 +28,7 @@ class Basis {
         void printStates();
 
         double harmonicOscillatorWaveFunction(double, double, int, int);
+        double determinantRatio(Eigen::MatrixXd, Eigen::MatrixXd);
         double trialWaveFunction(Eigen::MatrixXd, double, double, double);
 };
 

@@ -121,24 +121,27 @@ double Basis::trialWaveFunction(Eigen::MatrixXd r, double alp, double bet,
     beta = bet;
     a = d;
     unsigned int N = r.rows();
-    Eigen::MatrixXd Phi = Eigen::MatrixXd::Zero(N,N);
     double expInner = 0;
-    for (unsigned int i = 0; i < N; ++i) {
+    double psiSD = 0;
+    int m = 0;
+    for (unsigned int i = 0; i < N; ++i,m+=M[i]) {
         for (unsigned int j = 0; j < N; ++j) {
-            Phi(i,j) = harmonicOscillatorWaveFunction(r(j,0), r(j,1),
-                    *states[i][0], *states[i][1]);
-            if(i < j) {
-                expInner += jastrow(r(i,0)-r(j,0),r(i,1)-r(j,1));
-            } // end if
+            psiSD *= harmonicOscillatorWaveFunction(r(i,0),r(i,1),
+                    *states[m][0],*states[m][1]);
         } // end forj
     } // end fori
-    for (int i = 0; i < N; ++i) {
-        for (int j = 0; j < N; ++j) {
-            std::cout << Phi(i,j) << " ";
-        } // end fori
-        std::cout << std::endl;
-    } // end forj
-    return Phi.determinant() * exp(expInner);
+    for (unsigned int i = 0; i < N; ++i) {
+        for (unsigned int j = 0; j < N; ++j) {
+            if(i < j) {
+                /* do not sum doubly */
+                expInner += jastrow(r(i,0)-r(j,0),r(i,1)-r(j,1));
+            } else {
+                /* no need to keep looping */
+                break;
+            }// end if
+        } // end forj
+    } // end fori
+    return psiSD * exp(expInner);
 } // end function trialWaveFunction
 
 void Basis::printStates() {
