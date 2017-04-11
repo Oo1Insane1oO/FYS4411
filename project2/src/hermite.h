@@ -12,5 +12,6 @@ template<typename T> T H(T x, int n) {
        case 3: return H3(x);
        case 4: return H4(x);
        case 5: return H5(x);
+       default: return H0(x);
    }
 }

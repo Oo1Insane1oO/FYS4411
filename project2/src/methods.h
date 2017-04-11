@@ -17,8 +17,9 @@ class Methods {
 
         int factorial(int);
         void updateMatrixInverse(Eigen::MatrixXd, Eigen::MatrixXd,
-                Eigen::MatrixXd, Eigen::MatrixXd&, int);
-        double determinantRatio(Eigen::MatrixXd, Eigen::MatrixXd, int);
+                Eigen::MatrixXd, Eigen::MatrixXd&, unsigned int);
+        double determinantRatio(Eigen::MatrixXd, Eigen::MatrixXd, unsigned
+                int);
 };
 
 #endif /* METHODS_H */

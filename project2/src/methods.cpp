@@ -19,7 +19,7 @@ int Methods::factorial(int x) {
 } // end function factorial
 
 void Methods::updateMatrixInverse(Eigen::MatrixXd Mold, Eigen::MatrixXd Mnew,
-        Eigen::MatrixXd MoldInv, Eigen::MatrixXd &MnewInv, int i) {
+        Eigen::MatrixXd MoldInv, Eigen::MatrixXd &MnewInv, unsigned int i) {
     /* update inverse of matrix when only column i has changed */
     double R = determinantRatio(Mnew, Mold, i);
     unsigned int N = MnewInv.size();
@@ -39,7 +39,7 @@ void Methods::updateMatrixInverse(Eigen::MatrixXd Mold, Eigen::MatrixXd Mnew,
 } // end function updateMatrixInverse
 
 double Methods::determinantRatio(Eigen::MatrixXd newElement, Eigen::MatrixXd
-        oldInverse, int i) {
+        oldInverse, unsigned int i) {
     /* Calculate determinant ratio of Slater determinants */
     double R = 0;
     for (unsigned int j = 0; j < oldInverse.rows(); ++j) {

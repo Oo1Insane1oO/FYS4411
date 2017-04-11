@@ -43,6 +43,7 @@ def appendToFile(codes, fname):
         ofile.write("template<typename T> T H(T x, int n) {\n   switch(n) {\n")
         for i in range(len(codes)):
             ofile.write("       case %i: return H%i(x);\n" % (i,i))
+        ofile.write("       default: return H0(x);\n")
         ofile.write("   }\n}")
     # end ofile
 # end function appendToFile
