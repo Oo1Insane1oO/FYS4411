@@ -21,7 +21,6 @@
 #include "hermite.h" // hermite polynomials
 #include <iostream>
 #include <fstream>
-#include <Eigen/Eigenvalues>
 
 Basis::Basis(double w, int cut) {
     /* initialize states */

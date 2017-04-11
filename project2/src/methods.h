@@ -7,6 +7,7 @@
 
 #include <vector>
 #include <functional>
+#include <Eigen/Dense>
 
 class Methods {
     private:
@@ -15,9 +16,9 @@ class Methods {
         Methods();
 
         int factorial(int);
-        double updateMatrixInverse(Eigen::MatrixXd, Eigen::MatrixXd,
-                Eigen::MatrixXd&);
-        double determinantRatio(Eigen::MatrixXd, Eigen::MatrixXd);
+        void updateMatrixInverse(Eigen::MatrixXd, Eigen::MatrixXd,
+                Eigen::MatrixXd, Eigen::MatrixXd&, int);
+        double determinantRatio(Eigen::MatrixXd, Eigen::MatrixXd, int);
 };
 
 #endif /* METHODS_H */
