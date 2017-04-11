@@ -50,10 +50,10 @@ int main(int argc, const char** argv) {
     // set vmc object for calculations
     VMC vmcObj = VMC(b);
     Eigen::MatrixXd r = Eigen::MatrixXd::Zero(num,2);
-    r(0,0) = 0.1;
-    r(0,1) = 0.2;
-    r(1,0) = 1.6;
-    r(1,1) = 0.1;
+    r(0,0) = 1;
+    r(0,1) = -2;
+    r(1,0) = 3;
+    r(1,1) = 2;
     std::cout << b->trialWaveFunction(r,1.1,0.2,0) << std::endl;
 
     return 0;

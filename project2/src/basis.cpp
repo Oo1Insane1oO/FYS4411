@@ -46,7 +46,7 @@ Basis::Basis(double w, int cut) {
         E[i] = i+1;
     } // end fori
 
-    // allocate state arrays as {nx,ny,s,ms}
+    // allocate state arrays as {nx,ny,s,ms,E,M}
     M.resize(cut,0);
     std::vector<int*> s1 = std::vector<int*>(6,0);
     std::vector<int*> s2 = std::vector<int*>(6,0);
@@ -82,7 +82,7 @@ Basis::Basis(double w, int cut) {
                 s1[4] = &(E[i+j]);
                 s2[4] = &(E[i+j]);
 
-                // increment and magic number
+                // increment and set magic number
                 M[i+j] += 1;
                 s1[5] = &(M[i+j]);
                 s2[5] = &(M[i+j]);
@@ -121,7 +121,7 @@ void Basis::setBasisMatrix(Eigen::MatrixXd r, double alp) {
     phiD.resize(N,N);
     for (unsigned int i = 0; i < N; ++i) {
         for (unsigned int j = 0; j < N; ++j) {
-            phiD(i,j) = harmonicOscillatorWaveFunction(r(i,0), r(i,1),
+            phiD(i,j) = harmonicOscillatorWaveFunction(r(2*i,0), r(2*i,1),
                     *states[2*j][0], *states[2*j][1]);
             phiU(i,j) = harmonicOscillatorWaveFunction(r(2*i+1,0), r(2*i+1,1),
                     *states[2*j+1][0], *states[2*j+1][1]);
