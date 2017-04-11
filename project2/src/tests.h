@@ -8,6 +8,7 @@ class Tests {
         Basis *b;
 
         bool test_energies();
+//         bool test_ratio();
     
     public:
         Tests (Basis*);

@@ -13,6 +13,7 @@ class Basis {
     private:
         int ECut;
         double omega, alpha, beta, a;
+        Eigen::MatrixXd phiU, phiD;
 
         Methods *meth;
 
@@ -27,6 +28,7 @@ class Basis {
         std::vector<std::vector<int*>> states;
         void printStates();
 
+        void setBasisMatrix(Eigen::MatrixXd, double); 
         double harmonicOscillatorWaveFunction(double, double, int, int);
         double trialWaveFunction(Eigen::MatrixXd, double, double, double);
 };

@@ -32,6 +32,9 @@ bool Tests::test_energies() {
     return t;
 } // end function test_energies
 
+// bool Tests::test_ratio() {
+// } // end function test_ratio
+
 void Tests::run_tests(int t) {
     /* run all tests and exit */
     if (t) {

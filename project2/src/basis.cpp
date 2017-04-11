@@ -74,8 +74,8 @@ Basis::Basis(double w, int cut) {
                     s1[3] = &(ms[k]);
                     s2[3] = &(ms[k+1]);
                 } else if(k==1) {
-                    s1[3] = &(ms[k]);
-                    s2[3] = &(ms[k-1]);
+                    s1[3] = &(ms[k-1]);
+                    s2[3] = &(ms[k]);
                 } // end ifelseif
 
                 // set energy
@@ -113,6 +113,23 @@ double Basis::harmonicOscillatorWaveFunction(double x, double y,
     return H(x,nx)*H(y,ny) * exp(-alpha*(x*x+y*y)/2);
 } // end function harmonicOscillatorWaveFunction
 
+void Basis::setBasisMatrix(Eigen::MatrixXd r, double alp) {
+    /* set matrix for Slater determinant with harmonic oscillator */
+    alpha = alp;
+    double N = r.rows()/2;
+    phiU.resize(N,N);
+    phiD.resize(N,N);
+    double idxU, idxD;
+    for (unsigned int i = 0; i < N; ++i) {
+        for (unsigned int j,k = 0; j < N; ++j,k+=2) {
+            phiD(i,j) = harmonicOscillatorWaveFunction(r(i,0), r(i,1),
+                    *states[k][0], *states[k][1]);
+            phiU(i,j) = harmonicOscillatorWaveFunction(r(i,0), r(i,1),
+                    *states[k+1][0], *states[k+1][1]);
+        } // end forj
+    } // end fori
+} // end function setBasisMatrix
+
 double Basis::trialWaveFunction(Eigen::MatrixXd r, double alp, double bet,
         double d) {
     /* given a vector of coordinates, return trial wave function */
@@ -121,14 +138,8 @@ double Basis::trialWaveFunction(Eigen::MatrixXd r, double alp, double bet,
     a = d;
     unsigned int N = r.rows();
     double expInner = 0;
-    double psiSD = 0;
     int m = 0;
-    for (unsigned int i = 0; i < N; ++i,m+=M[i]) {
-        for (unsigned int j = 0; j < N; ++j) {
-            psiSD *= harmonicOscillatorWaveFunction(r(i,0),r(i,1),
-                    *states[m][0],*states[m][1]);
-        } // end forj
-    } // end fori
+    setBasisMatrix(r,alp);
     for (unsigned int i = 0; i < N; ++i) {
         for (unsigned int j = 0; j < N; ++j) {
             if(i < j) {
@@ -140,7 +151,7 @@ double Basis::trialWaveFunction(Eigen::MatrixXd r, double alp, double bet,
             }// end if
         } // end forj
     } // end fori
-    return psiSD * exp(expInner);
+    return phiU.determinant() * phiD.determinant() * exp(expInner);
 } // end function trialWaveFunction
 
 void Basis::printStates() {
