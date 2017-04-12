@@ -49,7 +49,6 @@ Basis::Basis(double w, int cut) {
     // allocate state arrays as {nx,ny,s,ms,E,M}
     M.resize(cut,0);
     std::vector<int*> s1 = std::vector<int*>(6,0);
-
     for (int i = 0; i < ECut; ++i) {
         /* loop over values for nx */
         for (int j = 0; j <= i; ++j) {
@@ -92,58 +91,54 @@ void Basis::pushState(std::vector<int*> &state, int i, int j, int ud) {
     states.push_back(state);
 } // end function pushState
 
-double Basis::jastrow(double x12, double y12) {
+double Basis::jastrow(double a, double beta, double x12, double y12) {
     /* calculate Jastrow factor */
     return a/(beta + 1/sqrt(x12*x12 + y12*y12));
 } // end function jastrow
 
-double Basis::harmonicOscillatorWaveFunction(double x, double y, 
+double Basis::harmonicOscillatorWaveFunction(double alpha, double x, double y,
         int nx, int ny) {
     /* calculate harmonic oscillator wave function in 2D */
     std::cout << exp(-alpha*(x*x+y*y)/2) << std::endl;
     return H(x,nx)*H(y,ny) * exp(-alpha*(x*x+y*y)/2);
 } // end function harmonicOscillatorWaveFunction
 
-void Basis::setBasisMatrix(Eigen::MatrixXd r, double alp) {
+void Basis::setBasisMatrix(Eigen::MatrixXd r, double alpha) {
     /* set matrix for Slater determinant with harmonic oscillator */
-    alpha = alp;
     double N = r.rows()/2;
     phiU.resize(N,N);
     phiD.resize(N,N);
     for (unsigned int i = 0; i < N; ++i) {
         for (unsigned int j = 0; j < N; ++j) {
-            phiD(i,j) = harmonicOscillatorWaveFunction(r(2*i,0), r(2*i,1),
-                    *states[2*j][0], *states[2*j][1]);
-            phiU(i,j) = harmonicOscillatorWaveFunction(r(2*i+1,0), r(2*i+1,1),
-                    *states[2*j+1][0], *states[2*j+1][1]);
+            phiD(i,j) = harmonicOscillatorWaveFunction(alpha, r(2*i,0),
+                    r(2*i,1), *states[2*j][0], *states[2*j][1]);
+            phiU(i,j) = harmonicOscillatorWaveFunction(alpha, r(2*i+1,0),
+                    r(2*i+1,1), *states[2*j+1][0], *states[2*j+1][1]);
         } // end forj
     } // end fori
-    for (unsigned int i = 0; i < N; ++i) {
-        for (unsigned int j = 0; j < N; ++j) {
-            std::cout << phiU(i,j) << " ";
-        }
-        std::cout << std::endl;
-    }
-    for (unsigned int i = 0; i < N; ++i) {
-        for (unsigned int j = 0; j < N; ++j) {
-            std::cout << phiD(i,j) << " ";
-        }
-        std::cout << std::endl;
-    }
+//     for (unsigned int i = 0; i < N; ++i) {
+//         for (unsigned int j = 0; j < N; ++j) {
+//             std::cout << phiU(i,j) << " ";
+//         }
+//         std::cout << std::endl;
+//     }
+//     for (unsigned int i = 0; i < N; ++i) {
+//         for (unsigned int j = 0; j < N; ++j) {
+//             std::cout << phiD(i,j) << " ";
+//         }
+//         std::cout << std::endl;
+//     }
 } // end function setBasisMatrix
 
-double Basis::trialWaveFunction(Eigen::MatrixXd r, double alp, double bet,
-        double d) {
+double Basis::trialWaveFunction(Eigen::MatrixXd r, double alpha, double beta,
+        double a) {
     /* given a vector of coordinates, return trial wave function */
-    alpha = alp;
-    beta = bet;
-    a = d;
     unsigned int N = r.rows();
     double expInner = 0;
-    setBasisMatrix(r,alp);
+    setBasisMatrix(r,alpha);
     for (unsigned int i = 0; i < N; ++i) {
         for (unsigned int j = i+1; j < N; ++j) {
-            expInner += jastrow(r(i,0)-r(j,0),r(i,1)-r(j,1));
+            expInner += jastrow(a, beta, r(i,0)-r(j,0),r(i,1)-r(j,1));
         } // end forj
     } // end fori
     return phiU.determinant() * phiD.determinant() * exp(expInner);

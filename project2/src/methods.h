@@ -16,6 +16,10 @@ class Methods {
         Methods();
 
         int factorial(int);
+        double min(double, double);
+        int min(int, int);
+        double max(double, double);
+        int max(int, int);
         void updateMatrixInverse(Eigen::MatrixXd, Eigen::MatrixXd,
                 Eigen::MatrixXd, Eigen::MatrixXd&, unsigned int);
         double determinantRatio(Eigen::MatrixXd, Eigen::MatrixXd, unsigned

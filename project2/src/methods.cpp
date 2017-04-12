@@ -18,6 +18,22 @@ int Methods::factorial(int x) {
     return (x==1 ? x : (x==0 ? 1 : x*factorial(x-1)));
 } // end function factorial
 
+double Methods::min(double var1, double var2) {
+    return (var1<var2 ? var1 : var2);
+} // end function min
+
+int Methods::min(int var1, int var2) {
+    return (var1<var2 ? var1 : var2);
+} // end template function min
+
+double Methods::max(double var1, double var2) {
+    return (var1<var2 ? var1 : var2);
+} // end function max
+
+int Methods::max(int var1, int var2) {
+    return (var1<var2 ? var1 : var2);
+} // end template function max
+
 void Methods::updateMatrixInverse(Eigen::MatrixXd Mold, Eigen::MatrixXd Mnew,
         Eigen::MatrixXd MoldInv, Eigen::MatrixXd &MnewInv, unsigned int i) {
     /* update inverse of matrix when only column i has changed */

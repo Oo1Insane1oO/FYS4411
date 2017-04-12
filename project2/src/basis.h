@@ -13,22 +13,22 @@ class Basis {
     private:
         int ECut, s;
         std::vector<int> n, ms, E, M, m;
-        double omega, alpha, beta, a;
         Eigen::MatrixXd phiU, phiD;
 
         Methods *meth;
 
         void pushState(std::vector<int*>&, int, int, int);
-        double jastrow(double, double);
+        double jastrow(double, double, double, double);
 
     public:
         Basis(double, int);
         virtual ~Basis();
 
+        double omega;
         std::vector<std::vector<int*>> states;
 
         void setBasisMatrix(Eigen::MatrixXd, double); 
-        double harmonicOscillatorWaveFunction(double, double, int, int);
+        double harmonicOscillatorWaveFunction(double, double, double, int, int);
         double trialWaveFunction(Eigen::MatrixXd, double, double, double);
         void printStates();
 };
