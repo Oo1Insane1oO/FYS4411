@@ -41,7 +41,7 @@ void VMC::initialize(unsigned long int seed) {
     a = 0; //TODO: FIX THIS
     std::mt19937_64 mt(seed); 
     std::uniform_real_distribution<double> randomReal(-1,1);
-    R.resize(b->ECut,b->ECut);
+    R.resize(2*b->ECut,2*b->ECut);
     for (int i = 0; i < b->ECut; ++i) {
         for (int j = 0; j < 2; ++j) {
             R(i,j) = randomReal(mt);
@@ -60,7 +60,7 @@ void VMC::calculate(double step, int cycles) {
         P = pow(b->trialWaveFunction(R,alpha,beta,a),2);
         energy += P*localEnergy2(R,false);
         Rp = (R.array() + r(mt) * step).matrix();
-        if (metropolisTest(pow(b->trialWaveFunction(Rp,alpha,beta,a),2)/P, 2)
+        if (metropolisTest(pow(b->trialWaveFunction(Rp,alpha,beta,a),2)/P, 1)
                 >= 1) {
             R = Rp;
         } // end if

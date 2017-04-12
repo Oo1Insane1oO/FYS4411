@@ -18,7 +18,6 @@ int main(int argc, const char** argv) {
             << std::endl;
         std::cout <<
             "    " << "omega: (float) HO frequency\n" <<
-            "    " << "cutoff: (num) Number of single particle orbitals\n" <<
             "    " << "particles: (num) Fermi level(closed shell)\n" <<
             "    " << "iterations: (num) Max iterations in VMC(MC cycles) \n" <<
             "    " << "tests: (1/0) indicating to run tests or not" <<
@@ -28,16 +27,12 @@ int main(int argc, const char** argv) {
 
     // grab parameters as command line arguments
     double omega = atof(argv[1]);
-    int num = atoi(argv[3]);
-    int maxIterations = atoi(argv[4]);
-    int t = atoi(argv[5]);
+    int num = atoi(argv[2]);
+    int maxIterations = atoi(argv[3]);
+    int t = atoi(argv[4]);
     
     // set basis (cartesian)
-    Basis *b = new Basis(omega, num);
-//     if (num>*(b->states[b->states.size()-1][5])) {
-//         std::cout << "Increase cutoff" << std::endl;
-//         exit(1);
-//     } // end if
+    Basis *b = new Basis(omega, num/2);
     
     if (t) {
         /* run tests */
