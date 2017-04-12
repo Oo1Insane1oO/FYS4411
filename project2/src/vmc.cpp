@@ -60,15 +60,14 @@ void VMC::calculate(double step, int cycles) {
         P = pow(b->trialWaveFunction(R,alpha,beta,a),2);
         energy += P*localEnergy2(R,false);
         Rp = (R.array() + r(mt) * step).matrix();
-        if (metropolisTest(pow(b->trialWaveFunction(Rp,alpha,beta,a),2)/P, 1)
-                >= 1) {
+        if (metropolisTest(pow(b->trialWaveFunction(Rp,alpha,beta,a),2)/P,1)) {
             R = Rp;
         } // end if
     } // end fori
     energy /= cycles;
 } // end function calculate
 
-double VMC::metropolisTest(double densityRatio, double proposedRatio) {
+bool VMC::metropolisTest(double densityRatio, double proposedRatio) {
     /* perform metropolist test */
-    return meth->min(1.,densityRatio*proposedRatio);
+    return (meth->min(1.,densityRatio*proposedRatio)>=1 ? true : false);
 } // end function metropolisTest

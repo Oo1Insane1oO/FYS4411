@@ -24,7 +24,7 @@ class VMC {
         double localEnergy2(Eigen::MatrixXd, bool=true);
         void initialize(unsigned long int=86754);
         void calculate(double, int);
-        double metropolisTest(double, double);
+        bool metropolisTest(double, double);
 };
 
 #endif /* VMC_H */

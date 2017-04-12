@@ -18,8 +18,9 @@ int main(int argc, const char** argv) {
             << std::endl;
         std::cout <<
             "    " << "omega: (float) HO frequency\n" <<
-            "    " << "particles: (num) Fermi level(closed shell)\n" <<
-            "    " << "iterations: (num) Max iterations in VMC(MC cycles) \n" <<
+            "    " << "particles: (int) Fermi level(closed shell)\n" <<
+            "    " << "iterations: (int) Max iterations in VMC(MC cycles) \n" <<
+            "    " << "step: (float) step size in VMC \n" <<
             "    " << "tests: (1/0) indicating to run tests or not" <<
             std::endl;
         exit(1);
@@ -29,7 +30,8 @@ int main(int argc, const char** argv) {
     double omega = atof(argv[1]);
     int num = atoi(argv[2]);
     int maxIterations = atoi(argv[3]);
-    int t = atoi(argv[4]);
+    double step = atof(argv[4]);
+    int t = atoi(argv[5]);
     
     // set basis (cartesian)
     Basis *b = new Basis(omega, num/2);
@@ -43,7 +45,7 @@ int main(int argc, const char** argv) {
 
     // set vmc object for calculations
     VMC vmcObj = VMC(b,1,1);
-    vmcObj.calculate(0.01, maxIterations);
+    vmcObj.calculate(step, maxIterations);
     std::cout << "Energy: " << vmcObj.energy << std::endl;
 
     return 0;
