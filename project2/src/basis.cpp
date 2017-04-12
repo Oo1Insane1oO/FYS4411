@@ -93,7 +93,7 @@ void Basis::pushState(std::vector<int*> &state, int i, int j, int ud) {
 } // end function pushState
 
 double Basis::jastrow(double x12, double y12) {
-    /* calcualte Jastrow factor */
+    /* calculate Jastrow factor */
     return a/(beta + 1/sqrt(x12*x12 + y12*y12));
 } // end function jastrow
 
@@ -141,14 +141,8 @@ double Basis::trialWaveFunction(Eigen::MatrixXd r, double alp, double bet,
     double expInner = 0;
     setBasisMatrix(r,alp);
     for (unsigned int i = 0; i < N; ++i) {
-        for (unsigned int j = 0; j < N; ++j) {
-            if(i < j) {
-                /* do not sum doubly */
-                expInner += jastrow(r(i,0)-r(j,0),r(i,1)-r(j,1));
-            } else {
-                /* no need to keep looping */
-                break;
-            }// end if
+        for (unsigned int j = i+1; j < N; ++j) {
+            expInner += jastrow(r(i,0)-r(j,0),r(i,1)-r(j,1));
         } // end forj
     } // end fori
     return phiU.determinant() * phiD.determinant() * exp(expInner);
