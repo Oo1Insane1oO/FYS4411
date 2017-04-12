@@ -14,12 +14,16 @@ class VMC {
         Methods *meth;
     
     public:
-        VMC (Basis*);
+        VMC (Basis*, double, double, double);
         virtual ~VMC ();
 
-        double alpha, beta, a, energy;
+        double alpha, beta, a, energy, step;
+
+        Eigen::MatrixXd R;
 
         double localEnergy2(Eigen::MatrixXd, Eigen::MatrixXd, bool=true);
+        void initialize(long int=85754);
+        void calculate();
         double metropolisTest(double, double);
 };
 

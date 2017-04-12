@@ -11,7 +11,11 @@
 #include <math.h>
 #include <random>
 
-VMC::VMC(Basis *B) {
+VMC::VMC(Basis *B, double alp, double bet, double delta) {
+    alpha = alp;
+    beta = bet;
+    step = delta;
+    a = 1;
     b = B;
     meth = new Methods(); 
 } // end constructor
@@ -31,11 +35,23 @@ double VMC::localEnergy2(Eigen::MatrixXd r1, Eigen::MatrixXd r2, bool coulomb) {
         (coulomb ? 1/r12 : 0);
 } // end function localEnergy
 
-void calculate() {
+void VMC::initialize(long int seed) {
+    /* initialize positions R */
+    std::mt19937 mt(seed);
+    R.resize(b->ECut,b->ECut);
+    for (int i = 0; i < b->ECut; ++i) {
+        for (int j = 0; j < 2; ++j) {
+            R(i,j) = (double) mt();
+            std::cout << R(i,j) << std::endl;
+        } // end forj
+    } // end fori
+} // end initialize positions
+
+void VMC::calculate() {
+    std::mt19937_64 randomGenerator();
 } // end function calculate
 
 double VMC::metropolisTest(double densityRatio, double proposedRatio) {
     /* perform metropolist test */
-    std::mt19937_64 randomGenerator();
     return meth->min(1.,densityRatio*proposedRatio);
 } // end function metropolisTest

@@ -28,17 +28,16 @@ int main(int argc, const char** argv) {
 
     // grab parameters as command line arguments
     double omega = atof(argv[1]);
-    int Ec = atoi(argv[2]);
     int num = atoi(argv[3]);
     int maxIterations = atoi(argv[4]);
     int t = atoi(argv[5]);
     
     // set basis (cartesian)
-    Basis *b = new Basis(omega, Ec);
-    if (num>*(b->states[b->states.size()-1][5])) {
-        std::cout << "Increase cutoff" << std::endl;
-        exit(1);
-    } // end if
+    Basis *b = new Basis(omega, num);
+//     if (num>*(b->states[b->states.size()-1][5])) {
+//         std::cout << "Increase cutoff" << std::endl;
+//         exit(1);
+//     } // end if
     
     if (t) {
         /* run tests */
@@ -48,13 +47,9 @@ int main(int argc, const char** argv) {
     } // end if
 
     // set vmc object for calculations
-    VMC vmcObj = VMC(b);
-    Eigen::MatrixXd r = Eigen::MatrixXd::Zero(num,2);
-    r(0,0) = 1;
-    r(0,1) = -2;
-    r(1,0) = 3;
-    r(1,1) = 2;
-    std::cout << b->trialWaveFunction(r,1.1,0.2,0) << std::endl;
+    VMC vmcObj = VMC(b,1,1,0.01);
+    vmcObj.initialize();
+    std::cout << b->trialWaveFunction(vmcObj.R,1.1,0.2,0) << std::endl;
 
     return 0;
 } // end main

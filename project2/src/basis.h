@@ -11,7 +11,7 @@
 
 class Basis {
     private:
-        int ECut, s;
+        int s;
         std::vector<int> n, ms, E, M, m;
         Eigen::MatrixXd phiU, phiD;
 
@@ -24,6 +24,7 @@ class Basis {
         Basis(double, int);
         virtual ~Basis();
 
+        int ECut;
         double omega;
         std::vector<std::vector<int*>> states;
 
