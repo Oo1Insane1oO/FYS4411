@@ -48,8 +48,8 @@ int main(int argc, const char** argv) {
 
     // set vmc object for calculations
     VMC vmcObj = VMC(b,1,1);
-    vmcObj.calculate(0.01, 100);
-//     std::cout << b->trialWaveFunction(vmcObj.R,1.1,0.2,0) << std::endl;
+    vmcObj.calculate(0.01, maxIterations);
+    std::cout << "Energy: " << vmcObj.energy << std::endl;
 
     return 0;
 } // end main

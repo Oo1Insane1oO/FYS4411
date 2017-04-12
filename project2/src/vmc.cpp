@@ -24,8 +24,10 @@ VMC::~VMC() {
     delete b;
 } // end deconstructor
         
-double VMC::localEnergy2(Eigen::MatrixXd r1, Eigen::MatrixXd r2, bool coulomb) {
+double VMC::localEnergy2(Eigen::MatrixXd R, bool coulomb) {
     /* calculate analytic expression of local energy for 2 electrons */
+    Eigen::MatrixXd r1 = R.block<1,2>(0,0);
+    Eigen::MatrixXd r2 = R.block<1,2>(1,0);
     double r12 = (r1-r2).norm();
     double denom = 1 + beta*r12;
     return 0.5 * pow(b->omega,2) * (pow(alpha,2) + 1) * (r1.squaredNorm() +
@@ -36,6 +38,7 @@ double VMC::localEnergy2(Eigen::MatrixXd r1, Eigen::MatrixXd r2, bool coulomb) {
 
 void VMC::initialize(unsigned long int seed) {
     /* initialize positions R */
+    a = 0; //TODO: FIX THIS
     std::mt19937_64 mt(seed); 
     std::uniform_real_distribution<double> randomReal(-1,1);
     R.resize(b->ECut,b->ECut);
@@ -44,10 +47,10 @@ void VMC::initialize(unsigned long int seed) {
             R(i,j) = randomReal(mt);
         } // end forj
     } // end fori
+    energy = 0;
 } // end initialize positions
 
 void VMC::calculate(double step, int cycles) {
-    a = 0; //TODO: FIX THIS
     std::mt19937_64 mt(85456);
     std::uniform_real_distribution<double> r(0,1);
     Eigen::MatrixXd Rp;
@@ -55,12 +58,14 @@ void VMC::calculate(double step, int cycles) {
     double P, Pp;
     for (int i = 0; i < cycles; ++i) {
         P = b->trialWaveFunction(R,alpha,beta,a);
+        energy += P*localEnergy2(R);
         Rp = (R.array() + r(mt) * step).matrix();
         Pp = b->trialWaveFunction(Rp,alpha,beta,a);
         if (metropolisTest(Pp/P,1)>=1) {
             R = Rp;
         } // end if
     } // end fori
+    energy /= cycles;
 } // end function calculate
 
 double VMC::metropolisTest(double densityRatio, double proposedRatio) {
