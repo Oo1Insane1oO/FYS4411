@@ -11,20 +11,20 @@
 
 class Basis {
     private:
-        int ECut;
+        int ECut, s;
+        std::vector<int> n, ms, E, M, m;
         double omega, alpha, beta, a;
         Eigen::MatrixXd phiU, phiD;
 
         Methods *meth;
 
+        void pushState(std::vector<int*>&, int, int, int);
         double jastrow(double, double);
 
     public:
         Basis(double, int);
         virtual ~Basis();
 
-        int s;
-        std::vector<int> n, ms, E, M, m;
         std::vector<std::vector<int*>> states;
         void printStates();
 

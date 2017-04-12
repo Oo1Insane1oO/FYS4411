@@ -35,7 +35,7 @@ int main(int argc, const char** argv) {
     
     // set basis (cartesian)
     Basis *b = new Basis(omega, Ec);
-    if (num>b->M[b->M.size()-1]) {
+    if (num>*(b->states[b->states.size()-1][5])) {
         std::cout << "Increase cutoff" << std::endl;
         exit(1);
     } // end if

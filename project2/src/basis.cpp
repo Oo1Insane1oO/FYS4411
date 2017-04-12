@@ -24,7 +24,7 @@
 
 Basis::Basis(double w, int cut) {
     /* initialize states */
-
+    
     // set methods object
     meth = new Methods();
    
@@ -49,48 +49,27 @@ Basis::Basis(double w, int cut) {
     // allocate state arrays as {nx,ny,s,ms,E,M}
     M.resize(cut,0);
     std::vector<int*> s1 = std::vector<int*>(6,0);
-    std::vector<int*> s2 = std::vector<int*>(6,0);
+
     for (int i = 0; i < ECut; ++i) {
         /* loop over values for nx */
         for (int j = 0; j <= i; ++j) {
             /* set states not yet pushed */
-            for (int k = 0; k <= 1; ++k) {
-                /* set both spin projections */
-                if((i==j && k==1) || (i+j >= ECut)) {
-                    /* dont count doubly and make sure cutoff is reached */
-                    break;
-                } // endif
+            if (i+j>=ECut) {
+                /* end when cutoff is reached */
+                break;
+            } // end if
 
-                // set nx, ny and spin
-                s1[0] = &(n[i]);
-                s2[0] = &(n[j]);
-                s1[1] = &(n[j]);
-                s2[1] = &(n[i]);
-                s1[2] = &s;
-                s2[2] = &s;
-              
-                // set spin projection
-                if(k==0) {
-                    s1[3] = &(ms[k]);
-                    s2[3] = &(ms[k+1]);
-                } else if(k==1) {
-                    s1[3] = &(ms[k-1]);
-                    s2[3] = &(ms[k]);
-                } // end ifelseif
+            // increment magic number and set values and push to states
+            M[i+j]++;
+            pushState(s1, i, j, 0);
+            pushState(s1, i, j, 1);
 
-                // set energy
-                s1[4] = &(E[i+j]);
-                s2[4] = &(E[i+j]);
-
-                // increment and set magic number
-                M[i+j] += 1;
-                s1[5] = &(M[i+j]);
-                s2[5] = &(M[i+j]);
-               
-                // push state to states array
-                states.push_back(s1);
-                states.push_back(s2);
-            } // end fork
+            // dont set states doubly
+            if (i!=j) {
+                M[i+j]++;
+                pushState(s1, j, i, 0);
+                pushState(s1, j, i, 1);
+            } // end if
         } // end forj
     } // end fori
 
@@ -101,6 +80,17 @@ Basis::Basis(double w, int cut) {
         } // end forj
     } // end fori
 } // end constructor
+
+void Basis::pushState(std::vector<int*> &state, int i, int j, int ud) {
+    /* set (nx,ny,s,ms,E,M) in s1 and push s1 to states */
+    state[0] = &(n[i]);
+    state[1] = &(n[j]);
+    state[2] = &s;
+    state[3] = &(ms[ud]);
+    state[4] = &(E[i+j]);
+    state[5] = &(M[i+j]);
+    states.push_back(state);
+} // end function pushState
 
 double Basis::jastrow(double x12, double y12) {
     /* calcualte Jastrow factor */
