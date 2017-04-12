@@ -12,7 +12,10 @@ class VMC {
     private:
         Basis *b;
         Methods *meth;
-    
+
+        template<class T> auto 
+
+
     public:
         VMC (Basis*, double, double, double);
         virtual ~VMC ();
