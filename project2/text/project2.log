@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2017.3.22)  9 APR 2017 17:24
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2017.3.22)  12 APR 2017 17:56
 entering extended mode
  \write18 enabled.
  file:line:error style messages enabled.
@@ -2485,7 +2485,7 @@ onts/type1/public/mathdesign/mdbch/md-chr8t.pfb></usr/share/texlive/texmf-dist/
 fonts/type1/public/mathdesign/mdbch/md-chri7m.pfb></usr/share/texlive/texmf-dis
 t/fonts/type1/public/mathdesign/mdbch/md-chrma.pfb>
 Output written on /home/saintz/localStuff/FYS4411/project2/text/project2.pdf (7
- pages, 98967 bytes).
+ pages, 98973 bytes).
 PDF statistics:
  267 PDF objects out of 1000 (max. 8388607)
  245 compressed objects within 3 object streams

@@ -115,18 +115,6 @@ void Basis::setBasisMatrix(Eigen::MatrixXd r, double alpha) {
                     r(2*i+1,1), *states[2*j+1][0], *states[2*j+1][1]);
         } // end forj
     } // end fori
-//     for (unsigned int i = 0; i < N; ++i) {
-//         for (unsigned int j = 0; j < N; ++j) {
-//             std::cout << phiU(i,j) << " ";
-//         }
-//         std::cout << std::endl;
-//     }
-//     for (unsigned int i = 0; i < N; ++i) {
-//         for (unsigned int j = 0; j < N; ++j) {
-//             std::cout << phiD(i,j) << " ";
-//         }
-//         std::cout << std::endl;
-//     }
 } // end function setBasisMatrix
 
 double Basis::trialWaveFunction(Eigen::MatrixXd r, double alpha, double beta,

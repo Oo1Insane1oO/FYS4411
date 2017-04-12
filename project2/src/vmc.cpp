@@ -30,9 +30,9 @@ double VMC::localEnergy2(Eigen::MatrixXd R, bool coulomb) {
     Eigen::MatrixXd r2 = R.block<1,2>(1,0);
     double r12 = (r1-r2).norm();
     double denom = 1 + beta*r12;
-    return 0.5 * pow(b->omega,2) * (pow(alpha,2) + 1) * (r1.squaredNorm() +
-            r2.squaredNorm()) - 2*alpha*b->omega + a/pow(denom,2) *
-        ((a/pow(denom,2) - alpha*b->omega*r12 + 1/r12 - 2*beta/denom)) +
+    return 0.5 * pow(b->omega,2) * (1 - pow(alpha,2)) * (r1.squaredNorm() +
+            r2.squaredNorm()) + 2*alpha*b->omega - a/pow(denom,2) *
+        ((a/pow(denom,2) + alpha*b->omega*r12 + 1/r12 - 2*beta/denom)) +
         (coulomb ? 1/r12 : 0);
 } // end function localEnergy
 
@@ -55,13 +55,13 @@ void VMC::calculate(double step, int cycles) {
     std::uniform_real_distribution<double> r(0,1);
     Eigen::MatrixXd Rp;
     initialize();
-    double P, Pp;
+    double P;
     for (int i = 0; i < cycles; ++i) {
-        P = b->trialWaveFunction(R,alpha,beta,a);
-        energy += P*localEnergy2(R);
+        P = pow(b->trialWaveFunction(R,alpha,beta,a),2);
+        energy += P*localEnergy2(R,false);
         Rp = (R.array() + r(mt) * step).matrix();
-        Pp = b->trialWaveFunction(Rp,alpha,beta,a);
-        if (metropolisTest(Pp/P,1)>=1) {
+        if (metropolisTest(pow(b->trialWaveFunction(Rp,alpha,beta,a),2)/P, 2)
+                >= 1) {
             R = Rp;
         } // end if
     } // end fori
