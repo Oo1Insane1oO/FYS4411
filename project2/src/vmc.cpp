@@ -35,20 +35,20 @@ double VMC::localEnergy2(Eigen::MatrixXd r1, Eigen::MatrixXd r2, bool coulomb) {
         (coulomb ? 1/r12 : 0);
 } // end function localEnergy
 
-void VMC::initialize(long int seed) {
+void VMC::initialize(unsigned long int seed) {
     /* initialize positions R */
-    std::mt19937 mt(seed);
+    std::mt19937_64 mt(seed); 
+    std::uniform_real_distribution<double> randomReal(-1,1);
     R.resize(b->ECut,b->ECut);
     for (int i = 0; i < b->ECut; ++i) {
         for (int j = 0; j < 2; ++j) {
-            R(i,j) = (double) mt();
-            std::cout << R(i,j) << std::endl;
+            R(i,j) = randomReal(mt);
         } // end forj
     } // end fori
 } // end initialize positions
 
 void VMC::calculate() {
-    std::mt19937_64 randomGenerator();
+    std::mt19937_64 mt();
 } // end function calculate
 
 double VMC::metropolisTest(double densityRatio, double proposedRatio) {
