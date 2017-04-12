@@ -11,10 +11,9 @@
 #include <math.h>
 #include <random>
 
-VMC::VMC(Basis *B, double alp, double bet, double delta) {
+VMC::VMC(Basis *B, double alp, double bet) {
     alpha = alp;
     beta = bet;
-    step = delta;
     a = 1;
     b = B;
     meth = new Methods(); 
@@ -47,8 +46,21 @@ void VMC::initialize(unsigned long int seed) {
     } // end fori
 } // end initialize positions
 
-void VMC::calculate() {
-    std::mt19937_64 mt();
+void VMC::calculate(double step, int cycles) {
+    a = 0; //TODO: FIX THIS
+    std::mt19937_64 mt(85456);
+    std::uniform_real_distribution<double> r(0,1);
+    Eigen::MatrixXd Rp;
+    initialize();
+    double P, Pp;
+    for (int i = 0; i < cycles; ++i) {
+        P = b->trialWaveFunction(R,alpha,beta,a);
+        Rp = (R.array() + r(mt) * step).matrix();
+        Pp = b->trialWaveFunction(Rp,alpha,beta,a);
+        if (metropolisTest(Pp/P,1)>=1) {
+            R = Rp;
+        } // end if
+    } // end fori
 } // end function calculate
 
 double VMC::metropolisTest(double densityRatio, double proposedRatio) {

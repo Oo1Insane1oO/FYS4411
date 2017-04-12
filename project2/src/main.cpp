@@ -47,9 +47,9 @@ int main(int argc, const char** argv) {
     } // end if
 
     // set vmc object for calculations
-    VMC vmcObj = VMC(b,1,1,0.01);
-    vmcObj.initialize();
-    std::cout << b->trialWaveFunction(vmcObj.R,1.1,0.2,0) << std::endl;
+    VMC vmcObj = VMC(b,1,1);
+    vmcObj.calculate(0.01, 100);
+//     std::cout << b->trialWaveFunction(vmcObj.R,1.1,0.2,0) << std::endl;
 
     return 0;
 } // end main

@@ -99,7 +99,6 @@ double Basis::jastrow(double a, double beta, double x12, double y12) {
 double Basis::harmonicOscillatorWaveFunction(double alpha, double x, double y,
         int nx, int ny) {
     /* calculate harmonic oscillator wave function in 2D */
-    std::cout << exp(-alpha*(x*x+y*y)/2) << std::endl;
     return H(x,nx)*H(y,ny) * exp(-alpha*(x*x+y*y)/2);
 } // end function harmonicOscillatorWaveFunction
 
