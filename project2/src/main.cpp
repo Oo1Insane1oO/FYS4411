@@ -32,6 +32,10 @@ int main(int argc, const char** argv) {
     int maxIterations = atoi(argv[3]);
     double step = atof(argv[4]);
     int t = atoi(argv[5]);
+
+    if (num > 2) {
+        std::cout << "Not implemented yet" << std::endl;
+    } // end if
     
     // set basis (cartesian)
     Basis *b = new Basis(omega, num/2);
