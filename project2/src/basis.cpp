@@ -119,17 +119,24 @@ void Basis::setBasisMatrix(Eigen::MatrixXd r, double alpha) {
 
 double Basis::trialWaveFunction(Eigen::MatrixXd r, double alpha, double beta,
         double a) {
-    /* given a vector of coordinates, return trial wave function */
-    unsigned int N = r.rows();
-    double expInner = 0;
-    setBasisMatrix(r,alpha);
-    for (unsigned int i = 0; i < N; ++i) {
-        for (unsigned int j = i+1; j < N; ++j) {
-            expInner += jastrow(a, beta, r(i,0)-r(j,0),r(i,1)-r(j,1));
-        } // end forj
-    } // end fori
-    return phiU.determinant() * phiD.determinant() * exp(expInner);
-} // end function trialWaveFunction
+    return exp(-alpha*omega*(r.row(0).squaredNorm() +
+                r.row(1).squaredNorm())/2);
+}
+
+// double Basis::trialWaveFunction(Eigen::MatrixXd r, double alpha, double beta,
+//         double a) {
+//     /* given a vector of coordinates, return trial wave function */
+//     unsigned int N = r.rows();
+//     double expInner = 0;
+//     setBasisMatrix(r,alpha);
+//     for (unsigned int i = 0; i < N; ++i) {
+//         for (unsigned int j = i+1; j < N; ++j) {
+//             expInner += jastrow(a, beta, r(i,0)-r(j,0),r(i,1)-r(j,1));
+//         } // end forj
+//     } // end fori
+//     return phiU.determinant() * phiD.determinant() * exp(expInner);
+// } // end function trialWaveFunction
+
 
 void Basis::printStates() {
     /* print states */

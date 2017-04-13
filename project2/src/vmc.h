@@ -14,16 +14,14 @@ class VMC {
         Methods *meth;
 
     public:
-        VMC (Basis*, double, double);
+        VMC (Basis*, double, double, unsigned int);
         virtual ~VMC ();
 
-        double alpha, beta, a, energy;
-
-        Eigen::MatrixXd R;
+        unsigned int dim;
+        double alpha, beta, a, energy, energySq;
 
         double localEnergy2(Eigen::MatrixXd, bool=true);
-        void initialize(unsigned long int=86754, double=1);
-        void calculate(double, int, unsigned long int=85456);
+        void calculate(double, int, unsigned long int=86754);
 };
 
 #endif /* VMC_H */

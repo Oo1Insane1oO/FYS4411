@@ -35,6 +35,7 @@ int main(int argc, const char** argv) {
 
     if (num > 2) {
         std::cout << "Not implemented yet" << std::endl;
+        exit(1);
     } // end if
     
     // set basis (cartesian)
@@ -48,9 +49,11 @@ int main(int argc, const char** argv) {
     } // end if
 
     // set vmc object for calculations
-    VMC vmcObj = VMC(b,1,1);
+    VMC vmcObj = VMC(b,1,1,2);
     vmcObj.calculate(step, maxIterations);
-    std::cout << "Energy: " << vmcObj.energy << std::endl;
+    std::cout << "<E> = " << vmcObj.energy << ", <E^2> = " << vmcObj.energySq <<
+        std::endl;
+    std::cout << vmcObj.energySq - vmcObj.energy*vmcObj.energy << std::endl;
 
     return 0;
 } // end main
