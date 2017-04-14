@@ -20,7 +20,9 @@ class VMC {
         unsigned int dim;
         double alpha, beta, a, energy, energySq;
 
+        double diff2(Eigen::MatrixXd, double);
         double localEnergy2(Eigen::MatrixXd, bool=true);
+        double localEnergyDiff(Eigen::MatrixXd, bool=true);
         void calculate(double, int, unsigned long int=86754);
 };
 

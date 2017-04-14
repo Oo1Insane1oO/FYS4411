@@ -38,7 +38,7 @@ Basis::Basis(double w, int cut) {
     ms[0] = -1;
     ms[1] = 1;
 
-    // set possible values for nx and ny
+    // set possible values for nx and ny and energy E
     n.resize(cut);
     E.resize(cut);
     for (unsigned int i = 0; i < n.size(); ++i) {
@@ -53,6 +53,7 @@ Basis::Basis(double w, int cut) {
         /* loop over values for nx */
         for (int j = 0; j <= i; ++j) {
             /* set states not yet pushed */
+            
             if (i+j>=ECut) {
                 /* end when cutoff is reached */
                 break;
@@ -122,6 +123,15 @@ double Basis::trialWaveFunction(Eigen::MatrixXd r, double alpha, double beta,
     return exp(-alpha*omega*(r.row(0).squaredNorm() +
                 r.row(1).squaredNorm())/2);
 }
+
+double diff2(Eigen::MatrixXd R) {
+    /* calculate  double derivative for all positions in R  using a central
+     * difference */
+    double diff = 0;
+    for (unsigned int i = 0; i < R.rows(); ++i) {
+        diff += b->trialWaveFunction(R.row(i), 
+    }
+} // end function diff2
 
 // double Basis::trialWaveFunction(Eigen::MatrixXd r, double alpha, double beta,
 //         double a) {

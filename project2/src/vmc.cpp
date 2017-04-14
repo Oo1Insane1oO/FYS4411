@@ -36,6 +36,25 @@ double VMC::localEnergy2(Eigen::MatrixXd R, bool coulomb) {
             1/r12 : 0);
 } // end function localEnergy
 
+double VMC::localEnergyDiff(Eigen::MatrixXd R, bool coulomb) {
+    /* calculate analytic expression of local energy for 2 electrons */
+    double dx = 0.001;
+    return - 0.5 * (diff2(R) + pow(b->omega,2) * (R.row(0).squaredNorm() +
+                R.row(1).squaredNorm())) + 1 / (R.row(0) - R.row(1)).norm();
+} // end function localEnergyDiff
+
+double VMC::diff2(Eigen::MatrixXd R, double dx) {
+    /* calculate second derivative for all positions in R using central
+     * difference scheme */
+    double diff = 0;
+    for (unsigned int i = 0; i < R.rows(); ++i) {
+        diff += (b->trialWaveFunction(R.row(i)+dx,alpha,beta,a) -
+                2*b->trialWaveFunction(R.row(i),alpha,beta,a) +
+                b->trialWaveFunction(R.row(i)-dx,alpha,beta,a)) / (dx*dx);
+    } // end fori
+    return diff
+} // end function diff2
+
 void VMC::calculate(double step, int maxIterations, unsigned long int seed) {
     /* function for running Monte Carlo integration */
 
