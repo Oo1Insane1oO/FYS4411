@@ -39,7 +39,7 @@ double VMC::localEnergy2(Eigen::MatrixXd R, bool coulomb) {
 double VMC::localEnergyDiff(Eigen::MatrixXd R, bool coulomb) {
     /* calculate analytic expression of local energy for 2 electrons */
     double dx = 0.0001;
-    return - 0.5 * (diff2(R,dx) - pow(b->omega,2) * (R.row(0).squaredNorm() +
+    return 0.5 * (-diff2(R,dx) + pow(b->omega,2) * (R.row(0).squaredNorm() +
                 R.row(1).squaredNorm())) + (coulomb ?
             1/(R.row(0)-R.row(1)).norm() : 0);
 } // end function localEnergyDiff
@@ -48,17 +48,17 @@ double VMC::diff2(Eigen::MatrixXd R, double dx) {
     /* calculate second derivative for all positions in x using central
      * difference scheme */
     double diff = 0;
-    Eigen::MatrixXd RPlus = R;
-    Eigen::MatrixXd RMinus = R;
+    double tmpDiff;
+    Eigen::MatrixXd Rpm = R;
     double mid = 2*b->trialWaveFunction(R,alpha,beta,a);
     for (unsigned int i = 0; i < R.rows(); ++i) {
         for (unsigned int j = 0; j < R.cols(); ++j) {
-            RPlus(i,j) += dx;
-            RMinus(i,j) -= dx;
-            diff += (b->trialWaveFunction(RPlus,alpha,beta,a) - mid +
-                    b->trialWaveFunction(RMinus,alpha,beta,a)) / (dx*dx);
-            RPlus(i,j) = R(i,j);
-            RMinus(i,j) = R(i,j);
+            Rpm(i,j) += dx;
+            tmpDiff = b->trialWaveFunction(Rpm,alpha,beta,a) - mid;
+            Rpm(i,j) -= 2*dx;
+            tmpDiff += b->trialWaveFunction(Rpm,alpha,beta,a);
+            diff += tmpDiff / (dx*dx);
+            Rpm = R;
         } // end forj
     } // end fori
     return diff;
@@ -110,8 +110,8 @@ void VMC::calculate(double step, int maxIterations, unsigned long int seed) {
             } // end if
 
             // update energy and increment cycles
-            tmpEnergy = localEnergy2(newPositions,false);
-//             tmpEnergy = localEnergyDiff(newPositions,false);
+//             tmpEnergy = localEnergy2(newPositions,false);
+            tmpEnergy = localEnergyDiff(newPositions,false);
             energy += tmpEnergy;
             energySq += tmpEnergy*tmpEnergy;
         } // end fori
