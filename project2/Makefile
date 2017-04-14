@@ -1,14 +1,16 @@
-LDFLAGS = -fopenmp -lpthread
-CXXFLAGS = -I eigen/ -O3 -std=c++14
+CC = g++
+LDFLAGS	= -I eigen/ -fopenmp -lpthread
+CXXFLAGS = -O3 -std=c++14
 
 DEBUG ?= OFF
-
 ifeq ($(DEBUG),ON)
-	CXXFLAGS := -I eigen/ -g -std=c++14 -Wall
+	CXXFLAGS := -g -std=c++14 -Wall -Wextra
 endif
 
-vmc_main: src/methods.cpp src/basis.cpp src/vmc.cpp src/tests.cpp src/main.cpp
-	g++ $(CXXFLAGS) $(CFLAGS) $^ -o $@ $(LDFLAGS)
+vmc_main: src/*.cpp
+	$(CC) $(CXXFLAGS) $^ -o $@ $(LDFLAGS)
 
 clean:
-	rm vmc_main
+	rm -rf $(OBJ)
+
+.PHONY: clean
