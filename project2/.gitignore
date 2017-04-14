@@ -5,3 +5,7 @@ text/*.out
 
 # ignore compiled files
 *main
+
+# ignore object files
+bin/*
+*.o
