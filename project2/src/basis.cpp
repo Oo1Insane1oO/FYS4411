@@ -124,15 +124,6 @@ double Basis::trialWaveFunction(Eigen::MatrixXd r, double alpha, double beta,
                 r.row(1).squaredNorm())/2);
 }
 
-double diff2(Eigen::MatrixXd R) {
-    /* calculate  double derivative for all positions in R  using a central
-     * difference */
-    double diff = 0;
-    for (unsigned int i = 0; i < R.rows(); ++i) {
-        diff += b->trialWaveFunction(R.row(i), 
-    }
-} // end function diff2
-
 // double Basis::trialWaveFunction(Eigen::MatrixXd r, double alpha, double beta,
 //         double a) {
 //     /* given a vector of coordinates, return trial wave function */
