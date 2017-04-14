@@ -37,12 +37,17 @@ def turnToCPP(n,H):
 def appendToFile(codes, fname):
     """ append polynomial templates to file """
     with open(fname, "w+") as ofile:
+        ofile.write("#pragma GCC diagnostic push\n")
+        ofile.write('#pragma GCC diagnostic ignored "-Wunused-parameter"\n')
         for c in codes:
             ofile.write(c+"\n")
         # end for c
+        ofile.write("#pragma GCC diagnostic pop\n")
         ofile.write("template<typename T> T H(T x, int n) {\n   switch(n) {\n")
         for i in range(len(codes)):
+            # end if
             ofile.write("       case %i: return H%i(x);\n" % (i,i))
+            # end if
         ofile.write("       default: return H0(x);\n")
         ofile.write("   }\n}")
     # end ofile
