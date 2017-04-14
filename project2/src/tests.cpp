@@ -39,7 +39,7 @@ bool Tests::test_energies() {
 bool Tests::test_2particle() {
     /* check that energy in case of unperturbed harmonic oscillator system with
      * 2 electrons is correct */
-    v->calculate();
+    v->calculate(false);
     return ((m->variance(v->energy, v->energySq)) < 1e-14 ? true : false);
 } // end function test_2particle
 

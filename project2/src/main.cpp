@@ -56,6 +56,9 @@ int main(int argc, const char** argv) {
     std::cout << "<E> = " << vmcObj->energy << ", <E^2> = " << vmcObj->energySq <<
         std::endl;
     std::cout << vmcObj->energySq - vmcObj->energy*vmcObj->energy << std::endl;
+
+    // free objects
+    delete b;
     delete vmcObj;
 
     return 0;

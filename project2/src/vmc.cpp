@@ -25,7 +25,6 @@ VMC::VMC(Basis *B, double alp, double bet, unsigned int d, double dt, unsigned
 
 VMC::~VMC() {
     delete meth;
-    delete b;
 } // end deconstructor
         
 double VMC::localEnergy2(Eigen::MatrixXd R, bool coulomb) {
@@ -67,7 +66,17 @@ double VMC::diff2(Eigen::MatrixXd R, double dx) {
     return diff;
 } // end function diff2
 
-void VMC::calculate(unsigned long int seed) {
+void VMC::setSeed(unsigned long int s) {
+    /* set seed */
+    seed = s;
+} // end function setSeed
+
+unsigned long int VMC::getSeed() {
+    /* get seed */
+    return seed;
+} // end function setSeed
+
+void VMC::calculate(bool unperturb) {
     /* function for running Monte Carlo integration */
 
     // initialize Mersenne Twister random number generator and uniform
@@ -112,7 +121,7 @@ void VMC::calculate(unsigned long int seed) {
             } // end if
 
             // update energy and increment cycles
-            tmpEnergy = localEnergy2(newPositions,false);
+            tmpEnergy = localEnergy2(newPositions,unperturb);
 //             tmpEnergy = localEnergyDiff(newPositions,false);
             energy += tmpEnergy;
             energySq += tmpEnergy*tmpEnergy;

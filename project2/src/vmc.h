@@ -13,6 +13,8 @@ class VMC {
         Basis *b;
         Methods *meth;
 
+        unsigned long int seed = 86754;
+
     public:
         VMC (Basis*, double, double, unsigned int, double, unsigned int);
         virtual ~VMC ();
@@ -20,10 +22,13 @@ class VMC {
         unsigned int dim, maxIterations;
         double alpha, beta, a, energy, energySq, step;
 
+        unsigned long int getSeed();
+        void setSeed(unsigned long int);
+
         double diff2(Eigen::MatrixXd, double);
         double localEnergy2(Eigen::MatrixXd, bool=true);
         double localEnergyDiff(Eigen::MatrixXd, bool=true);
-        void calculate(unsigned long int=86754);
+        void calculate(bool=true);
 };
 
 #endif /* VMC_H */
