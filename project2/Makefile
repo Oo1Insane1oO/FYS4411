@@ -9,11 +9,21 @@ endif
 
 EXEC = vmc_main
 SRC = src
+OBJ_DIR = bin
+SOURCES = $(wildcard $(SRC)/*.cpp)
+OBJECTS = $(patsubst $(SRC)/%.cpp,$(OBJ_DIR)/%.o,$(SOURCES))
 
-$(EXEC): $(SRC)/*.cpp
-	$(CC) $(CXXFLAGS) -o $@  $^ $(LDFLAGS)
+build: $(EXEC)
 
 clean:
-	rm $(EXEC)
+	rm -rf $(OBJ_DIR)
 
-.PHONY: clean
+.PHONY: clean build
+
+$(EXEC): $(OBJECTS)
+	$(CC) $(LDFLAGS) -o $@ $^
+
+$(OBJECTS): $(OBJ_DIR)/%.o : $(SRC)/%.cpp
+	echo Compiling $<
+	mkdir -p $(@D)
+	$(CC) -c $(CXXFLAGS) -o $@ $<
