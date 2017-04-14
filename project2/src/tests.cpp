@@ -1,8 +1,8 @@
 //////////////////////////////////////////////////////////////////////////////
-// Class containing functions for testing class Basis.                      //
-//                                                                          //
-// All functions return true in case where the tests are same and false     //
-// otherwise. Except for run_test which just runs all the functions.        //
+// Class containing functions for testinc class Basis.						//
+//																			//
+// All functions retunr true in case where the tests are same and false		//
+// otherwise. Except for run_test which just runs all the functions.		//
 //////////////////////////////////////////////////////////////////////////////
 
 #include "tests.h" // header

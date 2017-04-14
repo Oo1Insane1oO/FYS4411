@@ -88,7 +88,6 @@ void VMC::calculate(double step, int maxIterations, unsigned long int seed) {
     double Pnew, Pold, tmpEnergy;
     while (cycles < maxIterations) {
         /* run Monte Carlo cycles */
-        // set current wave function
         Pold = pow(b->trialWaveFunction(oldPositions,alpha,beta,a),2);
         for (unsigned int i = 0; i < oldPositions.rows(); ++i) {
             /* loop over number of particles */
@@ -97,7 +96,7 @@ void VMC::calculate(double step, int maxIterations, unsigned long int seed) {
                 newPositions(i,j) = oldPositions(i,j) + step*(dist(mt)-0.5);
             } // end forj
 
-            // calculate new PDF
+            // calculate new PDF (probability distribution function)
             Pnew = pow(b->trialWaveFunction(newPositions,alpha,beta,a),2);
 
             if (Pnew/Pold >= dist(mt)) {
@@ -110,8 +109,8 @@ void VMC::calculate(double step, int maxIterations, unsigned long int seed) {
             } // end if
 
             // update energy and increment cycles
-//             tmpEnergy = localEnergy2(newPositions,false);
-            tmpEnergy = localEnergyDiff(newPositions,false);
+            tmpEnergy = localEnergy2(newPositions,false);
+//             tmpEnergy = localEnergyDiff(newPositions,false);
             energy += tmpEnergy;
             energySq += tmpEnergy*tmpEnergy;
         } // end fori
