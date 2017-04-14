@@ -24,6 +24,5 @@ $(EXEC): $(OBJECTS)
 	$(CC) $(LDFLAGS) -o $@ $^
 
 $(OBJECTS): $(OBJ_DIR)/%.o : $(SRC)/%.cpp
-	echo Compiling $<
 	mkdir -p $(@D)
 	$(CC) -c $(CXXFLAGS) -o $@ $<
