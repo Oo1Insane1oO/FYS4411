@@ -132,7 +132,6 @@ double Basis::trialWaveFunction(Eigen::MatrixXd r, double alpha, double beta,
     return phiU.determinant() * phiD.determinant() * exp(expInner);
 } // end function trialWaveFunction
 
-
 void Basis::printStates() {
     /* print states */
     std::vector<int> nm(2);

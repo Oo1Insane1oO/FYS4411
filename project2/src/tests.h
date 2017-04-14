@@ -1,17 +1,19 @@
 #ifndef TESTS_H
 #define TESTS_H
 
-#include "basis.h"
+#include "vmc.h"
 
 class Tests {
     private:
         Basis *b;
+        VMC *v;
+        Methods *m;
 
         bool test_energies();
-//         bool test_ratio();
+        bool test_2particle();
     
     public:
-        Tests (Basis*);
+        Tests (Basis*, VMC*);
         virtual ~Tests ();
 
         void run_tests(int);

@@ -24,6 +24,7 @@ class Methods {
                 Eigen::MatrixXd, Eigen::MatrixXd&, unsigned int);
         double determinantRatio(Eigen::MatrixXd, Eigen::MatrixXd, unsigned
                 int);
+        double variance(double, double);
 };
 
 #endif /* METHODS_H */

@@ -8,12 +8,16 @@
 #include "tests.h" // header
 #include <iostream>
 
-Tests::Tests(Basis *B) {
+Tests::Tests(Basis *B, VMC *V) {
     b = B;
+    v = V;
+    m = new Methods();
 } // end constructor
 
 Tests::~Tests() {
     delete b;
+    delete v;
+    delete m;
 } // end deconstructor
 
 bool Tests::test_energies() {
@@ -32,8 +36,12 @@ bool Tests::test_energies() {
     return t;
 } // end function test_energies
 
-// bool Tests::test_ratio() {
-// } // end function test_ratio
+bool Tests::test_2particle() {
+    /* check that energy in case of unperturbed harmonic oscillator system with
+     * 2 electrons is correct */
+    v->calculate();
+    return ((m->variance(v->energy, v->energySq)) < 1e-14 ? true : false);
+} // end function test_2particle
 
 void Tests::run_tests(int t) {
     /* run all tests and exit */
@@ -42,6 +50,11 @@ void Tests::run_tests(int t) {
             std::cout << "Energies good" << std::endl;
         } else {
             std::cout << "Energies wrong" << std::endl;
+        } // end ifelse
+        if(test_2particle()) {
+            std::cout << "Energy unperturbed 2 electron good" << std::endl;
+        } else { 
+            std::cout << "Energy unperturbed 2 electron good" << std::endl;
         } // end ifelse
         if (t==2) {
             b->printStates();

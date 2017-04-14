@@ -11,12 +11,15 @@
 #include <math.h>
 #include <random>
 
-VMC::VMC(Basis *B, double alp, double bet, unsigned int d) {
+VMC::VMC(Basis *B, double alp, double bet, unsigned int d, double dt, unsigned
+        int max) {
     alpha = alp;
     beta = bet;
     a = 0;
     b = B;
     dim = d;
+    step = dt;
+    maxIterations = max;
     meth = new Methods(); 
 } // end constructor
 
@@ -64,7 +67,7 @@ double VMC::diff2(Eigen::MatrixXd R, double dx) {
     return diff;
 } // end function diff2
 
-void VMC::calculate(double step, int maxIterations, unsigned long int seed) {
+void VMC::calculate(unsigned long int seed) {
     /* function for running Monte Carlo integration */
 
     // initialize Mersenne Twister random number generator and uniform
@@ -84,7 +87,7 @@ void VMC::calculate(double step, int maxIterations, unsigned long int seed) {
     energySq = 0;
     newPositions = oldPositions;
 
-    int cycles = 0;
+    unsigned int cycles = 0;
     double Pnew, Pold, tmpEnergy;
     while (cycles < maxIterations) {
         /* run Monte Carlo cycles */

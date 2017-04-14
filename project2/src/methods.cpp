@@ -63,3 +63,9 @@ double Methods::determinantRatio(Eigen::MatrixXd newElement, Eigen::MatrixXd
     } // end fori
     return R;
 } // end function determinantRatio
+
+double Methods::variance(double p,double psq) {
+    /* calculate variance given <p> and <p^2>, that is expectation value and
+     * expectation value squared */
+    return psq - p*p;
+} // end function variance
