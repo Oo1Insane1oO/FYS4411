@@ -15,7 +15,7 @@ VMC::VMC(Basis *B, double alp, double bet, unsigned int d, double dt, unsigned
         int max) {
     alpha = alp;
     beta = bet;
-    a = 0;
+    a = 1;
     b = B;
     dim = d;
     step = dt;
@@ -126,7 +126,7 @@ void VMC::calculate(bool unperturb) {
             } // end if
 
             // update energy and increment cycles
-            tmpEnergy = localEnergy2(newPositions,false);
+            tmpEnergy = localEnergy2(newPositions,unperturb);
 //             tmpEnergy = localEnergyDiff(newPositions,false);
             energy += tmpEnergy;
             energySq += tmpEnergy*tmpEnergy;
