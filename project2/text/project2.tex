@@ -708,6 +708,69 @@
 %     with $\hat{H}$ being the Hamiltonian and $\md^N\vec{r}$ is a short hand for
 %     an integral over $\vec{r}_1,\dots,\vec{r}_N$.
 
+\subsection{Optimization}
+\label{sub:optimization}
+    In the method described in \Autoref{sub:vmc} the heavy load in terms of
+    calculation lies within the calculation of the determinant ratio >>REF
+    HERE<<. This section will derive an expression for these ratios in terms of
+    computation time. We will in the whole section assume we only move one
+    particle at a time in the Monte Carlo cycle.
+
+\subsubsection{Determinant Ratio}
+\label{ssub:determinant_ratio}
+\newcommand{\rnew}{r^{\text{new}}}
+\newcommand{\rold}{r^{\text{old}}}
+\newcommand{\suml}[2]{\sum\limits_{#1=1}^{#2}}
+    In the Metropolis algorithm we calculate a ratio of determinants in the
+    Metropolis test. Starting by defining a Slater determinant $D$ with entries
+    defined as
+        \begin{equation}
+            D_{ij} \equiv \phi_j{r_i}
+            \label{eq:Ddef}
+        \end{equation}
+    where the $\phi$'s are defined as in \Autoref{sub:vmc}. \\
+    In terms of cofactors $C_{ij}$ we have
+        \begin{equation}
+            \det(D) = \sum\limits^N_{j=1} D_{ij}C_{ji}
+            \label{eq:Dcofac}
+        \end{equation}
+    If we now take into light the mentioned assumption about moving only one
+    particle at a time the determinant given in \Autoref{eq:Ddef} only gets a
+    change of one row. \\
+    Defining the ratio as
+        \begin{equation}
+            R \equiv \frac{\det(D\left(x^{\text{new}}\right))}
+            {\det(D\left(x^{\text{old}}\right))}
+            \label{eq:Rdef}
+        \end{equation}
+    Using the fact that when moving the particle at position $r_i$ the
+    cofactors remain unchanged and inserting in \Autoref{eq:Dcofac} into
+    \Autoref{eq:Rdef} we have
+        \begin{equation}
+            R = \frac{\sum\limits^{N}_{j=1} D_{ij}(\rnew)C_{ji}(\rold)}
+            {\sum\limits^{N}_{j=1} D_{ij}(\rold)C_{ij}(\rold)}
+            \label{eq:R1}
+        \end{equation}
+    Since the Slater is square(closed shell), we have the following ratio >>INSERT REF<<
+        \begin{equation}
+            \det(D) = \frac{D^{\dagger}}{D}
+            \label{eq:Ddagger}
+        \end{equation}
+    inserting this into \Autoref{eq:R1} we get
+        \begin{equation}
+            R = \frac{\suml{j}{N}D_{ij}(\rnew)D^{-1}_{ji}(\rold)\det(D)(\rold)}
+            {\suml{j}{N}D_{ij}(\rold)D^{-1}_{ji}(\rold)\det(D)(\rold)}
+        \end{equation}
+    Since $D$ is ivertible >>INSERT REF<< we have
+        \begin{equation}
+            \suml{k}{N}D_{ik}D^{-1}_{kj} = \delta_{ij}
+            \label{eq:Dorth}
+        \end{equation}
+    meaning the ratio is finally(with \Autoref{eq:Ddef} inserted)
+        \begin{equation}
+            R = \suml{j}{N}\phi_j(\rnew_j)D^{-1}_{ji}(\rold)
+        \end{equation}
+
 \section{SETUP}
 \label{sec:setup}
 \section{RESULTS}
