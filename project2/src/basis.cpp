@@ -105,20 +105,19 @@ double Basis::harmonicOscillatorWaveFunction(double alpha, double x, double y,
 
 void Basis::setBasisMatrix(Eigen::MatrixXd r, double alpha) {
     /* set matrix for Slater determinant with harmonic oscillator */
-    double N = r.rows()/2;
-    phiU.resize(N,N);
-    phiD.resize(N,N);
-    for (unsigned int i = 0; i < N; ++i) {
-        for (unsigned int j = 0; j < N; ++j) {
-            phiD(i,j) = harmonicOscillatorWaveFunction(alpha, r(2*i,0),
-                    r(2*i,1), *states[2*j][0], *states[2*j][1]);
-            phiU(i,j) = harmonicOscillatorWaveFunction(alpha, r(2*i+1,0),
-                    r(2*i+1,1), *states[2*j+1][0], *states[2*j+1][1]);
+    if (!phi.size()) {
+        /* initialize only once */
+        phi.resize(r.rows(),r.rows());
+    } // end if
+    for (unsigned int i = 0; i < r.rows(); ++i) {
+        for (unsigned int j = 0; j < r.rows(); ++j) {
+            phi(i,j) = harmonicOscillatorWaveFunction(alpha, r(i,0), r(i,1),
+                    *states[j][0], *states[j][1]);
         } // end forj
     } // end fori
 } // end function setBasisMatrix
 
-double Basis::trialWaveFunction(Eigen::MatrixXd r, double alpha, double beta,
+Eigen::MatrixXd Basis::trialWaveFunction(Eigen::MatrixXd r, double alpha, double beta,
         double a) {
     /* given a vector of coordinates, return trial wave function */
     unsigned int N = r.rows();
@@ -129,7 +128,7 @@ double Basis::trialWaveFunction(Eigen::MatrixXd r, double alpha, double beta,
             expInner += jastrow(a, beta, r(i,0)-r(j,0),r(i,1)-r(j,1));
         } // end forj
     } // end fori
-    return phiU.determinant() * phiD.determinant() * exp(expInner);
+    return phi * exp(expInner);
 } // end function trialWaveFunction
 
 void Basis::printStates() {

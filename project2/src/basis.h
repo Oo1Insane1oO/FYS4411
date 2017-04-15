@@ -13,12 +13,13 @@ class Basis {
     private:
         int s;
         std::vector<int> n, ms, E, M, m;
-        Eigen::MatrixXd phiU, phiD;
+        Eigen::MatrixXd phi;
 
         Methods *meth;
 
         void pushState(std::vector<int*>&, int, int, int);
         double jastrow(double, double, double, double);
+        void setSpinMatrix();
 
     public:
         Basis(double, int);
@@ -29,8 +30,10 @@ class Basis {
         std::vector<std::vector<int*>> states;
 
         void setBasisMatrix(Eigen::MatrixXd, double); 
-        double harmonicOscillatorWaveFunction(double, double, double, int, int);
-        double trialWaveFunction(Eigen::MatrixXd, double, double, double);
+        double harmonicOscillatorWaveFunction(double, double, double, int,
+                int);
+        Eigen::MatrixXd trialWaveFunction(Eigen::MatrixXd, double, double,
+                double);
         void printStates();
 };
 

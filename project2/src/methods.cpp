@@ -27,25 +27,25 @@ int Methods::min(int var1, int var2) {
 } // end template function min
 
 double Methods::max(double var1, double var2) {
-    return (var1<var2 ? var1 : var2);
+    return (var1>var2 ? var1 : var2);
 } // end function max
 
 int Methods::max(int var1, int var2) {
-    return (var1<var2 ? var1 : var2);
+    return (var1>var2 ? var1 : var2);
 } // end template function max
 
 void Methods::updateMatrixInverse(Eigen::MatrixXd Mold, Eigen::MatrixXd Mnew,
         Eigen::MatrixXd MoldInv, Eigen::MatrixXd &MnewInv, unsigned int i) {
     /* update inverse of matrix when only column i has changed */
-    double R = determinantRatio(Mnew, Mold, i);
-    unsigned int N = MnewInv.size();
-    for (unsigned int k = 0; k < N; ++k) {
-        for (unsigned int j = 0; j < N; ++j) {
-            for (unsigned int l = 0; l < N; ++l) {
+    double R = determinantRatio(Mnew, MoldInv, i);
+    unsigned int N = MnewInv.rows();
+    for (unsigned int k = 0; k < MnewInv.rows(); ++k) {
+        for (unsigned int j = 0; j < MnewInv.rows(); ++j) {
+            for (unsigned int l = 0; l < MnewInv.rows(); ++l) {
                 if (j==i) {
-                    MnewInv(k,j) += Mold(i,l)*MoldInv(i,j);
+                    MnewInv(k,j) += Mold(i,l)*MoldInv(l,j);
                 } else {
-                    MnewInv(k,j) -= Mnew(i,l)*MoldInv(i,j);
+                    MnewInv(k,j) -= Mnew(i,l)*MoldInv(l,j);
                 } // end ifelse
             } // end forl
             MnewInv(k,j) *= MoldInv(k,i)/R;
@@ -59,7 +59,7 @@ double Methods::determinantRatio(Eigen::MatrixXd newElement, Eigen::MatrixXd
     /* Calculate determinant ratio of Slater determinants */
     double R = 0;
     for (unsigned int j = 0; j < oldInverse.rows(); ++j) {
-        R += newElement(j,i) * oldInverse(j,i);
+        R += newElement(i,j) * oldInverse(j,i);
     } // end fori
     return R;
 } // end function determinantRatio

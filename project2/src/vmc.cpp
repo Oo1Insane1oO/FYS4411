@@ -38,33 +38,33 @@ double VMC::localEnergy2(Eigen::MatrixXd R, bool coulomb) {
             1/r12 : 0);
 } // end function localEnergy
 
-double VMC::localEnergyDiff(Eigen::MatrixXd R, bool coulomb) {
-    /* calculate analytic expression of local energy for 2 electrons */
-    double dx = 0.0001;
-    return 0.5 * (-diff2(R,dx) + pow(b->omega,2) * (R.row(0).squaredNorm() +
-                R.row(1).squaredNorm())) + (coulomb ?
-            1/(R.row(0)-R.row(1)).norm() : 0);
-} // end function localEnergyDiff
+// double VMC::localEnergyDiff(Eigen::MatrixXd R, bool coulomb) {
+//     /* calculate analytic expression of local energy for 2 electrons */
+//     double dx = 0.0001;
+//     return 0.5 * (-diff2(R,dx) + pow(b->omega,2) * (R.row(0).squaredNorm() +
+//                 R.row(1).squaredNorm())) + (coulomb ?
+//             1/(R.row(0)-R.row(1)).norm() : 0);
+// } // end function localEnergyDiff
 
-double VMC::diff2(Eigen::MatrixXd R, double dx) {
-    /* calculate second derivative for all positions in x using central
-     * difference scheme */
-    double diff = 0;
-    double tmpDiff;
-    Eigen::MatrixXd Rpm = R;
-    double mid = 2*b->trialWaveFunction(R,alpha,beta,a);
-    for (unsigned int i = 0; i < R.rows(); ++i) {
-        for (unsigned int j = 0; j < R.cols(); ++j) {
-            Rpm(i,j) += dx;
-            tmpDiff = b->trialWaveFunction(Rpm,alpha,beta,a) - mid;
-            Rpm(i,j) -= 2*dx;
-            tmpDiff += b->trialWaveFunction(Rpm,alpha,beta,a);
-            diff += tmpDiff / (dx*dx);
-            Rpm = R;
-        } // end forj
-    } // end fori
-    return diff;
-} // end function diff2
+// double VMC::diff2(Eigen::MatrixXd R, double dx) {
+//     /* calculate second derivative for all positions in x using central
+//      * difference scheme */
+//     double diff = 0;
+//     double tmpDiff;
+//     Eigen::MatrixXd Rpm = R;
+//     double mid = 2*b->trialWaveFunction(R,alpha,beta,a);
+//     for (unsigned int i = 0; i < R.rows(); ++i) {
+//         for (unsigned int j = 0; j < R.cols(); ++j) {
+//             Rpm(i,j) += dx;
+//             tmpDiff = b->trialWaveFunction(Rpm,alpha,beta,a) - mid;
+//             Rpm(i,j) -= 2*dx;
+//             tmpDiff += b->trialWaveFunction(Rpm,alpha,beta,a);
+//             diff += tmpDiff / (dx*dx);
+//             Rpm = R;
+//         } // end forj
+//     } // end fori
+//     return diff;
+// } // end function diff2
 
 void VMC::setSeed(unsigned long int s) {
     /* set seed */
@@ -97,10 +97,14 @@ void VMC::calculate(bool unperturb) {
     newPositions = oldPositions;
 
     unsigned int cycles = 0;
-    double Pnew, Pold, tmpEnergy;
+    double tmpEnergy;
+    Eigen::MatrixXd oldWaveFunction, newWaveFunction, oldInverse;
+    Eigen::MatrixXd newInverse = Eigen::MatrixXd::Zero(oldPositions.rows(),
+            oldPositions.rows());
     while (cycles < maxIterations) {
         /* run Monte Carlo cycles */
-        Pold = pow(b->trialWaveFunction(oldPositions,alpha,beta,a),2);
+        oldWaveFunction = b->trialWaveFunction(oldPositions,alpha,beta,a);
+        oldInverse = oldWaveFunction.inverse();
         for (unsigned int i = 0; i < oldPositions.rows(); ++i) {
             /* loop over number of particles */
             for (unsigned int j = 0; j < dim; ++j) {
@@ -109,22 +113,26 @@ void VMC::calculate(bool unperturb) {
             } // end forj
 
             // calculate new PDF (probability distribution function)
-            Pnew = pow(b->trialWaveFunction(newPositions,alpha,beta,a),2);
+            newWaveFunction = b->trialWaveFunction(newPositions,alpha,beta,a);
 
-            if (Pnew/Pold >= dist(mt)) {
+            if (pow(meth->determinantRatio(newWaveFunction, oldInverse, i), 2)
+                    >= dist(mt)) {
                 /* update positions according to Metropolis test */
                 oldPositions.row(i) = newPositions.row(i);
-                Pold = Pnew;
+                oldWaveFunction = newWaveFunction;
             } else {
                 /* reset position */
                 newPositions.row(i) = oldPositions.row(i);
             } // end if
 
             // update energy and increment cycles
-            tmpEnergy = localEnergy2(newPositions,unperturb);
+            tmpEnergy = localEnergy2(newPositions,false);
 //             tmpEnergy = localEnergyDiff(newPositions,false);
             energy += tmpEnergy;
             energySq += tmpEnergy*tmpEnergy;
+            meth->updateMatrixInverse(oldWaveFunction, newWaveFunction,
+                    oldInverse, newInverse, i);
+            oldInverse = newInverse;
         } // end fori
         cycles++;
     } // end while
