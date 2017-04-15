@@ -722,10 +722,10 @@
 \newcommand{\rold}{r^{\text{old}}}
 \newcommand{\suml}[2]{\sum\limits_{#1=1}^{#2}}
     In the Metropolis algorithm we calculate a ratio of determinants in the
-    Metropolis test. Starting by defining a Slater determinant $D$ with entries
-    defined as
+    Metropolis test. Starting by defining a Slater determinant Matrix $D$ with
+    entries defined as
         \begin{equation}
-            D_{ij} \equiv \phi_j{r_i}
+            D_{ij} \equiv \phi_j({r_i})
             \label{eq:Ddef}
         \end{equation}
     where the $\phi$'s are defined as in \Autoref{sub:vmc}. \\
@@ -758,18 +758,42 @@
         \end{equation}
     inserting this into \Autoref{eq:R1} we get
         \begin{equation}
-            R = \frac{\suml{j}{N}D_{ij}(\rnew)D^{-1}_{ji}(\rold)\det(D)(\rold)}
-            {\suml{j}{N}D_{ij}(\rold)D^{-1}_{ji}(\rold)\det(D)(\rold)}
+            R = \frac{\suml{j}{N}D_{ij}(\rnew)D^{-1}_{ji}(\rold)\det(D)}
+            {\suml{j}{N}D_{ij}(\rold)D^{-1}_{ji}(\rold)\det(D)}
+            \label{eq:Rrat}
         \end{equation}
     Since $D$ is ivertible >>INSERT REF<< we have
         \begin{equation}
             \suml{k}{N}D_{ik}D^{-1}_{kj} = \delta_{ij}
             \label{eq:Dorth}
         \end{equation}
-    meaning the ratio is finally(with \Autoref{eq:Ddef} inserted)
+    meaning the denominator in \Autoref{eq:Rrat} is equal to $1$ and the ratio
+    is finally(with \Autoref{eq:Ddef} inserted)
         \begin{equation}
-            R = \suml{j}{N}\phi_j(\rnew_j)D^{-1}_{ji}(\rold)
+            R = \suml{j}{N}\phi_j(\rnew_i)\phi^{-1}_{ji}(\rold)
+            \label{eq:Rfinal}
         \end{equation}
+
+\subsection{Inverse of Matrix}
+\label{sub:inverse_of_matrix}
+    In \Autoref{ssub:determinant_ratio} we derived a formula for calculating
+    the ratio of determinants by the inverse of the old determinant when only
+    one row is changed. This section gives a formula for updating the inverse
+    of a matrix in that case. The formula is
+        \begin{equation}
+            D^{-1}_{kj}\left(\rnew\right) = 
+                \left\{\begin{aligned}
+                    &D^{-1}_{kj}\left(\rold\right) -
+                    \frac{D^{-1}_{ik}\left(\rold\right)}{R}
+                    \suml{l}{N}D_{il}\left(\rnew\right)D^{-1}_{lj}\left(\rold\right),&
+                    j \neq i \\
+                    &\frac{D^{-1}_{ik}\left(\rold\right)}{R}
+                    \suml{l}{N}D_{il}\left(\rold\right)D^{-1}_{lj}\left(\rold\right),&
+                    j = i
+                \end{aligned}\right.
+            \label{eq:InvUpdate}
+        \end{equation}
+    as described by Sherman and Morris >>REF HERE<<.
 
 \section{SETUP}
 \label{sec:setup}
