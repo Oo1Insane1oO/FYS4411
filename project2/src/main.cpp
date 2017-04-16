@@ -32,6 +32,7 @@ int main(int argc, const char** argv) {
     unsigned int maxIterations = atoi(argv[3]);
     double step = atof(argv[4]);
     int t = atoi(argv[5]);
+    bool imp = atoi(argv[6]);
 
     if (num > 2) {
         std::cout << "Not implemented yet" << std::endl;
@@ -42,7 +43,7 @@ int main(int argc, const char** argv) {
     Basis *b = new Basis(omega, num/2);
     
     // set vmc object for calculations
-    VMC *vmcObj = new VMC(b,1,1,2,step,maxIterations);
+    VMC *vmcObj = new VMC(b,1,1,2,step,maxIterations,imp);
     
     if (t) {
         /* run tests */
