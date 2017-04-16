@@ -15,7 +15,7 @@ VMC::VMC(Basis *B, double alp, double bet, unsigned int d, double dt, unsigned
         int max) {
     alpha = alp;
     beta = bet;
-    a = 1;
+    a = 0;
     b = B;
     dim = d;
     step = dt;

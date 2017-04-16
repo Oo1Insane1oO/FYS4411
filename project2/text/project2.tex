@@ -751,15 +751,16 @@
             {\sum\limits^{N}_{j=1} D_{ij}(\rold)C_{ij}(\rold)}
             \label{eq:R1}
         \end{equation}
-    Since the Slater is square(closed shell), we have the following ratio >>INSERT REF<<
+    Since the Slater is square(closed shell), we have the following ratio
+    >>INSERT REF<<
         \begin{equation}
             \det(D) = \frac{D^{\dagger}}{D}
             \label{eq:Ddagger}
         \end{equation}
     inserting this into \Autoref{eq:R1} we get
         \begin{equation}
-            R = \frac{\suml{j}{N}D_{ij}(\rnew)D^{-1}_{ji}(\rold)\det(D)}
-            {\suml{j}{N}D_{ij}(\rold)D^{-1}_{ji}(\rold)\det(D)}
+            R = \frac{\suml{j}{N}D_{ij}(\rnew)D^{-1}_{ji}(\rold)\abs{D}}
+            {\suml{j}{N}D_{ij}(\rold)D^{-1}_{ji}(\rold)\abs{D}}
             \label{eq:Rrat}
         \end{equation}
     Since $D$ is ivertible >>INSERT REF<< we have
@@ -772,6 +773,13 @@
         \begin{equation}
             R = \suml{j}{N}\phi_j(\rnew_i)\phi^{-1}_{ji}(\rold)
             \label{eq:Rfinal}
+        \end{equation}
+    We can follow a similar approach to find the ratio given in
+    \Autoref{eq:quantumForce} for the quantum force. The expression is simply
+        \begin{equation}
+            \frac{\nabla_i\abs{D(r_i)}}{\abs{D(r_i)}} =
+            \suml{j}{N}\nabla_i\phi_j(\rnew_i)\phi^{-1}_{ji}(\rold)
+            \label{eq:Rder}
         \end{equation}
 
 \subsection{Inverse of Matrix}
