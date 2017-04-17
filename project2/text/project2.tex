@@ -298,13 +298,28 @@
             \exp(-\frac{\omega}{2}(x^2+y^2))
             \label{eq:cartUarmOscWavef}
         \end{equation}
-    where $H_n$ is a hermite polynomial of order $n$ and $A$ is a normalization
+    where $H_n$ is a Hermite polynomial of order $n$ and $A$ is a normalization
     constant. The quantum numbers $n_x$ and $n_y$ go as $n_x,n_y=0,1,2\dots$.
     While $\omega$ is the oscillator frequency. \\
     The energies is 
         \begin{equation}
             E = \hbar\omega\left(n_x + n_y + 1\right)
             \label{eq:cartHarmOscE}
+        \end{equation}
+
+\subsection{FOURIER TRANSFORMATION}
+\label{sub:fourier_transformation}
+    Given an integrable function $f:\mathbb{R}\rarr\mathbb{C}$ the Fourier
+    transform to variable $x$ is defined to be
+        \begin{equation}
+            \tilde{f}(k) = \infint f(x)\me^{-2\pi ixs} \md x
+            \label{eq:FourierTransform}
+        \end{equation}
+    with $x,s\in\mathbb{R}$. \\
+    The inverse transformation is given as
+        \begin{equation}
+            f(x) = \infint \tilde{f}(k)\me^{2\pi isx} \md s
+            \label{eq:invFourier}
         \end{equation}
 
 \subsection{METROPOLIS-HASTINGS ALGORITHM}
@@ -428,6 +443,14 @@
     with $D=1/2$ in natural units due to the kinetic energy term and $\Delta t$
     is a time-step parameter. The random variable $\xi$ is within a Gaussian
     distribution of variance one and standard deviation zero. \\
+    For the differential equation (\Autoref{eq:FokkerPlanc}) we insert in for
+    the quantum force given in \Autoref{eq:quantumForce} and arrive at the
+    following diffusion equation
+        \begin{equation}
+            \prd{t}[P] = -D\prd{r}[P][2]
+            \label{eq:Pdiff}
+        \end{equation}
+    This equation is solved by using a Fourier transform in the spatial coordinate $r$ according to \Autoref{eq:FourierTransformt a}
     Using the force obtained in \Autoref{ssub:quantum_force} given in
     \Autoref{eq:quantumForce} the solution to the Fokker-Planck equations are
     given by the Greens function

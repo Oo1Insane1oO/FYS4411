@@ -3,20 +3,21 @@
 \BOOKMARK [2][-]{subsection.2.1}{HERMITE POLYNOMIALS}{section.2}% 3
 \BOOKMARK [2][-]{subsection.2.2}{HARMONIC OSCILLATOR}{section.2}% 4
 \BOOKMARK [3][-]{subsubsection.2.2.1}{Cartesian Coordinates}{subsection.2.2}% 5
-\BOOKMARK [2][-]{subsection.2.3}{METROPOLIS-HASTINGS ALGORITHM}{section.2}% 6
-\BOOKMARK [2][-]{subsection.2.4}{VARIATIONAL PRINCIPLE}{section.2}% 7
-\BOOKMARK [2][-]{subsection.2.5}{IMPORTANCE SAMPLING}{section.2}% 8
-\BOOKMARK [3][-]{subsubsection.2.5.1}{Quantum Force}{subsection.2.5}% 9
-\BOOKMARK [3][-]{subsubsection.2.5.2}{Solution}{subsection.2.5}% 10
-\BOOKMARK [2][-]{subsection.2.6}{VMC}{section.2}% 11
-\BOOKMARK [3][-]{subsubsection.2.6.1}{Expectation Value and Local Energy}{subsection.2.6}% 12
-\BOOKMARK [3][-]{subsubsection.2.6.2}{Analytical Expression for Local Energy}{subsection.2.6}% 13
-\BOOKMARK [3][-]{subsubsection.2.6.3}{Two Electron Case}{subsection.2.6}% 14
-\BOOKMARK [2][-]{subsection.2.7}{Optimization}{section.2}% 15
-\BOOKMARK [3][-]{subsubsection.2.7.1}{Determinant Ratio}{subsection.2.7}% 16
-\BOOKMARK [2][-]{subsection.2.8}{Inverse of Matrix}{section.2}% 17
-\BOOKMARK [1][-]{section.3}{SETUP}{}% 18
-\BOOKMARK [1][-]{section.4}{RESULTS}{}% 19
-\BOOKMARK [1][-]{section.5}{DISCUSSION}{}% 20
-\BOOKMARK [1][-]{section.6}{CONCLUSION}{}% 21
-\BOOKMARK [1][-]{section.7}{References}{}% 22
+\BOOKMARK [2][-]{subsection.2.3}{FOURIER TRANSFORMATION}{section.2}% 6
+\BOOKMARK [2][-]{subsection.2.4}{METROPOLIS-HASTINGS ALGORITHM}{section.2}% 7
+\BOOKMARK [2][-]{subsection.2.5}{VARIATIONAL PRINCIPLE}{section.2}% 8
+\BOOKMARK [2][-]{subsection.2.6}{IMPORTANCE SAMPLING}{section.2}% 9
+\BOOKMARK [3][-]{subsubsection.2.6.1}{Quantum Force}{subsection.2.6}% 10
+\BOOKMARK [3][-]{subsubsection.2.6.2}{Solution}{subsection.2.6}% 11
+\BOOKMARK [2][-]{subsection.2.7}{VMC}{section.2}% 12
+\BOOKMARK [3][-]{subsubsection.2.7.1}{Expectation Value and Local Energy}{subsection.2.7}% 13
+\BOOKMARK [3][-]{subsubsection.2.7.2}{Analytical Expression for Local Energy}{subsection.2.7}% 14
+\BOOKMARK [3][-]{subsubsection.2.7.3}{Two Electron Case}{subsection.2.7}% 15
+\BOOKMARK [2][-]{subsection.2.8}{Optimization}{section.2}% 16
+\BOOKMARK [3][-]{subsubsection.2.8.1}{Determinant Ratio}{subsection.2.8}% 17
+\BOOKMARK [2][-]{subsection.2.9}{Inverse of Matrix}{section.2}% 18
+\BOOKMARK [1][-]{section.3}{SETUP}{}% 19
+\BOOKMARK [1][-]{section.4}{RESULTS}{}% 20
+\BOOKMARK [1][-]{section.5}{DISCUSSION}{}% 21
+\BOOKMARK [1][-]{section.6}{CONCLUSION}{}% 22
+\BOOKMARK [1][-]{section.7}{References}{}% 23
