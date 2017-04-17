@@ -312,13 +312,13 @@
     Given an integrable function $f:\mathbb{R}\rarr\mathbb{C}$ the Fourier
     transform to variable $x$ is defined to be
         \begin{equation}
-            \tilde{f}(k) = \infint f(x)\me^{-2\pi ixs} \md x
+            \tilde{f}(k) = \frac{1}{\sqrt{2\pi}}\infint f(x)\me^{ixs} \md x
             \label{eq:FourierTransform}
         \end{equation}
     with $x,s\in\mathbb{R}$. \\
     The inverse transformation is given as
         \begin{equation}
-            f(x) = \infint \tilde{f}(k)\me^{2\pi isx} \md s
+            f(x) = \frac{1}{\sqrt{2\pi}}\infint \tilde{f}(k)\me^{-isx} \md s
             \label{eq:invFourier}
         \end{equation}
 
@@ -450,7 +450,26 @@
             \prd{t}[P] = -D\prd{r}[P][2]
             \label{eq:Pdiff}
         \end{equation}
-    This equation is solved by using a Fourier transform in the spatial coordinate $r$ according to \Autoref{eq:FourierTransformt a}
+    This equation is solved by using a Fourier transform in the spatial
+    coordinate $r$ according to \Autoref{eq:FourierTransform} giving the equation
+        \begin{equation}
+            \prd{t}[\tilde{P}(s,t)] = -\frac{D}{\sqrt{2\pi}}s^2\tilde{P}(s,t)
+            \label{eq:PdiffFourier}
+        \end{equation}
+    with solution
+        \begin{equation}
+            \tilde{P}(s,\Delta t) = \tilde{P}(s,0)
+            \me^{-\frac{D}{\sqrt{2\pi}}s^2\Delta t}
+            \label{eq:PdiffFourierSol}
+        \end{equation}
+    Initially the probability density is centered at $x$, that is the old
+    position. This can be expressed terms of a Dirac-delta function, meaning
+    $P(x,0)=\delta(y-x)$ (where $y$ is given in \Autoref{eq:newPos}). Making an
+    inverse transformation as described in \Autoref{eq:invFourier} yields in
+        \begin{equation}
+            P(x,\Delta t) = \frac{1}{(4\pi D\Delta
+            t)^{\frac{3N}{2}}}\exp(-\frac{(y-x)^2}{4D\Delta t})
+        \end{equation}
     Using the force obtained in \Autoref{ssub:quantum_force} given in
     \Autoref{eq:quantumForce} the solution to the Fokker-Planck equations are
     given by the Greens function
