@@ -58,7 +58,7 @@ int main(int argc, const char** argv) {
     vmcObj->calculate();
     std::cout << std::setprecision(16) << "<E> = " << vmcObj->energy << ", <E^2> = " << vmcObj->energySq <<
         std::endl;
-    std::cout << std::setprecision(16) << "var = " << (vmcObj->energySq - pow(vmcObj->energy,2)) << std::endl;
+    std::cout << std::setprecision(16) << "<E^2> - <E>^2 = " << (vmcObj->energySq - pow(vmcObj->energy,2)) << std::endl;
 
     // free objects
     delete b;
