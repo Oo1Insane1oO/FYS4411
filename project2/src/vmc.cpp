@@ -46,8 +46,8 @@ void VMC::diff(Eigen::MatrixXd R, Eigen::MatrixXd &der) {
     double denom = 1 + beta*r12;
     for (unsigned int i = 0; i < R.rows(); ++i) {
         for (unsigned int j = 0; j < R.cols(); ++j) {
-            der(i,j) = -alpha*b->omega*R(i,j) + a*(R(i,j) -
-                    R(j,i))/(r12*denom*denom);
+            der(i,j) = -alpha*b->omega*R(i,j) + a*(R(i,j) - R(i,j+(j%2 ? -1 :
+                            1)))/(r12*denom*denom);
         } // end forj
     } // end fori
 } // end function
@@ -133,6 +133,7 @@ void VMC::calculate(bool unperturb) {
         oldInverse = oldWaveFunction.inverse();
         if (imp) {
             diff(oldPositions,qForceOld);
+            qForceOld *= 2;
         } // end if
         for (unsigned int i = 0; i < oldPositions.rows(); ++i) {
             /* loop over number of particles */
@@ -142,34 +143,32 @@ void VMC::calculate(bool unperturb) {
                     newPositions(i,j) = oldPositions(i,j) +
                         0.5*qForceOld(i,j)*dt + normDist(mt)*sqrt(dt);
                 } else {
-                    newPositions(i,j) = oldPositions(i,j) + step*(dist(mt)-0.5);
+                    newPositions(i,j) = oldPositions(i,j) +
+                        step*(dist(mt)-0.5);
                 } // end ifelse
             } // end forj
 
             // calculate new PDF (probability distribution function)
             newWaveFunction = b->trialWaveFunction(newPositions,alpha,beta,a);
             if (imp) {
+                /* set new quantum force */
                 diff(newPositions, qForceNew);
+                qForceNew *= 2;
             } // end if
 
-            // calculate Greens funcition ratio
+            // calculate Greens function ratio
             if (imp) {
-                greensFunctionRatio = 0;
-                for (unsigned int j = 0; j < oldPositions.rows(); ++j) {
-//                     greensFunctionRatio -= pow(oldPositions(i,j) -
-//                             normDist(mt)*sqrt(dt),2) - pow(newPositions(i,j) -
-//                             normDist(mt)*sqrt(dt),2);
-                    greensFunctionRatio += 0.5*(qForceOld(i,j) +
-                            qForceNew(i,j)) * (0.25*dt*(qForceOld(i,j) -
-                                qForceNew(i,j)) - newPositions(i,j) +
-                            oldPositions(i,j));
-                } // end forj
-                greensFunctionRatio = exp(greensFunctionRatio);
+                greensFunctionRatio = exp((0.5*(qForceOld.array() +
+                                qForceNew.array()) *
+                            (0.25*dt*(qForceOld.array() - qForceNew.array()) -
+                             newPositions.array() +
+                             oldPositions.array())).matrix().sum());
             } // end if
 
             testRatio = pow(meth->determinantRatio(newWaveFunction, oldInverse,
                         i), 2);
             if (imp) {
+                /* importance sampling */
                 testRatio *= greensFunctionRatio;
             } //end if
 
@@ -177,11 +176,15 @@ void VMC::calculate(bool unperturb) {
                 /* update positions according to Metropolis test */
                 oldPositions.row(i) = newPositions.row(i);
                 oldWaveFunction = newWaveFunction;
-                qForceOld = qForceNew;
+                if (imp) {
+                    qForceOld = qForceNew;
+                } // end if
             } else {
                 /* reset position */
                 newPositions.row(i) = oldPositions.row(i);
-                qForceNew = qForceOld;
+                if (imp) {
+                    qForceNew = qForceOld;
+                } // end if
             } // end if
 
             // update energy and increment cycles
@@ -189,9 +192,11 @@ void VMC::calculate(bool unperturb) {
 //             tmpEnergy = localEnergyDiff(newPositions,false);
             energy += tmpEnergy;
             energySq += tmpEnergy*tmpEnergy;
-            meth->updateMatrixInverse(oldWaveFunction, newWaveFunction,
-                    oldInverse, newInverse, i);
-            oldInverse = newInverse;
+            if (imp) {
+                meth->updateMatrixInverse(oldWaveFunction, newWaveFunction,
+                        oldInverse, newInverse, i);
+                oldInverse = newInverse;
+            } // end if
         } // end fori
         cycles++;
     } // end while
