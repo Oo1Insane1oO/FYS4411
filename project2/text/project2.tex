@@ -453,37 +453,41 @@
     This equation is solved by using a Fourier transform in the spatial
     coordinate $r$ according to \Autoref{eq:FourierTransform} giving the equation
         \begin{equation}
-            \prd{t}[\tilde{P}(s,t)] = -\frac{D}{\sqrt{2\pi}}s^2\tilde{P}(s,t)
+            \prd{t}[\tilde{P}(s,t)] = -Ds^2\tilde{P}(s,t)
             \label{eq:PdiffFourier}
         \end{equation}
     with solution
         \begin{equation}
-            \tilde{P}(s,\Delta t) = \tilde{P}(s,0)
-            \me^{-\frac{D}{\sqrt{2\pi}}s^2\Delta t}
+            \tilde{P}(s,\Delta t) = \tilde{P}(s,0) \me^{-Ds^2\Delta t}
             \label{eq:PdiffFourierSol}
         \end{equation}
-    Initially the probability density is centered at $x$, that is the old
-    position. This can be expressed terms of a Dirac-delta function, meaning
-    $P(x,0)=\delta(y-x)$ (where $y$ is given in \Autoref{eq:newPos}). Making an
-    inverse transformation as described in \Autoref{eq:invFourier} yields in
+    Initially the probability density is centered at $x+D\Delta tF(x)$, that is
+    the old position plus the drift term. This can be expressed terms of a
+    Dirac-delta function, meaning 
         \begin{equation}
-            P(x,\Delta t) = \frac{1}{(4\pi D\Delta
-            t)^{\frac{3N}{2}}}\exp(-\frac{(y-x)^2}{4D\Delta t})
+            P(y,x,0)=\delta(y-x-D\Delta tF(x))
+            \label{eq:P0}
         \end{equation}
-    Using the force obtained in \Autoref{ssub:quantum_force} given in
-    \Autoref{eq:quantumForce} the solution to the Fokker-Planck equations are
-    given by the Greens function
+    where $y$ is given in \Autoref{eq:newPos}. Making an inverse transformation
+    as described in \Autoref{eq:invFourier} and solving the subsequent
+    trancendental indtegral yields in
         \begin{equation}
-            G(y,x,\Delta t) = \frac{1}{\left(4\pi D\Delta
-            t\right)^{\frac{3N}{2}}} \exp(-\frac{\left(x - \xi\sqrt{\Delta
-            t}\right)^2}{4D\Delta t})
-            \label{eq:FokkerLangevinGreens}
+            P(y,x,\Delta t) = \frac{1}{\sqrt{4\pi D\Delta
+            t}}\exp(-\frac{(y-x-D\Delta tF(x))^2}{4D\Delta t})
         \end{equation}
     which gives us the acceptance
         \begin{equation}
-            \ufij{A}{y}{x} = \min\left(1, \frac{\abs{\psi_T(y)}^2G(y,x,\Delta
-            t)}{\abs{\psi_T(x)}^2G(x,y,\Delta t)}\right)
+            \ufij{A}{y}{x} = \min\left(1, \frac{\abs{\psi_T(y)}^2P(y,x,\Delta
+            t)} {\abs{\psi_T(x)}^2P(x,y,\Delta t)}\right)
             \label{eq:acceptanceImportance}
+        \end{equation}
+    We may rearrange the acceptence ratio giving
+        \begin{equation}
+            \frac{P(y,x,\Delta t)}{P(x,y,\Delta t)} = \frac{1}{2}
+            \left(F(x)+F(y)\right) \left(\frac{D\Delta t}{2}\left(F(x) -
+            F(y)\right) - y +
+            x\right)
+            \label{eq:accRearr}
         \end{equation}
 
 \subsection{VMC}
