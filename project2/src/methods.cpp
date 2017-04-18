@@ -38,7 +38,6 @@ void Methods::updateMatrixInverse(Eigen::MatrixXd Mold, Eigen::MatrixXd Mnew,
         Eigen::MatrixXd MoldInv, Eigen::MatrixXd &MnewInv, unsigned int i) {
     /* update inverse of matrix when only column i has changed */
     double R = determinantRatio(Mnew, MoldInv, i);
-    unsigned int N = MnewInv.rows();
     for (unsigned int k = 0; k < MnewInv.rows(); ++k) {
         for (unsigned int j = 0; j < MnewInv.rows(); ++j) {
             for (unsigned int l = 0; l < MnewInv.rows(); ++l) {

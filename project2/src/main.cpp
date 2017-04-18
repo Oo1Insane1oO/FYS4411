@@ -3,6 +3,7 @@
 #include <stdlib.h> // atoi
 #include <iostream> // cout
 #include <chrono> // timer
+#include <iomanip> // setprecision
 
 //////////////////////////////////////////////////////////////////////////////
 // Main file for running vmc algorithm                                      //
@@ -22,6 +23,7 @@ int main(int argc, const char** argv) {
             "    " << "iterations: (int) Max iterations in VMC(MC cycles) \n" <<
             "    " << "step: (float) step size in VMC \n" <<
             "    " << "tests: (1/0) indicating to run tests or not" <<
+            "    " << "importance sampling: (1/0) indicating to run with importance sampling or not" <<
             std::endl;
         exit(1);
     } // end if
@@ -54,9 +56,9 @@ int main(int argc, const char** argv) {
 
     // run calculations
     vmcObj->calculate();
-    std::cout << "<E> = " << vmcObj->energy << ", <E^2> = " << vmcObj->energySq <<
+    std::cout << std::setprecision(16) << "<E> = " << vmcObj->energy << ", <E^2> = " << vmcObj->energySq <<
         std::endl;
-    std::cout << vmcObj->energySq - vmcObj->energy*vmcObj->energy << std::endl;
+    std::cout << std::setprecision(16) << (vmcObj->energySq - pow(vmcObj->energy,2)) << std::endl;
 
     // free objects
     delete b;
