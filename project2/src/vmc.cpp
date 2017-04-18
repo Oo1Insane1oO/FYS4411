@@ -97,7 +97,7 @@ void VMC::calculate(bool unperturb) {
     // distribution engine
     std::mt19937_64 mt(seed);
     std::uniform_real_distribution<double> dist(0,1);
-    std::normal_distribution<double> normDist(1,0);
+    std::normal_distribution<double> normDist(0,1);
 
     // initialize position
     Eigen::MatrixXd oldPositions = Eigen::MatrixXd::Zero(2*b->ECut, dim);
@@ -156,14 +156,19 @@ void VMC::calculate(bool unperturb) {
             if (imp) {
                 greensFunctionRatio = 0;
                 for (unsigned int j = 0; j < oldPositions.rows(); ++j) {
-                    greensFunctionRatio -= pow(oldPositions(i,j) -
-                            normDist(mt)*sqrt(dt),2) - pow(newPositions(i,j) -
-                            normDist(mt)*sqrt(dt),2);
+//                     greensFunctionRatio -= pow(oldPositions(i,j) -
+//                             normDist(mt)*sqrt(dt),2) - pow(newPositions(i,j) -
+//                             normDist(mt)*sqrt(dt),2);
+                    greensFunctionRatio += 0.5*(qForceOld(i,j) +
+                            qForceNew(i,j)) * (0.25*dt*(qForceOld(i,j) -
+                                qForceNew(i,j)) - newPositions(i,j) +
+                            oldPositions(i,j));
                 } // end forj
                 greensFunctionRatio = exp(greensFunctionRatio);
             } // end if
 
-            testRatio = pow(meth->determinantRatio(newWaveFunction, oldInverse, i), 2);
+            testRatio = pow(meth->determinantRatio(newWaveFunction, oldInverse,
+                        i), 2);
             if (imp) {
                 testRatio *= greensFunctionRatio;
             } //end if
