@@ -15,7 +15,6 @@ VMC::VMC(Basis *B, double alp, double bet, unsigned int d, double s, unsigned
         int max, bool sample) {
     alpha = alp;
     beta = bet;
-    a = 1;
     b = B;
     dim = d;
     step = s;
@@ -132,7 +131,7 @@ void VMC::calculate(bool unperturb) {
             oldPositions.rows());
     while (cycles < maxIterations) {
         /* run Monte Carlo cycles */
-        oldWaveFunction = b->trialWaveFunction(oldPositions,alpha,beta,a);
+        oldWaveFunction = b->trialWaveFunction(oldPositions,alpha,beta);
         oldInverse = oldWaveFunction.inverse();
         if (imp) {
             diff(oldPositions,qForceOld);
@@ -160,7 +159,7 @@ void VMC::calculate(bool unperturb) {
 //             } // end fork
 
             // calculate new PDF (probability distribution function)
-            newWaveFunction = b->trialWaveFunction(newPositions,alpha,beta,a);
+            newWaveFunction = b->trialWaveFunction(newPositions,alpha,beta);
             if (imp) {
                 /* set new quantum force */
                 diff(newPositions, qForceNew);

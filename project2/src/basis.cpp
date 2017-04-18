@@ -117,15 +117,16 @@ void Basis::setBasisMatrix(Eigen::MatrixXd r, double alpha) {
     } // end fori
 } // end function setBasisMatrix
 
-Eigen::MatrixXd Basis::trialWaveFunction(Eigen::MatrixXd r, double alpha, double beta,
-        double a) {
+Eigen::MatrixXd Basis::trialWaveFunction(Eigen::MatrixXd r, double alpha,
+        double beta) {
     /* given a vector of coordinates, return trial wave function */
     unsigned int N = r.rows();
     double expInner = 0;
     setBasisMatrix(r,alpha);
     for (unsigned int i = 0; i < N; ++i) {
         for (unsigned int j = i+1; j < N; ++j) {
-            expInner += jastrow(a, beta, r(i,0)-r(j,0),r(i,1)-r(j,1));
+            expInner += jastrow((!((i+j)%2) ? 1 : 1./3), beta,
+                    r(i,0)-r(j,0),r(i,1)-r(j,1));
         } // end forj
     } // end fori
     return phi * exp(expInner);

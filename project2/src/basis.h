@@ -32,8 +32,7 @@ class Basis {
         void setBasisMatrix(Eigen::MatrixXd, double); 
         double harmonicOscillatorWaveFunction(double, double, double, int,
                 int);
-        Eigen::MatrixXd trialWaveFunction(Eigen::MatrixXd, double, double,
-                double);
+        Eigen::MatrixXd trialWaveFunction(Eigen::MatrixXd, double, double);
         void printStates();
 };
 
