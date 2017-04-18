@@ -45,7 +45,7 @@ int main(int argc, const char** argv) {
     Basis *b = new Basis(omega, num/2);
     
     // set vmc object for calculations
-    VMC *vmcObj = new VMC(b,1,1,2,step,maxIterations,imp);
+    VMC *vmcObj = new VMC(b,1.,0.3,2,step,maxIterations,imp);
     
     if (t) {
         /* run tests */
@@ -58,7 +58,7 @@ int main(int argc, const char** argv) {
     vmcObj->calculate();
     std::cout << std::setprecision(16) << "<E> = " << vmcObj->energy << ", <E^2> = " << vmcObj->energySq <<
         std::endl;
-    std::cout << std::setprecision(16) << (vmcObj->energySq - pow(vmcObj->energy,2)) << std::endl;
+    std::cout << std::setprecision(16) << "var = " << (vmcObj->energySq - pow(vmcObj->energy,2)) << std::endl;
 
     // free objects
     delete b;

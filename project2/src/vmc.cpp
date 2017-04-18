@@ -15,13 +15,14 @@ VMC::VMC(Basis *B, double alp, double bet, unsigned int d, double s, unsigned
         int max, bool sample) {
     alpha = alp;
     beta = bet;
-    a = 0;
+    a = 1;
     b = B;
     dim = d;
     step = s;
-    dt = 0.001;
+    dt = 0.05;
     maxIterations = max;
     imp = sample;
+
     meth = new Methods(); 
 } // end constructor
 
@@ -117,8 +118,10 @@ void VMC::calculate(bool unperturb) {
 
     Eigen::MatrixXd qForceOld, qForceNew;
     if (imp) {
-        qForceOld = Eigen::MatrixXd::Zero(oldPositions.rows(),oldPositions.cols());
-        qForceNew = Eigen::MatrixXd::Zero(oldPositions.rows(),oldPositions.cols());
+        qForceOld = Eigen::MatrixXd::Zero(oldPositions.rows(),
+                oldPositions.cols());
+        qForceNew = Eigen::MatrixXd::Zero(oldPositions.rows(),
+                oldPositions.cols());
     } // end if
 
     double testRatio;
@@ -148,6 +151,14 @@ void VMC::calculate(bool unperturb) {
                 } // end ifelse
             } // end forj
 
+//             for (unsigned int k = 0; k < oldPositions.rows(); ++k) {
+//                 if (k!=i) {
+//                     for (unsigned int j = 0; j < dim; ++j) {
+//                         newPositions(k,j) = oldPositions(k,j);
+//                     } // end forj
+//                 } // end if
+//             } // end fork
+
             // calculate new PDF (probability distribution function)
             newWaveFunction = b->trialWaveFunction(newPositions,alpha,beta,a);
             if (imp) {
@@ -158,6 +169,11 @@ void VMC::calculate(bool unperturb) {
 
             // calculate Greens function ratio
             if (imp) {
+//                 greensFunctionRatio = exp((0.5*(qForceOld.array() +
+//                                 qForceNew.array()) *
+//                             (0.25*dt*(qForceOld.array() - qForceNew.array()) -
+//                              newPositions.array() +
+//                              oldPositions.array())).matrix().sum());
                 greensFunctionRatio = exp((0.5*(qForceOld.array() +
                                 qForceNew.array()) *
                             (0.25*dt*(qForceOld.array() - qForceNew.array()) -
