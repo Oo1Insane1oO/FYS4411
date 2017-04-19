@@ -393,8 +393,23 @@
         \end{equation}
     The iterative process is then to compute the directions and then solve the
     arising linear system by computing the coefficients as given in
-    \Autoref{eq:cgNewCoeff}.
-
+    \Autoref{eq:cgNewCoeff}. \\
+    The iterative process is then to compute
+        \begin{equation}
+            \vec{x}_{k+1} = \vec{x}_k + C_k\vec{p}_{k+1}
+            \label{eq:cgitproc}
+        \end{equation}
+    with
+        \begin{equation}
+            C_k = \frac{\vec{p}^T_k\vec{r}_k}{\vec{p}^T_kA\vec{p}_k}
+            \label{eq:cgitcoeff}
+        \end{equation}
+    The residual $\vec{r}_k$ at the $k$-th step is defined from
+    \Autoref{eq:cgitlinsys} as
+        \begin{equation}
+            \vec{r}_k = \vec{b} - A\vec{x}_k
+            \label{eq:cgitrk}
+        \end{equation}
 
 \subsection{METROPOLIS-HASTINGS ALGORITHM}
 \label{sub:metropolis_algorithm}

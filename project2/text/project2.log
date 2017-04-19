@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2017.3.22)  19 APR 2017 16:10
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2017.3.22)  19 APR 2017 16:19
 entering extended mode
  \write18 enabled.
  file:line:error style messages enabled.
@@ -2552,32 +2552,28 @@ been already used, duplicate ignored
 l.324         \end{equation}
                              [1
 
-] [2] [3] [4] [5] [6]
+] [2] [3] [4] [5] [6] [7]
 LaTeX Font Info:    Font shape `OT1/LinuxLibertineT-TLF/m/it' will be
-(Font)              scaled to size 10.0pt on input line 936.
- [7] [8]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 964.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 964.
+(Font)              scaled to size 10.0pt on input line 951.
+ [8]
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 979.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 979.
 
 (/home/saintz/localStuff/FYS4411/project2/text/project2.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 964.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 964.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 979.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 979.
 Package rerunfilecheck Info: File `project2.out' has not changed.
 (rerunfilecheck)             Checksum: <no file>.
-
-
-LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
-
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 964.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 979.
  ) 
 Here is how much of TeX's memory you used:
- 31843 strings out of 494497
- 578038 string characters out of 6172400
- 637480 words of memory out of 5000000
- 34609 multiletter control sequences out of 15000+600000
+ 31849 strings out of 494497
+ 578115 string characters out of 6172400
+ 638612 words of memory out of 5000000
+ 34612 multiletter control sequences out of 15000+600000
  54880 words of font info for 134 fonts, out of 8000000 for 9000
  264 hyphenation exceptions out of 8191
- 64i,13n,94p,10410b,475s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 64i,13n,94p,10410b,369s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/share/texlive/texmf-dist/fonts/enc/dvips/libertine/lbtn_xogrpz.enc}{/us
 r/share/texlive/texmf-dist/fonts/enc/dvips/newtx/libertinealt.enc}{/usr/share/t
 exlive/texmf-dist/fonts/enc/dvips/base/8r.enc}{/usr/share/texlive/texmf-dist/fo
@@ -2598,10 +2594,10 @@ s/txsyb.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/txfonts/txsyc.pfb
 ></usr/share/texlive/texmf-dist/fonts/type1/public/newtx/zxlr.pfb></usr/share/t
 exlive/texmf-dist/fonts/type1/public/newtx/zxlri.pfb>
 Output written on /home/saintz/localStuff/FYS4411/project2/text/project2.pdf (9
- pages, 491752 bytes).
+ pages, 492849 bytes).
 PDF statistics:
- 386 PDF objects out of 1000 (max. 8388607)
- 355 compressed objects within 4 object streams
- 116 named destinations out of 1000 (max. 500000)
+ 390 PDF objects out of 1000 (max. 8388607)
+ 359 compressed objects within 4 object streams
+ 119 named destinations out of 1000 (max. 500000)
  213 words of extra memory for PDF output out of 10000 (max. 10000000)
 
