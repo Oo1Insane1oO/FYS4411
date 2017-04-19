@@ -25,6 +25,9 @@ class Methods {
         double determinantRatio(Eigen::MatrixXd, Eigen::MatrixXd, unsigned
                 int);
         double variance(double, double);
+
+        Eigen::MatrixXd conjugateGradient(Eigen::MatrixXd, Eigen::MatrixXd,
+                Eigen::MatrixXd);
 };
 
 #endif /* METHODS_H */

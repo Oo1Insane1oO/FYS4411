@@ -68,3 +68,21 @@ double Methods::variance(double p,double psq) {
      * expectation value squared */
     return psq - p*p;
 } // end function variance
+
+Eigen::MatrixXd Methods::conjugateGradient(Eigen::MatrixXd A, 
+        Eigen::MatrixXd rhs, Eigen::MatrixXd x0) {
+    /* solve a linear system, Ax=b with Conjugate Gradient method */
+    Eigen::MatrixXd res = rhs - A*x0;
+    Eigen::MatrixXd p = res;
+    double C;
+    Eigen::MatrixXd xold = x0;
+    Eigen::MatrixXd xnew, rnew;
+    while (rnew.norm() > 1e-5) {
+        C = res.squaredNorm() / (p.adjoint()*A*p).sum();
+        xnew = x0 + C*p;
+        rnew = res - C*A*p;
+        p = rnew + rnew.squaredNorm() / res.squaredNorm() * p;
+        res = rnew;
+    } // end while
+    return xnew;
+} // end function conjugateGradient
