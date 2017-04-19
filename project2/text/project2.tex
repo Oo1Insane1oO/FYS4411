@@ -156,6 +156,7 @@
 \newcommand{\arcsinh}[1]{\text{arcsinh}\left(#1\right)}
 \newcommand{\I}{\scalebox{1.2}{$\mathds{1}$}}
 \newcommand{\veps}{\varepsilon} %\varepsilon is to long :P
+\newcommand{\suml}[2]{\sum\limits_{#1=1}^{#2}}
 
 \newcommand{\fij}[3]{#1\left(#2\rarr#3\right)}
 \newcommand{\ufij}[3]{#1_{#2\rarr#3}}
@@ -322,6 +323,79 @@
             \label{eq:invFourier}
         \end{equation}
 
+\subsection{CONJUGATE GRADIENT METHOD}
+\label{sub:conjugate_gradient_method}
+    Suppose we have a linear system defined as
+        \begin{equation}
+            A\vec{x} = \vec{b}
+            \label{eq:cglinsys}
+        \end{equation}
+    where $A$ is a $nxn$ real, symmetric and positive definite matrix while
+    $\vec{x}$ and $\vec{b}$ are a non-zero real vectors. \\
+    Define now the conjugate directions of two vectors
+    $\vec{x}_i,\vec{x}_j:\mathbb{R}\rarr\mathbb{R}$ giving the constraint
+        \begin{equation}
+            \vec{x}_i^{T}A\vec{x}_j = \vec{0}
+            \label{eq:cgconstr}
+        \end{equation}
+    This means that in the iterative process of finding $\vec{x}$ we perform
+    searches within the conjugate directions of $\vec{x}$. \\
+    Since the conjugate constraint(\Autoref{eq:cgconstr}) is defined by an
+    inner product within the space $A$ is defined, the two vectors $\vec{x}_i$
+    and $\vec{x}_j$ are orthogonal. If we now define a span $P$
+        \begin{equation}
+            P = \left\{\vec{p}_1,\dots,\vec{p}_n\right\}
+            \label{eq:cgSpan}
+        \end{equation}
+    consisting of $n$ mutually orthogonal conjugate directions $\vec{p}_i$, we
+    have a basis for $\mathbb{R}^n$. Expanding the solution $x_{i+1}$ to
+    \Autoref{eq:cglinsys} in the mentioned basis
+        \begin{equation}
+            \vec{x} = \suml{i}{n} C_i\vec{p}_i
+            \label{eq:cgnewstepbasisexpan}
+        \end{equation}
+    the linear system can be rewritten as
+        \begin{equation}
+            A\vec{x} = \suml{i}{n} C_iA\vec{p}_i = \vec{b}
+            \label{eq:cgnewsystem}
+        \end{equation}
+    Giving the inner product
+        \begin{equation}
+            \vec{p}^T_k A\vec{x} = \suml{i}{n} C_i\vec{p}^T_kA\vec{p}_i
+            \label{eq:cgnewinner}
+        \end{equation}
+    and we can define the coefficients $C_k$ as
+        \begin{equation}
+            C_k = \frac{\vec{p}^T_k\vec{b}}{\vec{p}^T_kA\vec{p}_k}
+            \label{eq:cgNewCoeff}
+        \end{equation}
+    The problem at hand is then to choose a sequence of $n$ conjugate
+    directions $P$ and compute the coefficients $C_k$.
+
+\subsubsection{Iterative Method}
+\label{ssub:iterative_method}
+    The conjugate gradient method can in a similar manner be used on an
+    iterative basis. We start with an initial guess $\vec{x}_0$ for the
+    solutions and consider the linear system
+        \begin{equation}
+            A\vec{x} = \vec{b} - \vec{r}
+            \label{eq:cgitlinsys}
+        \end{equation}
+    where $A,\vec{x}$ and $\vec{b}$ are defined as before and $\vec{r}$ is a
+    so-called residual. \\
+    Let $\vec{r}_k$ be the residual at the $k$-th step with a negative
+    gradient. Using a similar approach as before we get that the conjugate
+    direction $\vec{p}_{i+1}$ is
+        \begin{equation}
+            \vec{p}_{i+1} = \vec{r}_k -
+            \frac{\vec{p}^T_kA\vec{r}_k}{\vec{p}^T_kA\vec{p}_k}\vec{p}_k
+            \label{eq:cgitdirk}
+        \end{equation}
+    The iterative process is then to compute the directions and then solve the
+    arising linear system by computing the coefficients as given in
+    \Autoref{eq:cgNewCoeff}.
+
+
 \subsection{METROPOLIS-HASTINGS ALGORITHM}
 \label{sub:metropolis_algorithm}
     The Metropolis algorithm bases itself on moves (also called transitions) as
@@ -470,7 +544,7 @@
         \end{equation}
     where $y$ is given in \Autoref{eq:newPos}. Making an inverse transformation
     as described in \Autoref{eq:invFourier} and solving the subsequent
-    trancendental indtegral yields in
+    transcendental integral yields in
         \begin{equation}
             P(y,x,\Delta t) = \frac{1}{\sqrt{4\pi D\Delta
             t}}\exp(-\frac{(y-x-D\Delta tF(x))^2}{4D\Delta t})
@@ -765,7 +839,6 @@
 \label{ssub:determinant_ratio}
 \newcommand{\rnew}{r^{\text{new}}}
 \newcommand{\rold}{r^{\text{old}}}
-\newcommand{\suml}[2]{\sum\limits_{#1=1}^{#2}}
     In the Metropolis algorithm we calculate a ratio of determinants in the
     Metropolis test. Starting by defining a Slater determinant Matrix $D$ with
     entries defined as

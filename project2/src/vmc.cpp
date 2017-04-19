@@ -150,14 +150,6 @@ void VMC::calculate(bool unperturb) {
                 } // end ifelse
             } // end forj
 
-//             for (unsigned int k = 0; k < oldPositions.rows(); ++k) {
-//                 if (k!=i) {
-//                     for (unsigned int j = 0; j < dim; ++j) {
-//                         newPositions(k,j) = oldPositions(k,j);
-//                     } // end forj
-//                 } // end if
-//             } // end fork
-
             // calculate new PDF (probability distribution function)
             newWaveFunction = b->trialWaveFunction(newPositions,alpha,beta);
             if (imp) {
@@ -168,11 +160,6 @@ void VMC::calculate(bool unperturb) {
 
             // calculate Greens function ratio
             if (imp) {
-//                 greensFunctionRatio = exp((0.5*(qForceOld.array() +
-//                                 qForceNew.array()) *
-//                             (0.25*dt*(qForceOld.array() - qForceNew.array()) -
-//                              newPositions.array() +
-//                              oldPositions.array())).matrix().sum());
                 greensFunctionRatio = exp((0.5*(qForceOld.array() +
                                 qForceNew.array()) *
                             (0.25*dt*(qForceOld.array() - qForceNew.array()) -
