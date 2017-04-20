@@ -43,6 +43,20 @@ bool Tests::test_2particle() {
     return ((m->variance(v->energy, v->energySq)) < 1e-14 ? true : false);
 } // end function test_2particle
 
+bool Tests::test_determinantratio() {
+    /* check that ratio between determinants are correct in member function
+     * determinantRatio of class methods */
+    Eigen::Matrix3d A, B;
+    A << 11, 2, 3,
+         4, 5, 6,
+         7, 78, 19;
+    B << 11, 2, 3,
+         14, 15, 16,
+         7, 78, 19;
+    return (std::fabs(m->determinantRatio(B,A.inverse(),1) -
+                B.determinant()/A.determinant())<=1e10 ? true : false);
+} // end function test_determinantratio
+
 void Tests::run_tests(int t) {
     /* run all tests and exit */
     if (t) {
@@ -54,7 +68,12 @@ void Tests::run_tests(int t) {
         if(test_2particle()) {
             std::cout << "Energy unperturbed 2 electron good" << std::endl;
         } else { 
-            std::cout << "Energy unperturbed 2 electron good" << std::endl;
+            std::cout << "Energy unperturbed 2 electron wrong" << std::endl;
+        } // end ifelse
+        if(test_determinantratio()) {
+            std::cout << "Determinant ratio good" << std::endl;
+        } else { 
+            std::cout << "Determinant ratio wrong" << std::endl;
         } // end ifelse
         if (t==2) {
             b->printStates();

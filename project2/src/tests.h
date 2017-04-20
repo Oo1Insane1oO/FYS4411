@@ -11,6 +11,7 @@ class Tests {
 
         bool test_energies();
         bool test_2particle();
+        bool test_determinantratio();
     
     public:
         Tests (Basis*, VMC*);
