@@ -11,6 +11,7 @@ class Tests {
 
         Eigen::MatrixXd oldM, newM;
         int rowi;
+        double eps;
 
         bool test_energies();
         bool test_2particle();

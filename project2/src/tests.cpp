@@ -13,6 +13,8 @@ Tests::Tests(Basis *B, VMC *V, int n) {
     v = V;
     m = new Methods();
 
+    eps = 1e-16;
+
     std::mt19937_64 mt(123);
     std::uniform_real_distribution<double> dist(0,1);
 
@@ -22,7 +24,7 @@ Tests::Tests(Basis *B, VMC *V, int n) {
             oldM(i,j) = dist(mt);
         } // end forj
     } // end fori
-    rowi = std::floor(n/2);
+    rowi = floor(static_cast<double>(n)/2.);
     newM = oldM;
     for (int j = 0; j < n; ++j) {
         newM(rowi,j) = dist(mt);
@@ -55,14 +57,14 @@ bool Tests::test_2particle() {
     /* check that energy in case of unperturbed harmonic oscillator system with
      * 2 electrons is correct */
     v->calculate(false);
-    return ((m->variance(v->energy, v->energySq)) < 1e-16 ? true : false);
+    return ((m->variance(v->energy, v->energySq))<=eps ? true : false);
 } // end function test_2particle
 
 bool Tests::test_determinantratio() {
     /* check that ratio between determinants are correct in member function
      * determinantRatio of class methods */
     return (std::fabs(m->determinantRatio(newM,oldM.inverse(),rowi) -
-                newM.determinant()/oldM.determinant())<=1e16 ? true : false);
+                newM.determinant()/oldM.determinant())<=1e-13 ? true : false);
 } // end function test_determinantratio
 
 bool Tests::test_updateinverse() {
@@ -73,9 +75,10 @@ bool Tests::test_updateinverse() {
     bool t = false;
     for (int i = 0; i < oldM.rows(); ++i) {
         for (int j = 0; j < oldM.rows(); ++j) {
-            if (std::fabs(newInv(i,j) - inv(i,j)) <= 1e-10) {
+            if (std::fabs(newInv(i,j) - inv(i,j))<=1e-13) {
                 t = true;
             } else {
+                std::cout << std::fabs(newInv(i,j) - inv(i,j)) << " " << i << " " << j << std::endl;
                 t = false;
                 break;
             } // end if

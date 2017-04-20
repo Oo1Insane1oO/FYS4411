@@ -49,7 +49,7 @@ int main(int argc, const char** argv) {
     
     if (t) {
         /* run tests */
-        Tests testObj = Tests(b,vmcObj);
+        Tests testObj = Tests(b,vmcObj,num);
         testObj.run_tests(t);
         exit(1);
     } // end if
