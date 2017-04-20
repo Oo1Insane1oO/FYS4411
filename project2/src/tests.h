@@ -9,12 +9,16 @@ class Tests {
         VMC *v;
         Methods *m;
 
+        Eigen::MatrixXd oldM, newM;
+        int rowi;
+
         bool test_energies();
         bool test_2particle();
         bool test_determinantratio();
+        bool test_updateinverse();
     
     public:
-        Tests (Basis*, VMC*);
+        Tests (Basis*, VMC*, int=3);
         virtual ~Tests ();
 
         void run_tests(int);
