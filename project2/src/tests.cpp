@@ -55,25 +55,36 @@ bool Tests::test_2particle() {
     /* check that energy in case of unperturbed harmonic oscillator system with
      * 2 electrons is correct */
     v->calculate(false);
-    return ((m->variance(v->energy, v->energySq)) < 1e-14 ? true : false);
+    return ((m->variance(v->energy, v->energySq)) < 1e-16 ? true : false);
 } // end function test_2particle
 
 bool Tests::test_determinantratio() {
     /* check that ratio between determinants are correct in member function
      * determinantRatio of class methods */
-    return (std::fabs(m->determinantRatio(newM,oldM.inverse(),1) -
-                newM.determinant()/oldM.determinant())<=1e10 ? true : false);
+    return (std::fabs(m->determinantRatio(newM,oldM.inverse(),rowi) -
+                newM.determinant()/oldM.determinant())<=1e16 ? true : false);
 } // end function test_determinantratio
 
 bool Tests::test_updateinverse() {
     /* check that inverse is updated correctly */
-    Eigen::Matrix3d A, B;
-    A << 11, 2, 3,
-         4, 5, 6,
-         7, 78, 19;
-    B << 11, 2, 3,
-         14, 15, 16,
-         7, 78, 19;
+    Eigen::MatrixXd newInv = Eigen::MatrixXd::Zero(oldM.rows(),oldM.rows());
+    Eigen::MatrixXd inv = newM.inverse();
+    m->updateMatrixInverse(oldM, newM, oldM.inverse(), newInv, rowi);
+    bool t = false;
+    for (int i = 0; i < oldM.rows(); ++i) {
+        for (int j = 0; j < oldM.rows(); ++j) {
+            if (std::fabs(newInv(i,j) - inv(i,j)) <= 1e-10) {
+                t = true;
+            } else {
+                t = false;
+                break;
+            } // end if
+        } // end forj
+        if (!t) {
+            break;
+        } // end if
+    } // end fori
+    return t;
 } // end function test_updateinverse
 
 void Tests::run_tests(int t) {
@@ -93,6 +104,11 @@ void Tests::run_tests(int t) {
             std::cout << "Determinant ratio good" << std::endl;
         } else { 
             std::cout << "Determinant ratio wrong" << std::endl;
+        } // end ifelse
+        if(test_updateinverse()) {
+            std::cout << "Update inverse good" << std::endl;
+        } else { 
+            std::cout << "Update inverse wrong" << std::endl;
         } // end ifelse
         if (t==2) {
             b->printStates();
