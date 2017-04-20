@@ -90,7 +90,7 @@ unsigned long int VMC::getSeed() {
     return seed;
 } // end function setSeed
 
-void VMC::calculate(bool unperturb) {
+void VMC::calculate(bool perturb) {
     /* function for running Monte Carlo integration */
 
     // initialize Mersenne Twister random number generator and uniform
@@ -131,7 +131,7 @@ void VMC::calculate(bool unperturb) {
             oldPositions.rows());
     while (cycles < maxIterations) {
         /* run Monte Carlo cycles */
-        oldWaveFunction = b->trialWaveFunction(oldPositions,alpha,beta);
+        oldWaveFunction = b->trialWaveFunction(oldPositions,alpha);
         oldInverse = oldWaveFunction.inverse();
         if (imp) {
             diff(oldPositions,qForceOld);
@@ -151,7 +151,7 @@ void VMC::calculate(bool unperturb) {
             } // end forj
 
             // calculate new PDF (probability distribution function)
-            newWaveFunction = b->trialWaveFunction(newPositions,alpha,beta);
+            newWaveFunction = b->trialWaveFunction(newPositions,alpha);
             if (imp) {
                 /* set new quantum force */
                 diff(newPositions, qForceNew);
@@ -168,7 +168,10 @@ void VMC::calculate(bool unperturb) {
             } // end if
 
             testRatio = pow(meth->determinantRatio(newWaveFunction, oldInverse,
-                        i), 2);
+                        i) * (!perturb ? 1 :
+                            exp(b->jastrow(newWaveFunction,beta) -
+                                b->jastrow(oldPositions,beta))), 2);
+//             testRatio = pow(newWaveFunction.determinant()/oldWaveFunction.determinant(),2);
             if (imp) {
                 /* importance sampling */
                 testRatio *= greensFunctionRatio;
@@ -190,15 +193,13 @@ void VMC::calculate(bool unperturb) {
             } // end if
 
             // update energy and increment cycles
-            tmpEnergy = localEnergy2(newPositions,unperturb);
+            tmpEnergy = localEnergy2(newPositions,perturb);
 //             tmpEnergy = localEnergyDiff(newPositions,false);
             energy += tmpEnergy;
             energySq += tmpEnergy*tmpEnergy;
-            if (imp) {
-                meth->updateMatrixInverse(oldWaveFunction, newWaveFunction,
-                        oldInverse, newInverse, i);
-                oldInverse = newInverse;
-            } // end if
+            meth->updateMatrixInverse(oldWaveFunction, newWaveFunction,
+                    oldInverse, newInverse, i);
+            oldInverse = newInverse;
         } // end fori
         cycles++;
     } // end while

@@ -92,9 +92,16 @@ void Basis::pushState(std::vector<int*> &state, int i, int j, int ud) {
     states.push_back(state);
 } // end function pushState
 
-double Basis::jastrow(double a, double beta, double x12, double y12) {
+double Basis::jastrow(Eigen::MatrixXd r, double beta) {
     /* calculate Jastrow factor */
-    return a/(beta + 1/sqrt(x12*x12 + y12*y12));
+    double expInner = 0;
+    for (unsigned int i = 0; i < r.rows(); ++i) {
+        for (unsigned int j = i+1; j < r.rows(); ++j) {
+            expInner += (!((i+j)%2) ? 1 : 1./3)/(beta +
+                    1/sqrt(pow(r(i,0)-r(j,0),2) + pow(r(i,1)-r(j,1),2)));
+        } // end forj
+    } // end fori
+    return expInner;
 } // end function jastrow
 
 double Basis::harmonicOscillatorWaveFunction(double alpha, double x, double y,
@@ -103,8 +110,8 @@ double Basis::harmonicOscillatorWaveFunction(double alpha, double x, double y,
     return H(x,nx)*H(y,ny) * exp(-alpha*(x*x+y*y)/2);
 } // end function harmonicOscillatorWaveFunction
 
-void Basis::setBasisMatrix(Eigen::MatrixXd r, double alpha) {
-    /* set matrix for Slater determinant with harmonic oscillator */
+Eigen::MatrixXd Basis::trialWaveFunction(Eigen::MatrixXd r, double alpha) {
+    /* given a vector of coordinates, return trial wave function */
     if (!phi.size()) {
         /* initialize only once */
         phi.resize(r.rows(),r.rows());
@@ -115,21 +122,7 @@ void Basis::setBasisMatrix(Eigen::MatrixXd r, double alpha) {
                     *states[j][0], *states[j][1]);
         } // end forj
     } // end fori
-} // end function setBasisMatrix
-
-Eigen::MatrixXd Basis::trialWaveFunction(Eigen::MatrixXd r, double alpha,
-        double beta) {
-    /* given a vector of coordinates, return trial wave function */
-    unsigned int N = r.rows();
-    double expInner = 0;
-    setBasisMatrix(r,alpha);
-    for (unsigned int i = 0; i < N; ++i) {
-        for (unsigned int j = i+1; j < N; ++j) {
-            expInner += jastrow((!((i+j)%2) ? 1 : 1./3), beta,
-                    r(i,0)-r(j,0),r(i,1)-r(j,1));
-        } // end forj
-    } // end fori
-    return phi * exp(expInner);
+    return phi;
 } // end function trialWaveFunction
 
 void Basis::printStates() {

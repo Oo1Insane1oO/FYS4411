@@ -78,7 +78,6 @@ bool Tests::test_updateinverse() {
             if (std::fabs(newInv(i,j) - inv(i,j))<=1e-13) {
                 t = true;
             } else {
-                std::cout << std::fabs(newInv(i,j) - inv(i,j)) << " " << i << " " << j << std::endl;
                 t = false;
                 break;
             } // end if
