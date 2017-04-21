@@ -110,11 +110,12 @@ double Basis::harmonicOscillatorWaveFunction(double alpha, double x, double y,
     return H(x,nx)*H(y,ny) * exp(-alpha*(x*x+y*y)/2);
 } // end function harmonicOscillatorWaveFunction
 
-Eigen::MatrixXd Basis::trialWaveFunction(const Eigen::MatrixXd &r, double alpha) {
+Eigen::MatrixXd Basis::trialWaveFunction(const Eigen::MatrixXd &r, double
+        alpha) {
     /* given a vector of coordinates, return trial wave function */
     if (!phi.size()) {
         /* initialize only once */
-        phi.resize(r.rows(),r.rows());
+        phi = Eigen::MatrixXd::Zero(r.rows(),r.rows());
     } // end if
     for (unsigned int i = 0; i < r.rows(); ++i) {
         for (unsigned int j = 0; j < r.rows(); ++j) {

@@ -21,7 +21,7 @@ class VMC {
 
         bool imp;
         unsigned int dim, maxIterations;
-        double alpha, beta, a, energy, energySq, step;
+        double alpha, beta, energy, energySq, step;
 
         unsigned long int getSeed();
         void setSeed(unsigned long int);

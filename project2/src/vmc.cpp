@@ -34,19 +34,19 @@ double VMC::localEnergy2(const Eigen::MatrixXd &R, bool coulomb) {
     double denom = 1 + beta*r12;
     double denomsq = denom*denom;
     return 0.5 * pow(b->omega,2) * (1 - pow(alpha,2)) * (R.row(0).squaredNorm()
-            + R.row(1).squaredNorm()) + 2*alpha*b->omega - a/denomsq *
-        ((a/denomsq - alpha*b->omega*r12 + 1/r12 - 2*beta/denom)) + (coulomb ?
+            + R.row(1).squaredNorm()) + 2*alpha*b->omega - 1/denomsq *
+        ((1/denomsq - alpha*b->omega*r12 + 1/r12 - 2*beta/denom)) + (coulomb ?
             1/r12 : 0);
 } // end function localEnergy
 
 void VMC::diff(const Eigen::MatrixXd &R, Eigen::MatrixXd &der) {
     /* calculate first derivative ratio of single particle wave functions */
     double r12 = (R.row(0) - R.row(1)).norm();
-    double denom = 1 + beta*r12;
+    double denom = r12 * pow(1+beta*r12, 2);
     for (unsigned int i = 0; i < R.rows(); ++i) {
         for (unsigned int j = 0; j < R.cols(); ++j) {
-            der(i,j) = -alpha*b->omega*R(i,j) + a*(R(i,j) - R(i,j+((j%2 ||
-                                j==1) ? -1 : 1)))/(r12*denom*denom);
+            der(i,j) = -alpha*b->omega*R(i,j) + (!((i+j)%2) ? 1 : 1./3)*(R(i,j)
+                    - R(i+((i%2 || i==1) ? -1 : 1),j))/denom;
         } // end forj
     } // end fori
 } // end function
@@ -134,6 +134,7 @@ void VMC::calculate(bool perturb) {
         oldInverse = oldWaveFunction.inverse();
         if (imp) {
             diff(oldPositions,qForceOld);
+            qForceOld *= 2;
         } // end if
         for (unsigned int i = 0; i < oldPositions.rows(); ++i) {
             /* loop over number of particles */
@@ -153,21 +154,22 @@ void VMC::calculate(bool perturb) {
             if (imp) {
                 /* set new quantum force */
                 diff(newPositions, qForceNew);
+                qForceNew *= 2;
             } // end if
 
             // calculate Greens function ratio
             if (imp) {
                 greensFunctionRatio = exp((2*(qForceOld.array() +
-                                qForceNew.array()) * (step*(qForceOld.array() -
-                                    qForceNew.array()) - newPositions.array() +
-                                oldPositions.array())).matrix().sum());
+                                qForceNew.array()) *
+                            (0.25*step*(qForceOld.array() - qForceNew.array()) -
+                             newPositions.array() +
+                             oldPositions.array())).matrix().sum());
             } // end if
 
             testRatio = pow(meth->determinantRatio(newWaveFunction, oldInverse,
                         i) * (!perturb ? 1 :
                             exp(b->jastrow(newWaveFunction,beta) -
                                 b->jastrow(oldPositions,beta))), 2);
-//             testRatio = pow(newWaveFunction.determinant()/oldWaveFunction.determinant(),2);
             if (imp) {
                 /* importance sampling */
                 testRatio *= greensFunctionRatio;
