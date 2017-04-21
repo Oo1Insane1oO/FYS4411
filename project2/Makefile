@@ -12,6 +12,9 @@ SRC = src
 OBJ_DIR = bin
 SOURCES = $(wildcard $(SRC)/*.cpp)
 OBJECTS = $(patsubst $(SRC)/%.cpp,$(OBJ_DIR)/%.o,$(SOURCES))
+DEPS = $($(OBJECTS):.o=.d)
+
+-include $(DEPS)
 
 build: $(EXEC)
 
@@ -25,4 +28,4 @@ $(EXEC): $(OBJECTS)
 
 $(OBJECTS): $(OBJ_DIR)/%.o : $(SRC)/%.cpp
 	mkdir -p $(@D)
-	$(CC) -c $(CXXFLAGS) -o $@ $<
+	$(CC) -c $(DEPS) -MMD $(CXXFLAGS) $< -o $@
