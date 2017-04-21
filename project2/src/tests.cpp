@@ -13,7 +13,7 @@ Tests::Tests(Basis *B, VMC *V, int n) {
     v = V;
     m = new Methods();
 
-    eps = 1e-16;
+    eps = 1e-15;
 
     std::mt19937_64 mt(123);
     std::uniform_real_distribution<double> dist(0,1);
