@@ -29,7 +29,7 @@ VMC::~VMC() {
     delete meth;
 } // end deconstructor
         
-double VMC::localEnergy2(Eigen::MatrixXd R, bool coulomb) {
+double VMC::localEnergy2(const Eigen::MatrixXd &R, bool coulomb) {
     /* calculate analytic expression of local energy for 2 electrons */
     double r12 = (R.row(0) - R.row(1)).norm();
     double denom = 1 + beta*r12;
@@ -40,7 +40,7 @@ double VMC::localEnergy2(Eigen::MatrixXd R, bool coulomb) {
             1/r12 : 0);
 } // end function localEnergy
 
-void VMC::diff(Eigen::MatrixXd R, Eigen::MatrixXd &der) {
+void VMC::diff(const Eigen::MatrixXd &R, Eigen::MatrixXd &der) {
     /* calculate first derivative ratio of single particle wave functions */
     double r12 = (R.row(0) - R.row(1)).norm();
     double denom = 1 + beta*r12;

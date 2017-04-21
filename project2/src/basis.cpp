@@ -92,7 +92,7 @@ void Basis::pushState(std::vector<int*> &state, int i, int j, int ud) {
     states.push_back(state);
 } // end function pushState
 
-double Basis::jastrow(Eigen::MatrixXd r, double beta) {
+double Basis::jastrow(const Eigen::MatrixXd &r, double beta) {
     /* calculate Jastrow factor */
     double expInner = 0;
     for (unsigned int i = 0; i < r.rows(); ++i) {
@@ -110,7 +110,7 @@ double Basis::harmonicOscillatorWaveFunction(double alpha, double x, double y,
     return H(x,nx)*H(y,ny) * exp(-alpha*(x*x+y*y)/2);
 } // end function harmonicOscillatorWaveFunction
 
-Eigen::MatrixXd Basis::trialWaveFunction(Eigen::MatrixXd r, double alpha) {
+Eigen::MatrixXd Basis::trialWaveFunction(const Eigen::MatrixXd &r, double alpha) {
     /* given a vector of coordinates, return trial wave function */
     if (!phi.size()) {
         /* initialize only once */

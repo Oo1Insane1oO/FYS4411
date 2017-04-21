@@ -30,8 +30,8 @@ class Basis {
 
         double harmonicOscillatorWaveFunction(double, double, double, int,
                 int);
-        Eigen::MatrixXd trialWaveFunction(Eigen::MatrixXd, double);
-        double jastrow(Eigen::MatrixXd, double);
+        Eigen::MatrixXd trialWaveFunction(const Eigen::MatrixXd&, double);
+        double jastrow(const Eigen::MatrixXd&, double);
         void printStates();
 };
 
