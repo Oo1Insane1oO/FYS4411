@@ -18,7 +18,6 @@ VMC::VMC(Basis *B, double alp, double bet, unsigned int d, double s, unsigned
     b = B;
     dim = d;
     step = s;
-    dt = 0.05;
     maxIterations = max;
     imp = sample;
 
@@ -46,8 +45,8 @@ void VMC::diff(const Eigen::MatrixXd &R, Eigen::MatrixXd &der) {
     double denom = 1 + beta*r12;
     for (unsigned int i = 0; i < R.rows(); ++i) {
         for (unsigned int j = 0; j < R.cols(); ++j) {
-            der(i,j) = -alpha*b->omega*R(i,j) + a*(R(i,j) - R(i,j+(j%2 ? -1 :
-                            1)))/(r12*denom*denom);
+            der(i,j) = -alpha*b->omega*R(i,j) + a*(R(i,j) - R(i,j+((j%2 ||
+                                j==1) ? -1 : 1)))/(r12*denom*denom);
         } // end forj
     } // end fori
 } // end function
@@ -105,7 +104,7 @@ void VMC::calculate(bool perturb) {
     for (unsigned int i = 0; i < oldPositions.rows(); ++i) {
         for (unsigned int j = 0; j < oldPositions.cols(); ++j) {
             if (imp) {
-                oldPositions(i,j) = normDist(mt) * sqrt(dt);
+                oldPositions(i,j) = normDist(mt) * sqrt(step);
             } else {
                 oldPositions(i,j) = step * (dist(mt)-0.5);
             } // end ifelse
@@ -135,7 +134,6 @@ void VMC::calculate(bool perturb) {
         oldInverse = oldWaveFunction.inverse();
         if (imp) {
             diff(oldPositions,qForceOld);
-            qForceOld *= 2;
         } // end if
         for (unsigned int i = 0; i < oldPositions.rows(); ++i) {
             /* loop over number of particles */
@@ -143,7 +141,7 @@ void VMC::calculate(bool perturb) {
                 /* propose new position */
                 if (imp) {
                     newPositions(i,j) = oldPositions(i,j) +
-                        0.5*qForceOld(i,j)*dt + normDist(mt)*sqrt(dt);
+                        0.5*qForceOld(i,j)*step + normDist(mt)*sqrt(step);
                 } else {
                     newPositions(i,j) = oldPositions(i,j) +
                         step*(dist(mt)-0.5);
@@ -155,16 +153,14 @@ void VMC::calculate(bool perturb) {
             if (imp) {
                 /* set new quantum force */
                 diff(newPositions, qForceNew);
-                qForceNew *= 2;
             } // end if
 
             // calculate Greens function ratio
             if (imp) {
-                greensFunctionRatio = exp((0.5*(qForceOld.array() +
-                                qForceNew.array()) *
-                            (0.25*dt*(qForceOld.array() - qForceNew.array()) -
-                             newPositions.array() +
-                             oldPositions.array())).matrix().sum());
+                greensFunctionRatio = exp((2*(qForceOld.array() +
+                                qForceNew.array()) * (step*(qForceOld.array() -
+                                    qForceNew.array()) - newPositions.array() +
+                                oldPositions.array())).matrix().sum());
             } // end if
 
             testRatio = pow(meth->determinantRatio(newWaveFunction, oldInverse,

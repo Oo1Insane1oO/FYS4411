@@ -13,7 +13,7 @@ class VMC {
         Basis *b;
         Methods *meth;
 
-        unsigned long int seed = 86754;
+        unsigned long int seed = 1286754;
 
     public:
         VMC (Basis*, double, double, unsigned int, double, unsigned int, bool);
@@ -21,7 +21,7 @@ class VMC {
 
         bool imp;
         unsigned int dim, maxIterations;
-        double alpha, beta, a, energy, energySq, step, dt;
+        double alpha, beta, a, energy, energySq, step;
 
         unsigned long int getSeed();
         void setSeed(unsigned long int);
