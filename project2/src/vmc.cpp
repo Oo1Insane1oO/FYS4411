@@ -51,33 +51,37 @@ void VMC::diff(const Eigen::MatrixXd &R, Eigen::MatrixXd &der) {
     } // end fori
 } // end function
 
-// double VMC::localEnergyDiff(Eigen::MatrixXd R, bool coulomb) {
-//     /* calculate analytic expression of local energy for 2 electrons */
-//     double dx = 0.0001;
-//     return 0.5 * (-diff2(R,dx) + pow(b->omega,2) * (R.row(0).squaredNorm() +
-//                 R.row(1).squaredNorm())) + (coulomb ?
-//             1/(R.row(0)-R.row(1)).norm() : 0);
-// } // end function localEnergyDiff
+double VMC::localEnergyDiff(const Eigen::MatrixXd &R) {
+    /* calculate local energy electrons */
+    // set kinetic part and calculate potential
+    double dx = 0.00005;
+    double diff = -diff2(R,dx);
+    for (unsigned int i = 0; i < R.cols(); ++i) {
+        /* calculate potential part */
+        diff += pow(b->omega,2) * R.row(i).squaredNorm();
+    } // end fori
+    return 0.5 * diff;
+} // end function localEnergyDiff
 
-// double VMC::diff2(Eigen::MatrixXd R, double dx) {
-//     /* calculate second derivative for all positions in x using central
-//      * difference scheme */
-//     double diff = 0;
-//     double tmpDiff;
-//     Eigen::MatrixXd Rpm = R;
-//     double mid = 2*b->trialWaveFunction(R,alpha,beta,a);
-//     for (unsigned int i = 0; i < R.rows(); ++i) {
-//         for (unsigned int j = 0; j < R.cols(); ++j) {
-//             Rpm(i,j) += dx;
-//             tmpDiff = b->trialWaveFunction(Rpm,alpha,beta,a) - mid;
-//             Rpm(i,j) -= 2*dx;
-//             tmpDiff += b->trialWaveFunction(Rpm,alpha,beta,a);
-//             diff += tmpDiff / (dx*dx);
-//             Rpm = R;
-//         } // end forj
-//     } // end fori
-//     return diff;
-// } // end function diff2
+double VMC::diff2(const Eigen::MatrixXd &R, double dx) {
+    /* calculate second derivative for all positions in R using central
+     * difference scheme */
+    double diff = 0;
+    double tmpDiff;
+    Eigen::MatrixXd Rpm = R;
+    double mid = 2*b->trialWaveFunction(R,alpha).determinant();
+    for (unsigned int i = 0; i < R.rows(); ++i) {
+        for (unsigned int j = 0; j < R.cols(); ++j) {
+            Rpm(i,j) += dx;
+            tmpDiff = b->trialWaveFunction(Rpm,alpha).determinant() - mid;
+            Rpm(i,j) -= 2*dx;
+            tmpDiff += b->trialWaveFunction(Rpm,alpha).determinant();
+            diff += tmpDiff / (dx*dx);
+            Rpm = R;
+        } // end forj
+    } // end fori
+    return diff;
+} // end function diff2
 
 void VMC::setSeed(unsigned long int s) {
     /* set seed */
@@ -159,11 +163,11 @@ void VMC::calculate(bool perturb) {
 
             // calculate Greens function ratio
             if (imp) {
-                greensFunctionRatio = exp((2*(qForceOld.array() +
-                                qForceNew.array()) *
-                            (0.25*step*(qForceOld.array() - qForceNew.array()) -
-                             newPositions.array() +
-                             oldPositions.array())).matrix().sum());
+                greensFunctionRatio = exp((0.5*(qForceOld.array() +
+                                qForceNew.array()) * (0.25*step *
+                                (qForceOld.array() - qForceNew.array()) -
+                                newPositions.array() +
+                                oldPositions.array())).matrix().sum());
             } // end if
 
             testRatio = pow(meth->determinantRatio(newWaveFunction, oldInverse,
@@ -192,7 +196,8 @@ void VMC::calculate(bool perturb) {
 
             // update energy and increment cycles
             tmpEnergy = localEnergy2(newPositions,perturb);
-//             tmpEnergy = localEnergyDiff(newPositions,false);
+//             tmpEnergy = localEnergyDiff(newPositions) /
+//                 newWaveFunction.determinant();
             energy += tmpEnergy;
             energySq += tmpEnergy*tmpEnergy;
             meth->updateMatrixInverse(oldWaveFunction, newWaveFunction,

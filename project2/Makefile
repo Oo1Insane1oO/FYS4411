@@ -20,6 +20,7 @@ build: $(EXEC)
 
 clean:
 	rm -rf $(OBJ_DIR)
+	rm $(EXEC)
 
 .PHONY: clean build
 

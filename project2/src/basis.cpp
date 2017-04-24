@@ -119,8 +119,8 @@ Eigen::MatrixXd Basis::trialWaveFunction(const Eigen::MatrixXd &r, double
     } // end if
     for (unsigned int i = 0; i < r.rows(); ++i) {
         for (unsigned int j = 0; j < r.rows(); ++j) {
-            phi(i,j) = harmonicOscillatorWaveFunction(alpha, r(i,0), r(i,1),
-                    *states[j][0], *states[j][1]);
+            phi(i,j) = harmonicOscillatorWaveFunction(alpha, r(j,0), r(j,1),
+                    *states[i][0], *states[i][1]);
         } // end forj
     } // end fori
     return phi;

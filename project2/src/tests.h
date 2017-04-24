@@ -17,6 +17,7 @@ class Tests {
         bool test_2particle();
         bool test_determinantratio();
         bool test_updateinverse();
+        bool test_wavefunction2();
     
     public:
         Tests (Basis*, VMC*, int=3);

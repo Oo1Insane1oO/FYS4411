@@ -89,6 +89,16 @@ bool Tests::test_updateinverse() {
     return t;
 } // end function test_updateinverse
 
+bool Tests::test_wavefunction2() {
+    /* test wavefunction for 2 electrons */
+    double trial = b->trialWaveFunction(oldM,v->alpha).determinant();
+    double wave2 = b->harmonicOscillatorWaveFunction(v->alpha, oldM(0,0),
+            oldM(0,1), 0, 0) * b->harmonicOscillatorWaveFunction(v->alpha,
+            oldM(1,0), oldM(1,1), 0, 0);
+    std::cout << trial << " " << wave2 << std::endl;
+    return (fabs(trial-wave2) <= eps ? true : false);
+} // end function test_wavefunction2 
+
 void Tests::run_tests(int t) {
     /* run all tests and exit */
     if (t) {
@@ -111,6 +121,11 @@ void Tests::run_tests(int t) {
             std::cout << "Update inverse good" << std::endl;
         } else { 
             std::cout << "Update inverse wrong" << std::endl;
+        } // end ifelse
+        if(test_wavefunction2()) {
+            std::cout << "Wavefunction 2 electron good" << std::endl;
+        } else { 
+            std::cout << "Wavefunction 2 electron wrong" << std::endl;
         } // end ifelse
         if (t==2) {
             b->printStates();
