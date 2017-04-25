@@ -98,7 +98,6 @@ bool Tests::test_wavefunction2() {
     double wave2 = b->harmonicOscillatorWaveFunction(v->alpha, oldM(0,0),
             oldM(0,1), 0, 0) * b->harmonicOscillatorWaveFunction(v->alpha,
             oldM(1,0), oldM(1,1), 0, 0);
-    std::cout << trial << " " << wave2 << std::endl;
     return (fabs(trial-wave2) <= eps ? true : false);
 } // end function test_wavefunction2 
 
