@@ -91,7 +91,10 @@ bool Tests::test_updateinverse() {
 
 bool Tests::test_wavefunction2() {
     /* test wavefunction for 2 electrons */
-    double trial = b->trialWaveFunction(oldM,v->alpha).determinant();
+    Eigen::MatrixXd oldD = Eigen::MatrixXd::Zero(b->ECut,b->ECut);
+    Eigen::MatrixXd oldU = Eigen::MatrixXd::Zero(b->ECut,b->ECut);
+    b->setTrialWaveFunction(oldD, oldU, oldM, v->alpha);
+    double trial = oldD.determinant() * oldU.determinant();
     double wave2 = b->harmonicOscillatorWaveFunction(v->alpha, oldM(0,0),
             oldM(0,1), 0, 0) * b->harmonicOscillatorWaveFunction(v->alpha,
             oldM(1,0), oldM(1,1), 0, 0);

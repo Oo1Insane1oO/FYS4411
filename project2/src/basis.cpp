@@ -110,20 +110,17 @@ double Basis::harmonicOscillatorWaveFunction(double alpha, double x, double y,
     return H(x,nx)*H(y,ny) * exp(-alpha*(x*x+y*y)/2);
 } // end function harmonicOscillatorWaveFunction
 
-Eigen::MatrixXd Basis::trialWaveFunction(const Eigen::MatrixXd &r, double
-        alpha) {
+void Basis::setTrialWaveFunction(Eigen::MatrixXd &psiD, Eigen::MatrixXd &psiU,
+        const Eigen::MatrixXd &r, double alpha) {
     /* given a vector of coordinates, return trial wave function */
-    if (!phi.size()) {
-        /* initialize only once */
-        phi = Eigen::MatrixXd::Zero(r.rows(),r.rows());
-    } // end if
-    for (unsigned int i = 0; i < r.rows(); ++i) {
-        for (unsigned int j = 0; j < r.rows(); ++j) {
-            phi(i,j) = harmonicOscillatorWaveFunction(alpha, r(j,0), r(j,1),
+    for (unsigned int i = 0; i < r.rows(); i+=2) {
+        for (unsigned int j = 0; j < r.rows(); j+=2) {
+            psiD(i/2,j/2) = harmonicOscillatorWaveFunction(alpha, r(j,0), r(j,1),
                     *states[i][0], *states[i][1]);
+            psiU(i/2,j/2) = harmonicOscillatorWaveFunction(alpha, r(j+1,0), r(j+1,1),
+                    *states[i+1][0], *states[i+1][1]);
         } // end forj
     } // end fori
-    return phi;
 } // end function trialWaveFunction
 
 void Basis::printStates() {

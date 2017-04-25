@@ -13,7 +13,6 @@ class Basis {
     private:
         int s;
         std::vector<int> n, ms, E, M, m;
-        Eigen::MatrixXd phi;
 
         Methods *meth;
 
@@ -30,7 +29,8 @@ class Basis {
 
         double harmonicOscillatorWaveFunction(double, double, double, int,
                 int);
-        Eigen::MatrixXd trialWaveFunction(const Eigen::MatrixXd&, double);
+        void setTrialWaveFunction(Eigen::MatrixXd&, Eigen::MatrixXd&, const
+                Eigen::MatrixXd&, double);
         double jastrow(const Eigen::MatrixXd&, double);
         void printStates();
 };
