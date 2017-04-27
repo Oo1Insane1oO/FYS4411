@@ -115,10 +115,14 @@ void Basis::setTrialWaveFunction(Eigen::MatrixXd &psiD, Eigen::MatrixXd &psiU,
     /* given a vector of coordinates, return trial wave function */
     for (unsigned int i = 0; i < r.rows(); i+=2) {
         for (unsigned int j = 0; j < r.rows(); j+=2) {
-            psiD(i/2,j/2) = harmonicOscillatorWaveFunction(alpha, r(j,0), r(j,1),
-                    *states[i][0], *states[i][1]);
-            psiU(i/2,j/2) = harmonicOscillatorWaveFunction(alpha, r(j+1,0), r(j+1,1),
-                    *states[i+1][0], *states[i+1][1]);
+//             psiD(i/2,j/2) = harmonicOscillatorWaveFunction(alpha, r(j,0), r(j,1),
+//                     *states[i][0], *states[i][1]);
+//             psiU(i/2,j/2) = harmonicOscillatorWaveFunction(alpha, r(j+1,0), r(j+1,1),
+//                     *states[i+1][0], *states[i+1][1]);
+            psiD(i/2,j/2) = harmonicOscillatorWaveFunction(alpha, r(i,0), r(i,1),
+                    *states[j][0], *states[j][1]);
+            psiU(i/2,j/2) = harmonicOscillatorWaveFunction(alpha, r(i+1,0), r(i+1,1),
+                    *states[j+1][0], *states[j+1][1]);
         } // end forj
     } // end fori
 } // end function trialWaveFunction

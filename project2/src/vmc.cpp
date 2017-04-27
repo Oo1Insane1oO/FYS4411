@@ -34,9 +34,8 @@ double VMC::localEnergy2(const Eigen::MatrixXd &R, bool coulomb) {
     double denom = 1 + beta*r12;
     double denomsq = denom*denom;
     return 0.5 * pow(b->omega,2) * (1 - pow(alpha,2)) * (R.row(0).squaredNorm()
-            + R.row(1).squaredNorm()) + 2*alpha*b->omega - 1/denomsq *
-        ((1/denomsq - alpha*b->omega*r12 + 1/r12 - 2*beta/denom)) + (coulomb ?
-            1/r12 : 0);
+            + R.row(1).squaredNorm()) + 2*alpha*b->omega - (coulomb ? 1/denomsq *
+        ((1/denomsq - alpha*b->omega*r12 + 1/r12 - 2*beta/denom)) + 1/r12 : 0);
 } // end function localEnergy
 
 void VMC::diff(const Eigen::MatrixXd &R, Eigen::MatrixXd &der) {

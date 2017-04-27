@@ -7,6 +7,7 @@
 
 #include "tests.h" // header
 #include <iostream>
+#include <iomanip>
 
 Tests::Tests(Basis *B, VMC *V, int n) {
     b = B;
@@ -112,8 +113,10 @@ void Tests::run_tests(int t) {
         if(test_2particle()) {
             std::cout << "Energy unperturbed 2 electron good" << std::endl;
         } else { 
+            double bleh = v->energy;
+            double two = 2;
             std::cout << "Energy unperturbed 2 electron wrong" << std::endl;
-            std::cout << "  Energy is: " << v->energy << std::endl;
+            std::cout << std::setprecision(16) << "  Energy is: " << v->energy << std::endl;
         } // end ifelse
         if(test_determinantratio()) {
             std::cout << "Determinant ratio good" << std::endl;
