@@ -8,6 +8,7 @@
 
 #include "methods.h"
 #include <Eigen/Dense>
+#include <cfloat>
 
 class Basis {
     private:

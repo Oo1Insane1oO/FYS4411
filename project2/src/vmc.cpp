@@ -51,37 +51,42 @@ void VMC::diff(const Eigen::MatrixXd &R, Eigen::MatrixXd &der) {
     } // end fori
 } // end function
 
-// double VMC::localEnergyDiff(const Eigen::MatrixXd &R) {
-//     /* calculate local energy electrons */
-//     // set kinetic part and calculate potential
-//     double dx = 0.00005;
-//     double diff = -diff2(R,dx);
-//     for (unsigned int i = 0; i < R.cols(); ++i) {
-//         /* calculate potential part */
-//         diff += pow(b->omega,2) * R.row(i).squaredNorm();
-//     } // end fori
-//     return 0.5 * diff;
-// } // end function localEnergyDiff
-// 
-// double VMC::diff2(const Eigen::MatrixXd &R, double dx) {
-//     /* calculate second derivative for all positions in R using central
-//      * difference scheme */
-//     double diff = 0;
-//     double tmpDiff;
-//     Eigen::MatrixXd Rpm = R;
-//     double mid = 2*b->trialWaveFunction(R,alpha).determinant();
-//     for (unsigned int i = 0; i < R.rows(); ++i) {
-//         for (unsigned int j = 0; j < R.cols(); ++j) {
-//             Rpm(i,j) += dx;
-//             tmpDiff = b->trialWaveFunction(Rpm,alpha).determinant() - mid;
-//             Rpm(i,j) -= 2*dx;
-//             tmpDiff += b->trialWaveFunction(Rpm,alpha).determinant();
-//             diff += tmpDiff / (dx*dx);
-//             Rpm = R;
-//         } // end forj
-//     } // end fori
-//     return diff;
-// } // end function diff2
+double VMC::localEnergyDiff(Eigen::MatrixXd &psiD, Eigen::MatrixXd &psiU, const
+        Eigen::MatrixXd &R) {
+    /* calculate local energy electrons */
+    // set kinetic part and calculate potential
+    double dx = 0.00005;
+    double diff = -diff2(psiD, psiU, R, dx);
+    for (unsigned int i = 0; i < R.cols(); ++i) {
+        /* calculate potential part */
+        diff += pow(b->omega,2) * R.row(i).squaredNorm();
+    } // end fori
+    return 0.5 * diff;
+} // end function localEnergyDiff
+
+double VMC::diff2(Eigen::MatrixXd &psiD, Eigen::MatrixXd &psiU, const
+        Eigen::MatrixXd &R, double dx) {
+    /* calculate second derivative for all positions in R using central
+     * difference scheme */
+    double diff = 0;
+    double tmpDiff;
+    Eigen::MatrixXd Rpm = R;
+    b->setTrialWaveFunction(psiD,psiU,R,alpha);
+    double mid = 2*psiD.determinant()*psiU.determinant();
+    for (unsigned int i = 0; i < R.rows(); ++i) {
+        for (unsigned int j = 0; j < R.cols(); ++j) {
+            Rpm(i,j) += dx;
+            b->setTrialWaveFunction(psiD,psiU,Rpm,alpha);
+            tmpDiff = psiD.determinant() * psiU.determinant() - mid;
+            Rpm(i,j) -= 2*dx;
+            b->setTrialWaveFunction(psiD,psiU,Rpm,alpha);
+            tmpDiff += psiD.determinant() * psiU.determinant();
+            diff += tmpDiff / (dx*dx);
+            Rpm = R;
+        } // end forj
+    } // end fori
+    return diff;
+} // end function diff2
 
 void VMC::setSeed(unsigned long int s) {
     /* set seed */
@@ -218,9 +223,9 @@ void VMC::calculate(bool perturb) {
             } // end if
 
             // update energy and increment cycles
-            tmpEnergy = localEnergy2(newPositions,perturb);
-//             tmpEnergy = localEnergyDiff(newPositions) /
-//                 newWaveFunction.determinant();
+//             tmpEnergy = localEnergy2(newPositions,perturb);
+            tmpEnergy = localEnergyDiff(newD,newU,newPositions) /
+                (newD.determinant()*newU.determinant());
             energy += tmpEnergy;
             energySq += tmpEnergy*tmpEnergy;
             if (i < halfSize) {
