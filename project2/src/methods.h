@@ -22,7 +22,7 @@ class Methods {
         int max(int, int);
         void updateMatrixInverse(const Eigen::MatrixXd&, const
                 Eigen::MatrixXd&, const Eigen::MatrixXd&, Eigen::MatrixXd&,
-                unsigned int);
+                const double&, unsigned int);
         double determinantRatio(const Eigen::MatrixXd&, const Eigen::MatrixXd&,
                 unsigned int);
         double variance(double, double);

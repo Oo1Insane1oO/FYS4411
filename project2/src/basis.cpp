@@ -94,14 +94,14 @@ void Basis::pushState(std::vector<int*> &state, int i, int j, int ud) {
 
 double Basis::jastrow(const Eigen::MatrixXd &r, double beta) {
     /* calculate Jastrow factor */
-    double expInner = 0;
+    double factor = 0;
     for (unsigned int i = 0; i < r.rows(); ++i) {
         for (unsigned int j = i+1; j < r.rows(); ++j) {
-            expInner += (!((i+j)%2) ? 1 : 1./3)/(beta +
+            factor += (!((i+j)%2) ? 1 : 1./3)/(beta +
                     1/sqrt(pow(r(i,0)-r(j,0),2) + pow(r(i,1)-r(j,1),2)));
         } // end forj
     } // end fori
-    return expInner;
+    return factor;
 } // end function jastrow
 
 double Basis::harmonicOscillatorWaveFunction(double alpha, double x, double y,

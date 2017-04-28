@@ -34,10 +34,10 @@ int Methods::max(int var1, int var2) {
     return (var1>var2 ? var1 : var2);
 } // end template function max
 
-void Methods::updateMatrixInverse(const Eigen::MatrixXd &Mold, const Eigen::MatrixXd &Mnew,
-        const Eigen::MatrixXd &MoldInv, Eigen::MatrixXd &MnewInv, unsigned int i) {
+void Methods::updateMatrixInverse(const Eigen::MatrixXd &Mold, const
+        Eigen::MatrixXd &Mnew, const Eigen::MatrixXd &MoldInv, Eigen::MatrixXd
+        &MnewInv, const double &R, unsigned int i) {
     /* update inverse of matrix when only column i has changed */
-    double R = determinantRatio(Mnew, MoldInv, i);
     for (unsigned int k = 0; k < MnewInv.rows(); ++k) {
         for (unsigned int j = 0; j < MnewInv.rows(); ++j) {
             for (unsigned int l = 0; l < MnewInv.rows(); ++l) {

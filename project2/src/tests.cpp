@@ -72,7 +72,8 @@ bool Tests::test_updateinverse() {
     /* check that inverse is updated correctly */
     Eigen::MatrixXd newInv = Eigen::MatrixXd::Zero(oldM.rows(),oldM.rows());
     Eigen::MatrixXd inv = newM.inverse();
-    m->updateMatrixInverse(oldM, newM, oldM.inverse(), newInv, rowi);
+    m->updateMatrixInverse(oldM, newM, oldM.inverse(), newInv,
+            m->determinantRatio(newM, oldM.inverse(), rowi), rowi);
     bool t = false;
     for (int i = 0; i < oldM.rows(); ++i) {
         for (int j = 0; j < oldM.rows(); ++j) {
