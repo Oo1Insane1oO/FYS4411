@@ -20,10 +20,11 @@ class Methods {
         int min(int, int);
         double max(double, double);
         int max(int, int);
-        void updateMatrixInverse(Eigen::MatrixXd, Eigen::MatrixXd,
-                Eigen::MatrixXd, Eigen::MatrixXd&, unsigned int);
-        double determinantRatio(Eigen::MatrixXd, Eigen::MatrixXd, unsigned
-                int);
+        void updateMatrixInverse(const Eigen::MatrixXd&, const
+                Eigen::MatrixXd&, const Eigen::MatrixXd&, Eigen::MatrixXd&,
+                unsigned int);
+        double determinantRatio(const Eigen::MatrixXd&, const Eigen::MatrixXd&,
+                unsigned int);
         double variance(double, double);
 
         Eigen::MatrixXd conjugateGradient(Eigen::MatrixXd, Eigen::MatrixXd,

@@ -55,7 +55,7 @@ int main(int argc, const char** argv) {
     } // end if
 
     // run calculations
-    vmcObj->calculate();
+    vmcObj->calculate(true);
     std::cout << "<E> = " << vmcObj->energy << ", <E^2> = " << vmcObj->energySq
         << std::endl;
     std::cout << "<E^2> - <E>^2 = " << (vmcObj->energySq -

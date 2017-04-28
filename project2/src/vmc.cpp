@@ -34,8 +34,9 @@ double VMC::localEnergy2(const Eigen::MatrixXd &R, bool coulomb) {
     double denom = 1 + beta*r12;
     double denomsq = denom*denom;
     return 0.5 * pow(b->omega,2) * (1 - pow(alpha,2)) * (R.row(0).squaredNorm()
-            + R.row(1).squaredNorm()) + 2*alpha*b->omega - (coulomb ? 1/denomsq *
-        ((1/denomsq - alpha*b->omega*r12 + 1/r12 - 2*beta/denom)) + 1/r12 : 0);
+            + R.row(1).squaredNorm()) + 2*alpha*b->omega - (coulomb ?
+            (1/denomsq * ((1/denomsq - alpha*b->omega*r12 + 1/r12 -
+                           2*beta/denom)) + 1/r12) : 0);
 } // end function localEnergy
 
 void VMC::diff(const Eigen::MatrixXd &R, Eigen::MatrixXd &der) {
@@ -197,9 +198,9 @@ void VMC::calculate(bool perturb) {
                 determinantRatioU = newU.determinant() / oldU.determinant();
             } // end if
 
-            testRatio = determinantRatioD * determinantRatioU * (!perturb ? 1 :
-                    exp(b->jastrow(newPositions,beta) -
-                        b->jastrow(oldPositions,beta)));
+            testRatio = pow(determinantRatioD * determinantRatioU,2) *
+                (!perturb ?  1 : exp(b->jastrow(newPositions,beta) -
+                                     b->jastrow(oldPositions,beta)));
             if (imp) {
                 /* importance sampling */
                 testRatio *= greensFunctionRatio;
@@ -222,9 +223,9 @@ void VMC::calculate(bool perturb) {
             } // end if
 
             // update energy and increment cycles
-//             tmpEnergy = localEnergy2(newPositions,perturb);
-            tmpEnergy = localEnergyDiff(newD,newU,newPositions) /
-                (newD.determinant()*newU.determinant());
+            tmpEnergy = localEnergy2(newPositions,perturb);
+//             tmpEnergy = localEnergyDiff(newD,newU,newPositions) /
+//                 (newD.determinant()*newU.determinant());
             energy += tmpEnergy;
             energySq += tmpEnergy*tmpEnergy;
             if (i < halfSize) {

@@ -34,8 +34,8 @@ int Methods::max(int var1, int var2) {
     return (var1>var2 ? var1 : var2);
 } // end template function max
 
-void Methods::updateMatrixInverse(Eigen::MatrixXd Mold, Eigen::MatrixXd Mnew,
-        Eigen::MatrixXd MoldInv, Eigen::MatrixXd &MnewInv, unsigned int i) {
+void Methods::updateMatrixInverse(const Eigen::MatrixXd &Mold, const Eigen::MatrixXd &Mnew,
+        const Eigen::MatrixXd &MoldInv, Eigen::MatrixXd &MnewInv, unsigned int i) {
     /* update inverse of matrix when only column i has changed */
     double R = determinantRatio(Mnew, MoldInv, i);
     for (unsigned int k = 0; k < MnewInv.rows(); ++k) {
@@ -53,8 +53,8 @@ void Methods::updateMatrixInverse(Eigen::MatrixXd Mold, Eigen::MatrixXd Mnew,
     } // end fork
 } // end function updateMatrixInverse
 
-double Methods::determinantRatio(Eigen::MatrixXd newElement, Eigen::MatrixXd
-        oldInverse, unsigned int i) {
+double Methods::determinantRatio(const Eigen::MatrixXd &newElement, const
+        Eigen::MatrixXd &oldInverse, unsigned int i) {
     /* Calculate determinant ratio of Slater determinants */
     double R = 0;
     for (unsigned int j = 0; j < oldInverse.rows(); ++j) {
