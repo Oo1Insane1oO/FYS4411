@@ -184,23 +184,15 @@ void VMC::calculate(bool perturb) {
                                 oldPositions.array())).matrix().sum());
             } // end if
 
-            if (i < halfSize) {
+            if ((i<halfSize) || (determinantRatioD==0)) {
                 determinantRatioD = meth->determinantRatio(newD, oldInvD, i/2);
-            } else {
+            } else if ((i>halfSize) || (determinantRatioU==0)) {
                 determinantRatioU = meth->determinantRatio(newU, oldInvU, i/2);
-            } // end ifelse
+            } // end ifelseif
 
-            if (determinantRatioD == 0) {
-                determinantRatioD = newD.determinant() / oldD.determinant();
-            } // end if
-
-            if (determinantRatioU == 0) {
-                determinantRatioU = newU.determinant() / oldU.determinant();
-            } // end if
-
-            testRatio = pow(determinantRatioD * determinantRatioU,2) *
-                (!perturb ?  1 : exp(b->jastrow(newPositions,beta) -
-                                     b->jastrow(oldPositions,beta)));
+            testRatio = pow(determinantRatioD * determinantRatioU * (!perturb ?
+                        1 : exp(b->jastrow(newPositions,beta) -
+                            b->jastrow(oldPositions,beta))),2);
             if (imp) {
                 /* importance sampling */
                 testRatio *= greensFunctionRatio;
