@@ -824,32 +824,15 @@
             \frac{1}{r_{12}}
             \label{eq:EL2Final}
         \end{equation}
-    
-%     Before we arrive at the final expression for the expectation value(which
-%     the Metropolis algorithm will be applied on) we start by defining a trial
-%     wave function $\psi_T$ as
-%         \begin{equation}
-%             \psi_T(\vec{r}_1,\dots,\vec{r}_N;\alpha_1,\dots)
-%         \end{equation}
-%     where the $r$'s are the position for the individual particles and the
-%     $\alpha$'s are variational parameters, and use the variational principle to
-%     arrive at
-%         \begin{equation}
-%             E_0 \leq \ecp{E(\alpha_1,\dots)} =
-%             \frac{\int\psi^{*}_T\hat{H}\psi_T\md^N\vec{r}}
-%             {\abs{\psi_T}^2\md^N\vec{r}}
-%             \label{eq:vmcVarE}
-%         \end{equation}
-%     with $\hat{H}$ being the Hamiltonian and $\md^N\vec{r}$ is a short hand for
-%     an integral over $\vec{r}_1,\dots,\vec{r}_N$.
 
 \subsection{Optimization}
 \label{sub:optimization}
     In the method described in \Autoref{sub:vmc} the heavy load in terms of
-    calculation lies within the calculation of the determinant ratio >>REF
-    HERE<<. This section will derive an expression for these ratios in terms of
-    computation time. We will in the whole section assume we only move one
-    particle at a time in the Monte Carlo cycle.
+    calculation lies within the calculation of the determinant ratio given in
+    \Autoref{eq:acceptanceImportance,eq:quantumForce}. This section will derive
+    an expression for these ratios in terms of computation time. We will in the
+    whole section assume we only move one particle at a time in the Monte Carlo
+    cycle.
 
 \subsubsection{Determinant Ratio}
 \label{ssub:determinant_ratio}
