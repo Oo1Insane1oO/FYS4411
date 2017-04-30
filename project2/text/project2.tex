@@ -928,7 +928,7 @@
     some of the statistical concepts and explain the method of Blocking(for
     estimating the standard deviation).
 
-\subsubsection{Standard Deviation and Variance}
+\subsubsection{Standard Deviation, Variance and Covarance}
 \label{ssub:Standard Deviation and Variance}
     Given a PDF $P(x)$ we can write the probability for $P(X)$ to be within a
     (non-zero) interval $[a,b]$ as
@@ -948,6 +948,56 @@
             P(x) = \mprd{x} C(x)
             \label{eq:PDFCDFRel}
         \end{equation}
+    With this the PDF and CDF defined we can look at a special class of
+    expectation values called moments. The $n$-th moment of a PDF $P$ is
+    defined as
+        \begin{equation}
+            \ecp{x^n} \equiv \int x^nP(x)\md x
+            \label{eq:statmom}
+        \end{equation}
+    This means the zeroth moment($n=0$) is the normalization for $P$ and the
+    first moment is called the mean value for $P$. \\
+    A special case of moments is the so-called central moments, the $n$-th
+    central moment is defined to be
+        \begin{equation}
+            \ecp{(x-\ecp{x})^n} \equiv \int (x-\ecp{x})^nP(x)\md x
+            \label{eq:cenmom}
+        \end{equation}
+    The second central moment is known as the variance of $P$. Given a
+    stochastic variable $X$ the variance labeled as $\sigma^2_X$ is
+        \begin{align}
+            \text{var}(X) = \sigma^2_X &= \ecp{(x-\ecp{x})^n} =
+            (x-\ecp{x})^nP(x)\md x \\
+            &= \int (x^2 - 2x\ecp{x} + \ecp{x}^2)p(x)\md x \\
+            &= \ecp{x^2} - 2\ecp{x}\ecp{x} + \ecp{x}^2 \\
+            &= \ecp{x^2} - \ecp{x}^2
+            \label{eq:statvar}
+        \end{align}
+    The square root of the variance is known as the standard deviation and is
+    equal to the RMS(root-mean-square) of $P$, which is interpreted as the
+    spread of $P$. \\
+    The last important statistical quantity is the covariance. For two
+    stochastic variables $X_i$ and $X_j$ the covariance between them is define
+    to be
+        \begin{equation}
+            \text{cov}(X_i,X_j) \equiv \ecp{(x_i-\ecp{x_i})(x_j-\ecp{x_j})}
+            \label{eq:statcov}
+        \end{equation}
+    where
+        \begin{equation}
+            \ecp{x_i} = \int\dots\int x_iP(x_1,\dots,x_n)\md x_1\dots\md x_n
+            \label{eq:statmeanxi}
+        \end{equation}
+    and $P$ being a multivariate PDF. \\
+    For a finite size sample we replace the integrals with sums giving
+        \begin{align}
+            \bar{x}_n &\equiv \frac{1}{n}\suml{k}{n} x_k \\
+            \text{var}(x) &\equiv
+            \frac{1}{n}\suml{k}{n}\left(x_k-\bar{x}_n\right)^2 \\
+            \text{cov}(x) &\equiv \frac{1}{n}\sum\limits_{kl}
+            \left(x_k-\bar{x}_n\right)\left(x_l-\bar{x}_n\right)
+            \label{eq:statfinite}
+        \end{align}
     The method of blocking estimates the standard deviation given in
 
 \section{SETUP}
