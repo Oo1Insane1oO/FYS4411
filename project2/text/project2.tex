@@ -920,6 +920,36 @@
         \end{equation}
     as described by Sherman and Morris \cite{vmc,shermorInv}. 
 
+\section{STATISTICAL ANALYSIS}
+\label{sec:statistical_analysis}
+    Since Monte Carlo simulations can be considered to be computer experiments
+    the resulting data can be analysed with the same statistical theory as one
+    would with experimental data. This section will give a brief overview of
+    some of the statistical concepts and explain the method of Blocking(for
+    estimating the standard deviation).
+
+\subsubsection{Standard Deviation and Variance}
+\label{ssub:Standard Deviation and Variance}
+    Given a PDF $P(x)$ we can write the probability for $P(X)$ to be within a
+    (non-zero) interval $[a,b]$ as
+        \begin{equation}
+            \text{prob}\left(a\leq X\leq b\right) = \int\limits^a_b P(x)\md x
+            \label{eq:prob1}
+        \end{equation}
+    with $X$ being a stochastic variable. \\
+    The probability for $P(x)$ being less than some $x$ is
+        \begin{equation}
+            C(X\leq x) = \int\limits_{-\infty}^x p(x')\md x'
+            \label{CDF}
+        \end{equation}
+    The function $C$ is known as a cumulative probability function, abbreviated
+    as CDF. The relation between a PDF and CDF is
+        \begin{equation}
+            P(x) = \mprd{x} C(x)
+            \label{eq:PDFCDFRel}
+        \end{equation}
+    The method of blocking estimates the standard deviation given in
+
 \section{SETUP}
 \label{sec:setup}
 \section{RESULTS}
