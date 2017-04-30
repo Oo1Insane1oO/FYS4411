@@ -920,76 +920,17 @@
         \end{equation}
     as described by Sherman and Morris \cite{vmc,shermorInv}. 
 
-\section{STATISTICAL ANALYSIS}
-\label{sec:statistical_analysis}
+\subsection{STATISTICAL ANALYSIS}
+\label{sub:statistical_analysis}
     Since Monte Carlo simulations can be considered to be computer experiments
     the resulting data can be analysed with the same statistical theory as one
     would with experimental data. This section will give a brief overview of
     some of the statistical concepts and explain the method of Blocking(for
     estimating the standard deviation).
 
-\subsubsection{Standard Deviation, Variance and Covarance}
-\label{ssub:Standard Deviation and Variance}
-    Given a PDF $P(x)$ we can write the probability for $P(X)$ to be within a
-    (non-zero) interval $[a,b]$ as
-        \begin{equation}
-            \text{prob}\left(a\leq X\leq b\right) = \int\limits^a_b P(x)\md x
-            \label{eq:prob1}
-        \end{equation}
-    with $X$ being a stochastic variable. \\
-    The probability for $P(x)$ being less than some $x$ is
-        \begin{equation}
-            C(X\leq x) = \int\limits_{-\infty}^x p(x')\md x'
-            \label{CDF}
-        \end{equation}
-    The function $C$ is known as a cumulative probability function, abbreviated
-    as CDF. The relation between a PDF and CDF is
-        \begin{equation}
-            P(x) = \mprd{x} C(x)
-            \label{eq:PDFCDFRel}
-        \end{equation}
-    With this the PDF and CDF defined we can look at a special class of
-    expectation values called moments. The $n$-th moment of a PDF $P$ is
-    defined as
-        \begin{equation}
-            \ecp{x^n} \equiv \int x^nP(x)\md x
-            \label{eq:statmom}
-        \end{equation}
-    This means the zeroth moment($n=0$) is the normalization for $P$ and the
-    first moment is called the mean value for $P$. \\
-    A special case of moments is the so-called central moments, the $n$-th
-    central moment is defined to be
-        \begin{equation}
-            \ecp{(x-\ecp{x})^n} \equiv \int (x-\ecp{x})^nP(x)\md x
-            \label{eq:cenmom}
-        \end{equation}
-    The second central moment is known as the variance of $P$. Given a
-    stochastic variable $X$ the variance labeled as $\sigma^2_X$ is
-        \begin{align}
-            \text{var}(X) = \sigma^2_X &= \ecp{(x-\ecp{x})^n} =
-            (x-\ecp{x})^nP(x)\md x \\
-            &= \int (x^2 - 2x\ecp{x} + \ecp{x}^2)p(x)\md x \\
-            &= \ecp{x^2} - 2\ecp{x}\ecp{x} + \ecp{x}^2 \\
-            &= \ecp{x^2} - \ecp{x}^2
-            \label{eq:statvar}
-        \end{align}
-    The square root of the variance is known as the standard deviation and is
-    equal to the RMS(root-mean-square) of $P$, which is interpreted as the
-    spread of $P$. \\
-    The last important statistical quantity is the covariance. For two
-    stochastic variables $X_i$ and $X_j$ the covariance between them is define
-    to be
-        \begin{equation}
-            \text{cov}(X_i,X_j) \equiv \ecp{(x_i-\ecp{x_i})(x_j-\ecp{x_j})}
-            \label{eq:statcov}
-        \end{equation}
-    where
-        \begin{equation}
-            \ecp{x_i} = \int\dots\int x_iP(x_1,\dots,x_n)\md x_1\dots\md x_n
-            \label{eq:statmeanxi}
-        \end{equation}
-    and $P$ being a multivariate PDF. \\
-    For a finite size sample we replace the integrals with sums giving
+\subsubsection{STANDARD DEVIATION, VARIANCE AND COVARIANCE}
+\label{ssub:standard_deviation__variance_and_covariance}
+    Given a PDF $P(x)$ the mean value, variance and covariance is
         \begin{align}
             \bar{x}_n &\equiv \frac{1}{n}\suml{k}{n} x_k \\
             \text{var}(x) &\equiv
@@ -998,6 +939,80 @@
             \left(x_k-\bar{x}_n\right)\left(x_l-\bar{x}_n\right)
             \label{eq:statfinite}
         \end{align}
+    for a finite size sample.
+
+\subsubsection{Central Limit Theorem}
+\label{ssub:central_limit_theorem}
+    The central limit theorem states that given a PDF $P_{X_n}$ for a sample $X_n$
+    the mean value can be expressed as
+        \begin{equation}
+            \lim\limits_{n\rarr\infty}p_{\bar{X}_n}(x) =
+            \sqrt{\frac{n}{2\pi\sigma(X)^2}}
+            \exp(-\frac{n(x-\bar{X}_n)^2}{2\sigma(X)^2})
+            \label{eq:centrallimit}
+        \end{equation}
+    where $\sigma^2(X)$ is the variance of the sample.
+
+\subsubsection{Statistical Error}
+\label{ssub:statistical_error}
+    The error in a sample is just the spread of the mean, i.e the variance of
+    said sample. Set a finite size sample $X_n$ the error would be
+        \begin{equation}
+            \sigma^2_X = \text{var}\left(\bar{X}_n\right) =
+            \frac{1}{n^2}\sum\limits_{ij}\text{cov}\left(X_i,X_j\right)
+            \label{eq:error}
+        \end{equation}
+    Using the central limit theorem we can approximate the real mean as
+        \begin{equation}
+            \ecp{x_i} \approx \frac{1}{n}\suml{k}{n} x_k  = \bar{x}
+            \label{eq:meanapprox}
+        \end{equation}
+    which gives the approximative covariance
+        \begin{equation}
+            \text{cov}\left(X_i,X_j\right) \approx
+            \ecp{(x_i-\bar{x})(x_j-\bar{x})} = \frac{1}{n}\text{cov}(x)
+            \label{eq:covapprox}
+        \end{equation}
+    and the error is thus
+        \begin{equation}
+            \sigma^2_X = \frac{1}{n}\text{cov}(x)
+            \label{eq:errorfinal}
+        \end{equation}
+    We can split this equation in part giving
+        \begin{align}
+            \sigma^2_X &= \frac{1}{n}\text{var}(x) +
+            \frac{1}{n}\left(\text{cov}(x) - \text{var}(x)\right) \nonumber \\
+            &= \frac{1}{n^2}\suml{k}{n} \left(x_k - \bar{x}_n\right) +
+            \frac{2}{n^2}\sum\limits_{k<l}
+            \left(x_k-\bar{x}_n\right)\left(x_l-\bar{x}_n\right)
+            \label{eq:errorSplit}
+        \end{align}
+
+\subsubsection{Autocorrelation Function}
+\label{ssub:auto-correlation_function}
+    Writing the second term in our error given in \Autoref{eq:errorSplit} (the
+    so-called correlation term) as a partial sums gives
+        \begin{equation}
+            f_d = \frac{1}{n-d}\suml{k}{n-d}
+            \left(x_k-\bar{x}_n\right)\left(x_{k+d}-\bar{x}_n\right)
+            \label{eq:autocorrf}
+        \end{equation}
+    which this we can define the autocorrelation function $k_d$ as
+        \begin{equation}
+            k_d \equiv \frac{f_d}{\text{var}(x)}
+            \label{eq:autocorrfinal}
+        \end{equation}
+    The sample error is now
+        \begin{equation}
+            \sigma^2 = \frac{\tau}{n}\text{var}(x)
+            \label{eq:errorauto}
+        \end{equation}
+    with $\tau$ defined as the autocorrelation time
+        \begin{equation}
+            \tau \equiv 1 + 2\suml{d}{n-1}k_d
+            \label{eq:autocorrtime}
+        \end{equation}
+
     The method of blocking estimates the standard deviation given in
 
 \section{SETUP}
