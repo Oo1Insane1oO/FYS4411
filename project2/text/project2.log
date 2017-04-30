@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2017.3.22)  24 APR 2017 14:19
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2017.3.22)  30 APR 2017 11:32
 entering extended mode
  \write18 enabled.
  file:line:error style messages enabled.
@@ -2556,21 +2556,21 @@ l.324         \end{equation}
 LaTeX Font Info:    Font shape `OT1/LinuxLibertineT-TLF/m/it' will be
 (Font)              scaled to size 10.0pt on input line 952.
  [8]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 980.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 980.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 983.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 983.
 
 (/home/saintz/localStuff/FYS4411/project2/text/project2.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 980.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 980.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 983.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 983.
 Package rerunfilecheck Info: File `project2.out' has not changed.
 (rerunfilecheck)             Checksum: <no file>.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 980.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 983.
  ) 
 Here is how much of TeX's memory you used:
- 31849 strings out of 494497
- 578115 string characters out of 6172400
- 638612 words of memory out of 5000000
- 34612 multiletter control sequences out of 15000+600000
+ 31851 strings out of 494497
+ 578142 string characters out of 6172400
+ 638644 words of memory out of 5000000
+ 34613 multiletter control sequences out of 15000+600000
  54880 words of font info for 134 fonts, out of 8000000 for 9000
  264 hyphenation exceptions out of 8191
  64i,13n,94p,10410b,369s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -2594,10 +2594,10 @@ s/txsyb.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/txfonts/txsyc.pfb
 ></usr/share/texlive/texmf-dist/fonts/type1/public/newtx/zxlr.pfb></usr/share/t
 exlive/texmf-dist/fonts/type1/public/newtx/zxlri.pfb>
 Output written on /home/saintz/localStuff/FYS4411/project2/text/project2.pdf (9
- pages, 492848 bytes).
+ pages, 494347 bytes).
 PDF statistics:
- 390 PDF objects out of 1000 (max. 8388607)
- 359 compressed objects within 4 object streams
- 119 named destinations out of 1000 (max. 500000)
+ 394 PDF objects out of 1000 (max. 8388607)
+ 363 compressed objects within 4 object streams
+ 120 named destinations out of 1000 (max. 500000)
  213 words of extra memory for PDF output out of 10000 (max. 10000000)
 
