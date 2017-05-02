@@ -847,6 +847,7 @@
 \label{ssub:general_case}
 \newcommand{\gJ}{\exp(\frac{a}{\beta + \frac{1}{r_{ij}}})}
 \newcommand{\gk}{\exp(\frac{a}{\beta + \frac{1}{r_{kj}}})}
+\newcommand{\prodsecrule}[2]{{#2} \nabla^2_k {#1} + {#1} \nabla^2_k {#2}}
     For the general case with $N$ electrons(still closed shell) the local
     energy is defined as in \Autoref{eq:EL2}, but with $\psi_T$ defined as in
     \Autoref{eq:psiT}. The Laplacian in this case would then be
@@ -877,7 +878,21 @@
             \det(\phi_1(r_1),\dots,\phi_N(r_N))
             \label{eq:Phidef}
         \end{equation}
-    and used the product rule for differentiation.
+    and used the product rule for differentiation. \\
+    Starting by solving $\nabla^2_k\det(\Phi(\vec{r},\alpha))$ and write out
+    the determinant with the Laplace expansion given in
+    \Autoref{sub:laplace_expansion}.
+        \begin{align}
+            \nabla^2_k\det(\Phi(\vec{r},\alpha)) &=
+            \nabla^2_k\suml{j}{N}\Phi_{ij}C_{ij} \nonumber \\
+            &= \nabla^2_k\left(\Phi_{kj}C_{kj}\right) \nonumber \\
+            &= \prodsecrule{\Phi_{kj}}{C_{kj}} \nonumber \\
+            &= C_{kj} \nabla^2_k \Phi_{kj}
+            \label{eq:PhiLapexp}
+        \end{align}
+    The latter equality is due to the fact that the cofactor to row $k$ is not
+    dependant on the position of particle $k$ meaning the differential is zero
+    for all $k$.
 
 \subsection{Optimization}
 \label{sub:optimization}
