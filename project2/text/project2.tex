@@ -946,10 +946,25 @@
             \sqrt{\omega} \prd{s}[][2]\left(H_n(s)e(s))\right) &=
             \sqrt{\omega}\left(8n(n-1)H_{n-2}(s) - 4n\alpha H_{n-1}(s) +
             \alpha(s-1)(2sH_{n-1}(s)-2(n-1)H_{n-2})\right)e(s) \nonumber \\
-            &= \sqrt{\omega}[2(n-1)(4n-\alpha(s-1))H_{n-2}(s) + 2\alpha(s(s-1)
-            - 2n)H_{n-1}(s)]e(s)
+            &= \sqrt{\omega}\left[\frac{n}{s}(4(n+1)-\alpha(s-1))\me^{s^2} +
+            2\alpha(s(s-1) - 2(n+1))\right]H_n(s)e(s) \\
+            &= \left[4\left(n_{x_k} + 1\right)
+            \left(\frac{n_{x_k}}{x_k}\me^{\omega x^2_k} -
+            \sqrt{\omega}\alpha\right) + \alpha\left(\sqrt{\omega}x_k -
+            1\right)\left(2\omega x_k - \frac{n_{x_k}}{x_k}\me^{\omega
+            x^2_k}\right)\right]H\left(\sqrt{\omega}x_k\right)e\left(x_k\right)
             \label{eq:diffs2}
         \end{align}
+    A similar approach for $y_k$ gives
+       \begin{equation}
+            \prd{y_k}[][2]\left(H_{n_{y_k}}\left(\sqrt{\omega}y_k\right)
+            e\left(y_k\right)\right) = \left[4\left(n_{y_k} +
+            1\right) \left(\frac{n_{y_k}}{y_k}\me^{\omega y^2_k} -
+            \sqrt{\omega}\alpha\right) + \alpha\left(\sqrt{\omega}y_k -
+            1\right)\left(2\omega y_k - \frac{n_{y_k}}{y_k}\me^{\omega
+            y^2_k}\right)\right]H\left(\sqrt{\omega}y_k\right)e\left(y_k\right)
+            \label{eq:diffyk}
+       \end{equation} 
 
 \subsection{Optimization}
 \label{sub:optimization}
