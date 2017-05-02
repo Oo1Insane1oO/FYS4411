@@ -411,6 +411,23 @@
             \label{eq:cgitrk}
         \end{equation}
 
+\subsection{LAPLACE EXPANSION}
+\label{sub:laplace_expansion}
+    Given a $n\times n$ matrix $M=[m_{ij}]$ and $i,j\in[1,\dots,n]$, then the
+    determinant of $M$ is
+        \begin{equation}
+            \det(M) = \suml{j}{n}m_{ij}C_{ij}
+            \label{eq:laplaceexp}
+        \end{equation}
+    where $C_{ij}$ is the $i,j$-element of the so-called cofactor matrix
+    defined as the sub-matrix arising from removing the $i$-th row and $j$-th
+    column from $M$. The cofactor matrix element is given as
+        \begin{equation}
+            C_{ij} = (-1)^{i+j}M_{ij}
+            \label{eq:cofactor}
+        \end{equation}
+    where the indices $i$ and $j$ run from $1$ up to $n-1$ \cite{linalgDavid}.
+
 \subsection{METROPOLIS-HASTINGS ALGORITHM}
 \label{sub:metropolis_algorithm}
     The Metropolis algorithm bases itself on moves (also called transitions) as
@@ -1057,5 +1074,9 @@
         Jack Sherman and Winifred J. Morrison,
         \textit{Adjustment of an Inverse Matrix Corresponding to a Change in One Element of a Given Matrix.} \\
         Annals of Mathematical Statistics 21, 1950. doi: \url{http://dx.doi.org/10.1214/aoms/1177729893}.
+    \bibitem{linalgDavid}
+        David C. Lay Chapter 3,
+        \textit{Linear Algebra and Its Applications},
+        Pearson, 2011, ISBN 978-0321835144.
 \end{thebibliography}
 \end{document}
