@@ -293,7 +293,6 @@
             \label{eq:hermiteDer}
         \end{equation}
 
-
 \subsection{HARMONIC OSCILLATOR}
 \label{sub:harmonic_oscillator}
 \subsubsection{Cartesian Coordinates}
@@ -926,14 +925,30 @@
             \label{eq:nablakth}
         \end{equation}
     Solving the differential for $x_k$ by substituting $s=\sqrt{\omega}x_k$ and
-    labeling $n_x\rarr n$ we have
+    labeling $n_x\rarr n$ and defining
+        \begin{equation}
+            e_k(x_k) \equiv \exp(-\frac{\alpha\omega}{2}x^2_k)
+            \label{eq:e}
+        \end{equation}
+    we have
         \begin{align}
             \prd{x_k}[][2]\left(H_{n_{x_k}}\left(\sqrt{\omega}x_k\right)
             \exp(-\frac{\alpha\omega}{2}x^2_k)\right) &= \sqrt{\omega}
-            \prd{s}[][2]\left(H_n(s)\exp(-\frac{\alpha}{2}s^2)\right) \nonumber
+            \prd{s}[][2]\left(H_n(s)e(s)\right) \nonumber
             \\
-            &= \sqrt{\omega}\exp(-\frac{\alpha}{2}s^2) \left(\prd{s}[H_n][2] -
+            &= \sqrt{\omega}e(s) \left(\prd{s}[H_n][2] -
             2\alpha s\prd{s}[H_n(s)] + \alpha(s-1)H_n(s)\right)
+            \label{eq:diffxk1}
+        \end{align}
+    Using \Autoref{eq:hermiteDer} for the derivatives and using the recursion
+    relation given in \Autoref{eq:hermiteReq} for $H_n(s)$ gives
+        \begin{align}
+            \sqrt{\omega} \prd{s}[][2]\left(H_n(s)e(s))\right) &=
+            \sqrt{\omega}\left(8n(n-1)H_{n-2}(s) - 4n\alpha H_{n-1}(s) +
+            \alpha(s-1)(2sH_{n-1}(s)-2(n-1)H_{n-2})\right)e(s) \nonumber \\
+            &= \sqrt{\omega}[2(n-1)(4n-\alpha(s-1))H_{n-2}(s) + 2\alpha(s(s-1)
+            - 2n)H_{n-1}(s)]e(s)
+            \label{eq:diffs2}
         \end{align}
 
 \subsection{Optimization}
