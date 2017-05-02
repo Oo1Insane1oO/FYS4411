@@ -278,9 +278,21 @@
         \end{equation}
     with the recurrence relation
         \begin{equation}
-            H_{n+1} = H_n - 2nH_{n-1}
+            H_{n+1} = 2xH_n - 2nH_{n-1}
             \label{eq:hermiteReq}
         \end{equation}
+    and standardized relation
+        \begin{equation}
+            H_n = (-1)^n\me^{x^2}\prd{x}[][n]\me^{-x^2}
+            \label{eq:hermiteExp}
+        \end{equation}
+    From \Autoref{eq:hermiteExp} one can find an expression for the derivative
+    of the Hermite polynomial as
+        \begin{equation}
+            \prd{x}[H_n][m] = 2^mm!\frac{n!}{(n-m)!}H_{n-m}
+            \label{eq:hermiteDer}
+        \end{equation}
+
 
 \subsection{HARMONIC OSCILLATOR}
 \label{sub:harmonic_oscillator}
@@ -892,7 +904,37 @@
         \end{align}
     The latter equality is due to the fact that the cofactor to row $k$ is not
     dependant on the position of particle $k$ meaning the differential is zero
-    for all $k$.
+    for all $k$. \\
+    The single particle wavefunctions are given by the Harmonic oscillator wave
+    functions, but with the added variational parameter $\alpha$ in the
+    exponential meaning we have
+        \begin{equation}
+            \Phi_{kj} = \phi_{n_{x_k}n_{y_k}}(r_k,\alpha) =
+            H_{n_{x_k}}\left(\sqrt{\omega}x_k\right)
+            H_{n_{y_k}}\left(\sqrt{\omega}y_k\right)
+            \exp(-\frac{\alpha\omega}{2}\left(x^2_k + y^2_k\right))
+            \label{eq:Phikj}
+        \end{equation}
+    The expression to be solved for the $k$-th particle is thus
+        \begin{equation}
+            \nabla^2_k \Phi_{kj} = \exp(-\frac{\alpha\omega}{2}y^2_k)
+            \prd{x_k}[][2]\left(H_{n_{x_k}}\left(\sqrt{\omega}x_k\right)
+            \exp(-\frac{\alpha\omega}{2}x^2_k)\right) +
+            \exp(-\frac{\alpha\omega}{2}x^2_k)
+            \prd{y_k}[][2]\left(H_{n_{y_k}}\left(\sqrt{\omega}y_k\right)
+            \exp(-\frac{\alpha\omega}{2}y^2_k)\right)
+            \label{eq:nablakth}
+        \end{equation}
+    Solving the differential for $x_k$ by substituting $s=\sqrt{\omega}x_k$ and
+    labeling $n_x\rarr n$ we have
+        \begin{align}
+            \prd{x_k}[][2]\left(H_{n_{x_k}}\left(\sqrt{\omega}x_k\right)
+            \exp(-\frac{\alpha\omega}{2}x^2_k)\right) &= \sqrt{\omega}
+            \prd{s}[][2]\left(H_n(s)\exp(-\frac{\alpha}{2}s^2)\right) \nonumber
+            \\
+            &= \sqrt{\omega}\exp(-\frac{\alpha}{2}s^2) \left(\prd{s}[H_n][2] -
+            2\alpha s\prd{s}[H_n(s)] + \alpha(s-1)H_n(s)\right)
+        \end{align}
 
 \subsection{Optimization}
 \label{sub:optimization}
