@@ -157,6 +157,7 @@
 \newcommand{\I}{\scalebox{1.2}{$\mathds{1}$}}
 \newcommand{\veps}{\varepsilon} %\varepsilon is to long :P
 \newcommand{\suml}[2]{\sum\limits_{#1=1}^{#2}}
+\newcommand{\prodl}[2]{\prod\limits_{#1}^{#2}}
 
 \newcommand{\fij}[3]{#1\left(#2\rarr#3\right)}
 \newcommand{\ufij}[3]{#1_{#2\rarr#3}}
@@ -841,6 +842,42 @@
             \frac{1}{r_{12}}
             \label{eq:EL2Final}
         \end{equation}
+
+\subsubsection{General Case}
+\label{ssub:general_case}
+\newcommand{\gJ}{\exp(\frac{a}{\beta + \frac{1}{r_{ij}}})}
+\newcommand{\gk}{\exp(\frac{a}{\beta + \frac{1}{r_{kj}}})}
+    For the general case with $N$ electrons(still closed shell) the local
+    energy is defined as in \Autoref{eq:EL2}, but with $\psi_T$ defined as in
+    \Autoref{eq:psiT}. The Laplacian in this case would then be
+        \begin{equation}
+            \nabla^2_N = \suml{k}{N} \nabla^2_k = \suml{k}{N}
+            \left(\prd{x_k}[][2] + \prd{y_k}[][2]\right)
+            \label{eq:nablaN}
+        \end{equation}
+    that is a sum over the single-particle spacial Laplacians. \\
+    We define a new function $g(\vec{r},\beta)$ as the Jastrow-factor
+        \begin{equation}
+            g(\vec{r},\beta) \equiv \prod_{i<j} \gJ
+            \label{eq:g}
+        \end{equation}
+    and apply \Autoref{eq:nablaN} to the trial wavefunction $\psi_T$ giving
+        \begin{align}
+            \nabla_N\psi^2_T &=
+            \suml{k}{N}\nabla^2_k\left[\det(\Phi(\vec{r},\alpha))
+            g(\vec{r},\beta)\right] \nonumber \\
+            &= \suml{k}{N}
+            \left(g(\vec{r},\beta)\nabla^2_k\det(\Phi(\vec{r},\alpha)) +
+            \det(\Phi(\vec{r},\alpha))\nabla^2_kg(\vec{r},\beta)\right)
+            \label{eq:lapPsiT1}
+        \end{align}
+    We have used a short-hand $\det(\Phi)$ defined as
+        \begin{equation}
+            \det(\Phi(\vec{r},\alpha)) \equiv
+            \det(\phi_1(r_1),\dots,\phi_N(r_N))
+            \label{eq:Phidef}
+        \end{equation}
+    and used the product rule for differentiation.
 
 \subsection{Optimization}
 \label{sub:optimization}
