@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2017.3.22)  3 MAY 2017 14:49
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2017.3.22)  3 MAY 2017 15:29
 entering extended mode
  \write18 enabled.
  file:line:error style messages enabled.
@@ -2556,12 +2556,12 @@ l.330         \end{equation}
                              [1
 
 ] [2] [3] [4] [5] [6] [7]
-Overfull \hbox (0.60835pt too wide) in paragraph at lines 960--960
+Overfull \hbox (8.39735pt too wide) in paragraph at lines 960--960
 [] 
  []
 
 
-Overfull \hbox (0.15198pt too wide) detected at line 973
+Overfull \hbox (7.94098pt too wide) detected at line 973
 [][][] [] \U/ntxmia/m/it/10 = [] \OML/nxlmi/m/it/10 H[] [] e\U/ntxmia/m/it/10 {
 \OML/nxlmi/m/it/10 y[]\U/ntxmia/m/it/10 |
  []
@@ -2613,7 +2613,7 @@ s/txsyb.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/txfonts/txsyc.pfb
 ></usr/share/texlive/texmf-dist/fonts/type1/public/newtx/zxlr.pfb></usr/share/t
 exlive/texmf-dist/fonts/type1/public/newtx/zxlri.pfb>
 Output written on /home/saintz/localStuff/FYS4411/project2/text/project2.pdf (1
-3 pages, 523700 bytes).
+3 pages, 523734 bytes).
 PDF statistics:
  508 PDF objects out of 1000 (max. 8388607)
  472 compressed objects within 5 object streams

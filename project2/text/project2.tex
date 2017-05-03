@@ -937,7 +937,7 @@
             \exp(-\frac{\alpha\omega}{2}x^2_k)\right) &= \omega
             \prd{s}[][2]\left(H_n(s)e(s)\right) \nonumber \\
             &= \omega e(s) \left(\prd{s}[H_n][2] - 2\alpha s\prd{s}[H_n] +
-            \alpha(\alpha s^2-1)H_n(s)\right)
+            \alpha(\alpha^2 s^2-1)H_n(s)\right)
             \label{eq:diffxk1}
         \end{align}
     Using \Autoref{eq:hermiteDer} for the derivatives and using the recursion
@@ -945,15 +945,15 @@
         \begin{align}
             \omega \prd{s}[][2]\left(H_n(s)e(s))\right) &=
             \omega\left(8n(n-1)H_{n-2}(s) - 4n\alpha sH_{n-1}(s) +
-            \alpha(\alpha s^2-1)(2sH_{n-1}(s)-2(n-1)H_{n-2})\right)e(s)
+            \alpha(\alpha^2 s^2-1)(2sH_{n-1}(s)-2(n-1)H_{n-2})\right)e(s)
             \nonumber \\
-            &= \omega\left[\frac{n}{s}(4(n+1)-\alpha(\alpha s^2-1))\me^{s^2} +
-            2\alpha s(\alpha s^2-2n-3)\right]H_n(s)e(s) \nonumber \\
+            &= \omega\left[\frac{n}{s}(4(n+1)-\alpha(\alpha^2 s^2-1))\me^{s^2} +
+            2\alpha s(\alpha^2 s^2-2n-3)\right]H_n(s)e(s) \nonumber \\
             \prd{x_k}[][2]\left(H_{n_{x_k}}\left(\sqrt{\omega}x_k\right)
             e(x_k)\right) &= \left[\frac{n_{x_k}\sqrt{\omega}}{x_k}
-            \left(4(n_{x_k}+1)-\alpha\left(\alpha \omega
+            \left(4(n_{x_k}+1)-\alpha\left(\alpha^2 \omega
             x^2_k-1\right)\right)\me^{\omega x^2_k} + 2\alpha
-            {\omega}^{\frac{3}{2}}x_k(\alpha \omega
+            {\omega}^{\frac{3}{2}}x_k(\alpha^2 \omega
             x^2_k-2n_{x_k}-3)\right]H_{n_{x_k}}
             \left(\sqrt{\omega}x_k\right)e(x_k)
             \label{eq:diffs2}
@@ -964,9 +964,9 @@
        \begin{equation}
             \prd{y_k}[][2]\left(H_{n_{y_k}}\left(\sqrt{\omega}y_k\right)
             e\left(y_k\right)\right) = \left[\frac{n_{y_k}\sqrt{\omega}}{y_k}
-            \left(4(n_{y_k}+1)-\alpha\left(\alpha \omega
+            \left(4(n_{y_k}+1)-\alpha\left(\alpha^2 \omega
             y^2_k-1\right)\right)\me^{\omega y^2_k} + 2\alpha
-            {\omega}^{\frac{3}{2}}y_k(\alpha \omega
+            {\omega}^{\frac{3}{2}}y_k(\alpha^2 \omega
             y^2_k-2n_{y_k}-3)\right]H_{n_{y_k}}
             \left(\sqrt{\omega}y_k\right)e(y_k)
             \label{eq:diffyk}
@@ -976,14 +976,14 @@
             \begin{aligned}
                 \Theta_{n_{x_k}n_{y_k}}(x_k,y_k,\alpha) \equiv
                 \left[\frac{n_{x_k}\sqrt{\omega}}{x_k}
-                \left(4(n_{x_k}+1)-\alpha\left(\alpha \omega
+                \left(4(n_{x_k}+1)-\alpha\left(\alpha^2 \omega
                 x^2_k-1\right)\right)\me^{\omega x^2_k} + 2\alpha
-                {\omega}^{\frac{3}{2}}x_k(\alpha \omega
+                {\omega}^{\frac{3}{2}}x_k(\alpha^2 \omega
                 x^2_k-2n_{x_k}-3)\right] \\
                 + \left[\frac{n_{y_k}\sqrt{\omega}}{y_k}
-                \left(4(n_{y_k}+1)-\alpha\left(\alpha \omega
+                \left(4(n_{y_k}+1)-\alpha\left(\alpha^2 \omega
                 y^2_k-1\right)\right)\me^{\omega y^2_k} + 2\alpha
-                {\omega}^{\frac{3}{2}}y_k(\alpha \omega
+                {\omega}^{\frac{3}{2}}y_k(\alpha^2 \omega
                 y^2_k-2n_{y_k}-3)\right]
             \end{aligned}
             \label{eq:Ddef}
