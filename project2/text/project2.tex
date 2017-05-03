@@ -943,53 +943,61 @@
     Using \Autoref{eq:hermiteDer} for the derivatives and using the recursion
     relation given in \Autoref{eq:hermiteReq} for $H_n(s)$ gives
         \begin{align}
-            \sqrt{\omega} \prd{s}[][2]\left(H_n(s)e(s))\right) &=
-            \sqrt{\omega}\left(8n(n-1)H_{n-2}(s) - 4n\alpha H_{n-1}(s) +
-            \alpha(s-1)(2sH_{n-1}(s)-2(n-1)H_{n-2})\right)e(s) \nonumber \\
-            &= \sqrt{\omega}\left[\frac{n}{s}(4(n+1)-\alpha(s-1))\me^{s^2} +
-            2\alpha(s(s-1) - 2(n+1))\right]H_n(s)e(s) \\
-            &= \left[4\left(n_{x_k} + 1\right)
-            \left(\frac{n_{x_k}}{x_k}\me^{\omega x^2_k} -
-            \sqrt{\omega}\alpha\right) + \alpha\left(\sqrt{\omega}x_k -
-            1\right)\left(2\omega x_k - \frac{n_{x_k}}{x_k}\me^{\omega
-            x^2_k}\right)\right]H\left(\sqrt{\omega}x_k\right)e\left(x_k\right)
+            \omega \prd{s}[][2]\left(H_n(s)e(s))\right) &=
+            \omega\left(8n(n-1)H_{n-2}(s) - 4n\alpha sH_{n-1}(s) +
+            \alpha(\alpha s^2-1)(2sH_{n-1}(s)-2(n-1)H_{n-2})\right)e(s)
+            \nonumber \\
+            &= \omega\left[\frac{n}{s}(4(n+1)-\alpha(\alpha s^2-1))\me^{s^2} +
+            2\alpha s(\alpha s^2-4n-5)\right]H_n(s)e(s) \nonumber \\
+            \prd{x_k}[][2]\left(H_{n_{x_k}}\left(\sqrt{\omega}x_k\right)
+            e(x_k)\right) &= \left[\frac{n_{x_k}\sqrt{\omega}}{x_k}
+            \left(4(n_{x_k}+1)-\alpha\left(\alpha \omega
+            x^2_k-1\right)\right)\me^{\omega x^2_k} + 2\alpha
+            {\omega}^{\frac{3}{2}}x_k(\alpha \omega
+            x^2_k-4n_{x_k}-5)\right]H_{n_{x_k}}
+            \left(\sqrt{\omega}x_k\right)e(x_k)
             \label{eq:diffs2}
         \end{align}
+    We have in the latter step shifted the index $n$ and used
+    \Autoref{eq:hermiteExp} to calculate the polynomial ratio. \\
     A similar approach for $y_k$ gives
        \begin{equation}
             \prd{y_k}[][2]\left(H_{n_{y_k}}\left(\sqrt{\omega}y_k\right)
-            e\left(y_k\right)\right) = \left[4\left(n_{y_k} +
-            1\right) \left(\frac{n_{y_k}}{y_k}\me^{\omega y^2_k} -
-            \sqrt{\omega}\alpha\right) + \alpha\left(\sqrt{\omega}y_k -
-            1\right)\left(2\omega y_k - \frac{n_{y_k}}{y_k}\me^{\omega
-            y^2_k}\right)\right]H\left(\sqrt{\omega}y_k\right)e\left(y_k\right)
+            e\left(y_k\right)\right) = \left[\frac{n_{y_k}\sqrt{\omega}}{y_k}
+            \left(4(n_{y_k}+1)-\alpha\left(\alpha \omega
+            y^2_k-1\right)\right)\me^{\omega y^2_k} + 2\alpha
+            {\omega}^{\frac{3}{2}}y_k(\alpha \omega
+            y^2_k-4n_{y_k}-5)\right]H_{n_{y_k}}
+            \left(\sqrt{\omega}y_k\right)e(y_k)
             \label{eq:diffyk}
        \end{equation}
     Inserting \Autoref{eq:diffs2,eq:diffyk} into \Autoref{eq:nablakth} with
-        \begin{align}
-            D_{n_{x_k}n_{y_k}}(x_k,y_k,\alpha) \equiv 
-            \left[4\left(n_{x_k} + 1\right)
-            \left(\frac{n_{x_k}}{x_k}\me^{\omega x^2_k} -
-            \sqrt{\omega}\alpha\right) + \alpha\left(\sqrt{\omega}x_k -
-            1\right)\left(2\omega x_k - \frac{n_{x_k}}{x_k}\me^{\omega
-            x^2_k}\right)\right] \\
-            + \left[4\left(n_{y_k} +
-            1\right) \left(\frac{n_{y_k}}{y_k}\me^{\omega y^2_k} -
-            \sqrt{\omega}\alpha\right) + \alpha\left(\sqrt{\omega}y_k -
-            1\right)\left(2\omega y_k - \frac{n_{y_k}}{y_k}\me^{\omega
-            y^2_k}\right)\right]
+        \begin{equation}
+            \begin{aligned}
+                \Theta_{n_{x_k}n_{y_k}}(x_k,y_k,\alpha) \equiv
+                \left[\frac{n_{x_k}\sqrt{\omega}}{x_k}
+                \left(4(n_{x_k}+1)-\alpha\left(\alpha \omega
+                x^2_k-1\right)\right)\me^{\omega x^2_k} + 2\alpha
+                {\omega}^{\frac{3}{2}}x_k(\alpha \omega
+                x^2_k-4n_{x_k}-5)\right] \\
+                + \left[\frac{n_{y_k}\sqrt{\omega}}{y_k}
+                \left(4(n_{y_k}+1)-\alpha\left(\alpha \omega
+                y^2_k-1\right)\right)\me^{\omega y^2_k} + 2\alpha
+                {\omega}^{\frac{3}{2}}y_k(\alpha \omega
+                y^2_k-4n_{y_k}-5)\right]
+            \end{aligned}
             \label{eq:Ddef}
-        \end{align}
+        \end{equation}
     gives
         \begin{equation}
             \nabla^2_k\Phi_{kj} =
-            D_{n_{x_k}n_{y_k}}(x_k,y_k,\alpha)\Phi_{kj}(r_k,\alpha)
+            \Theta_{n_{x_k}n_{y_k}}(x_k,y_k,\alpha)\Phi_{kj}(r_k,\alpha)
             \label{eq:nablakthfinal}
         \end{equation}
     which gives that \Autoref{eq:PhiLapexp} is
         \begin{equation}
             \suml{k}{N}C_{kj}\nabla^2_k\Phi_{kj} = \det(\Phi(\vec{r},\alpha))
-            \suml{k}{N}D_{n_{x_k}n_{y_k}}(x_k,y_k,\alpha)
+            \suml{k}{N}\Theta_{n_{x_k}n_{y_k}}(x_k,y_k,\alpha)
             \label{eq:PhiLapExpfin}
         \end{equation}
     The Laplacian for $g$ is derived as follows
