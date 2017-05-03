@@ -925,66 +925,52 @@
             \exp(-\frac{\alpha\omega}{2}y^2_k)\right)
             \label{eq:nablakth}
         \end{equation}
-    Solving the differential for $x_k$ by substituting $s=\sqrt{\omega}x_k$ and
-    labeling $n_x\rarr n$ and defining
-        \begin{equation}
-            e(x_k) \equiv \exp(-\frac{\alpha\omega}{2}x^2_k)
-            \label{eq:e}
-        \end{equation}
-    we have
-        \begin{align}
-            \prd{x_k}[][2]\left(H_{n_{x_k}}\left(\sqrt{\omega}x_k\right)
-            \exp(-\frac{\alpha\omega}{2}x^2_k)\right) &= \omega
-            \prd{s}[][2]\left(H_n(s)e(s)\right) \nonumber \\
-            &= \omega e(s) \left(\prd{s}[H_n][2] - 2\alpha s\prd{s}[H_n] +
-            \alpha(\alpha^2 s^2-1)H_n(s)\right)
-            \label{eq:diffxk1}
-        \end{align}
-    Using \Autoref{eq:hermiteDer} for the derivatives and using the recursion
-    relation given in \Autoref{eq:hermiteReq} for $H_n(s)$ gives
-        \begin{align}
-            \omega \prd{s}[][2]\left(H_n(s)e(s))\right) &=
-            \omega\left(8n(n-1)H_{n-2}(s) - 4n\alpha sH_{n-1}(s) +
-            \alpha(\alpha^2 s^2-1)(2sH_{n-1}(s)-2(n-1)H_{n-2})\right)e(s)
-            \nonumber \\
-            &= \omega\left[\frac{n}{s}(4(n+1)-\alpha(\alpha^2 s^2-1))\me^{s^2} +
-            2\alpha s(\alpha^2 s^2-2n-3)\right]H_n(s)e(s) \nonumber \\
-            \prd{x_k}[][2]\left(H_{n_{x_k}}\left(\sqrt{\omega}x_k\right)
-            e(x_k)\right) &= \left[\frac{n_{x_k}\sqrt{\omega}}{x_k}
-            \left(4(n_{x_k}+1)-\alpha\left(\alpha^2 \omega
-            x^2_k-1\right)\right)\me^{\omega x^2_k} + 2\alpha
-            {\omega}^{\frac{3}{2}}x_k(\alpha^2 \omega
-            x^2_k-2n_{x_k}-3)\right]H_{n_{x_k}}
-            \left(\sqrt{\omega}x_k\right)e(x_k)
-            \label{eq:diffs2}
-        \end{align}
-    We have in the latter step shifted the index $n$ and used
-    \Autoref{eq:hermiteExp} to calculate the polynomial ratio. \\
-    A similar approach for $y_k$ gives
-       \begin{equation}
-            \prd{y_k}[][2]\left(H_{n_{y_k}}\left(\sqrt{\omega}y_k\right)
-            e\left(y_k\right)\right) = \left[\frac{n_{y_k}\sqrt{\omega}}{y_k}
-            \left(4(n_{y_k}+1)-\alpha\left(\alpha^2 \omega
-            y^2_k-1\right)\right)\me^{\omega y^2_k} + 2\alpha
-            {\omega}^{\frac{3}{2}}y_k(\alpha^2 \omega
-            y^2_k-2n_{y_k}-3)\right]H_{n_{y_k}}
-            \left(\sqrt{\omega}y_k\right)e(y_k)
-            \label{eq:diffyk}
-       \end{equation}
-    Inserting \Autoref{eq:diffs2,eq:diffyk} into \Autoref{eq:nablakth} with
+    Solving the differential for $x_k$ and similarly $y_k$ by substituting
+    $s=\sqrt{\omega}x_k=\sqrt{\omega}y_k$ and labeling $n_x,n_y\rarr n$ and
+    defining
         \begin{equation}
             \begin{aligned}
-                \Theta_{n_{x_k}n_{y_k}}(x_k,y_k,\alpha) \equiv
-                \left[\frac{n_{x_k}\sqrt{\omega}}{x_k}
-                \left(4(n_{x_k}+1)-\alpha\left(\alpha^2 \omega
-                x^2_k-1\right)\right)\me^{\omega x^2_k} + 2\alpha
-                {\omega}^{\frac{3}{2}}x_k(\alpha^2 \omega
-                x^2_k-2n_{x_k}-3)\right] \\
-                + \left[\frac{n_{y_k}\sqrt{\omega}}{y_k}
-                \left(4(n_{y_k}+1)-\alpha\left(\alpha^2 \omega
-                y^2_k-1\right)\right)\me^{\omega y^2_k} + 2\alpha
-                {\omega}^{\frac{3}{2}}y_k(\alpha^2 \omega
-                y^2_k-2n_{y_k}-3)\right]
+                e(x_k) &\equiv \exp(-\frac{\alpha\omega}{2}x^2_k) \\
+                e(y_k) &\equiv \exp(-\frac{\alpha\omega}{2}y^2_k)
+            \end{aligned}
+            \label{eq:e}
+        \end{equation}
+    Using the product rule for differentiation and \Autoref{eq:hermiteDer} for
+    the derivative of the Hermite polynomials with the recursion relation given
+    in \Autoref{eq:hermiteReq} for $H_n(s)$ gives
+        \begin{align}
+            \omega \prd{s}[][2]\left(H_n(s)e(s))\right) &=
+            \omega\left(\prd{x}[H_n][2] - 2\alpha s\prd{x}[H] +
+            \alpha\left(\alpha s^2 - 1\right)H_n(s)\right)e(s) \nonumber \\
+            &= \omega\left(8n(n-1)H_{n-2}(s) - 4n\alpha sH_{n-1}(s) +
+            \alpha(\alpha s^2-1)(2sH_{n-1}(s)-2(n-1)H_{n-2})\right)e(s)
+            \nonumber \\
+            &= \omega \left[2(n-1)\left(4n - \alpha\left(\alpha s^2 -
+            1\right)\right)H_{n-2}(s) + 2\alpha s\left(\alpha s^2 - 1 -
+            2n\right)H_{n-1}(s)\right]e(s) \nonumber \\
+            &= \omega \left[2(n-1)\left(4n - \alpha\left(\alpha s^2 -
+            1\right)\right)H_{n-2}(s) + \alpha\left(\alpha s^2 - 1 -
+            2n\right)\left(H_n(s) - 2(n-1)H_{n-2}(s)\right)\right]e(s)
+            \nonumber \\
+            &= \omega \left[4(n-1)\left(n(2+\alpha) - \alpha\left(\alpha s^2
+            - 1\right)\right)\frac{H_{n-2}}{H_n} + \alpha\left(\alpha s^2 - 1
+            - 2n\right)\right]H_n(s)e(s)
+            \label{eq:diffs2}
+        \end{align}
+    We have in the latter step used \Autoref{eq:hermiteReq} to find $H_{n-1}$
+    \\
+    Defining
+        \begin{equation}
+            \begin{aligned}
+                \Theta_{n_{x_k}n_{y_k}}(x_k,y_k,\alpha) &\equiv
+                4\omega(n_{x_k}-1)\left(n_{x_k}(2+\alpha) - \alpha\left(\alpha
+                \omega x_k^2 - 1\right)\right)\frac{H_{n_{x_k}-2}}{H_{n_{x_k}}}
+                \\
+                &+ 4\omega(n_{y_k}-1)\left(n_{y_k}(2+\alpha) -
+                \alpha\left(\alpha \omega y_k^2 -
+                1\right)\right)\frac{H_{n_{y_k}-2}}{H_{n_{y_k}}} \\
+                &+ \alpha\omega\left(\alpha \omega r_k^2 - 2\left(n_{x_k} +
+                n_{y_k} + 1\right)\right)
             \end{aligned}
             \label{eq:Ddef}
         \end{equation}
