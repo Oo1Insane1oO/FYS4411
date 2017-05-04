@@ -880,9 +880,8 @@
             \nabla^2_N\psi^2_T &=
             \suml{k}{N}\nabla^2_k\left[\det(\Phi(\vec{r},\alpha))
             g(\vec{r},\beta)\right] \nonumber \\
-            &= \suml{k}{N}
-            \left(g(\vec{r},\beta)\nabla^2_k\det(\Phi(\vec{r},\alpha)) +
-            \det(\Phi(\vec{r},\alpha))\nabla^2_kg(\vec{r},\beta)\right)
+            &= \suml{k}{N} \left(\prodsecrule{g(\vec{r},\beta)}
+            {\det(\Phi(\vec{r},\alpha))}\right)
             \label{eq:lapPsiT1}
         \end{align}
     We have used a short-hand $\det(\Phi)$ defined as
@@ -1021,6 +1020,26 @@
             \nabla^2_k g\left(\vec{r},\beta\right) =
             g\left(\vec{r},\beta\right)Q\left(r_k,\beta\right)
             \label{eq:lapgfin}
+        \end{equation}
+    For the cross-term in \Autoref{eq:lapPsiT1} we need the single derivatives.
+    Starting with $\det(\Phi(\vec{r},\alpha))$ and using a similar approach as
+    in \Autoref{eq:PhiLapexp} with \Autoref{eq:diffs2} gives
+        \begin{align}
+            \prd{x_k}[\det(\Phi)] &=
+            \suml{k}{N}C_{kj}\left(\nabla_k\Phi_{kj}\right) \nonumber \\
+            &= \suml{k}{N}C_{kj}\Phi_{kj}
+            \Upsilon_{n_{x_k}n_{y_k}}(x_k,y_k,\alpha) \\
+            &=
+            \det(\Phi(\vec{r},\alpha))\suml{k}{N}\Upsilon_{n_{x_k}n_{y_k}}(x_k,y_k,\alpha)
+            \label{eq:detder1}
+        \end{align}
+    where $\Upsilon$ is defined to be
+        \begin{equation}
+            \Upsilon_{n_{x_k}n_{y_k}}(x_k,y_k,\alpha) \equiv
+            \sqrt{\omega}\left(2\left(n_{x_k}\frac{H_{n_{x_k}-1}}{H_{n_{x_k}}}
+            + n_{y_k}\frac{H_{n_{y_k}-1}}{H_{n_{y_k}}}\right) -
+            \alpha\sqrt{\omega}\left(x_k+y_k\right)\right)
+            \label{eq:upsilondef}
         \end{equation}
     Which gives the final expression for the Laplacian for our wavefunction
         \begin{equation}
