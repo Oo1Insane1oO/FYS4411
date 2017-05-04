@@ -1022,16 +1022,16 @@
         \end{equation}
     Which gives the final expression for the Laplacian for our wavefunction
         \begin{equation}
-            \nabla^2_N\Psi_T =
-            \suml{k}{N}\left(D_{n_{x_k}n_{y_k}}(x_k,y_k,\alpha) +
+            \nabla^2_N\Psi_T = \suml{k}{N}
+            \left(\Theta_{n_{x_k}n_{y_k}}(x_k,y_k,\alpha) +
             Q\left(r_k,\beta\right)\right)\Psi_T
             \label{eq:lapNfin}
         \end{equation}
     and the local energy is thus
         \begin{equation}
             E_L = \frac{1}{2}\suml{k}{N} \left(\omega^2r_k -
-            D_{n_{x_k}n_{y_k}}(x_k,y_k,\alpha) + Q\left(r_k,\beta\right)\right)
-            + \sum^N_{i<j} \frac{1}{r_{ij}}
+            \Theta_{n_{x_k}n_{y_k}}(x_k,y_k,\alpha) +
+            Q\left(r_k,\beta\right)\right) + \sum^N_{i<j} \frac{1}{r_{ij}}
             \label{eq:ELNfin}
         \end{equation}
 
