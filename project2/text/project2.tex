@@ -858,7 +858,9 @@
 \label{ssub:general_case}
 \newcommand{\gJ}{\exp(\frac{a}{\beta + \frac{1}{r_{ij}}})}
 \newcommand{\gk}{\exp(\frac{a}{\beta + \frac{1}{r_{kj}}})}
-\newcommand{\prodsecrule}[2]{{#2} \nabla^2_k {#1} + {#1} \nabla^2_k {#2}}
+\newcommand{\prodsecrule}[2]{2\left(\prd{x_k}[#2]\prd{x_k}[#1] +
+\prd{y_k}[#2]\prd{y_k}[#1]\right) + {#2} \nabla^2_k {#1} + {#1} \nabla^2_k
+{#2}}
     For the general case with $N$ electrons(still closed shell) the local
     energy is defined as in \Autoref{eq:EL2}, but with $\psi_T$ defined as in
     \Autoref{eq:psiT}. The Laplacian in this case would then be
@@ -875,7 +877,7 @@
         \end{equation}
     and apply \Autoref{eq:nablaN} to the trial wavefunction $\psi_T$ giving
         \begin{align}
-            \nabla_N\psi^2_T &=
+            \nabla^2_N\psi^2_T &=
             \suml{k}{N}\nabla^2_k\left[\det(\Phi(\vec{r},\alpha))
             g(\vec{r},\beta)\right] \nonumber \\
             &= \suml{k}{N}
