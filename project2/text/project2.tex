@@ -1038,10 +1038,8 @@
         \begin{align}
             \prd{x_k}{g(\vec{r},\alpha)} &= \prd{x_k}\left(\prod_{i<j}
             \gJ\right) \nonumber \\
-            &= \left(\prod_{i<j,i\neq k} \gJ\right) \left(\prod_{j\neq k}
-            \exp(\frac{a}{\beta + \frac{1}{r_{kj}}})\right)
-            \suml{j}{N}\prd{x_k}\left(\frac{a}{\beta + \frac{1}{r_{kj}}}\right)
-            \nonumber \\
+            &= g(\vec{r},\beta) \suml{j}{N}\prd{x_k}\left(\frac{a}{\beta +
+            \frac{1}{r_{kj}}}\right) \nonumber \\
             &= g(\vec{r},\beta) \suml{j}{N} \frac{a\left(x_k-x_j\right)}
             {r_{kj}\left(1+\beta r_{kj}\right)^2}
             \label{eq:gder1}
