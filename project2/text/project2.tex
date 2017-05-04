@@ -984,12 +984,7 @@
         \begin{align}
             \nabla^2_k g(\vec{r},\beta) &= \nabla^2_k \prod_{i<j} \gJ \nonumber
             \\
-            &= \left(\prod_{i<j,i\neq k} \gJ\right)
-            \nabla^2_k\left(\prod_{j\neq k} \exp(\frac{a}{\beta +
-            \frac{1}{r_{kj}}})\right) \nonumber \\
-            &= \left(\prod_{i<j,i\neq k} \gJ\right) \left(\prod_{j\neq k}
-            \exp(\frac{a}{\beta + \frac{1}{r_{kj}}})\right)
-            \suml{j}{N}\nabla^2_k\left(\frac{a}{\beta +
+            &= 2*g(\vec{r},\beta)\suml{j}{N}\nabla^2_k\left(\frac{a}{\beta +
             \frac{1}{r_{kj}}}\right) \\
             \label{eq:lapg}
         \end{align}
@@ -1010,7 +1005,7 @@
     the differentiation above. \\
     We define a new function
         \begin{equation}
-            Q\left(r_k,\beta\right) \equiv \suml{j}{N} \frac{a}{(1+\beta
+            Q\left(r_k,\beta\right) \equiv \suml{j}{N} \frac{2a}{(1+\beta
             r_{kj})^2}\left(\frac{1}{r_{kj}} - \frac{2\beta}{1+\beta r_{kj}} +
             \frac{a}{(1+\beta r_{kj})^2}\right)
             \label{eq:Qdef}
@@ -1038,31 +1033,37 @@
         \begin{align}
             \prd{x_k}{g(\vec{r},\alpha)} &= \prd{x_k}\left(\prod_{i<j}
             \gJ\right) \nonumber \\
-            &= g(\vec{r},\beta) \suml{j}{N}\prd{x_k}\left(\frac{a}{\beta +
+            &= g(\vec{r},\beta) \sum_{j>k}\prd{x_k}\left(\frac{a}{\beta +
             \frac{1}{r_{kj}}}\right) \nonumber \\
-            &= g(\vec{r},\beta) \suml{j}{N} \frac{a\left(x_k-x_j\right)}
+            &= g(\vec{r},\beta) \sum_{j>k} \frac{a\left(x_k-x_j\right)}
             {r_{kj}\left(1+\beta r_{kj}\right)^2}
             \label{eq:gder1}
         \end{align}
-    where $\Upsilon$ is defined to be
+    For the derivative with respect to $y_k$ the derivation is exactly as given
+    in \Autoref{eq:gder1} above. \\
+    Defining
         \begin{equation}
-            \Upsilon_{n_{x_k}n_{y_k}}(x_k,y_k,\alpha) \equiv
-            \sqrt{\omega}\left(2\left(n_{x_k}\frac{H_{n_{x_k}-1}}{H_{n_{x_k}}}
-            + n_{y_k}\frac{H_{n_{y_k}-1}}{H_{n_{y_k}}}\right) -
-            \alpha\sqrt{\omega}\left(x_k+y_k\right)\right)
+            \Upsilon_{n_{x_k}n_{y_k}}(x_k,y_k,\alpha) \equiv \sum_{j>k}
+            \frac{4a\sqrt{\omega}}{r_{kj}\left(1+\beta r_{kj}\right)^2}
+            \left(2n_{x_k}\frac{H_{n_{x_k}-1}}{H_{n_{x_k}}}\left(x_k-x_j\right)
+            + 2n_{y_k}\frac{H_{n_{y_k}-1}}{H_{n_{y_k}}}\left(y_k-y_j\right) -
+            \alpha\sqrt{\omega}
+            \left(x_k\left(x_k-x_j\right)+y_k\left(y_k-y_j\right)\right)\right)
             \label{eq:upsilondef}
         \end{equation}
-    Which gives the final expression for the Laplacian for our wavefunction
+    gives the final expression for the Laplacian for our wavefunction
         \begin{equation}
             \nabla^2_N\Psi_T = \suml{k}{N}
-            \left(\Theta_{n_{x_k}n_{y_k}}(x_k,y_k,\alpha) +
+            \left(\Upsilon_{n_{x_k}n_{y_k}}(x_k,y_k,\alpha) +
+            \Theta_{n_{x_k}n_{y_k}}(x_k,y_k,\alpha) +
             Q\left(r_k,\beta\right)\right)\Psi_T
             \label{eq:lapNfin}
         \end{equation}
     and the local energy is thus
         \begin{equation}
             E_L = \frac{1}{2}\suml{k}{N} \left(\omega^2r_k -
-            \Theta_{n_{x_k}n_{y_k}}(x_k,y_k,\alpha) +
+            \Upsilon_{n_{x_k}n_{y_k}}(x_k,y_k,\alpha) -
+            \Theta_{n_{x_k}n_{y_k}}(x_k,y_k,\alpha) -
             Q\left(r_k,\beta\right)\right) + \sum^N_{i<j} \frac{1}{r_{ij}}
             \label{eq:ELNfin}
         \end{equation}
