@@ -950,28 +950,21 @@
             2n\right)H_{n-1}(s)\right]e(s) \nonumber \\
             &= \omega \left[2(n-1)\left(4n - \alpha\left(\alpha s^2 -
             1\right)\right)H_{n-2}(s) + \alpha\left(\alpha s^2 - 1 -
-            2n\right)\left(H_n(s) - 2(n-1)H_{n-2}(s)\right)\right]e(s)
+            2n\right)\left(H_n(s) + 2(n-1)H_{n-2}(s)\right)\right]e(s)
             \nonumber \\
-            &= \omega \left[4(n-1)\left(n(2+\alpha) - \alpha\left(\alpha s^2
-            - 1\right)\right)\frac{H_{n-2}}{H_n} + \alpha\left(\alpha s^2 - 1
-            - 2n\right)\right]H_n(s)e(s)
+            &= \omega \left[2n(n-1)(2-\alpha)\frac{H_{n-2}}{H_n} +
+            \alpha\left(\alpha s^2 - 1 - 2n\right)\right]H_n(s)e(s)
             \label{eq:diffs2}
         \end{align}
-    We have in the latter step used \Autoref{eq:hermiteReq} to find $H_{n-1}$
+    We have in the latter step used \Autoref{eq:hermiteReq} to find $H_{n-1}$.
     \\
     Defining
         \begin{equation}
-            \begin{aligned}
-                \Theta_{n_{x_k}n_{y_k}}(x_k,y_k,\alpha) &\equiv
-                4\omega(n_{x_k}-1)\left(n_{x_k}(2+\alpha) - \alpha\left(\alpha
-                \omega x_k^2 - 1\right)\right)\frac{H_{n_{x_k}-2}}{H_{n_{x_k}}}
-                \\
-                &+ 4\omega(n_{y_k}-1)\left(n_{y_k}(2+\alpha) -
-                \alpha\left(\alpha \omega y_k^2 -
-                1\right)\right)\frac{H_{n_{y_k}-2}}{H_{n_{y_k}}} \\
-                &+ \alpha\omega\left(\alpha \omega r_k^2 - 2\left(n_{x_k} +
-                n_{y_k} + 1\right)\right)
-            \end{aligned}
+            \Theta_{n_{x_k}n_{y_k}}(x_k,y_k,\alpha) \equiv 2\omega
+            \left(2-\alpha\right)\left[n_{x_k}\left(n_{x_k}-1\right)
+            \frac{H_{n_{x_k}-2}}{H_{n_{x_k}}} + n_{y_k}\left(n_{y_k}-1\right)
+            \frac{H_{n_{y_k}-2}}{H_{n_{y_k}}}\right] + \alpha\omega\left(\alpha
+            \omega r_k^2 - 2\left(n_{x_k} + n_{y_k} + 1\right)\right)
             \label{eq:Ddef}
         \end{equation}
     gives
