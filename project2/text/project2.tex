@@ -1025,13 +1025,26 @@
     Starting with $\det(\Phi(\vec{r},\alpha))$ and using a similar approach as
     in \Autoref{eq:PhiLapexp} with \Autoref{eq:diffs2} gives
         \begin{align}
-            \prd{x_k}[\det(\Phi)] &=
-            \suml{k}{N}C_{kj}\left(\nabla_k\Phi_{kj}\right) \nonumber \\
+            \prd{s}[\det(\Phi)] &=
+            \suml{k}{N}C_{kj}\left(\prd{s}[\Phi_{kj}]\right) \nonumber \\
             &= \suml{k}{N}C_{kj}\Phi_{kj}
-            \Upsilon_{n_{x_k}n_{y_k}}(x_k,y_k,\alpha) \\
-            &=
-            \det(\Phi(\vec{r},\alpha))\suml{k}{N}\Upsilon_{n_{x_k}n_{y_k}}(x_k,y_k,\alpha)
+            \sqrt{\omega}\left(2n\frac{H_{n-1}}{H_n} - \alpha s\right)
+            \nonumber \\
+            &= \det(\Phi(\vec{r},\alpha))\suml{k}{N}
+            \sqrt{\omega}\left(2n\frac{H_{n-1}}{H_n} - \alpha s\right)
             \label{eq:detder1}
+        \end{align}
+    For $g(\vec{r},\beta)$ we have with \Autoref{eq:lapg,eq:derxkg}
+        \begin{align}
+            \prd{x_k}{g(\vec{r},\alpha)} &= \prd{x_k}\left(\prod_{i<j}
+            \gJ\right) \nonumber \\
+            &= \left(\prod_{i<j,i\neq k} \gJ\right) \left(\prod_{j\neq k}
+            \exp(\frac{a}{\beta + \frac{1}{r_{kj}}})\right)
+            \suml{j}{N}\prd{x_k}\left(\frac{a}{\beta + \frac{1}{r_{kj}}}\right)
+            \nonumber \\
+            &= g(\vec{r},\beta) \suml{j}{N} \frac{a\left(x_k-x_j\right)}
+            {r_{kj}\left(1+\beta r_{kj}\right)^2}
+            \label{eq:gder1}
         \end{align}
     where $\Upsilon$ is defined to be
         \begin{equation}
