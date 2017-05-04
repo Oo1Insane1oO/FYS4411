@@ -984,8 +984,8 @@
         \begin{align}
             \nabla^2_k g(\vec{r},\beta) &= \nabla^2_k \prod_{i<j} \gJ \nonumber
             \\
-            &= 2*g(\vec{r},\beta)\suml{j}{N}\nabla^2_k\left(\frac{a}{\beta +
-            \frac{1}{r_{kj}}}\right) \\
+            &= 2g(\vec{r},\beta)\sum_{j>k}\nabla^2_k\left(\frac{a}{\beta +
+            \frac{1}{r_{kj}}}\right)
             \label{eq:lapg}
         \end{align}
     and solve for the $k$-th part of the sum
@@ -1005,7 +1005,7 @@
     the differentiation above. \\
     We define a new function
         \begin{equation}
-            Q\left(r_k,\beta\right) \equiv \suml{j}{N} \frac{2a}{(1+\beta
+            Q\left(r_k,\beta\right) \equiv \sum_{j>k} \frac{2a}{(1+\beta
             r_{kj})^2}\left(\frac{1}{r_{kj}} - \frac{2\beta}{1+\beta r_{kj}} +
             \frac{a}{(1+\beta r_{kj})^2}\right)
             \label{eq:Qdef}
@@ -1020,13 +1020,11 @@
     Starting with $\det(\Phi(\vec{r},\alpha))$ and using a similar approach as
     in \Autoref{eq:PhiLapexp} with \Autoref{eq:diffs2} gives
         \begin{align}
-            \prd{s}[\det(\Phi)] &=
-            \suml{k}{N}C_{kj}\left(\prd{s}[\Phi_{kj}]\right) \nonumber \\
-            &= \suml{k}{N}C_{kj}\Phi_{kj}
-            \sqrt{\omega}\left(2n\frac{H_{n-1}}{H_n} - \alpha s\right)
+            \prd{x_k}[\Phi_{kj}] &= \sqrt{\omega}\left(2n\frac{H_{n-1}}{H_n} -
+            \alpha s\right)H_n(s)e(s)
             \nonumber \\
-            &= \det(\Phi(\vec{r},\alpha))\suml{k}{N}
-            \sqrt{\omega}\left(2n\frac{H_{n-1}}{H_n} - \alpha s\right)
+            &= \Phi_{kj} \sqrt{\omega}\left(2n_{x_k}\frac{H_{n_{x_k}-1}}{H_{n_{x_k}}} - \alpha
+            \sqrt{\omega}x_k\right)
             \label{eq:detder1}
         \end{align}
     For $g(\vec{r},\beta)$ we have with \Autoref{eq:lapg,eq:derxkg}
@@ -1040,7 +1038,7 @@
             \label{eq:gder1}
         \end{align}
     For the derivative with respect to $y_k$ the derivation is exactly as given
-    in \Autoref{eq:gder1} above. \\
+    in \Autoref{eq:detder1,eq:gder1} above. \\
     Defining
         \begin{equation}
             \Upsilon_{n_{x_k}n_{y_k}}(x_k,y_k,\alpha) \equiv \sum_{j>k}
