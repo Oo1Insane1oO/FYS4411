@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2017.3.22)  4 MAY 2017 21:12
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2017.3.22)  5 MAY 2017 13:03
 entering extended mode
  \write18 enabled.
  file:line:error style messages enabled.
@@ -2572,7 +2572,7 @@ Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 1306.
 Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 1306.
 
 Package rerunfilecheck Info: File `project2.out' has not changed.
-(rerunfilecheck)             Checksum: <no file>.
+(rerunfilecheck)             Checksum: E15BCB6391970606BF8E8CAADD393544;2200.
 
 LaTeX Warning: There were multiply-defined labels.
 
@@ -2606,7 +2606,7 @@ s/txsyb.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/txfonts/txsyc.pfb
 ></usr/share/texlive/texmf-dist/fonts/type1/public/newtx/zxlr.pfb></usr/share/t
 exlive/texmf-dist/fonts/type1/public/newtx/zxlri.pfb>
 Output written on /home/saintz/localStuff/FYS4411/project2/text/project2.pdf (1
-3 pages, 522349 bytes).
+3 pages, 522360 bytes).
 PDF statistics:
  512 PDF objects out of 1000 (max. 8388607)
  476 compressed objects within 5 object streams
