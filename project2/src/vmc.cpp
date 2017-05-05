@@ -6,6 +6,7 @@
 //////////////////////////////////////////////////////////////////////////////
 
 #include "vmc.h" // header
+#include "hermite.h"
 #include <iostream>
 #include <fstream>
 #include <math.h>
@@ -28,15 +29,51 @@ VMC::~VMC() {
     delete meth;
 } // end deconstructor
         
+// double VMC::localEnergy2(const Eigen::MatrixXd &R, bool coulomb) {
+//     /* calculate analytic expression of local energy for 2 electrons */
+//     double r12 = (R.row(0) - R.row(1)).norm();
+//     double denom = 1 + beta*r12;
+//     double denomsq = denom*denom;
+//     return 0.5 * pow(b->omega,2) * (1 - alpha*alpha) * (R.row(0).squaredNorm()
+//             + R.row(1).squaredNorm()) + 2*alpha*b->omega + (coulomb ?
+//             -1/denomsq * ((1/denomsq - alpha*b->omega*r12 + 1/r12 -
+//                     2*beta/denom)) + 1/r12 : 0);
+// } // end function localEnergy
+
 double VMC::localEnergy2(const Eigen::MatrixXd &R, bool coulomb) {
-    /* calculate analytic expression of local energy for 2 electrons */
-    double r12 = (R.row(0) - R.row(1)).norm();
-    double denom = 1 + beta*r12;
-    double denomsq = denom*denom;
-    return 0.5 * pow(b->omega,2) * (1 - alpha*alpha) * (R.row(0).squaredNorm()
-            + R.row(1).squaredNorm()) + 2*alpha*b->omega + (coulomb ?
-            -1/denomsq * ((1/denomsq - alpha*b->omega*r12 + 1/r12 -
-                    2*beta/denom)) + 1/r12 : 0);
+    /* calculate analytic expression of local energy */
+    double nx, ny, nxHermiteFactor, nyHermiteFactor, rk, rkj, jFactor, denom;
+    double E = 0;
+    for (unsigned int k = 0; k < R.rows(); ++k) {
+        /* loop over particles */
+        nx = *(b->states[k][0]);
+        ny = *(b->states[k][1]);
+        nxHermiteFactor = nx*(nx-1)*H(nx-2,R(k,0))/H(nx,R(k,0));
+        nxHermiteFactor = ny*(ny-1)*H(ny-2,R(k,1))/H(ny,R(k,1));
+        denom = 1 + beta*rkj;
+        E += b->omega*b->omega*R.row(k).norm();
+        E -= 2*b->omega*(2*alpha) * (nxHermiteFactor + nyHermiteFactor) +
+            alpha*b->omega * (alpha*b->omega*rk*rk - 2*(nx+ny+1));
+        if (coulomb) {
+            for (unsigned int j = 0; j < R.rows(); ++j) {
+                if (j != k) {
+                    rkj = (R.row(k) - R.row(j)).squaredNorm();
+                    jFactor = (!((k+j)%2) ? 1 : 1./3) / pow(denom,2); 
+                    E -= jFactor * (2*sqrt(b->omega)/rkj*(((nx +
+                                        nxHermiteFactor)/R(k,0) -
+                                    alpha*sqrt(b->omega)*R(k,0))*(R(k,0)-R(j,0))
+                                + ((ny + nyHermiteFactor)/R(k,1) -
+                                    alpha*sqrt(b->omega)*R(k,1))*(R(k,1)-R(j,1)))
+                            + 1/rkj - 2*beta/denom + (!((k+j)%2) ? 1 : 1./3) /
+                            pow(denom,2));
+                    if (k < j) {
+                        E += 1/R(k,j);
+                    } // end if
+                } // end if
+            } // end forj
+        } // end if
+    } // end fork
+    return E/2;
 } // end function localEnergy
 
 void VMC::diff(const Eigen::MatrixXd &R, Eigen::MatrixXd &der) {
