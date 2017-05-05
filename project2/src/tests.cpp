@@ -118,7 +118,7 @@ void Tests::run_tests(int t) {
             double bleh = v->energy;
             double two = 2;
             std::cout << "Energy unperturbed 2 electron wrong" << std::endl;
-            std::cout << std::setprecision(16) << "  Energy is: " << v->energy << std::endl;
+            std::cout << std::setprecision(15) << "  Energy is: " << v->energy << std::endl;
         } // end ifelse
         if(test_determinantratio()) {
             std::cout << "Determinant ratio good" << std::endl;

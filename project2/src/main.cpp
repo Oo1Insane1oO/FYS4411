@@ -45,7 +45,7 @@ int main(int argc, const char** argv) {
     Basis *b = new Basis(omega, num/2);
     
     // set vmc object for calculations
-    VMC *vmcObj = new VMC(b,0.998,0.40061,2,step,maxIterations,imp);
+    VMC *vmcObj = new VMC(b,1,0.3,2,step,maxIterations,imp);
     
     if (t) {
         /* run tests */
