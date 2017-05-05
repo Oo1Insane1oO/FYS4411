@@ -36,8 +36,8 @@ VMC::~VMC() {
 //     double denomsq = denom*denom;
 //     return 0.5 * pow(b->omega,2) * (1 - alpha*alpha) * (R.row(0).squaredNorm()
 //             + R.row(1).squaredNorm()) + 2*alpha*b->omega + (coulomb ?
-//             -1/denomsq * ((1/denomsq - alpha*b->omega*r12 + 1/r12 -
-//                     2*beta/denom)) + 1/r12 : 0);
+//             -1/denomsq * (1/denomsq - alpha*b->omega*r12 + 1/r12 -
+//                     2*beta/denom) + 1/r12 : 0);
 // } // end function localEnergy
 
 double VMC::localEnergy2(const Eigen::MatrixXd &R, bool coulomb) {
@@ -85,8 +85,8 @@ void VMC::diff(const Eigen::MatrixXd &R, Eigen::MatrixXd &der) {
     double denom = r12 * pow(1+beta*r12, 2);
     for (unsigned int i = 0; i < R.rows(); ++i) {
         for (unsigned int j = 0; j < R.cols(); ++j) {
-            der(i,j) = -alpha*b->omega*R(i,j) + (!((i+j)%2) ? 1 : 1./3)*(R(i,j)
-                    - R(i+((i%2 || i==1) ? -1 : 1),j))/denom;
+            der(i,j) = -alpha*b->omega*R(i,j) + b->padejastrow(i,j)*(R(i,j) -
+                    R(i+((i%2 || i==1) ? -1 : 1),j))/denom;
         } // end forj
     } // end fori
 } // end function
