@@ -10,6 +10,7 @@
 \usepackage{color}
 \usepackage{mathtools}
 % \usepackage{amssymb}
+\usepackage{amsmath}
 \usepackage[margin=0.7in]{geometry}
 \usepackage{hyperref}
 \usepackage{subcaption}
@@ -1023,8 +1024,12 @@
             \prd{x_k}[\Phi_{kj}] &= \sqrt{\omega}\left(2n\frac{H_{n-1}}{H_n} -
             \alpha s\right)H_n(s)e(s)
             \nonumber \\
-            &= \Phi_{kj} \sqrt{\omega}\left(2n_{x_k}\frac{H_{n_{x_k}-1}}{H_{n_{x_k}}} - \alpha
-            \sqrt{\omega}x_k\right)
+            &= \Phi_{kj}
+            \sqrt{\omega}\left(2n_{x_k}\frac{H_{n_{x_k}-1}}{H_{n_{x_k}}} -
+            \alpha \sqrt{\omega}x_k\right) \nonumber \\
+            &= \Phi_{kj} \left(\frac{n_{x_k}}{x_k} +
+            \frac{n_{x_k}(n_{x_k}-1)}{x_k}\frac{H_{n_{x_k}-2}}{H_{n_{x_k}}} -
+            \alpha\omega x_k\right)
             \label{eq:detder1}
         \end{align}
     For $g(\vec{r},\beta)$ we have with \Autoref{eq:lapg,eq:derxkg}
@@ -1041,12 +1046,16 @@
     in \Autoref{eq:detder1,eq:gder1} above. \\
     Defining
         \begin{equation}
-            \Upsilon_{n_{x_k}n_{y_k}}(x_k,y_k,\alpha) \equiv \sum_{j\neq k}
-            \frac{a\sqrt{\omega}}{r_{kj}\left(1+\beta r_{kj}\right)^2}
-            \left(2n_{x_k}\frac{H_{n_{x_k}-1}}{H_{n_{x_k}}}\left(x_k-x_j\right)
-            + 2n_{y_k}\frac{H_{n_{y_k}-1}}{H_{n_{y_k}}}\left(y_k-y_j\right) -
-            \alpha\sqrt{\omega}
-            \left(x_k\left(x_k-x_j\right)+y_k\left(y_k-y_j\right)\right)\right)
+            \begin{aligned}
+                \Upsilon_{n_{x_k}n_{y_k}}(x_k,y_k,\alpha) \equiv \sum_{j\neq k}
+                \frac{2a}{r_{kj}\left(1+\beta r_{kj}\right)^2}
+                \Bigg[&\left(\frac{n_{x_k}}{x_k} +
+                \frac{n_{x_k}(n_{x_k}-1)}{x_k}\frac{H_{n_{x_k}-2}}{H_{n_{x_k}}}
+                - \alpha\omega x_k\right)\left(x_k-x_j\right) \\
+                + &\left(\frac{n_{y_k}}{y_k} +
+                \frac{n_{y_k}(n_{y_k}-1)}{y_k}\frac{H_{n_{y_k}-2}}{H_{n_{y_k}}}
+                - \alpha\omega y_k\right)\left(y_k-y_j\right) \Bigg]
+            \end{aligned}
             \label{eq:upsilondef}
         \end{equation}
     gives the final expression for the Laplacian for our wavefunction
