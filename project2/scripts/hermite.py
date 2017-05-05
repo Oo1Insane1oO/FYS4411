@@ -43,7 +43,9 @@ def appendToFile(codes, fname):
             ofile.write(c+"\n")
         # end for c
         ofile.write("#pragma GCC diagnostic pop\n")
-        ofile.write("template<typename T> T H(T x, int n) {\n   switch(n) {\n")
+        ofile.write("template<typename T> T H(T x, int n) {\n") 
+        ofile.write("   if (n < 0) {return 0;}\n")
+        ofile.write("   switch(n) {\n")
         for i in range(len(codes)):
             # end if
             ofile.write("       case %i: return H%i(x);\n" % (i,i))
