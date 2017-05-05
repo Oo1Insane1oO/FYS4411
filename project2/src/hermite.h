@@ -9,7 +9,9 @@
  template<typename T> T H6(T x) {return 240*pow(x, 2) - 20*x*(2*x*(4*pow(x, 2) - 2) - 8*x) + 2*x*(-16*x*(4*pow(x, 2) - 2) + 2*x*(-24*pow(x, 2) + 2*x*(2*x*(4*pow(x, 2) - 2) - 8*x) + 12) + 64*x) - 120;}
 #pragma GCC diagnostic pop
 template<typename T> T H(T x, int n) {
-   if (n < 0) {return 0;}
+   if (n > 6) {
+       return -1;
+   }
    switch(n) {
        case 0: return H0(x);
        case 1: return H1(x);
@@ -18,6 +20,6 @@ template<typename T> T H(T x, int n) {
        case 4: return H4(x);
        case 5: return H5(x);
        case 6: return H6(x);
-       default: return H0(x);
+       default: return 0;
    }
 }
