@@ -42,7 +42,8 @@ VMC::~VMC() {
 
 double VMC::localEnergy2(const Eigen::MatrixXd &R, bool coulomb) {
     /* calculate analytic expression of local energy */
-    double nx, ny, nxHermiteFactor, nyHermiteFactor, rk, rkj, jFactor, denom;
+    double nx, ny, nxHermiteFactor, nyHermiteFactor, rk, rkj, jFactor, denom,
+           a;
     double E = 0;
     for (unsigned int k = 0; k < R.rows(); ++k) {
         /* loop over particles */
@@ -58,15 +59,15 @@ double VMC::localEnergy2(const Eigen::MatrixXd &R, bool coulomb) {
             /* Add Jastrow part */
             for (unsigned int j = 0; j < R.rows(); ++j) {
                 if (j != k) {
+                    a = b->padejastrow(k,j);
                     rkj = (R.row(k) - R.row(j)).norm();
                     denom = 1 + beta*rkj;
-                    jFactor = 0.5*(!((k+j)%2) ? 1 : 1./3) / pow(denom,2); 
+                    jFactor = 0.5*a/pow(denom,2); 
                     E -= jFactor * (2/rkj*(((nx + nxHermiteFactor)/R(k,0) -
                                     alpha*b->omega*R(k,0))*(R(k,0)-R(j,0)) +
                                 ((ny + nyHermiteFactor)/R(k,1) -
                                  alpha*b->omega*R(k,1))*(R(k,1)-R(j,1))) +
-                            1/rkj - 2*beta/denom + (!((k+j)%2) ? 1 : 1./3) /
-                            pow(denom,2));
+                            1/rkj - 2*beta/denom + a / pow(denom,2));
                     if (j > k) {
                         /* Coulomb part */
                         E += 1/rkj;
