@@ -79,17 +79,37 @@ double VMC::localEnergy2(const Eigen::MatrixXd &R, bool coulomb) {
     return E;
 } // end function localEnergy
 
+// void VMC::diff(const Eigen::MatrixXd &R, Eigen::MatrixXd &der) {
+//     /* calculate first derivative ratio of single particle wave functions */
+//     double r12 = (R.row(0) - R.row(1)).norm();
+//     double denom = r12 * pow(1+beta*r12, 2);
+//     for (unsigned int i = 0; i < R.rows(); ++i) {
+//         for (unsigned int j = 0; j < R.cols(); ++j) {
+//             der(i,j) = -alpha*b->omega*R(i,j) + b->padejastrow(i,j)*(R(i,j) -
+//                     R(i+((i%2 || i==1) ? -1 : 1),j))/denom;
+//         } // end forj
+//     } // end fori
+// } // end function
+
 void VMC::diff(const Eigen::MatrixXd &R, Eigen::MatrixXd &der) {
-    /* calculate first derivative ratio of single particle wave functions */
-    double r12 = (R.row(0) - R.row(1)).norm();
-    double denom = r12 * pow(1+beta*r12, 2);
-    for (unsigned int i = 0; i < R.rows(); ++i) {
-        for (unsigned int j = 0; j < R.cols(); ++j) {
-            der(i,j) = -alpha*b->omega*R(i,j) + b->padejastrow(i,j)*(R(i,j) -
-                    R(i+((i%2 || i==1) ? -1 : 1),j))/denom;
+    /* calculate first derivative ratio of single wave functions */
+    double nx, ny, nxHermiteFactor, nyHermiteFactor, tmpkVal;
+    for (unsigned int k = 0; k < R.rows(); ++k) {
+        nx = *(b->states[k][0]);
+        nx = *(b->states[k][1]);
+        nxHermiteFactor = nx*(nx-1)*H(R(k,0),nx-2)/H(R(k,0),nx);
+        nyHermiteFactor = ny*(ny-1)*H(R(k,1),ny-2)/H(R(k,1),ny);
+        tmpkVal = (nx + nxHermiteFactor) / R(k,0) + (ny + nyHermiteFactor) /
+            R(k,1) - alpha*b->omega * (R(k,0) + R(k,1));
+        for (unsigned int j = 0; j < R.rows(); ++j) {
+            der(k,j) = tmpkVal;
+            if (j != k) {
+                der(k,j) += b->padejastrow(k,j) * (R(k,0) - R(j,0) + R(k,1) -
+                        R(j,1)) / pow((1 + beta*(R.row(k)-R.row(j)).norm()),2);
+            } // end if
         } // end forj
-    } // end fori
-} // end function
+    } // end fork
+} // end function diff
 
 double VMC::localEnergyDiff(Eigen::MatrixXd &psiD, Eigen::MatrixXd &psiU, const
         Eigen::MatrixXd &R) {
