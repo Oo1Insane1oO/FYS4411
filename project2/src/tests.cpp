@@ -104,6 +104,30 @@ bool Tests::test_wavefunction2() {
     return (fabs(trial-wave2) <= eps ? true : false);
 } // end function test_wavefunction2 
 
+bool Tests::test_padejastrow() {
+    /* check that Pade-Jastrow factor gives correct values for corresponding
+     * odd and even states */
+    bool t = false;
+    double a;
+    for (unsigned int i = 0; i < b->states.size(); ++i) {
+        for (unsigned int j = i+1; j < b->states.size(); ++j) {
+            a = b->padejastrow(i,j);
+            if (((i%2 && j%2) || (!(i%2) && !(j%2))) && (a-1/3.)<=eps) {
+                t = true;
+            } else if (((i%2 && !(j%2)) || (!(i%2) && j%2)) && (a-1)<=eps) {
+                t = true;
+            } else {
+                t = false;
+                break;
+            } // end ifelse
+        } // end forj
+        if (!t) {
+            break;
+        } // end if
+    } // end foi
+    return t;
+} // end function test_padejastrow
+
 void Tests::run_tests(int t) {
     /* run all tests and exit */
     if (t) {
@@ -115,8 +139,6 @@ void Tests::run_tests(int t) {
         if(test_2particle()) {
             std::cout << "Energy unperturbed 2 electron good" << std::endl;
         } else { 
-            double bleh = v->energy;
-            double two = 2;
             std::cout << "Energy unperturbed 2 electron wrong" << std::endl;
             std::cout << std::setprecision(15) << "  Energy is: " << v->energy << std::endl;
         } // end ifelse
@@ -134,6 +156,11 @@ void Tests::run_tests(int t) {
             std::cout << "Wavefunction 2 electron good" << std::endl;
         } else { 
             std::cout << "Wavefunction 2 electron wrong" << std::endl;
+        } // end ifelse
+        if(test_padejastrow()) {
+            std::cout << "Pade-Jastrow factor good" << std::endl;
+        } else {
+            std::cout << "Pade-Jastrow factor wrong" << std::endl;
         } // end ifelse
         if (t==2) {
             b->printStates();

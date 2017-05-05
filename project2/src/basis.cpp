@@ -94,7 +94,11 @@ void Basis::pushState(std::vector<int*> &state, int i, int j, int ud) {
 
 double Basis::padejastrow(const unsigned int &i, const unsigned int &j) {
     /* return 1 for anti-parallel spin and 1/3 for parallel */
-    return ((i+j)%2 ? 1./3 : 1);
+    if ((i%2 && j%2) || (!(i%2) && !(j%2))) {
+        return 1./3;
+    } else {
+        return 1;
+    } // end ifelse
 } // end function padejastrow
 
 double Basis::jastrow(const Eigen::MatrixXd &r, double beta) {
