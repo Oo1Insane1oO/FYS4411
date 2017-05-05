@@ -984,7 +984,7 @@
         \begin{align}
             \nabla^2_k g(\vec{r},\beta) &= \nabla^2_k \prod_{i<j} \gJ \nonumber
             \\
-            &= 2g(\vec{r},\beta)\sum_{j>k}\nabla^2_k\left(\frac{a}{\beta +
+            &= g(\vec{r},\beta)\sum_{j\neq k}\nabla^2_k\left(\frac{a}{\beta +
             \frac{1}{r_{kj}}}\right)
             \label{eq:lapg}
         \end{align}
@@ -1005,7 +1005,7 @@
     the differentiation above. \\
     We define a new function
         \begin{equation}
-            Q\left(r_k,\beta\right) \equiv \sum_{j>k} \frac{2a}{(1+\beta
+            Q\left(r_k,\beta\right) \equiv \sum_{j\neq k} \frac{a}{(1+\beta
             r_{kj})^2}\left(\frac{1}{r_{kj}} - \frac{2\beta}{1+\beta r_{kj}} +
             \frac{a}{(1+\beta r_{kj})^2}\right)
             \label{eq:Qdef}
@@ -1031,9 +1031,9 @@
         \begin{align}
             \prd{x_k}{g(\vec{r},\alpha)} &= \prd{x_k}\left(\prod_{i<j}
             \gJ\right) \nonumber \\
-            &= g(\vec{r},\beta) \sum_{j>k}\prd{x_k}\left(\frac{a}{\beta +
+            &= g(\vec{r},\beta) \sum_{j\neq k}\prd{x_k}\left(\frac{a}{\beta +
             \frac{1}{r_{kj}}}\right) \nonumber \\
-            &= g(\vec{r},\beta) \sum_{j>k} \frac{a\left(x_k-x_j\right)}
+            &= g(\vec{r},\beta) \sum_{j\neq k} \frac{a\left(x_k-x_j\right)}
             {r_{kj}\left(1+\beta r_{kj}\right)^2}
             \label{eq:gder1}
         \end{align}
@@ -1041,8 +1041,8 @@
     in \Autoref{eq:detder1,eq:gder1} above. \\
     Defining
         \begin{equation}
-            \Upsilon_{n_{x_k}n_{y_k}}(x_k,y_k,\alpha) \equiv \sum_{j>k}
-            \frac{4a\sqrt{\omega}}{r_{kj}\left(1+\beta r_{kj}\right)^2}
+            \Upsilon_{n_{x_k}n_{y_k}}(x_k,y_k,\alpha) \equiv \sum_{j\neq k}
+            \frac{a\sqrt{\omega}}{r_{kj}\left(1+\beta r_{kj}\right)^2}
             \left(2n_{x_k}\frac{H_{n_{x_k}-1}}{H_{n_{x_k}}}\left(x_k-x_j\right)
             + 2n_{y_k}\frac{H_{n_{y_k}-1}}{H_{n_{y_k}}}\left(y_k-y_j\right) -
             \alpha\sqrt{\omega}
