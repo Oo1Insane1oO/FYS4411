@@ -1123,9 +1123,21 @@
 \label{ssub:analytic_expression_for_hessen_matrix}
     The Hessen matrix is neded in order to minimize with the conjugate gradient
     method as described in \Autoref{sub:conjugate_gradient_method}. The Hessen
-    matrix element is defined as follows
+    matrix in the case where we minimize $\alpha$ and $\beta$ is(using
+    \Autoref{eq:hessendef})
         \begin{equation}
-            A \equiv  
+            A =
+                \begin{pmatrix}
+                    \prd{\alpha}[\psi_T][2] &
+                    \frac{\prtl^2\psi_T}{\prtl\alpha\prtl\beta} \\
+                    \frac{\prtl^2\psi_T}{\prtl\beta\prtl\alpha} &
+                    \prd{\beta}[\psi_T][2]\\
+                \end{pmatrix}
+            \label{eq:analytichessen}
+        \end{equation}
+    We find the elements individually. Starting with $\alpha$.
+        \begin{equation}
+            \prd{\alpha}[\psi_T][2] = \prod_{i<j}\gJ\prd{\alpha}[][2]\left(\det
         \end{equation}
 
 \subsection{Optimization}
