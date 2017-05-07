@@ -237,11 +237,21 @@ void VMC::calculate(bool perturb) {
 
             // calculate Greens function ratio
             if (imp) {
-                greensFunctionRatio = exp((0.5*(qForceOld.array() +
-                                qForceNew.array()) * (0.25*step *
-                                (qForceOld.array() - qForceNew.array()) -
-                                newPositions.array() +
-                                oldPositions.array())).matrix().sum());
+                greensFunctionRatio = exp(-(0.5*(qForceOld.row(i).array() +
+                                qForceNew.row(i).array()) * (0.25*step *
+                                (qForceOld.row(i).array() -
+                                 qForceNew.row(i).array()) -
+                                newPositions.row(i).array() +
+                                oldPositions.row(i).array())).matrix().sum());
+// 
+//                 greensFunctionRatio = exp(((oldPositions.row(i).array() -
+//                                 newPositions.row(i).array() - 0.5 * step *
+//                                 qForceNew.row(i).array()).matrix().squaredNorm()
+//                             - (newPositions.row(i).array() -
+//                                 oldPositions.row(i).array() - 0.5
+//                              * step *
+//                              qForceOld.row(i).array()).matrix().squaredNorm())
+//                         / (2*step));
             } // end if
 
             if ((i<halfSize) || (determinantRatioD==0)) {
