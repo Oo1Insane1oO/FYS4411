@@ -34,6 +34,8 @@ class Basis {
         double jastrow(const Eigen::MatrixXd&, double);
         double padejastrow(const unsigned int&, const unsigned int&);
         void printStates();
+
+        std::vector<int> getMagicNumbers();
 };
 
 #endif /* BASIS_H */

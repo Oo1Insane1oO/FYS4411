@@ -154,6 +154,11 @@ void Basis::printStates() {
     std::cout << "Number of states: " << states.size() << std::endl;
 } // end function print state
 
+std::vector<int> Basis::getMagicNumbers() {
+    /* return vector containint magic numbers in acending order */
+    return M;
+} // end function getMagicNumbers
+
 Basis::~Basis() {
     delete meth;
 } // end deconstructor
