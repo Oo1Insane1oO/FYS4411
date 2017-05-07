@@ -959,7 +959,7 @@
             \frac{H_{n_{x_k}-2}}{H_{n_{x_k}}} + n_{y_k}\left(n_{y_k}-1\right)
             \frac{H_{n_{y_k}-2}}{H_{n_{y_k}}}\right] + \alpha\omega\left(\alpha
             \omega r_k^2 - 2\left(n_{x_k} + n_{y_k} + 1\right)\right)
-            \label{eq:Ddef}
+            \label{eq:thetadef}
         \end{equation}
     gives
         \begin{equation}
@@ -1066,6 +1066,34 @@
             Q\left(r_k,\beta\right)\right) + \sum^N_{i<j} \frac{1}{r_{ij}}
             \label{eq:ELNfin}
         \end{equation}
+    with
+        \begin{equation}
+            \begin{aligned}
+                &\Theta_{n_{x_k}n_{y_k}}(x_k,y_k,\alpha) \equiv 2\omega
+                \left(2-\alpha\right)\left[n_{x_k}\left(n_{x_k}-1\right)
+                \frac{H_{n_{x_k}-2}}{H_{n_{x_k}}} +
+                n_{y_k}\left(n_{y_k}-1\right)
+                \frac{H_{n_{y_k}-2}}{H_{n_{y_k}}}\right] +
+                \alpha\omega\left(\alpha \omega r_k^2 - 2\left(n_{x_k} +
+                n_{y_k} + 1\right)\right) \\
+                &\hspace{1.4cm}Q\left(r_k,\beta\right) \equiv \sum_{j\neq k}
+                \frac{a}{(1+\beta r_{kj})^2}\left(\frac{1}{r_{kj}} -
+                \frac{2\beta}{1+\beta r_{kj}} + \frac{a}{(1+\beta
+                r_{kj})^2}\right) \\
+                &\hspace{0.05cm}\begin{aligned}
+                    \Upsilon_{n_{x_k}n_{y_k}}(x_k,y_k,\alpha) \equiv
+                    \sum_{j\neq k} \frac{2a}{r_{kj}\left(1+\beta
+                    r_{kj}\right)^2} \Bigg[&\left(\frac{n_{x_k}}{x_k} +
+                    \frac{n_{x_k}(n_{x_k}-1)}{x_k}\frac{H_{n_{x_k}-2}}
+                    {H_{n_{x_k}}} - \alpha\omega x_k\right)\left(x_k-x_j\right)
+                    \\ + &\left(\frac{n_{y_k}}{y_k} +
+                    \frac{n_{y_k}(n_{y_k}-1)}{y_k}\frac{H_{n_{y_k}-2}}
+                    {H_{n_{y_k}}} - \alpha\omega y_k\right)\left(y_k-y_j\right)
+                    \Bigg]
+                \end{aligned}
+            \end{aligned}
+        \end{equation}
+    exactly as given in \Autoref{eq:thetadef,eq:Qdef,eq:upsilondef}.
 
 \subsection{Optimization}
 \label{sub:optimization}
