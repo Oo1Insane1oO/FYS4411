@@ -205,15 +205,15 @@ void VMC::calculate(bool perturb) {
     Eigen::MatrixXd oldInvU = Eigen::MatrixXd::Zero(b->ECut, b->ECut);
     Eigen::MatrixXd newInvD = Eigen::MatrixXd::Zero(b->ECut, b->ECut);
     Eigen::MatrixXd newInvU = Eigen::MatrixXd::Zero(b->ECut, b->ECut);
+    b->setTrialWaveFunction(oldD, oldU, oldPositions, alpha);
+    oldInvD = oldD.inverse();
+    oldInvU = oldU.inverse();
+    if (imp) {
+        diff(oldPositions,qForceOld);
+        qForceOld *= 2;
+    } // end if
     while (cycles < maxIterations) {
         /* run Monte Carlo cycles */
-        b->setTrialWaveFunction(oldD, oldU, oldPositions, alpha);
-        oldInvD = oldD.inverse();
-        oldInvU = oldU.inverse();
-        if (imp) {
-            diff(oldPositions,qForceOld);
-            qForceOld *= 2;
-        } // end if
         for (unsigned int i = 0; i < oldPositions.rows(); ++i) {
             /* loop over number of particles */
             for (unsigned int j = 0; j < dim; ++j) {
