@@ -29,87 +29,87 @@ VMC::~VMC() {
     delete meth;
 } // end deconstructor
         
-// double VMC::localEnergy2(const Eigen::MatrixXd &R, bool coulomb) {
-//     /* calculate analytic expression of local energy for 2 electrons */
-//     double r12 = (R.row(0) - R.row(1)).norm();
-//     double denom = 1 + beta*r12;
-//     double denomsq = denom*denom;
-//     return 0.5 * pow(b->omega,2) * (1 - alpha*alpha) * (R.row(0).squaredNorm()
-//             + R.row(1).squaredNorm()) + 2*alpha*b->omega + (coulomb ?
-//             -1/denomsq * (1/denomsq - alpha*b->omega*r12 + 1/r12 -
-//                     2*beta/denom) + 1/r12 : 0);
-// } // end function localEnergy
-
 double VMC::localEnergy2(const Eigen::MatrixXd &R, bool coulomb) {
-    /* calculate analytic expression of local energy */
-    double nx, ny, nxHermiteFactor, nyHermiteFactor, rk, rkj, jFactor, denom,
-           a;
-    double E = 0;
-    for (unsigned int k = 0; k < R.rows(); ++k) {
-        /* loop over particles */
-        rk = R.row(k).norm();
-        nx = *(b->states[k][0]);
-        ny = *(b->states[k][1]);
-        nxHermiteFactor = nx*(nx-1)*H(R(k,0),nx-2)/H(R(k,0),nx);
-        nyHermiteFactor = ny*(ny-1)*H(R(k,1),ny-2)/H(R(k,1),ny);
-        E += 0.5 * pow(b->omega,2)*rk*rk;
-        E -= b->omega*(2-alpha) * (nxHermiteFactor + nyHermiteFactor) +
-            0.5*alpha*b->omega * (alpha*b->omega*rk*rk - 2*(nx+ny+1));
-        if (coulomb) {
-            /* Add Jastrow part */
-            for (unsigned int j = 0; j < R.rows(); ++j) {
-                if (j != k) {
-                    a = b->padejastrow(k,j);
-                    rkj = (R.row(k) - R.row(j)).norm();
-                    denom = 1 + beta*rkj;
-                    jFactor = 0.5*a/pow(denom,2); 
-                    E -= jFactor * (2/rkj*(((nx + nxHermiteFactor)/R(k,0) -
-                                    alpha*b->omega*R(k,0))*(R(k,0)-R(j,0)) +
-                                ((ny + nyHermiteFactor)/R(k,1) -
-                                 alpha*b->omega*R(k,1))*(R(k,1)-R(j,1))) +
-                            1/rkj - 2*beta/denom + a / pow(denom,2));
-                    if (j > k) {
-                        /* Coulomb part */
-                        E += 1/rkj;
-                    } // end if
-                } // end if
-            } // end forj
-        } // end if
-    } // end fork
-    return E;
+    /* calculate analytic expression of local energy for 2 electrons */
+    double r12 = (R.row(0) - R.row(1)).norm();
+    double denom = 1 + beta*r12;
+    double denomsq = denom*denom;
+    return 0.5 * pow(b->omega,2) * (1 - alpha*alpha) * (R.row(0).squaredNorm()
+            + R.row(1).squaredNorm()) + 2*alpha*b->omega + (coulomb ?
+            -1/denomsq * (1/denomsq - alpha*b->omega*r12 + 1/r12 -
+                    2*beta/denom) + 1/r12 : 0);
 } // end function localEnergy
 
-// void VMC::diff(const Eigen::MatrixXd &R, Eigen::MatrixXd &der) {
-//     /* calculate first derivative ratio of single particle wave functions */
-//     double r12 = (R.row(0) - R.row(1)).norm();
-//     double denom = r12 * pow(1+beta*r12, 2);
-//     for (unsigned int i = 0; i < R.rows(); ++i) {
-//         for (unsigned int j = 0; j < R.cols(); ++j) {
-//             der(i,j) = -alpha*b->omega*R(i,j) + b->padejastrow(i,j)*(R(i,j) -
-//                     R(i+((i%2 || i==1) ? -1 : 1),j))/denom;
-//         } // end forj
-//     } // end fori
-// } // end function
-
 void VMC::diff(const Eigen::MatrixXd &R, Eigen::MatrixXd &der) {
-    /* calculate first derivative ratio of single wave functions */
-    double nx, ny, nxHermiteFactor, nyHermiteFactor, tmpkVal;
-    for (unsigned int k = 0; k < R.rows(); ++k) {
-        nx = *(b->states[k][0]);
-        nx = *(b->states[k][1]);
-        nxHermiteFactor = nx*(nx-1)*H(R(k,0),nx-2)/H(R(k,0),nx);
-        nyHermiteFactor = ny*(ny-1)*H(R(k,1),ny-2)/H(R(k,1),ny);
-        tmpkVal = (nx + nxHermiteFactor) / R(k,0) + (ny + nyHermiteFactor) /
-            R(k,1) - alpha*b->omega * (R(k,0) + R(k,1));
-        for (unsigned int j = 0; j < R.rows(); ++j) {
-            der(k,j) = tmpkVal;
-            if (j != k) {
-                der(k,j) += b->padejastrow(k,j) * (R(k,0) - R(j,0) + R(k,1) -
-                        R(j,1)) / pow((1 + beta*(R.row(k)-R.row(j)).norm()),2);
-            } // end if
+    /* calculate first derivative ratio of single particle wave functions */
+    double r12 = (R.row(0) - R.row(1)).norm();
+    double denom = r12 * pow(1+beta*r12, 2);
+    for (unsigned int i = 0; i < R.rows(); ++i) {
+        for (unsigned int j = 0; j < R.cols(); ++j) {
+            der(i,j) = -alpha*b->omega*R(i,j) + (R(i,j)-R(i+((i%2 || i==1) ?
+                            -1 : 1),j))/denom;
         } // end forj
-    } // end fork
-} // end function diff
+    } // end fori
+} // end function
+ 
+// double VMC::localEnergy2(const Eigen::MatrixXd &R, bool coulomb) {
+//     /* calculate analytic expression of local energy */
+//     double nx, ny, nxHermiteFactor, nyHermiteFactor, rk, rkj, jFactor, denom,
+//            a;
+//     double E = 0;
+//     for (unsigned int k = 0; k < R.rows(); ++k) {
+//         /* loop over particles */
+//         rk = R.row(k).norm();
+//         nx = *(b->states[k][0]);
+//         ny = *(b->states[k][1]);
+//         nxHermiteFactor = nx*(nx-1)*H(R(k,0),nx-2)/H(R(k,0),nx);
+//         nyHermiteFactor = ny*(ny-1)*H(R(k,1),ny-2)/H(R(k,1),ny);
+//         E += 0.5 * pow(b->omega,2)*rk*rk;
+//         E -= b->omega*(2-alpha) * (nxHermiteFactor + nyHermiteFactor) +
+//             0.5*alpha*b->omega * (alpha*b->omega*rk*rk - 2*(nx+ny+1));
+//         if (coulomb) {
+//             /* Add Jastrow part */
+//             for (unsigned int j = 0; j < R.rows(); ++j) {
+//                 if (j != k) {
+//                     a = b->padejastrow(k,j);
+//                     rkj = (R.row(k) - R.row(j)).norm();
+//                     denom = 1 + beta*rkj;
+//                     jFactor = 0.5*a/pow(denom,2); 
+//                     E -= jFactor * (2/rkj*(((nx + nxHermiteFactor)/R(k,0) -
+//                                     alpha*b->omega*R(k,0))*(R(k,0)-R(j,0)) +
+//                                 ((ny + nyHermiteFactor)/R(k,1) -
+//                                  alpha*b->omega*R(k,1))*(R(k,1)-R(j,1))) +
+//                             1/rkj - 2*beta/denom + a / pow(denom,2));
+//                     if (j > k) {
+//                         /* Coulomb part */
+//                         E += 1/rkj;
+//                     } // end if
+//                 } // end if
+//             } // end forj
+//         } // end if
+//     } // end fork
+//     return E;
+// } // end function localEnergy
+// 
+// void VMC::diff(const Eigen::MatrixXd &R, Eigen::MatrixXd &der) {
+//     /* calculate first derivative ratio of wave functions */
+//     double rkj;
+//     for (unsigned int k = 0; k < R.rows(); ++k) {
+//         for (unsigned int d = 0; d < R.cols(); ++d) {
+//             der(k,d) = (*(b->states[k][d])*(1 + (*(b->states[k][d])-1) *
+//                         H(R(k,d),*(b->states[k][d])-2) /
+//                         H(R(k,d),*(b->states[k][d]))))/R(k,d) -
+//                 alpha*b->omega*R(k,d);
+//             for (unsigned int j = 0; j < R.rows(); ++j) {
+//                 if (j != k) {
+//                     rkj = (R.row(k) - R.row(j)).norm();
+//                     der(k,d) += b->padejastrow(k,j) * (R(k,d)-R(j,d)) /
+//                         (rkj*pow(1+beta*rkj,2));
+//                 } // end if
+//             } // end forj
+//         } // end ford
+//     } // end fork
+// } // end function diff
 
 double VMC::localEnergyDiff(Eigen::MatrixXd &psiD, Eigen::MatrixXd &psiU, const
         Eigen::MatrixXd &R) {
