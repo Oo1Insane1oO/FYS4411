@@ -229,6 +229,14 @@ void VMC::calculate(bool perturb) {
 
             // calculate new PDF (probability distribution function)
             b->setTrialWaveFunction(newD, newU, newPositions, alpha);
+            if (i < halfSize) {
+                b->updateTrialWaveFunction(newD, newPositions.row(i), alpha,
+                        i/2);
+            } else {
+                b->updateTrialWaveFunction(newU, newPositions.row(i), alpha,
+                        i/2);
+            } // end ifelse
+
             if (imp) {
                 /* set new quantum force */
                 diff(newPositions, qForceNew);
@@ -285,11 +293,11 @@ void VMC::calculate(bool perturb) {
             } // end if
 
             // update energy and increment cycles
-//             tmpEnergy = localEnergy2(newPositions,perturb);
-            tmpEnergy = localEnergyDiff(newD,newU,newPositions) /
-                (newD.determinant()*newU.determinant()) +
-                1/(newPositions.row(i) - newPositions.row(i+((i%2 || i==1) ? -1
-                                : 1))).norm();
+            tmpEnergy = localEnergy2(newPositions,perturb);
+//             tmpEnergy = localEnergyDiff(newD,newU,newPositions) /
+//                 (newD.determinant()*newU.determinant()) +
+//                 1/(newPositions.row(i) - newPositions.row(i+((i%2 || i==1) ? -1
+//                                 : 1))).norm();
             energy += tmpEnergy;
             energySq += tmpEnergy*tmpEnergy;
             if (i < halfSize) {
