@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2017.3.22)  7 MAY 2017 20:06
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2017.3.22)  7 MAY 2017 20:35
 entering extended mode
  \write18 enabled.
  file:line:error style messages enabled.
@@ -2552,53 +2552,65 @@ been already used, duplicate ignored
 l.331         \end{equation}
                              [1
 
-] [2] [3] [4] [5] [6] [7] [8] [9] [10] [11]
-LaTeX Font Info:    Font shape `OT1/LinuxLibertineT-TLF/m/it' will be
-(Font)              scaled to size 10.0pt on input line 1300.
+] [2]
+LaTeX Font Info:    Try loading font information for TS1+LinuxLibertineT-TLF on
+ input line 440.
 
-[12]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 1335.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 1335.
- (/home/saintz/localStuff/FYS4411/project2/text/project2.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 1335.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 1335.
+(/usr/share/texlive/texmf-dist/tex/latex/libertine/TS1LinuxLibertineT-TLF.fd
+File: TS1LinuxLibertineT-TLF.fd 2012/11/26 (autoinst) Font definitions for TS1/
+LinuxLibertineT-TLF.
+)
+LaTeX Font Info:    Font shape `TS1/LinuxLibertineT-TLF/m/n' will be
+(Font)              scaled to size 10.0pt on input line 440.
+
+[3] [4] [5] [6] [7] [8] [9] [10] [11]
+LaTeX Font Info:    Font shape `OT1/LinuxLibertineT-TLF/m/it' will be
+(Font)              scaled to size 10.0pt on input line 1333.
+ [12] [13]
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 1368.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 1368.
+
+(/home/saintz/localStuff/FYS4411/project2/text/project2.aux)
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 1368.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 1368.
 
 Package rerunfilecheck Info: File `project2.out' has not changed.
 (rerunfilecheck)             Checksum: <no file>.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 1335.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 1368.
  ) 
 Here is how much of TeX's memory you used:
- 31955 strings out of 494497
- 579653 string characters out of 6172400
- 640699 words of memory out of 5000000
- 34667 multiletter control sequences out of 15000+600000
- 54880 words of font info for 134 fonts, out of 8000000 for 9000
+ 32000 strings out of 494497
+ 580886 string characters out of 6172400
+ 639887 words of memory out of 5000000
+ 34701 multiletter control sequences out of 15000+600000
+ 55583 words of font info for 136 fonts, out of 8000000 for 9000
  264 hyphenation exceptions out of 8191
- 64i,17n,94p,10410b,365s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 64i,17n,94p,10410b,475s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/share/texlive/texmf-dist/fonts/enc/dvips/libertine/lbtn_xogrpz.enc}{/us
 r/share/texlive/texmf-dist/fonts/enc/dvips/newtx/libertinealt.enc}{/usr/share/t
-exlive/texmf-dist/fonts/enc/dvips/base/8r.enc}{/usr/share/texlive/texmf-dist/fo
-nts/enc/dvips/libertine/lbtn_c7kyj5.enc}{/usr/share/texlive/texmf-dist/fonts/en
-c/dvips/libertine/lbtn_lu7m2n.enc}</usr/share/texlive/texmf-dist/fonts/type1/pu
-blic/libertine/LinLibertineT.pfb></usr/share/texlive/texmf-dist/fonts/type1/pub
-lic/libertine/LinLibertineTB.pfb></usr/share/texlive/texmf-dist/fonts/type1/pub
-lic/libertine/LinLibertineTI.pfb></usr/share/texlive/texmf-dist/fonts/type1/pub
-lic/newtx/fxlri-5letters.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/
-newtx/fxlri-7letters.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/newt
-x/rntxmi.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/txfonts/rtxmi.pf
-b></usr/share/texlive/texmf-dist/fonts/type1/public/newtx/rtxmi7.pfb></usr/shar
-e/texlive/texmf-dist/fonts/type1/public/txfonts/rtxr.pfb></usr/share/texlive/te
-xmf-dist/fonts/type1/public/newtx/txex-bar.pfb></usr/share/texlive/texmf-dist/f
-onts/type1/public/txfonts/txex.pfb></usr/share/texlive/texmf-dist/fonts/type1/p
-ublic/txfonts/txsy.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/txfont
-s/txsyb.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/txfonts/txsyc.pfb
-></usr/share/texlive/texmf-dist/fonts/type1/public/newtx/zxlr.pfb></usr/share/t
-exlive/texmf-dist/fonts/type1/public/newtx/zxlri.pfb>
+exlive/texmf-dist/fonts/enc/dvips/libertine/lbtn_naooyc.enc}{/usr/share/texlive
+/texmf-dist/fonts/enc/dvips/base/8r.enc}{/usr/share/texlive/texmf-dist/fonts/en
+c/dvips/libertine/lbtn_c7kyj5.enc}{/usr/share/texlive/texmf-dist/fonts/enc/dvip
+s/libertine/lbtn_lu7m2n.enc}</usr/share/texlive/texmf-dist/fonts/type1/public/l
+ibertine/LinLibertineT.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/li
+bertine/LinLibertineTB.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/li
+bertine/LinLibertineTI.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/ne
+wtx/fxlri-5letters.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/newtx/
+fxlri-7letters.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/newtx/rntx
+mi.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/txfonts/rtxmi.pfb></us
+r/share/texlive/texmf-dist/fonts/type1/public/newtx/rtxmi7.pfb></usr/share/texl
+ive/texmf-dist/fonts/type1/public/txfonts/rtxr.pfb></usr/share/texlive/texmf-di
+st/fonts/type1/public/newtx/txex-bar.pfb></usr/share/texlive/texmf-dist/fonts/t
+ype1/public/txfonts/txex.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/
+txfonts/txsy.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/txfonts/txsy
+b.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/txfonts/txsyc.pfb></usr
+/share/texlive/texmf-dist/fonts/type1/public/newtx/zxlr.pfb></usr/share/texlive
+/texmf-dist/fonts/type1/public/newtx/zxlri.pfb>
 Output written on /home/saintz/localStuff/FYS4411/project2/text/project2.pdf (1
-3 pages, 523151 bytes).
+4 pages, 527089 bytes).
 PDF statistics:
- 515 PDF objects out of 1000 (max. 8388607)
- 479 compressed objects within 5 object streams
- 170 named destinations out of 1000 (max. 500000)
- 269 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 535 PDF objects out of 1000 (max. 8388607)
+ 498 compressed objects within 5 object streams
+ 175 named destinations out of 1000 (max. 500000)
+ 285 words of extra memory for PDF output out of 10000 (max. 10000000)
 

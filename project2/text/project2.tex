@@ -424,6 +424,30 @@
             \label{eq:cgitrk}
         \end{equation}
 
+\subsection{Second Derivative Test}
+\label{sub:second_derivative_test}
+    Given a real valued function $f(\vec{x}):\mathbb{R}^n\rarr\mathbb{R}$ where
+    $\vec{x}\in\mathbb{R}^n$ and $f$ has second partial derivatives which exist
+    and are continuous over its domain, the so-called Hessen matrix elements
+    for $f$ is defined as follows \cite{linalgDavid}
+        \begin{equation}
+            A_{ij} \equiv \frac{\prtl^2f}{\prtl x_i\prtl x_j}
+            \label{eq:hessendef}
+        \end{equation}
+    The properties of $A$ can be used to determine critical points of $f$. The
+    statements are;
+        \begin{itemize}
+            \item If $A$ is positive definite(all positive eigenvalues) at
+                $\vec{x}$ then $f$ has an isolated  local minimum at $\vec{x}$.
+            \item If $A$ is negative definite(all negative eigenvalues) at
+                $\vec{x}$ then $f$ has an isolated  local maximum at $\vec{x}$.
+            \item If $A$ is indefinite(both positive and negative eigenvalues)
+                then $f$ has a saddle point at $\vec{x}$.
+            \item If $A$ is positive-semi-definite, the test is inconclusive
+                and $\vec{x}$ might be a local extremal or a saddle point.
+        \end{itemize}
+
+
 \subsection{LAPLACE EXPANSION}
 \label{sub:laplace_expansion}
     Given a $n\times n$ matrix $M=[m_{ij}]$ and $i,j\in[1,\dots,n]$, then the
@@ -1094,6 +1118,15 @@
             \end{aligned}
         \end{equation}
     exactly as given in \Autoref{eq:thetadef,eq:Qdef,eq:upsilondef}.
+
+\subsubsection{Analytic Expression for Hessen Matrix}
+\label{ssub:analytic_expression_for_hessen_matrix}
+    The Hessen matrix is neded in order to minimize with the conjugate gradient
+    method as described in \Autoref{sub:conjugate_gradient_method}. The Hessen
+    matrix element is defined as follows
+        \begin{equation}
+            A \equiv  
+        \end{equation}
 
 \subsection{Optimization}
 \label{sub:optimization}
