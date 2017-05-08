@@ -315,8 +315,8 @@ void VMC::calculate(bool perturb) {
         } // end fori
 
         // calculate local energy and local energy squared
-        tmpEnergy = localEnergy2(newPositions,perturb);
-//         tmpEnergy = localEnergyDiff(newD,newU,newPositions,perturb);
+//         tmpEnergy = localEnergy2(newPositions,perturb);
+        tmpEnergy = localEnergyDiff(newD,newU,newPositions,perturb);
         energy += tmpEnergy;
         energySq += tmpEnergy*tmpEnergy;
         cycles++;
