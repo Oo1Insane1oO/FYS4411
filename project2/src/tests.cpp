@@ -152,11 +152,13 @@ void Tests::run_tests(int t) {
         } else { 
             std::cout << "Update inverse wrong" << std::endl;
         } // end ifelse
-        if(test_wavefunction2()) {
-            std::cout << "Wavefunction 2 electron good" << std::endl;
-        } else { 
-            std::cout << "Wavefunction 2 electron wrong" << std::endl;
-        } // end ifelse
+        if (b->ECut == 1) {
+            if(test_wavefunction2()) {
+                std::cout << "Wavefunction 2 electron good" << std::endl;
+            } else { 
+                std::cout << "Wavefunction 2 electron wrong" << std::endl;
+            } // end ifelse
+        } // end if
         if(test_padejastrow()) {
             std::cout << "Pade-Jastrow factor good" << std::endl;
         } else {

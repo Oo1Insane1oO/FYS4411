@@ -112,16 +112,28 @@ void VMC::diff(const Eigen::MatrixXd &R, Eigen::MatrixXd &der) {
 } // end function diff
 
 double VMC::localEnergyDiff(Eigen::MatrixXd &psiD, Eigen::MatrixXd &psiU, const
-        Eigen::MatrixXd &R) {
+        Eigen::MatrixXd &R, bool coulomb) {
     /* calculate local energy electrons */
-    // set kinetic part and calculate potential
     double dx = 1e-5;
-    double diff = -diff2(psiD, psiU, R, dx);
-    for (unsigned int i = 0; i < R.cols(); ++i) {
+    
+    // set kinetic part and calculate potential
+    double diff = -diff2(psiD, psiU, R, dx) /
+        (psiD.determinant()*psiU.determinant());
+    for (unsigned int i = 0; i < R.rows(); ++i) {
         /* calculate potential part */
         diff += pow(b->omega,2) * R.row(i).squaredNorm();
     } // end fori
-    return 0.5 * diff;
+    diff *= 0.5;
+
+    // calculate coulomb part
+    if (coulomb) {
+        for (unsigned int i = 0; i < R.rows(); ++i) {
+            for (unsigned int j = i+1; j < R.rows(); ++j) {
+                diff += 1/(R.row(i) - R.row(j)).norm();
+            } // end forj
+        } // end fori
+    } // end if
+    return diff;
 } // end function localEnergyDiff
 
 double VMC::diff2(Eigen::MatrixXd &psiD, Eigen::MatrixXd &psiU, const
@@ -142,7 +154,7 @@ double VMC::diff2(Eigen::MatrixXd &psiD, Eigen::MatrixXd &psiU, const
             b->setTrialWaveFunction(psiD,psiU,Rpm,alpha);
             tmpDiff += psiD.determinant() * psiU.determinant();
             diff += tmpDiff / (dx*dx);
-            Rpm = R;
+            Rpm(i,j) += dx;
         } // end forj
     } // end fori
     return diff;
@@ -292,14 +304,7 @@ void VMC::calculate(bool perturb) {
                 } // end if
             } // end if
 
-            // update energy and increment cycles
-            tmpEnergy = localEnergy2(newPositions,perturb);
-//             tmpEnergy = localEnergyDiff(newD,newU,newPositions) /
-//                 (newD.determinant()*newU.determinant()) +
-//                 1/(newPositions.row(i) - newPositions.row(i+((i%2 || i==1) ? -1
-//                                 : 1))).norm();
-            energy += tmpEnergy;
-            energySq += tmpEnergy*tmpEnergy;
+            // update inverse
             if (i < halfSize) {
                 meth->updateMatrixInverse(oldD, newD, oldInvD, newInvD,
                         determinantRatioD, i/2);
@@ -308,10 +313,16 @@ void VMC::calculate(bool perturb) {
                         determinantRatioU, i/2);
             } // end ifelse
         } // end fori
+
+        // calculate local energy and local energy squared
+        tmpEnergy = localEnergy2(newPositions,perturb);
+//         tmpEnergy = localEnergyDiff(newD,newU,newPositions,perturb);
+        energy += tmpEnergy;
+        energySq += tmpEnergy*tmpEnergy;
         cycles++;
     } // end while
 
     // calculate final energy estimation
-    energy /= cycles * newPositions.rows();
-    energySq /= cycles * newPositions.rows();
+    energy /= cycles;
+    energySq /= cycles;
 } // end function calculate
