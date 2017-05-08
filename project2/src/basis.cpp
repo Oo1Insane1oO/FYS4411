@@ -125,6 +125,20 @@ void Basis::updateJastrow(double &factor, const Eigen::MatrixXd &rold, const
     } // end forj
 } // end function updateJastrow
 
+double Basis::jastrowRatio(const Eigen::MatrixXd &rold, const Eigen::MatrixXd
+        &rnew, double beta, unsigned int k) {
+    /* calculate jastrow ratio */
+    double ratio = 0;
+    for (unsigned int j = 0; j < rold.rows(); ++j) {
+        if (j != k) {
+            ratio += padejastrow(k,j) * (1/(beta +
+                        1/(rnew.row(k)-rnew.row(j)).norm()) - 1/(beta +
+                        1/(rold.row(k)-rold.row(j)).norm()));
+        } // end if
+    } // end forj
+    return exp(2*ratio);
+} // end function jastrowRatio
+
 double Basis::harmonicOscillatorWaveFunction(double alpha, double x, double y,
         int nx, int ny) {
     /* calculate harmonic oscillator wave function in 2D */

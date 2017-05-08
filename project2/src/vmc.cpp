@@ -231,7 +231,6 @@ void VMC::calculate(bool perturb) {
     } // end if
     newD = oldD;
     newU = oldU;
-    double jastrowFactor = b->jastrow(oldPositions, beta);
     while (cycles < maxIterations) {
         /* run Monte Carlo cycles */
         for (unsigned int i = 0; i < oldPositions.rows(); ++i) {
@@ -278,15 +277,9 @@ void VMC::calculate(bool perturb) {
                 determinantRatioU = meth->determinantRatio(newU, oldInvU, i/2);
             } // end ifelseif
 
-            if (perturb) {
-                b->updateJastrow(jastrowFactor, oldPositions, newPositions,
-                        beta, i);
-            } // end if
             testRatio = determinantRatioD * determinantRatioD *
                 determinantRatioU * determinantRatioU * (!perturb ?  1 :
-                        exp(2*jastrowFactor));
-//                         exp(2*(b->jastrow(newPositions,beta) -
-//                                 b->jastrow(oldPositions,beta))));
+                        b->jastrowRatio(oldPositions, newPositions, beta, i));
             if (imp) {
                 /* importance sampling */
                 testRatio *= transitionRatio;
