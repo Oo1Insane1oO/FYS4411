@@ -93,23 +93,28 @@ double VMC::localEnergy2(const Eigen::MatrixXd &R, bool coulomb) {
 
 void VMC::diff(const Eigen::MatrixXd &R, Eigen::MatrixXd &der) {
     /* calculate first derivative ratio of wave functions */
-    double rkj;
     for (unsigned int k = 0; k < R.rows(); ++k) {
-        for (unsigned int d = 0; d < R.cols(); ++d) {
-            der(k,d) = (*(b->states[k][d])*(1 + (*(b->states[k][d])-1) *
-                        H(R(k,d),*(b->states[k][d])-2) /
-                        H(R(k,d),*(b->states[k][d]))))/R(k,d) -
-                alpha*b->omega*R(k,d);
-            for (unsigned int j = 0; j < R.rows(); ++j) {
-                if (j != k) {
-                    rkj = (R.row(k) - R.row(j)).norm();
-                    der(k,d) += b->padejastrow(k,j) * (R(k,d)-R(j,d)) /
-                        (rkj*pow(1+beta*rkj,2));
-                } // end if
-            } // end forj
-        } // end ford
+        updateDiff(R,der,k);
     } // end fork
 } // end function diff
+
+void VMC::updateDiff(const Eigen::MatrixXd &R, Eigen::MatrixXd &der, int k) {
+    /* calculate first derivative ratio of wave functions for partikle k */
+    double rkj;
+    for (unsigned int d = 0; d < R.cols(); ++d) {
+        der(k,d) = (*(b->states[k][d])*(1 + (*(b->states[k][d])-1) *
+                    H(R(k,d),*(b->states[k][d])-2) /
+                    H(R(k,d),*(b->states[k][d]))))/R(k,d) -
+            alpha*b->omega*R(k,d);
+        for (unsigned int j = 0; j < R.rows(); ++j) {
+            if (j != k) {
+                rkj = (R.row(k) - R.row(j)).norm();
+                der(k,d) += b->padejastrow(k,j) * (R(k,d)-R(j,d)) /
+                    (rkj*pow(1+beta*rkj,2));
+            } // end if
+        } // end forj
+    } // end ford
+} // end function updateDiff
 
 double VMC::localEnergyDiff(Eigen::MatrixXd &psiD, Eigen::MatrixXd &psiU, const
         Eigen::MatrixXd &R, bool coulomb) {
@@ -251,27 +256,19 @@ void VMC::calculate(bool perturb) {
 
             if (imp) {
                 /* set new quantum force */
-                diff(newPositions, qForceNew);
-                qForceNew *= 2;
+//                 diff(newPositions, qForceNew);
+                updateDiff(newPositions, qForceNew,i);
+                qForceNew.row(i) *= 2;
             } // end if
 
             // calculate Greens function ratio
             if (imp) {
-//                 greensFunctionRatio = exp(-(0.5*(qForceOld.row(i).array() +
-//                                 qForceNew.row(i).array()) * (0.25*step *
-//                                 (qForceOld.row(i).array() -
-//                                  qForceNew.row(i).array()) -
-//                                 newPositions.row(i).array() +
-//                                 oldPositions.row(i).array())).matrix().sum());
-
-                greensFunctionRatio = exp(((oldPositions.row(i).array() -
-                                newPositions.row(i).array() - 0.5 * step *
-                                qForceNew.row(i).array()).matrix().squaredNorm()
-                            - (newPositions.row(i).array() -
-                                oldPositions.row(i).array() - 0.5
-                             * step *
-                             qForceOld.row(i).array()).matrix().squaredNorm())
-                        / (2*step));
+                greensFunctionRatio = exp(0.125*step*(qForceOld.row(i).norm() -
+                            qForceNew.row(i).norm()) +
+                        0.25*step*((oldPositions(i,0)-newPositions(i,0)) *
+                            (qForceNew(i,0)+qForceOld(i,0)) +
+                            (oldPositions(i,1)-newPositions(i,1)) *
+                            (qForceNew(i,1)+qForceOld(i,1))));
             } // end if
 
             if ((i<halfSize) || (determinantRatioD==0)) {
@@ -294,13 +291,13 @@ void VMC::calculate(bool perturb) {
                 oldD = newD;
                 oldU = newU;
                 if (imp) {
-                    qForceOld = qForceNew;
+                    qForceOld.row(i) = qForceNew.row(i);
                 } // end if
             } else {
                 /* reset position */
                 newPositions.row(i) = oldPositions.row(i);
                 if (imp) {
-                    qForceNew = qForceOld;
+                    qForceNew.row(i) = qForceOld.row(i);
                 } // end if
             } // end if
 
@@ -315,8 +312,8 @@ void VMC::calculate(bool perturb) {
         } // end fori
 
         // calculate local energy and local energy squared
-//         tmpEnergy = localEnergy2(newPositions,perturb);
-        tmpEnergy = localEnergyDiff(newD,newU,newPositions,perturb);
+        tmpEnergy = localEnergy2(newPositions,perturb);
+//         tmpEnergy = localEnergyDiff(newD,newU,newPositions,perturb);
         energy += tmpEnergy;
         energySq += tmpEnergy*tmpEnergy;
         cycles++;
