@@ -256,8 +256,7 @@ void VMC::calculate(bool perturb) {
 
             if (imp) {
                 /* set new quantum force */
-//                 diff(newPositions, qForceNew);
-                updateDiff(newPositions, qForceNew,i);
+                updateDiff(newPositions, qForceNew, i);
                 qForceNew.row(i) *= 2;
             } // end if
 
