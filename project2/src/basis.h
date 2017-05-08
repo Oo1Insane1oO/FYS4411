@@ -34,6 +34,8 @@ class Basis {
         void updateTrialWaveFunction(Eigen::MatrixXd&, const Eigen::MatrixXd&,
                 double, unsigned int);
         double jastrow(const Eigen::MatrixXd&, double);
+        void updateJastrow(double&, const Eigen::MatrixXd&, const
+                Eigen::MatrixXd&, double, unsigned int);
         double padejastrow(const unsigned int&, const unsigned int&);
         void printStates();
 

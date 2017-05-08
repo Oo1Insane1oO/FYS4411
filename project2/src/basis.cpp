@@ -106,12 +106,24 @@ double Basis::jastrow(const Eigen::MatrixXd &r, double beta) {
     double factor = 0;
     for (unsigned int i = 0; i < r.rows(); ++i) {
         for (unsigned int j = i+1; j < r.rows(); ++j) {
-            factor += padejastrow(i,j)/(beta + 1/sqrt(pow(r(i,0)-r(j,0),2) +
-                        pow(r(i,1)-r(j,1),2)));
+            factor += padejastrow(i,j)/(beta + 1/(r.row(i)-r.row(j)).norm());
         } // end forj
     } // end fori
     return factor;
 } // end function jastrow
+
+void Basis::updateJastrow(double &factor, const Eigen::MatrixXd &rold, const
+        Eigen::MatrixXd &rnew, double beta, unsigned int k) {
+    /* update Jastrow factor for row k */
+    for (unsigned int j = 0; j < rold.rows(); ++j) {
+        if (j != k) {
+            factor -= padejastrow(k,j)/(beta +
+                    1/(rold.row(k)-rold.row(j)).norm());
+            factor += padejastrow(k,j)/(beta +
+                    1/(rnew.row(k)-rnew.row(j)).norm());
+        } // end if
+    } // end forj
+} // end function updateJastrow
 
 double Basis::harmonicOscillatorWaveFunction(double alpha, double x, double y,
         int nx, int ny) {
