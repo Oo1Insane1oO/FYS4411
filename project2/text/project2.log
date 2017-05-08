@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2017.3.22)  8 MAY 2017 23:30
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2017.3.22)  8 MAY 2017 23:36
 entering extended mode
  \write18 enabled.
  file:line:error style messages enabled.
@@ -2596,15 +2596,12 @@ Package rerunfilecheck Info: File `project2.out' has not changed.
 LaTeX Font Warning: Size substitutions with differences
 (Font)              up to 0.5pt have occurred.
 
-
-LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
-
 Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 1491.
  ) 
 Here is how much of TeX's memory you used:
  32078 strings out of 494497
  582389 string characters out of 6172400
- 641835 words of memory out of 5000000
+ 641903 words of memory out of 5000000
  34752 multiletter control sequences out of 15000+600000
  56628 words of font info for 143 fonts, out of 8000000 for 9000
  264 hyphenation exceptions out of 8191
@@ -2631,7 +2628,7 @@ are/texlive/texmf-dist/fonts/type1/public/txfonts/txsyc.pfb></usr/share/texlive
 /texmf-dist/fonts/type1/public/newtx/zxlr.pfb></usr/share/texlive/texmf-dist/fo
 nts/type1/public/newtx/zxlri.pfb>
 Output written on /home/saintz/localStuff/FYS4411/project2/text/project2.pdf (1
-5 pages, 538003 bytes).
+5 pages, 538070 bytes).
 PDF statistics:
  567 PDF objects out of 1000 (max. 8388607)
  527 compressed objects within 6 object streams
