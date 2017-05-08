@@ -21,14 +21,15 @@
 \BOOKMARK [3][-]{subsubsection.2.10.5}{Analytic Expression for Hessen Matrix}{subsection.2.10}% 21
 \BOOKMARK [2][-]{subsection.2.11}{Optimization}{section.2}% 22
 \BOOKMARK [3][-]{subsubsection.2.11.1}{Determinant Ratio}{subsection.2.11}% 23
-\BOOKMARK [2][-]{subsection.2.12}{Inverse of Matrix}{section.2}% 24
-\BOOKMARK [2][-]{subsection.2.13}{STATISTICAL ANALYSIS}{section.2}% 25
-\BOOKMARK [3][-]{subsubsection.2.13.1}{STANDARD DEVIATION, VARIANCE AND COVARIANCE}{subsection.2.13}% 26
-\BOOKMARK [3][-]{subsubsection.2.13.2}{Central Limit Theorem}{subsection.2.13}% 27
-\BOOKMARK [3][-]{subsubsection.2.13.3}{Statistical Error}{subsection.2.13}% 28
-\BOOKMARK [3][-]{subsubsection.2.13.4}{Autocorrelation Function}{subsection.2.13}% 29
-\BOOKMARK [1][-]{section.3}{SETUP}{}% 30
-\BOOKMARK [1][-]{section.4}{RESULTS}{}% 31
-\BOOKMARK [1][-]{section.5}{DISCUSSION}{}% 32
-\BOOKMARK [1][-]{section.6}{CONCLUSION}{}% 33
-\BOOKMARK [1][-]{section.7}{References}{}% 34
+\BOOKMARK [3][-]{subsubsection.2.11.2}{Inverse of Matrix}{subsection.2.11}% 24
+\BOOKMARK [3][-]{subsubsection.2.11.3}{Importance Sampling Ratio}{subsection.2.11}% 25
+\BOOKMARK [2][-]{subsection.2.12}{STATISTICAL ANALYSIS}{section.2}% 26
+\BOOKMARK [3][-]{subsubsection.2.12.1}{STANDARD DEVIATION, VARIANCE AND COVARIANCE}{subsection.2.12}% 27
+\BOOKMARK [3][-]{subsubsection.2.12.2}{Central Limit Theorem}{subsection.2.12}% 28
+\BOOKMARK [3][-]{subsubsection.2.12.3}{Statistical Error}{subsection.2.12}% 29
+\BOOKMARK [3][-]{subsubsection.2.12.4}{Autocorrelation Function}{subsection.2.12}% 30
+\BOOKMARK [1][-]{section.3}{SETUP}{}% 31
+\BOOKMARK [1][-]{section.4}{RESULTS}{}% 32
+\BOOKMARK [1][-]{section.5}{DISCUSSION}{}% 33
+\BOOKMARK [1][-]{section.6}{CONCLUSION}{}% 34
+\BOOKMARK [1][-]{section.7}{References}{}% 35
