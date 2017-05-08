@@ -160,7 +160,7 @@ void Basis::printStates() {
 } // end function print state
 
 std::vector<int> Basis::getMagicNumbers() {
-    /* return vector containint magic numbers in acending order */
+    /* return vector containing magic numbers in acending order */
     return M;
 } // end function getMagicNumbers
 

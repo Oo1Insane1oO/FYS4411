@@ -571,9 +571,11 @@
     $P=\psi_T$(see >>INSERT REF<<) we get that the expression for the quantum
     force is
         \begin{equation}
-            F = \frac{2}{\Psi_T}\nabla\Psi_T
+            F_i = \frac{2}{\Psi_T}\nabla_i\Psi_T
             \label{eq:quantumForce}
         \end{equation}
+    Notice that the quantum force is defined individually for each particle
+    because of the assumption of of stationary probability density.
 
 \subsubsection{Solution}
 \label{ssub:Solution}
@@ -1234,53 +1236,6 @@
             \label{eq:InvUpdate}
         \end{equation}
     as described by Sherman and Morris \cite{vmc,shermorInv}. 
-
-\subsubsection{Importance Sampling Ratio}
-\label{ssub:importance_sampling_ratio}
-    In the derivation for importance sampling given in
-    \Autoref{sub:importance_sampling} we arrived at an expression for the
-    transition probability ratio that was \Autoref{eq:acceptanceImportance}. We
-    can optimize this ratio by using the fact that we move only $1$ particle at
-    a time in the Monte Carlo cycles. \\
-    We start by defining the transitions as
-        \begin{equation}
-            \begin{aligned}
-                T^2_{j\rarr i} &= \frac{(y-x-D\Delta TF(x))^2}{4D\Delta t} =
-                \log(P(y,x,\Delta t)) \\
-                T^2_{i\rarr j} &= \frac{(x-y-D\Delta TF(y))^2}{4D\Delta t} =
-                \log(P(x,y,\Delta t))
-            \end{aligned}
-            \label{eq:importancenewdef}
-        \end{equation}
-    The exponential ratio is just the difference between the transitions
-        \begin{equation}
-            T^2_{j\rarr i} - T^2_{i\rarr j} = T^2_{j\rarr i,r_x} + T^2_{j\rarr
-            i,r_y} - T^2_{i\rarr j,r_x} - T^2_{i\rarr j,r_y}
-            \label{eq:expdiffimpnew}
-        \end{equation}
-    The transitions are all dependant on the variables $r_1,\dots r_N$(the
-    individual positions of the $N$ particles). However since we are moving
-    only one particle at a time the contributions from all other particles
-    would cancel each other out. Say we move particle $k$, the difference above
-    in \Autoref{eq:expdiffimpnew} would be
-        \begin{equation}
-            T^2_{j\rarr i} - T^2_{i\rarr j} = T^2_{j\rarr i,r_{x_k}} +
-            T^2_{j\rarr i,r_{y_k}} - T^2_{i\rarr j,r_{x_k}} - T^2_{i\rarr
-            j,r_{y_k}}
-            \label{eq:newimpdiff}
-        \end{equation}
-    The transition probability ratio can thus be rewritten as
-        \begin{equation}
-            \begin{aligned}
-                \frac{P(R,r\Delta t)}{P(r,R,\Delta t)} &= \exp((R_k - r_k -
-                D\Delta tF(r_k))^2 - (r_k - R_k - D\Delta tF(R_k))^2) \\
-                &= \exp(\frac{1}{4}D\Delta t\left(F(r_k)^2 - F(R_k)^2\right) +
-                \frac{1}{2}\left((r_x-R_x)(F_x(R_x)+F_x(r_x)) +
-                (r_y-R_y)(F_y(R_y)+F_y(r_y))\right))
-            \end{aligned}
-            \label{eq:transprobnewimp}
-        \end{equation}
-    where $R_k$ indicates the new position and $r_k$ is the old.
 
 \subsection{STATISTICAL ANALYSIS}
 \label{sub:statistical_analysis}

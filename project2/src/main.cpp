@@ -64,10 +64,10 @@ int main(int argc, const char** argv) {
 
     // run calculations
     vmcObj->calculate(true);
-    std::cout << "<E> = " << vmcObj->energy << ", <E^2> = " << vmcObj->energySq
-        << std::endl;
-    std::cout << "<E^2> - <E>^2 = " << (vmcObj->energySq -
-            pow(vmcObj->energy,2)) << std::endl;
+    std::cout << std::setprecision(10) << "<E> = " << vmcObj->energy << ", " <<
+        "<E^2> = " << vmcObj->energySq << std::endl;
+    std::cout << std::setprecision(10) << "<E^2> - <E>^2 = " <<
+        (vmcObj->energySq - pow(vmcObj->energy,2)) << std::endl;
 
     // free objects
     delete b;

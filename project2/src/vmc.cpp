@@ -229,10 +229,14 @@ void VMC::calculate(bool perturb) {
         diff(oldPositions,qForceOld);
         qForceOld *= 2;
     } // end if
+    newD = oldD;
+    newU = oldU;
+    determinantRatioD = 1;
+    determinantRatioU = 1;
     while (cycles < maxIterations) {
         /* run Monte Carlo cycles */
         for (unsigned int i = 0; i < oldPositions.rows(); ++i) {
-            /* loop over number of particles */
+            /* loop over number of particles(move only 1 particle at a time) */
             for (unsigned int j = 0; j < dim; ++j) {
                 /* propose new position */
                 if (imp) {
@@ -244,8 +248,7 @@ void VMC::calculate(bool perturb) {
                 } // end ifelse
             } // end forj
 
-            // calculate new PDF (probability distribution function)
-            b->setTrialWaveFunction(newD, newU, newPositions, alpha);
+            // update (probability distribution function)
             if (i < halfSize) {
                 b->updateTrialWaveFunction(newD, newPositions.row(i), alpha,
                         i/2);
@@ -270,15 +273,16 @@ void VMC::calculate(bool perturb) {
                             (qForceNew(i,1)+qForceOld(i,1))));
             } // end if
 
-            if ((i<halfSize) || (determinantRatioD==0)) {
+            if ((i<halfSize)) {
                 determinantRatioD = meth->determinantRatio(newD, oldInvD, i/2);
-            } else if ((i>=halfSize) || (determinantRatioU==0)) {
+            } else if ((i>=halfSize)) {
                 determinantRatioU = meth->determinantRatio(newU, oldInvU, i/2);
             } // end ifelseif
 
-            testRatio = pow(determinantRatioD * determinantRatioU,2) *
-                (!perturb ?  1 : exp(2*(b->jastrow(newPositions,beta) -
-                                     b->jastrow(oldPositions,beta))));
+            testRatio = determinantRatioD * determinantRatioD *
+                determinantRatioU * determinantRatioU * (!perturb ?  1 :
+                        exp(2*(b->jastrow(newPositions,beta) -
+                                b->jastrow(oldPositions,beta))));
             if (imp) {
                 /* importance sampling */
                 testRatio *= greensFunctionRatio;
@@ -287,14 +291,22 @@ void VMC::calculate(bool perturb) {
             if (testRatio >= dist(mt)) {
                 /* update positions according to Metropolis test */
                 oldPositions.row(i) = newPositions.row(i);
-                oldD = newD;
-                oldU = newU;
+                if (i<halfSize) {
+                    oldD = newD;
+                } else {
+                    oldU = newU;
+                } // end if
                 if (imp) {
                     qForceOld.row(i) = qForceNew.row(i);
                 } // end if
             } else {
                 /* reset position */
                 newPositions.row(i) = oldPositions.row(i);
+                if (i<halfSize) {
+                    newD = oldD;
+                } else {
+                    newU = oldU;
+                } // end if
                 if (imp) {
                     qForceNew.row(i) = qForceOld.row(i);
                 } // end if
