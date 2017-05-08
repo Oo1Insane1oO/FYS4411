@@ -31,6 +31,7 @@
 \usepackage{xifthen}
 \usepackage{etoolbox}
 \usepackage{xparse}
+\usepackage{bbm}
 
 %specific reused text
 \newcommand{\mdate}{\today}
@@ -155,7 +156,8 @@
 \newcommand{\oinfint}{\int\limits^{\infty}_0}
 \newcommand{\sint}{\int\limits^{2\pi}_0\int\limits^{\pi}_0\oinfint}
 \newcommand{\arcsinh}[1]{\text{arcsinh}\left(#1\right)}
-\newcommand{\I}{\scalebox{1.2}{$\mathds{1}$}}
+% \newcommand{\I}{\scalebox{1.15}{$\mathds{1}$}}
+\newcommand{\I}{\scalebox{1.1}{$\mathbbm{1}$}}
 \newcommand{\veps}{\varepsilon} %\varepsilon is to long :P
 \newcommand{\suml}[2]{\sum\limits_{#1=1}^{#2}}
 \newcommand{\prodl}[2]{\prod\limits_{#1}^{#2}}
@@ -447,7 +449,6 @@
                 and $\vec{x}$ might be a local extremal or a saddle point.
         \end{itemize}
 
-
 \subsection{LAPLACE EXPANSION}
 \label{sub:laplace_expansion}
     Given a $n\times n$ matrix $M=[m_{ij}]$ and $i,j\in[1,\dots,n]$, then the
@@ -464,6 +465,36 @@
             \label{eq:cofactor}
         \end{equation}
     where the indices $i$ and $j$ run from $1$ up to $n-1$ \cite{linalgDavid}.
+
+\subsection{DERIVATIVE OF DETERMINANT}
+\label{sub:derivative_of_determinant}
+    We can express the derivative with respect to $t$ for a square matrix
+    $A(t)$ of size $n$ which has a differentiable map $\md
+    A\in\mathbb{R}\rarr\mathbb{R}^n$ as
+        \begin{equation}
+            \prd{t}[A(t)] = \Tr(\text{adj}\left(A(t)\right)\prd{t}[A(t)])
+            \label{eq:JacobisDef}
+        \end{equation}
+    where $\Tr$ is the trace and $\text{adj}$ is the adjugate(transpose of
+    cofactor matrix). This relation is known as Jacobi's formula >>REF HERE<<.
+    \\
+    We can specialize Jacobi's formula to
+        \begin{equation}
+            \prd{t}[A(t)] = \det(A)\Tr(A(t)^{-1}\prd{t}[A(t)])
+            \label{eq:jacobiSpecial}
+        \end{equation}
+    if $A$ is invertible. This relation follows from the definition of the
+    adjugate which gives
+        \begin{equation}
+            A\text{adj}\left(A\right) = \det(A)\I
+            \label{eq:aadja}
+        \end{equation}
+    and in turn if $A$ is invertible
+        \begin{equation}
+            A^{-1} = \frac{1}{\det(A)}\text{adj}\left(A\right)
+            \label{eq:aadjainv}
+        \end{equation}
+    Here $\I$ is the $n\times n$ identity matrix.
 
 \subsection{METROPOLIS-HASTINGS ALGORITHM}
 \label{sub:metropolis_algorithm}
@@ -1123,6 +1154,7 @@
 
 \subsubsection{Analytic Expression for Hessen Matrix}
 \label{ssub:analytic_expression_for_hessen_matrix}
+\newcommand{\adj}[1]{\text{adj}\left(#1\right)}
     The Hessen matrix is neded in order to minimize with the conjugate gradient
     method as described in \Autoref{sub:conjugate_gradient_method}. The Hessen
     matrix in the case where we minimize $\alpha$ and $\beta$ is(using
@@ -1137,10 +1169,87 @@
                 \end{pmatrix}
             \label{eq:analytichessen}
         \end{equation}
-    We find the elements individually. Starting with $\alpha$.
-%         \begin{equation}
-%             \prd{\alpha}[\psi_T][2] = \prod_{i<j}\gJ\prd{\alpha}[][2]\left(\det
-%         \end{equation}
+    We find the elements individually by using Jacobi's formula as described in
+    \Autoref{sub:derivative_of_determinant}. We see that we need to first
+    derivative to the individual elements in $\Phi$. These are simply
+        \begin{align}
+            \prd{\alpha}[\Phi_{ij}] &= \prd{\alpha}
+            \left(H_{n_{x_j}}H_{n_{y_j}}
+            \exp(-\frac{\alpha\omega}{2}r^2_i)\right) \nonumber \\
+            &= -\frac{\omega}{2}r^2_i\Phi_{ij}
+            \label{eq:phideralpha1}
+        \end{align}
+    Using Jacobi's formula the first derivative with respect to $\alpha$ of
+    $\psi_T$ is
+        \begin{align}
+            \prd{\alpha}[\psi_T] &= g\left(\vec{r},\beta\right)
+            \prd{\alpha}\left(\det(\Phi)\right) \nonumber \\
+            &= g\left(\vec{r},\beta\right) \Tr(\adj{\Phi}\prd{\alpha}[\Phi])
+            \nonumber \\
+            &= -g\left(\vec{r},\beta\right)
+            \frac{\omega}{2}\Tr(\adj{\Phi}\Phi\cdot R) \nonumber \\
+            &= -g\left(\vec{r},\beta\right)
+            \det(\Phi\left(\vec{r},\alpha\right)) \frac{\omega}{2} \Tr(\I\cdot
+            R) \nonumber \\
+            &= -\psi_T\frac{\omega}{2} \suml{i}{N}r^2_i
+            \label{eq:psideralpha}
+        \end{align}
+    where we have use \Autoref{eq:aadja} and defined the elements of $R$ as
+        \begin{equation}
+            R_i \equiv r^2_i
+            \label{eq:Relemdef}
+        \end{equation}
+    The second derivative with respect to $\alpha$ is with the first derivative
+    just
+        \begin{align}
+            \prd{\alpha}[\psi_T][2] &=
+            \prd{\alpha}\left(-\psi_T\frac{\omega}{2} \suml{i}{N}r^2_i\right)
+            \nonumber \\
+            &= -\frac{\omega}{2}\suml{i}{N}r^2_i\prd{\alpha}[\psi_T] \nonumber
+            \\
+            &= \left(\frac{\omega}{2}\suml{i}{N}r^2_i\right)^2\psi_T
+            \label{eq:psideralphasec}
+        \end{align}
+    The derivative with respect to $\beta$ follows a similar approach as in
+    \Autoref{ssub:general_case} giving
+        \begin{align}
+            \prd{\beta}[\psi_T] &= \det(\Phi\left(\vec{r},\alpha\right))
+            \prd{\beta}\left(\prod_{i<j}\gJ\right) \nonumber \\
+            &= \det(\Phi\left(\vec{r},\alpha\right))
+            g\left(\vec{r},\beta\right)
+            \prd{\beta}\left(\sum_{i<j}\frac{a}{\beta +
+            \frac{1}{r_{ij}}}\right) \nonumber \\
+            &= -\psi_T \sum_{i\neq j} \frac{a}{\left(\beta +
+            \frac{1}{r_{ij}}\right)^2}
+            \label{eq:psiderbeta}
+        \end{align}
+    The second derivative is thus
+        \begin{align}
+            \prd{\beta}[\psi_T][2] &= \prd{\beta}\left(-\psi_T \sum_{i\neq j}
+            \frac{a}{\left(\beta + \frac{1}{r_{ij}}\right)^2}\right) \nonumber
+            \\
+            &= \left(\left(\sum_{i\neq j}\frac{a}{\left(\beta +
+            \frac{1}{r_{ij}}\right)^2}\right)^2 + \sum_{i\neq
+            j}\frac{2a}{\left(\beta + \frac{1}{r_{ij}}\right)^3} \right)\psi_T
+            \label{eq:psiderbetasec}
+        \end{align}
+    where we simply used the product rule for differentiation. \\
+    The Hessen matrix in our case is then
+        \begin{equation}
+            A =
+                \begin{pmatrix}
+                    \left(\frac{\omega}{2}\suml{i}{N}r^2_i\right)^2 &
+                    \frac{\omega}{2} \suml{i}{N}r^2_i \sum\limits_{i\neq j}
+                    \frac{a}{\left(\beta +\frac{1}{r_{ij}}\right)^2} \\
+                    \frac{\omega}{2} \suml{i}{N}r^2_i \sum\limits_{i\neq j}
+                    \frac{a}{\left(\beta +\frac{1}{r_{ij}}\right)^2} &
+                    \left(\left(\sum_{i\neq j}\frac{a}{\left(\beta +
+                    \frac{1}{r_{ij}}\right)^2}\right)^2 + \sum_{i\neq
+                    j}\frac{2a}{\left(\beta + \frac{1}{r_{ij}}\right)^3}
+                    \right)
+                \end{pmatrix} \psi_T
+            \label{eq:HessenAnalytic}
+        \end{equation}
 
 \subsection{Optimization}
 \label{sub:optimization}
