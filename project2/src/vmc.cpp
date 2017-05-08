@@ -277,8 +277,8 @@ void VMC::calculate(bool perturb) {
                 determinantRatioU = meth->determinantRatio(newU, oldInvU, i/2);
             } // end ifelseif
 
-            testRatio = determinantRatioD * determinantRatioD *
-                determinantRatioU * determinantRatioU * (!perturb ?  1 :
+            testRatio = determinantRatioD*determinantRatioD *
+                determinantRatioU*determinantRatioU * (!perturb ?  1 :
                         b->jastrowRatio(oldPositions, newPositions, beta, i));
             if (imp) {
                 /* importance sampling */
@@ -289,9 +289,9 @@ void VMC::calculate(bool perturb) {
                 /* update positions according to Metropolis test */
                 oldPositions.row(i) = newPositions.row(i);
                 if (i<halfSize) {
-                    oldD = newD;
+                    oldD.row(i/2) = newD.row(i/2);
                 } else {
-                    oldU = newU;
+                    oldU.row(i/2) = newU.row(i/2);
                 } // end if
                 if (imp) {
                     qForceOld.row(i) = qForceNew.row(i);
@@ -299,14 +299,6 @@ void VMC::calculate(bool perturb) {
             } else {
                 /* reset position */
                 newPositions.row(i) = oldPositions.row(i);
-                if (i<halfSize) {
-                    newD = oldD;
-                } else {
-                    newU = oldU;
-                } // end if
-                if (imp) {
-                    qForceNew.row(i) = qForceOld.row(i);
-                } // end if
             } // end if
 
             // update inverse
@@ -320,7 +312,7 @@ void VMC::calculate(bool perturb) {
         } // end fori
 
         // calculate local energy and local energy squared
-        tmpEnergy = localEnergy2(newPositions,perturb);
+        tmpEnergy = localEnergy2(oldPositions,perturb);
 //         tmpEnergy = localEnergyDiff(newD,newU,newPositions,perturb);
         energy += tmpEnergy;
         energySq += tmpEnergy*tmpEnergy;

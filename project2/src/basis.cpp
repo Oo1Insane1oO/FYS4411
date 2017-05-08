@@ -127,7 +127,8 @@ void Basis::updateJastrow(double &factor, const Eigen::MatrixXd &rold, const
 
 double Basis::jastrowRatio(const Eigen::MatrixXd &rold, const Eigen::MatrixXd
         &rnew, double beta, unsigned int k) {
-    /* calculate jastrow ratio */
+    /* calculate ratio of jastrow factors (when only one row in Slater
+     * determinant has changed) */
     double ratio = 0;
     for (unsigned int j = 0; j < rold.rows(); ++j) {
         if (j != k) {
