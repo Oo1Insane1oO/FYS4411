@@ -210,10 +210,10 @@ void VMC::calculate(bool perturb) {
 
     unsigned int halfSize = oldPositions.rows()/2;
     double testRatio;
-    double determinantRatioD = 0;
-    double determinantRatioU = 0;
+    double determinantRatioD = 1;
+    double determinantRatioU = 1;
     unsigned int cycles = 0;
-    double tmpEnergy, greensFunctionRatio;
+    double tmpEnergy, transitionRatio;
     Eigen::MatrixXd oldD = Eigen::MatrixXd::Zero(b->ECut, b->ECut);
     Eigen::MatrixXd oldU = Eigen::MatrixXd::Zero(b->ECut, b->ECut);
     Eigen::MatrixXd newD = Eigen::MatrixXd::Zero(b->ECut, b->ECut);
@@ -231,8 +231,6 @@ void VMC::calculate(bool perturb) {
     } // end if
     newD = oldD;
     newU = oldU;
-    determinantRatioD = 1;
-    determinantRatioU = 1;
     while (cycles < maxIterations) {
         /* run Monte Carlo cycles */
         for (unsigned int i = 0; i < oldPositions.rows(); ++i) {
@@ -265,7 +263,7 @@ void VMC::calculate(bool perturb) {
 
             // calculate Greens function ratio
             if (imp) {
-                greensFunctionRatio = exp(0.125*step*(qForceOld.row(i).norm() -
+                transitionRatio = exp(0.125*step*(qForceOld.row(i).norm() -
                             qForceNew.row(i).norm()) +
                         0.25*step*((oldPositions(i,0)-newPositions(i,0)) *
                             (qForceNew(i,0)+qForceOld(i,0)) +
@@ -285,7 +283,7 @@ void VMC::calculate(bool perturb) {
                                 b->jastrow(oldPositions,beta))));
             if (imp) {
                 /* importance sampling */
-                testRatio *= greensFunctionRatio;
+                testRatio *= transitionRatio;
             } //end if
 
             if (testRatio >= dist(mt)) {
