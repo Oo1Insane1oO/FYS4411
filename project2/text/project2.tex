@@ -702,7 +702,7 @@
     natural units.
 
 \subsubsection{Expectation Value and Local Energy}
-\label{ssub:EXPECTATION VALUE AND LOCAL ENERGY}
+\label{ssub:expectation_value_and_local_energy}
     Given the Hamiltonian \Autoref{eq:totalHamil} and a trial wave function
     $\Psi_T(R,\Lambda)$ and using the variational principle, as given in
     \Autoref{eq:HFvarE} the upper bound for the ground state energy $E_0$ if
@@ -759,7 +759,7 @@
     number of states(or Monte Carlo cycles).
 
 \subsubsection{Analytical Expression for Local Energy}
-\label{ssub:ANALYTICAL EXPRESSION FOR LOCAL ENERGY}
+\label{ssub:analytical_expression_for_local_energy}
     We use the Metropolis algorithm to find an estimate for the expectation
     value to the energy. In this expression we have a so-called local energy
     defined as
@@ -1155,23 +1155,44 @@
 \subsubsection{Analytic Expression for Hessen Matrix}
 \label{ssub:analytic_expression_for_hessen_matrix}
 \newcommand{\adj}[1]{\text{adj}\left(#1\right)}
-    The Hessen matrix is neded in order to minimize with the conjugate gradient
-    method as described in \Autoref{sub:conjugate_gradient_method}. The Hessen
-    matrix in the case where we minimize $\alpha$ and $\beta$ is(using
-    \Autoref{eq:hessendef})
+    The Hessen matrix is needed in order to minimize with the conjugate
+    gradient method as described in \Autoref{sub:conjugate_gradient_method}.
+    The Hessen matrix in the case where we minimize the local energy with
+    respect to $\alpha$ and $\beta$ is(using \Autoref{eq:hessendef})
         \begin{equation}
             A =
                 \begin{pmatrix}
-                    \prd{\alpha}[\psi_T][2] &
-                    \frac{\prtl^2\psi_T}{\prtl\alpha\prtl\beta} \\
-                    \frac{\prtl^2\psi_T}{\prtl\beta\prtl\alpha} &
-                    \prd{\beta}[\psi_T][2]\\
+                    \prd{\alpha}[\ecp{E_L}][2] &
+                    \frac{\prtl^2\ecp{E_L}}{\prtl\alpha\prtl\beta} \\
+                    \frac{\prtl^2\ecp{E_L}}{\prtl\beta\prtl\alpha} &
+                    \prd{\beta}[\ecp{E_L}][2]\\
                 \end{pmatrix}
             \label{eq:analytichessen}
         \end{equation}
+    For the second derivative with respect to $\alpha$ we see that we need to
+    find the derivative of the product between our PDF and the local energy(see
+    \Autoref{ssub:expectation_value_and_local_energy}). This is found by using
+    the product rule and the hermiticity of $\psi_T$, we have
+        \begin{align}
+            \prd{\alpha}[\ecp{E_L}][2] &=
+            \prd{\alpha}\left(\int\frac{1}{\int\abs{\psi_T}^2\md^N
+            r}\prd{\alpha}\left(\abs{\psi_T}^2E_L\right)\md^N r\right)
+            \nonumber \\
+            &= \prd{\alpha}\left(\int \frac{1}{\int\abs{\psi_T}^2\md^N r}
+            \left(2\psi_TE_L\prd{\alpha}[\psi_T] +
+            \abs{\psi_T}^2\prd{\alpha}[E_L]\right)\md^N r \right) \nonumber \\
+            &= \int \frac{1}{\int\abs{\psi_T}^2\md^N r}
+            \left(2E_L\left(\left(\prd{\alpha}[\psi_T]\right)^2 +
+            \psi_T\prd{\alpha}[\psi_T][2]\right) +
+            2\psi_T\prd{\alpha}[\psi_T]\prd{\alpha}[E_L]+
+            2\psi_T\prd{\alpha}[\psi_T]\prd{\alpha}[E_L] +
+            \abs{\psi_T}^2\prd{\alpha}[E_L][2]\right) \md^N r \nonumber \\
+            &= 2\left(\ecp{\frac{1}{\abs{\psi_T}^2}\prd{\alpha}[\psi_T][2]E_L} + \ecp{\frac{1}{\psi_T}E_L\prd{\alpha}[\psi_T][2]} + 2\ecp{\frac{1}{\psi_T}\prd{\alpha}[\psi_T]\prd{\alpha}[E_L]} + \ecp{\prd{\alpha}[E_L][2]}\right)
+            \label{eq:deralpahecpEl}
+        \end{align}
     We find the elements individually by using Jacobi's formula as described in
-    \Autoref{sub:derivative_of_determinant}. We see that we need to first
-    derivative to the individual elements in $\Phi$. These are simply
+    \Autoref{sub:derivative_of_determinant}. We see that we need to first find
+    the derivative to the individual elements in $\Phi$. These are simply
         \begin{align}
             \prd{\alpha}[\Phi_{ij}] &= \prd{\alpha}
             \left(H_{n_{x_j}}H_{n_{y_j}}
