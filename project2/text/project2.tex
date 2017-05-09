@@ -1160,6 +1160,7 @@
 \newcommand{\psialphsecder}{\prd{\alpha}[\abs{\psi_T}][2]}
 \newcommand{\psibetder}{\prd{\beta}[\abs{\psi_T}]}
 \newcommand{\psibetsecder}{\prd{\beta}[\abs{\psi_T}][2]}
+\newcommand{\gsum}{\sum\limits_{i\neq j} \frac{a}{\left(\beta + \frac{1}{r_{ij}}\right)}}
     The Hessen matrix is needed in order to minimize with the conjugate
     gradient method as described in \Autoref{sub:conjugate_gradient_method}.
     The Hessen matrix in the case where we minimize the local energy with
@@ -1254,6 +1255,14 @@
             8\ecp{E_L}\ecp{\frac{1}{\abs{\psi_T}}\psibetder}^2
             \label{eq:ecpElbetasecder}
         \end{equation}
+    As for the off-diagonal terms we have
+        \begin{align}
+            \frac{\prtl^2\ecp{E_L}}{\prtl\alpha\prtl\beta} &=
+            2\left(\prd{\beta}\ecp{\frac{E_L}{\abs{\psi_T}}\psialphder} -
+            \ecp{E_L}\prd{\beta}\ecp{\frac{1}{\abs{\psi_T}}\psialphder} -
+            \ecp{\frac{1}{\abs{\psi_T}}\psialphder}\prd{\beta}[\ecp{E_L}]
+            \right)
+        \end{align}
     For the derivative of the wavefunction We find the elements individually by
     using Jacobi's formula as described in
     \Autoref{sub:derivative_of_determinant}. We see that we need to first find
@@ -1325,12 +1334,25 @@
             \begin{aligned}
                 \prd{\alpha}[\ecp{E_L}][2] &=
                 \frac{\omega^2}{2}\left(1-\ecp{E_L}\right)
-                \ecp{E_L\left(\suml{i}{N}r^2_i\right)^2} -
-                \frac{8\omega}{2}\ecp{E_L\suml{i}{N}r^2_i}
-                \ecp{\suml{i}{N}r^2_i} - \frac{\omega^2}{2}\ecp{E_L}
-                \ecp{\left(\suml{i}{N}r^2_i\right)^2} +
-                2\omega^2\ecp{E_L}\ecp{\suml{i}{N}r^2_i}^2 \\
+                \ecp{E_LR^2} -
+                \frac{8\omega}{2}\ecp{E_LR}
+                \ecp{R} - \frac{\omega^2}{2}\ecp{E_L}
+                \ecp{R^2} +
+                2\omega^2\ecp{E_L}\ecp{R}^2 \\
+                \prd{\beta}[\ecp{E_L}][2] &= 2\left(1-\ecp{E_L}\right)
+                \ecp{E_Lh^2} - 8\ecp{E_Lh^2}\ecp{h^2} - 2\ecp{h^2 +
+                2\sum\limits_{i\neq j}\frac{a}{\left(\beta +
+                \frac{1}{r_{ij}}\right)}} + 8\ecp{E_L}\ecp{h}^2 \\
+                \frac{\prtl^2\ecp{E_L}}{\prtl\alpha\prtl\beta} &= 
             \end{aligned}
+        \end{equation}
+    where 
+        \begin{equation}
+            \begin{aligned}
+                R &\equiv \suml{i}{N}r^2_i \\
+                h &\equiv \gsum
+            \end{aligned}
+            \label{eq:rhdef}
         \end{equation}
 
 \subsection{Optimization}
