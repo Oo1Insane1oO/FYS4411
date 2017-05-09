@@ -128,6 +128,40 @@ bool Tests::test_padejastrow() {
     return t;
 } // end function test_padejastrow
 
+bool Tests::test_conjugateGradient() {
+    /* check ouput from conjugateGradient in class Methods */
+    // set hessen matrix
+    Eigen::MatrixXd Hessen = Eigen::MatrixXd::Zero(2,2);
+    double rsum = 0;
+    double gsum = 0;
+    double denom, a;
+    for (unsigned int i = 0; i < oldM.rows(); ++i) {
+        rsum += oldM.row(i).norm();
+        for (unsigned int j = 0; j < oldM.rows(); ++j) {
+            if (i != j) {
+                a = b->padejastrow(i,j);
+                denom = v->beta + 1/(oldM.row(i)-oldM.row(j)).norm();
+                gsum += a / (denom*denom);
+                Hessen(1,1) += a / (denom*denom*denom);
+            } // end if
+        } // end forj
+    } // end fori
+    rsum *= b->omega/2;
+    Hessen(0,0) = rsum*rsum;
+    Hessen(0,1) = rsum*gsum;
+    Hessen(1,0) = rsum*gsum;
+    Hessen(1,1) += gsum*gsum;
+
+    // run conjugate gradient method
+    Eigen::MatrixXd rhs = Eigen::MatrixXd::Zero(1,2);
+    Eigen::MatrixXd startx = Eigen::MatrixXd::Zero(1,2);
+    Eigen::MatrixXd xnew = m->conjugateGradient(Hessen, rhs, startx);
+    for (unsigned int i = 0; i < xnew.rows(); ++i) {
+        std::cout << xnew(i) << std::endl;
+    } // end fori
+    return false;
+} // end function test_conjugateGradient
+
 void Tests::run_tests(int t) {
     /* run all tests and exit */
     if (t) {
@@ -163,6 +197,11 @@ void Tests::run_tests(int t) {
             std::cout << "Pade-Jastrow factor good" << std::endl;
         } else {
             std::cout << "Pade-Jastrow factor wrong" << std::endl;
+        } // end ifelse
+        if(test_conjugateGradient()) {
+            std::cout << "Conjugate Gradient good" << std::endl;
+        } else {
+            std::cout << "Conjugate Gradient  wrong" << std::endl;
         } // end ifelse
         if (t==2) {
             b->printStates();

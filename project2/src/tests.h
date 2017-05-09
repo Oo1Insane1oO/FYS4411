@@ -19,6 +19,7 @@ class Tests {
         bool test_updateinverse();
         bool test_wavefunction2();
         bool test_padejastrow();
+        bool test_conjugateGradient();
     
     public:
         Tests (Basis*, VMC*, int=3);
