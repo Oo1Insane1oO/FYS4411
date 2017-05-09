@@ -1255,13 +1255,48 @@
             8\ecp{E_L}\ecp{\frac{1}{\abs{\psi_T}}\psibetder}^2
             \label{eq:ecpElbetasecder}
         \end{equation}
-    As for the off-diagonal terms we have
+    As for the off-diagonal terms we have similar derivations
         \begin{align}
             \frac{\prtl^2\ecp{E_L}}{\prtl\alpha\prtl\beta} &=
             2\left(\prd{\beta}\ecp{\frac{E_L}{\abs{\psi_T}}\psialphder} -
             \ecp{E_L}\prd{\beta}\ecp{\frac{1}{\abs{\psi_T}}\psialphder} -
             \ecp{\frac{1}{\abs{\psi_T}}\psialphder}\prd{\beta}[\ecp{E_L}]
             \right)
+            \label{eq:ecpElbetalpderfir}
+        \end{align}
+    Solving the derivative terms
+        \begin{align}
+            \prd{\beta}\ecp{\frac{E_L}{\abs{\psi_T}}\psialphder} &=
+            \int\left(\frac{\prd{\alpha}[\abs{\psi_T}]
+            \prd{\beta}[\abs{\psi_T}]E_L +
+            \abs{\psi_T}\prd{\alpha}[\psi_T]\prd{\beta}[E_L]}{\psinorm} -
+            2\frac{\psi_TE_L\prd{\alpha}[\psi_T]}{\psinorm}
+            \frac{\int\abs{\psi_T}\prd{\beta}[\psi_T]\md^N
+            r}{\psinorm}\right)\md^N r \nonumber \\
+            &= \ecp{\frac{E_L}{\abs{\psi_T}^2} \prd{\alpha}[\abs{\psi_T}]
+            \prd{\beta}[\abs{\psi_T}]} -
+            2\ecp{\frac{E_L}{\abs{\psi_T}}\prd{\alpha}[\psi_T]}
+            \ecp{\frac{1}{\abs{\psi_T}}\prd{\beta}[\abs{\psi_T}]}
+            \label{eq:ecpElbetalpderfirfir}
+        \end{align}
+        \begin{align}
+            \prd{\beta}\ecp{\frac{1}{\abs{\psi_T}}\psialphder} &=
+            \int\left(\frac{\prd{\alpha}[\abs{\psi_T}]
+            \prd{\beta}[\abs{\psi_T}] + \abs{\psi_T}
+            \frac{\prtl^2\abs{\psi_T}}{\prtl\alpha\prtl\beta}}{\psinorm} -
+            2\frac{\abs{\psi_T} \prd{\alpha}[\abs{\psi_T}]}{\psinorm}
+            \frac{\int\abs{\psi_T}
+            \prd{\beta}[\abs{\psi_T}]}{\psinorm}\right)\md^N r \nonumber \\
+            &= \ecp{\frac{1}{\abs{\psi_T}^2} \prd{\alpha}[\abs{\psi_T}]
+            \prd{\beta}[\abs{\psi_T}]} + \ecp{\frac{1}{\abs{\psi_T}}
+            \frac{\prtl^2\abs{\psi_T}}{\prtl\alpha\prtl\beta}} -
+            2\ecp{\frac{1}{\abs{\psi_T}}\prd{\alpha}[\abs{\psi_T}]}
+            \ecp{\frac{1}{\abs{\psi_T}}\prd{\beta}[\abs{\psi_T}]}
+        \end{align}
+    Thus the off-diagonal elements(which are symmetric due to Schwarz'
+    theorem\cite{linalgDavid}) is
+        \begin{align}
+            \frac{\prtl^2\ecp{E_L}}{\prtl\alpha\prtl\beta} &= 2\left(1-\ecp{E_L}\right) \ecp{\frac{1}{\abs{\psi_T}^2} \prd{\alpha}[\abs{\psi_T}] \prd{\beta}[\abs{\psi_T}]} - 8
         \end{align}
     For the derivative of the wavefunction We find the elements individually by
     using Jacobi's formula as described in

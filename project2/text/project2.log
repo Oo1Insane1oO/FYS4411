@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2017.3.22)  9 MAY 2017 21:55
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2017.3.22)  9 MAY 2017 23:15
 entering extended mode
  \write18 enabled.
  file:line:error style messages enabled.
@@ -2580,14 +2580,14 @@ LaTeX Font Warning: Font shape `U/bbm/m/n' in size <5.5> not available
 
 [3] [4] [5] [6] [7] [8] [9] [10] [11] [12] [13] [14]
 LaTeX Font Info:    Font shape `OT1/LinuxLibertineT-TLF/m/it' will be
-(Font)              scaled to size 10.0pt on input line 1560.
- [15]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 1595.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 1595.
+(Font)              scaled to size 10.0pt on input line 1595.
+ [15] [16]
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 1630.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 1630.
 
 (/home/saintz/localStuff/FYS4411/project2/text/project2.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 1595.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 1595.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 1630.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 1630.
 
 Package rerunfilecheck Info: File `project2.out' has not changed.
 (rerunfilecheck)             Checksum: <no file>.
@@ -2596,13 +2596,13 @@ Package rerunfilecheck Info: File `project2.out' has not changed.
 LaTeX Font Warning: Size substitutions with differences
 (Font)              up to 0.5pt have occurred.
 
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 1595.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 1630.
  ) 
 Here is how much of TeX's memory you used:
- 32095 strings out of 494497
- 582658 string characters out of 6172400
- 654311 words of memory out of 5000000
- 34764 multiletter control sequences out of 15000+600000
+ 32101 strings out of 494497
+ 582754 string characters out of 6172400
+ 659447 words of memory out of 5000000
+ 34766 multiletter control sequences out of 15000+600000
  55978 words of font info for 139 fonts, out of 8000000 for 9000
  264 hyphenation exceptions out of 8191
  64i,17n,94p,10410b,369s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -2628,10 +2628,10 @@ are/texlive/texmf-dist/fonts/type1/public/txfonts/txsyc.pfb></usr/share/texlive
 /texmf-dist/fonts/type1/public/newtx/zxlr.pfb></usr/share/texlive/texmf-dist/fo
 nts/type1/public/newtx/zxlri.pfb>
 Output written on /home/saintz/localStuff/FYS4411/project2/text/project2.pdf (1
-6 pages, 544481 bytes).
+7 pages, 547596 bytes).
 PDF statistics:
- 585 PDF objects out of 1000 (max. 8388607)
- 544 compressed objects within 6 object streams
- 197 named destinations out of 1000 (max. 500000)
+ 594 PDF objects out of 1000 (max. 8388607)
+ 552 compressed objects within 6 object streams
+ 201 named destinations out of 1000 (max. 500000)
  293 words of extra memory for PDF output out of 10000 (max. 10000000)
 
