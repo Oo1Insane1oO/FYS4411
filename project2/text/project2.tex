@@ -1158,6 +1158,8 @@
 \newcommand{\psinorm}{\int\abs{\psi_T}^2\md^N r}
 \newcommand{\psialphder}{\prd{\alpha}[\abs{\psi_T}]}
 \newcommand{\psialphsecder}{\prd{\alpha}[\abs{\psi_T}][2]}
+\newcommand{\psibetder}{\prd{\beta}[\abs{\psi_T}]}
+\newcommand{\psibetsecder}{\prd{\beta}[\abs{\psi_T}][2]}
     The Hessen matrix is needed in order to minimize with the conjugate
     gradient method as described in \Autoref{sub:conjugate_gradient_method}.
     The Hessen matrix in the case where we minimize the local energy with
@@ -1233,16 +1235,27 @@
     \Autoref{eq:der2alpahecpElfir} we have that the second derivative to the
     expectation value of the local energy with respect to $\alpha$ is
         \begin{equation}
-            \begin{aligned}
-                \prd{\alpha}[E_L][2] = 2\left(1-\ecp{E_L}\right)
-                \ecp{\frac{E_L}{\abs{\psi_T}^2}\left(\psialphder\right)^2} +
-                -8\ecp{\frac{E_L}{\abs{\psi_T}}\psialphder}
-                \ecp{\frac{1}{\abs{\psi_T}}\psialphder}
-                -2\ecp{E_L}\ecp{\frac{1}{\abs{\psi_T}}\psialphsecder} +
-                8\ecp{E_L}\ecp{\frac{1}{\abs{\psi_T}}\psialphder}^2
-            \end{aligned}
+            \prd{\alpha}[\ecp{E_L}][2] = 2\left(1-\ecp{E_L}\right)
+            \ecp{\frac{E_L}{\abs{\psi_T}^2}\left(\psialphder\right)^2} +
+            -8\ecp{\frac{E_L}{\abs{\psi_T}}\psialphder}
+            \ecp{\frac{1}{\abs{\psi_T}}\psialphder}
+            -2\ecp{E_L}\ecp{\frac{1}{\abs{\psi_T}}\psialphsecder} +
+            8\ecp{E_L}\ecp{\frac{1}{\abs{\psi_T}}\psialphder}^2
+            \label{eq:ecpElalphasecder}
         \end{equation}
-    We find the elements individually by using Jacobi's formula as described in
+    For beta we have the same expression as for $\alpha$(just with $\alpha$
+    replaced by $\beta$).
+        \begin{equation}
+            \prd{\beta}[\ecp{E_L}][2] = 2\left(1-\ecp{E_L}\right)
+            \ecp{\frac{E_L}{\abs{\psi_T}^2}\left(\psibetder\right)^2} +
+            -8\ecp{\frac{E_L}{\abs{\psi_T}}\psibetder}
+            \ecp{\frac{1}{\abs{\psi_T}}\psibetder}
+            -2\ecp{E_L}\ecp{\frac{1}{\abs{\psi_T}}\psibetsecder} +
+            8\ecp{E_L}\ecp{\frac{1}{\abs{\psi_T}}\psibetder}^2
+            \label{eq:ecpElbetasecder}
+        \end{equation}
+    For the derivative of the wavefunction We find the elements individually by
+    using Jacobi's formula as described in
     \Autoref{sub:derivative_of_determinant}. We see that we need to first find
     the derivative to the individual elements in $\Phi$. These are simply
         \begin{align}
@@ -1307,20 +1320,17 @@
             \label{eq:psiderbetasec}
         \end{align}
     where we simply used the product rule for differentiation. \\
-    The final expression for the Hessen matrix is thus
+    The final expression for the elements in the Hessen matrix is thus
         \begin{equation}
-            A =
-                \begin{pmatrix}
-                    \left(\frac{\omega}{2}\suml{i}{N}r^2_i\right)^2 &
-                    \frac{\omega}{2} \suml{i}{N}r^2_i \sum\limits_{i\neq j}
-                    \frac{a}{\left(\beta +\frac{1}{r_{ij}}\right)^2} \\
-                    \frac{\omega}{2} \suml{i}{N}r^2_i \sum\limits_{i\neq j}
-                    \frac{a}{\left(\beta +\frac{1}{r_{ij}}\right)^2} &
-                    \left(\sum\limits_{i\neq j}\frac{a}{\left(\beta +
-                    \frac{1}{r_{ij}}\right)^2}\right)^2 + \sum\limits_{i\neq
-                    j}\frac{2a}{\left(\beta + \frac{1}{r_{ij}}\right)^3}
-                \end{pmatrix} \psi_T
-            \label{eq:HessenAnalytic}
+            \begin{aligned}
+                \prd{\alpha}[\ecp{E_L}][2] &=
+                \frac{\omega^2}{2}\left(1-\ecp{E_L}\right)
+                \ecp{E_L\left(\suml{i}{N}r^2_i\right)^2} -
+                \frac{8\omega}{2}\ecp{E_L\suml{i}{N}r^2_i}
+                \ecp{\suml{i}{N}r^2_i} - \frac{\omega^2}{2}\ecp{E_L}
+                \ecp{\left(\suml{i}{N}r^2_i\right)^2} +
+                2\omega^2\ecp{E_L}\ecp{\suml{i}{N}r^2_i}^2 \\
+            \end{aligned}
         \end{equation}
 
 \subsection{Optimization}
