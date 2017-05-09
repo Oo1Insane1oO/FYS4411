@@ -1156,8 +1156,8 @@
 \label{ssub:analytic_expression_for_hessen_matrix}
 \newcommand{\adj}[1]{\text{adj}\left(#1\right)}
 \newcommand{\psinorm}{\int\abs{\psi_T}^2\md^N r}
-\newcommand{\psialphder}{\prd{\alpha}[\psi_T]}
-\newcommand{\psialphsecder}{\prd{\alpha}[\psi_T][2]}
+\newcommand{\psialphder}{\prd{\alpha}[\abs{\psi_T}]}
+\newcommand{\psialphsecder}{\prd{\alpha}[\abs{\psi_T}][2]}
     The Hessen matrix is needed in order to minimize with the conjugate
     gradient method as described in \Autoref{sub:conjugate_gradient_method}.
     The Hessen matrix in the case where we minimize the local energy with
@@ -1216,8 +1216,32 @@
             \label{eq:der2alpahecpElfirfir}
         \end{align}
         \begin{align}
-            \ecp{E_L}\prd{\alpha}\ecp{\frac{1}{\abs{\psi_T}}\psialphder} = 
+            \prd{\alpha}\ecp{\frac{1}{\abs{\psi_T}}\psialphder} &= \prd{\alpha}
+            \left(\int\frac{\abs{\psi_T}\psialphder}{\psinorm}\md^N r\right)
+            \nonumber \\
+            &= \int \left(\frac{\left(\psialphder\right)^2 +
+            \abs{\psi_T}\psialphsecder}{\psinorm} -
+            2\frac{\abs{\psi_T}\psialphder}{\psinorm} \frac{\int
+            \abs{\psi_T}\psialphder\md^N r}{\psinorm}\right)\md^N r \nonumber
+            \\
+            &= \ecp{\frac{1}{\abs{\psi_T}^2}\left(\psialphder\right)^2} +
+            \ecp{\frac{1}{\abs{\psi_T}}\psialphsecder} -
+            2\ecp{\frac{1}{\abs{\psi_T}}\psialphder}^2
+            \label{eq:der2alpahecpElfirsec}
         \end{align}
+    Gathering \Autoref{eq:der2alpahecpElfirfir,eq:der2alpahecpElfirsec} with
+    \Autoref{eq:der2alpahecpElfir} we have that the second derivative to the
+    expectation value of the local energy with respect to $\alpha$ is
+        \begin{equation}
+            \begin{aligned}
+                \prd{\alpha}[E_L][2] = 2\left(1-\ecp{E_L}\right)
+                \ecp{\frac{E_L}{\abs{\psi_T}^2}\left(\psialphder\right)^2} +
+                -8\ecp{\frac{E_L}{\abs{\psi_T}}\psialphder}
+                \ecp{\frac{1}{\abs{\psi_T}}\psialphder}
+                -2\ecp{E_L}\ecp{\frac{1}{\abs{\psi_T}}\psialphsecder} +
+                8\ecp{E_L}\ecp{\frac{1}{\abs{\psi_T}}\psialphder}^2
+            \end{aligned}
+        \end{equation}
     We find the elements individually by using Jacobi's formula as described in
     \Autoref{sub:derivative_of_determinant}. We see that we need to first find
     the derivative to the individual elements in $\Phi$. These are simply
