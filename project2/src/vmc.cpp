@@ -98,7 +98,8 @@ void VMC::diff(const Eigen::MatrixXd &R, Eigen::MatrixXd &der) {
     } // end fork
 } // end function diff
 
-void VMC::updateDiff(const Eigen::MatrixXd &R, Eigen::MatrixXd &der, int k) {
+void VMC::updateDiff(const Eigen::MatrixXd &R, Eigen::MatrixXd &der, unsigned
+        int k) {
     /* calculate first derivative ratio of wave functions for partikle k */
     double rkj;
     for (unsigned int d = 0; d < R.cols(); ++d) {

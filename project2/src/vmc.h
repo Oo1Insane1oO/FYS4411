@@ -27,7 +27,8 @@ class VMC {
         void setSeed(unsigned long int);
 
         void diff(const Eigen::MatrixXd&, Eigen::MatrixXd&);
-        void updateDiff(const Eigen::MatrixXd&, Eigen::MatrixXd&, int);
+        void updateDiff(const Eigen::MatrixXd&, Eigen::MatrixXd&, unsigned
+                int);
         double diff2(Eigen::MatrixXd&, Eigen::MatrixXd&, const
                 Eigen::MatrixXd&, double);
         double localEnergy2(const Eigen::MatrixXd&, bool=true);

@@ -74,14 +74,16 @@ Eigen::MatrixXd Methods::conjugateGradient(const Eigen::MatrixXd &A, const
     /* solve a linear system, Ax=b with Conjugate Gradient method */
     Eigen::MatrixXd res = rhs - A*x0;
     Eigen::MatrixXd p = res;
-    double C;
     Eigen::MatrixXd xold = x0;
     Eigen::MatrixXd xnew, rnew;
+    double C, rInner, pAp;
     while (rnew.norm() > 1e-5) {
-        C = res.squaredNorm() / (p.adjoint()*A*p).sum();
+        pAp = p.adjoint()*A*p
+        rInner = res.squaredNorm();
+        C = rInner / pAp;
         xnew = xold + C*p;
         rnew = res - C*A*p;
-        p = rnew + rnew.squaredNorm() / res.squaredNorm() * p;
+        p = rnew + rnew.squaredNorm()/rInner * p;
         res = rnew;
         xold = xnew;
     } // end while

@@ -153,11 +153,13 @@ bool Tests::test_conjugateGradient() {
     Hessen(1,1) += gsum*gsum;
 
     // run conjugate gradient method
-    Eigen::MatrixXd rhs = Eigen::MatrixXd::Zero(1,2);
-    Eigen::MatrixXd startx = Eigen::MatrixXd::Zero(1,2);
+    Eigen::MatrixXd rhs = Eigen::MatrixXd::Zero(2,1);
+    Eigen::MatrixXd startx = Eigen::MatrixXd::Zero(2,1);
+    startx(0) = 1.1;
+    startx(1) = 0.4;
     Eigen::MatrixXd xnew = m->conjugateGradient(Hessen, rhs, startx);
     for (unsigned int i = 0; i < xnew.rows(); ++i) {
-        std::cout << xnew(i) << std::endl;
+        std::cout << "xnew: " << xnew(i) << std::endl;
     } // end fori
     return false;
 } // end function test_conjugateGradient
@@ -201,7 +203,7 @@ void Tests::run_tests(int t) {
         if(test_conjugateGradient()) {
             std::cout << "Conjugate Gradient good" << std::endl;
         } else {
-            std::cout << "Conjugate Gradient  wrong" << std::endl;
+            std::cout << "Conjugate Gradient wrong" << std::endl;
         } // end ifelse
         if (t==2) {
             b->printStates();
