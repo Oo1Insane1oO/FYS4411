@@ -234,8 +234,9 @@ void VMC::calculate(bool perturb) {
     Eigen::MatrixXd newInvU = Eigen::MatrixXd::Zero(b->ECut, b->ECut);
     Eigen::MatrixXd HessenMatrix = Eigen::MatrixXd::Zero(2,2);
     Eigen::MatrixXd rhs = Eigen::MatrixXd::Zero(2,1);
-    Eigen::MatrixXd startx = Eigen::MatrixXd::Zero(2,1);
-    Eigen::MatrixXd newAlphaBeta;
+    Eigen::MatrixXd newAlphaBeta = Eigen::MatrixXd::Zero(2,1);
+    newAlphaBeta(0) = alpha;
+    newAlphaBeta(1) = beta;
     b->setTrialWaveFunction(oldD, oldU, oldPositions, alpha);
     oldInvD = oldD.inverse();
     oldInvU = oldU.inverse();
@@ -249,7 +250,7 @@ void VMC::calculate(bool perturb) {
         while (cycles < maxIterations) {
             /* run Monte Carlo cycles */
             for (unsigned int i = 0; i < oldPositions.rows(); ++i) {
-                /* loop over number of particles(move only 1 particle at a time) */
+                /* loop over number of particles(move only 1 particle) */
                 for (unsigned int j = 0; j < dim; ++j) {
                     /* propose new position */
                     if (imp) {
@@ -263,11 +264,11 @@ void VMC::calculate(bool perturb) {
 
                 // update (probability distribution function)
                 if (i < halfSize) {
-                    b->updateTrialWaveFunction(newD, newPositions.row(i), alpha,
-                            i/2);
+                    b->updateTrialWaveFunction(newD, newPositions.row(i),
+                            alpha, i/2);
                 } else {
-                    b->updateTrialWaveFunction(newU, newPositions.row(i), alpha,
-                            i/2);
+                    b->updateTrialWaveFunction(newU, newPositions.row(i),
+                            alpha, i/2);
                 } // end ifelse
 
                 if (imp) {
@@ -287,14 +288,17 @@ void VMC::calculate(bool perturb) {
                 } // end if
 
                 if ((i<halfSize)) {
-                    determinantRatioD = meth->determinantRatio(newD, oldInvD, i/2);
+                    determinantRatioD = meth->determinantRatio(newD, oldInvD,
+                            i/2);
                 } else if ((i>=halfSize)) {
-                    determinantRatioU = meth->determinantRatio(newU, oldInvU, i/2);
+                    determinantRatioU = meth->determinantRatio(newU, oldInvU,
+                            i/2);
                 } // end ifelseif
 
                 testRatio = determinantRatioD*determinantRatioD *
                     determinantRatioU*determinantRatioU * (!perturb ?  1 :
-                            b->jastrowRatio(oldPositions, newPositions, beta, i));
+                            b->jastrowRatio(oldPositions, newPositions, beta,
+                                i));
                 if (imp) {
                     /* importance sampling */
                     testRatio *= transitionRatio;
@@ -342,7 +346,7 @@ void VMC::calculate(bool perturb) {
                         denom = beta + 1 / (newPositions.row(i) -
                                 newPositions.row(j)).norm();
                         tmphsum = b->padejastrow(i,j) / (denom*denom);
-                        hsum3 += tmphsum / (denom*denom*denom);
+                        hsum3 += tmphsum / denom;
                     } // end if
                 } // end forj
             } // end fori
@@ -374,22 +378,30 @@ void VMC::calculate(bool perturb) {
         ELRh /= cycles;
         
         // set Hessen matrix
-        HessenMatrix(0,0) = 0.5*b->omega*b->omega*((1-energy)*ELRsq - energy*Rsqsum
-                + 4*energy*Rsum*Rsum) - 4*b->omega*ELR*Rsum;
+        HessenMatrix(0,0) = 0.5*b->omega*b->omega*((1-energy)*ELRsq -
+                energy*Rsqsum + 4*energy*Rsum*Rsum) - 4*b->omega*ELR*Rsum;
         HessenMatrix(1,0) = 2*(b->omega*(ELRh - Rsum*ELh) -
                 hsum*(energy*(2-b->omega*Rsum) + b->omega*ELR));
         HessenMatrix(0,1) = HessenMatrix(1,0);
         HessenMatrix(1,1) = 2*(((1-energy) - 4*hsqsum)*ELhsq - hsqsum + hsum3 +
                 4*energy*hsum*hsum);
 
-        newAlphaBeta = meth->conjugateGradient(HessenMatrix, rhs, startx);
-        if (fabs(newAlphaBeta(0)-alpha)<=1e-3 &&
-                fabs(newAlphaBeta(1)-beta)<=1e-3) {
-            /* break when variational parameters are steady */
-            break;
-        } // end if
+        // optimalize with CG
+        newAlphaBeta = meth->conjugateGradient(HessenMatrix, rhs, newAlphaBeta);
+
+        // conditional break
+//         if (fabs(newAlphaBeta(0)-alpha)<=1e-10 &&
+//                 fabs(newAlphaBeta(1)-beta)<=1e-10) {
+//             /* break when variational parameters are steady */
+//             break;
+//         } // end if
+
+        // set new variational parameters
         alpha = newAlphaBeta(0);
         beta = newAlphaBeta(1);
+        std::cout << "alpha: " << alpha << ", beta: " << beta << std::endl;
+
+        // set set variables used in Monte Carlo loop
         energy = 0;
         energySq = 0;
         Rsum = 0;
@@ -402,5 +414,6 @@ void VMC::calculate(bool perturb) {
         ELRsq = 0;
         ELhsq = 0;
         ELRh = 0;
+        cycles = 0;
     } // end while true
 } // end function calculate

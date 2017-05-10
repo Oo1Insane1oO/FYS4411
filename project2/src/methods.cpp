@@ -76,10 +76,11 @@ Eigen::MatrixXd Methods::conjugateGradient(const Eigen::MatrixXd &A, const
     Eigen::MatrixXd p = res;
     Eigen::MatrixXd xold = x0;
     Eigen::MatrixXd xnew;
-    double C, rInner;
     Eigen::MatrixXd rnew = Eigen::MatrixXd::Zero(x0.rows(),x0.cols());
+    double C = res.squaredNorm();
+    double rInner;
     rnew << 1, 1;
-    while (rnew.norm() > 1e-5) {
+    while (rnew.norm() > 1e-14) {
         rInner = res.squaredNorm();
         C = rInner / (p.transpose()*A*p).sum();
         xnew = xold + C*p;
