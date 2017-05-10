@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2017.3.22)  9 MAY 2017 23:15
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2017.3.22)  10 MAY 2017 19:36
 entering extended mode
  \write18 enabled.
  file:line:error style messages enabled.
@@ -2357,68 +2357,68 @@ LaTeX Font Info:    Overwriting math alphabet `\mathbbmss' in version `bold'
 .................................................
 . LaTeX info: "xparse/define-command"
 . 
-. Defining command \prd with sig. 'm O{} O{}' on line 140.
+. Defining command \prd with sig. 'm O{} O{}' on line 139.
 .................................................
 .................................................
 . LaTeX info: "xparse/define-command"
 . 
-. Defining command \mprd with sig. 'm O{} O{}' on line 141.
+. Defining command \mprd with sig. 'm O{} O{}' on line 140.
 .................................................
 
 (/home/saintz/localStuff/FYS4411/project2/text/project2.aux)
 \openout1 = `project2.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/nxlmi/m/it on input line 221.
+LaTeX Font Info:    Checking defaults for OML/nxlmi/m/it on input line 220.
 LaTeX Font Info:    Try loading font information for OML+nxlmi on input line 22
-1.
+0.
 
 (/usr/share/texlive/texmf-dist/tex/latex/newtx/omlnxlmi.fd
 File: omlnxlmi.fd 2013/11/19 Fontinst v1.933 font definitions for OML/nxlmi.
 )
-LaTeX Font Info:    ... okay on input line 221.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 221.
-LaTeX Font Info:    ... okay on input line 221.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 221.
-LaTeX Font Info:    ... okay on input line 221.
-LaTeX Font Info:    Checking defaults for OMS/ntxsy/m/n on input line 221.
+LaTeX Font Info:    ... okay on input line 220.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 220.
+LaTeX Font Info:    ... okay on input line 220.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 220.
+LaTeX Font Info:    ... okay on input line 220.
+LaTeX Font Info:    Checking defaults for OMS/ntxsy/m/n on input line 220.
 LaTeX Font Info:    Try loading font information for OMS+ntxsy on input line 22
-1.
+0.
 
 (/usr/share/texlive/texmf-dist/tex/latex/newtx/omsntxsy.fd
 File: omsntxsy.fd 2012/11/14 Fontinst v1.933 font definitions for OMS/ntxsy.
 )
-LaTeX Font Info:    ... okay on input line 221.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 221.
-LaTeX Font Info:    ... okay on input line 221.
-LaTeX Font Info:    Checking defaults for U/ntxexa/m/n on input line 221.
-LaTeX Font Info:    Try loading font information for U+ntxexa on input line 221
+LaTeX Font Info:    ... okay on input line 220.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 220.
+LaTeX Font Info:    ... okay on input line 220.
+LaTeX Font Info:    Checking defaults for U/ntxexa/m/n on input line 220.
+LaTeX Font Info:    Try loading font information for U+ntxexa on input line 220
 .
 
 (/usr/share/texlive/texmf-dist/tex/latex/newtx/untxexa.fd
 File: untxexa.fd 2012/04/16 Fontinst v1.933 font definitions for U/ntxexa.
 )
-LaTeX Font Info:    ... okay on input line 221.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 221.
-LaTeX Font Info:    Try loading font information for TS1+cmr on input line 221.
+LaTeX Font Info:    ... okay on input line 220.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 220.
+LaTeX Font Info:    Try loading font information for TS1+cmr on input line 220.
 
 
 (/usr/share/texlive/texmf-dist/tex/latex/base/ts1cmr.fd
 File: ts1cmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
 )
-LaTeX Font Info:    ... okay on input line 221.
-LaTeX Font Info:    Checking defaults for LMX/ntxexx/m/n on input line 221.
-LaTeX Font Info:    ... okay on input line 221.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 221.
-LaTeX Font Info:    ... okay on input line 221.
+LaTeX Font Info:    ... okay on input line 220.
+LaTeX Font Info:    Checking defaults for LMX/ntxexx/m/n on input line 220.
+LaTeX Font Info:    ... okay on input line 220.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 220.
+LaTeX Font Info:    ... okay on input line 220.
 LaTeX Font Info:    Try loading font information for OT1+LinuxLibertineT-TLF on
- input line 221.
+ input line 220.
 
 (/usr/share/texlive/texmf-dist/tex/latex/libertine/OT1LinuxLibertineT-TLF.fd
 File: OT1LinuxLibertineT-TLF.fd 2012/11/26 (autoinst) Font definitions for OT1/
 LinuxLibertineT-TLF.
 )
 LaTeX Font Info:    Font shape `OT1/LinuxLibertineT-TLF/m/n' will be
-(Font)              scaled to size 10.0pt on input line 221.
+(Font)              scaled to size 10.0pt on input line 220.
 \c@mv@tabular=\count189
 \c@mv@boldtabular=\count190
 \c@lstlisting=\count191
@@ -2486,7 +2486,7 @@ e
 * (1in=72.27pt=25.4mm, 1cm=28.453pt)
 
 \AtBeginShipoutBox=\box61
-Package hyperref Info: Link coloring OFF on input line 221.
+Package hyperref Info: Link coloring OFF on input line 220.
 (/usr/share/texlive/texmf-dist/tex/latex/hyperref/nameref.sty
 Package: nameref 2012/10/27 v2.43 Cross-referencing by name of section
 
@@ -2495,9 +2495,9 @@ Package: gettitlestring 2010/12/03 v1.4 Cleanup title references (HO)
 )
 \c@section@level=\count198
 )
-LaTeX Info: Redefining \ref on input line 221.
-LaTeX Info: Redefining \pageref on input line 221.
-LaTeX Info: Redefining \nameref on input line 221.
+LaTeX Info: Redefining \ref on input line 220.
+LaTeX Info: Redefining \pageref on input line 220.
+LaTeX Info: Redefining \nameref on input line 220.
 
 (/home/saintz/localStuff/FYS4411/project2/text/project2.out)
 (/home/saintz/localStuff/FYS4411/project2/text/project2.out)
@@ -2509,85 +2509,85 @@ Package caption Info: float package is loaded.
 Package caption Info: End \AtBeginDocument code.
 
 ABD: EverySelectfont initializing macros
-LaTeX Info: Redefining \selectfont on input line 221.
+LaTeX Info: Redefining \selectfont on input line 220.
  ABD: EveryShipout initializing macros
 LaTeX Font Info:    Font shape `OT1/LinuxLibertineT-TLF/b/n' will be
-(Font)              scaled to size 10.0pt on input line 225.
+(Font)              scaled to size 10.0pt on input line 224.
 LaTeX Font Info:    Font shape `OT1/LinuxLibertineT-TLF/b/n' will be
-(Font)              scaled to size 14.4pt on input line 225.
+(Font)              scaled to size 14.4pt on input line 224.
 LaTeX Font Info:    Font shape `OT1/LinuxLibertineT-TLF/b/n' will be
-(Font)              scaled to size 12.0pt on input line 227.
+(Font)              scaled to size 12.0pt on input line 226.
 LaTeX Font Info:    Font shape `OT1/LinuxLibertineT-TLF/m/n' will be
-(Font)              scaled to size 12.0pt on input line 229.
+(Font)              scaled to size 12.0pt on input line 228.
 LaTeX Font Info:    Font shape `OT1/LinuxLibertineT-TLF/m/n' will be
-(Font)              scaled to size 8.8pt on input line 229.
+(Font)              scaled to size 8.8pt on input line 228.
 LaTeX Font Info:    Font shape `OT1/LinuxLibertineT-TLF/m/n' will be
-(Font)              scaled to size 6.6pt on input line 229.
-LaTeX Font Info:    Try loading font information for U+ntxmia on input line 229
+(Font)              scaled to size 6.6pt on input line 228.
+LaTeX Font Info:    Try loading font information for U+ntxmia on input line 228
 .
 
 (/usr/share/texlive/texmf-dist/tex/latex/newtx/untxmia.fd
 File: untxmia.fd 2012/04/16 Fontinst v1.933 font definitions for U/ntxmia.
 )
-LaTeX Font Info:    Try loading font information for U+ntxsym on input line 229
+LaTeX Font Info:    Try loading font information for U+ntxsym on input line 228
 .
 
 (/usr/share/texlive/texmf-dist/tex/latex/newtx/untxsym.fd
 File: untxsym.fd 2015/03/20 Fontinst v1.933 font definitions for U/ntxsym.
 )
-LaTeX Font Info:    Try loading font information for U+ntxsyc on input line 229
+LaTeX Font Info:    Try loading font information for U+ntxsyc on input line 228
 .
 
 (/usr/share/texlive/texmf-dist/tex/latex/newtx/untxsyc.fd
 File: untxsyc.fd 2012/04/12 Fontinst v1.933 font definitions for U/ntxsyc.
 )
 LaTeX Font Info:    Font shape `OT1/LinuxLibertineT-TLF/m/n' will be
-(Font)              scaled to size 14.4pt on input line 230.
+(Font)              scaled to size 14.4pt on input line 229.
  [1
 
 {/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}]
 LaTeX Font Info:    Font shape `OT1/LinuxLibertineT-TLF/m/n' will be
-(Font)              scaled to size 7.3pt on input line 271.
+(Font)              scaled to size 7.3pt on input line 270.
 LaTeX Font Info:    Font shape `OT1/LinuxLibertineT-TLF/m/n' will be
-(Font)              scaled to size 5.5pt on input line 271.
+(Font)              scaled to size 5.5pt on input line 270.
 LaTeX Font Info:    Font shape `OT1/LinuxLibertineT-TLF/m/n' will be
-(Font)              scaled to size 9.0pt on input line 333.
+(Font)              scaled to size 9.0pt on input line 332.
 pdfTeX warning (ext4): destination with the same identifier (name{page.1}) has 
 been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.333         \end{equation}
+l.332         \end{equation}
                              [1
 
 ] [2]
 LaTeX Font Info:    Try loading font information for TS1+LinuxLibertineT-TLF on
- input line 442.
+ input line 441.
 
 (/usr/share/texlive/texmf-dist/tex/latex/libertine/TS1LinuxLibertineT-TLF.fd
 File: TS1LinuxLibertineT-TLF.fd 2012/11/26 (autoinst) Font definitions for TS1/
 LinuxLibertineT-TLF.
 )
 LaTeX Font Info:    Font shape `TS1/LinuxLibertineT-TLF/m/n' will be
-(Font)              scaled to size 10.0pt on input line 442.
-LaTeX Font Info:    Try loading font information for U+bbm on input line 489.
+(Font)              scaled to size 10.0pt on input line 441.
+LaTeX Font Info:    Try loading font information for U+bbm on input line 488.
 
 (/usr/share/texlive/texmf-dist/tex/latex/bbm-macros/ubbm.fd
 File: ubbm.fd 1999/03/15 V 1.2 Font definition for bbm font - TH
 )
 
 LaTeX Font Warning: Font shape `U/bbm/m/n' in size <5.5> not available
-(Font)              size <5> substituted on input line 489.
+(Font)              size <5> substituted on input line 488.
 
 [3] [4] [5] [6] [7] [8] [9] [10] [11] [12] [13] [14]
 LaTeX Font Info:    Font shape `OT1/LinuxLibertineT-TLF/m/it' will be
-(Font)              scaled to size 10.0pt on input line 1595.
+(Font)              scaled to size 10.0pt on input line 1613.
  [15] [16]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 1630.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 1630.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 1648.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 1648.
 
 (/home/saintz/localStuff/FYS4411/project2/text/project2.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 1630.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 1630.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 1648.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 1648.
 
 Package rerunfilecheck Info: File `project2.out' has not changed.
 (rerunfilecheck)             Checksum: <no file>.
@@ -2596,16 +2596,16 @@ Package rerunfilecheck Info: File `project2.out' has not changed.
 LaTeX Font Warning: Size substitutions with differences
 (Font)              up to 0.5pt have occurred.
 
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 1630.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 1648.
  ) 
 Here is how much of TeX's memory you used:
- 32101 strings out of 494497
- 582754 string characters out of 6172400
- 659447 words of memory out of 5000000
- 34766 multiletter control sequences out of 15000+600000
+ 32103 strings out of 494497
+ 582800 string characters out of 6172400
+ 660583 words of memory out of 5000000
+ 34768 multiletter control sequences out of 15000+600000
  55978 words of font info for 139 fonts, out of 8000000 for 9000
  264 hyphenation exceptions out of 8191
- 64i,17n,94p,10410b,369s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 64i,17n,94p,10410b,473s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/share/texlive/texmf-dist/fonts/enc/dvips/libertine/lbtn_xogrpz.enc}{/us
 r/share/texlive/texmf-dist/fonts/enc/dvips/newtx/libertinealt.enc} </home/saint
 z/.texmf-var/fonts/pk/ljfour/public/bbm/bbm10.600pk>{/usr/share/texlive/texmf-d
@@ -2628,7 +2628,7 @@ are/texlive/texmf-dist/fonts/type1/public/txfonts/txsyc.pfb></usr/share/texlive
 /texmf-dist/fonts/type1/public/newtx/zxlr.pfb></usr/share/texlive/texmf-dist/fo
 nts/type1/public/newtx/zxlri.pfb>
 Output written on /home/saintz/localStuff/FYS4411/project2/text/project2.pdf (1
-7 pages, 547596 bytes).
+7 pages, 548385 bytes).
 PDF statistics:
  594 PDF objects out of 1000 (max. 8388607)
  552 compressed objects within 6 object streams

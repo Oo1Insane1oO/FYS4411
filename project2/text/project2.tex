@@ -1,5 +1,4 @@
-\documentclass[a4paper, hidelinks, 10pt]{article}
-\usepackage[utf8]{inputenc}
+\documentclass[a4paper, hidelinks, 10pt]{article}\usepackage[utf8]{inputenc}
 % \usepackage[T1]{fontenc}
 \usepackage{libertine}
 \usepackage[libertine]{newtxmath}
@@ -1237,8 +1236,8 @@
     expectation value of the local energy with respect to $\alpha$ is
         \begin{equation}
             \prd{\alpha}[\ecp{E_L}][2] = 2\left(1-\ecp{E_L}\right)
-            \ecp{\frac{E_L}{\abs{\psi_T}^2}\left(\psialphder\right)^2} +
-            -8\ecp{\frac{E_L}{\abs{\psi_T}}\psialphder}
+            \ecp{\frac{E_L}{\abs{\psi_T}^2}\left(\psialphder\right)^2} -
+            8\ecp{\frac{E_L}{\abs{\psi_T}}\psialphder}
             \ecp{\frac{1}{\abs{\psi_T}}\psialphder}
             -2\ecp{E_L}\ecp{\frac{1}{\abs{\psi_T}}\psialphsecder} +
             8\ecp{E_L}\ecp{\frac{1}{\abs{\psi_T}}\psialphder}^2
@@ -1248,8 +1247,8 @@
     replaced by $\beta$).
         \begin{equation}
             \prd{\beta}[\ecp{E_L}][2] = 2\left(1-\ecp{E_L}\right)
-            \ecp{\frac{E_L}{\abs{\psi_T}^2}\left(\psibetder\right)^2} +
-            -8\ecp{\frac{E_L}{\abs{\psi_T}}\psibetder}
+            \ecp{\frac{E_L}{\abs{\psi_T}^2}\left(\psibetder\right)^2} -
+            8\ecp{\frac{E_L}{\abs{\psi_T}}\psibetder}
             \ecp{\frac{1}{\abs{\psi_T}}\psibetder}
             -2\ecp{E_L}\ecp{\frac{1}{\abs{\psi_T}}\psibetsecder} +
             8\ecp{E_L}\ecp{\frac{1}{\abs{\psi_T}}\psibetder}^2
@@ -1269,12 +1268,14 @@
             \prd{\beta}\ecp{\frac{E_L}{\abs{\psi_T}}\psialphder} &=
             \int\left(\frac{\prd{\alpha}[\abs{\psi_T}]
             \prd{\beta}[\abs{\psi_T}]E_L +
-            \abs{\psi_T}\prd{\alpha}[\psi_T]\prd{\beta}[E_L]}{\psinorm} -
+            \abs{\psi_T}\prd{\alpha}[\psi_T]\prd{\beta}[E_L] + \abs{\psi_T}E_L
+            \frac{\prtl^2\abs{\psi_T}}{\prtl\alpha\prtl\beta}}{\psinorm} -
             2\frac{\psi_TE_L\prd{\alpha}[\psi_T]}{\psinorm}
             \frac{\int\abs{\psi_T}\prd{\beta}[\psi_T]\md^N
             r}{\psinorm}\right)\md^N r \nonumber \\
             &= \ecp{\frac{E_L}{\abs{\psi_T}^2} \prd{\alpha}[\abs{\psi_T}]
-            \prd{\beta}[\abs{\psi_T}]} -
+            \prd{\beta}[\abs{\psi_T}]} + \ecp{\frac{E_L}{\abs{\psi_T}}
+            \frac{\prtl^2\abs{\psi_T}}{\prtl\alpha\prtl\beta}} -
             2\ecp{\frac{E_L}{\abs{\psi_T}}\prd{\alpha}[\psi_T]}
             \ecp{\frac{1}{\abs{\psi_T}}\prd{\beta}[\abs{\psi_T}]}
             \label{eq:ecpElbetalpderfirfir}
@@ -1292,12 +1293,29 @@
             \frac{\prtl^2\abs{\psi_T}}{\prtl\alpha\prtl\beta}} -
             2\ecp{\frac{1}{\abs{\psi_T}}\prd{\alpha}[\abs{\psi_T}]}
             \ecp{\frac{1}{\abs{\psi_T}}\prd{\beta}[\abs{\psi_T}]}
+            \label{eq:ecpElbetalpderfin1}
         \end{align}
     Thus the off-diagonal elements(which are symmetric due to Schwarz'
     theorem\cite{linalgDavid}) is
-        \begin{align}
-            \frac{\prtl^2\ecp{E_L}}{\prtl\alpha\prtl\beta} &= 2\left(1-\ecp{E_L}\right) \ecp{\frac{1}{\abs{\psi_T}^2} \prd{\alpha}[\abs{\psi_T}] \prd{\beta}[\abs{\psi_T}]} - 8
-        \end{align}
+        \begin{equation}
+            \begin{aligned}
+                \frac{\prtl^2\ecp{E_L}}{\prtl\alpha\prtl\beta} &=
+                2\ecp{\frac{E_L}{\abs{\psi_T}^2} \prd{\alpha}[\abs{\psi_T}]
+                \prd{\beta}[\abs{\psi_T}]} + 2\ecp{\frac{E_L}{\abs{\psi_T}}
+                \frac{\prtl^2\abs{\psi_T}}{\prtl\alpha\prtl\beta}} - 2\ecp{E_L}
+                \left(\ecp{\frac{1}{\abs{\psi_T}^2} \prd{\alpha}[\abs{\psi_T}]
+                \prd{\beta}[\abs{\psi_T}]} - \ecp{\frac{1}{\abs{\psi_T}}
+                \frac{\prtl^2\abs{\psi_T}}{\prtl\alpha\prtl\beta}}\right) \\
+                &+ 4\ecp{\frac{1}{\abs{\psi_T}}\prd{\beta}[\abs{\psi_T}]}
+                \left(\ecp{E_L}\left(1+\ecp{\frac{1}{\abs{\psi_T}}
+                \prd{\alpha}[\abs{\psi_T}]}\right) -
+                \ecp{\frac{E_L}{\abs{\psi_T}}
+                \prd{\alpha}[\abs{\psi_T}]}\right) -
+                4\ecp{\frac{1}{\abs{\psi_T}} \prd{\alpha}[\abs{\psi_T}]}
+                \ecp{\frac{E_L}{\abs{\psi_T}} \prd{\beta}[\abs{\psi_T}]}
+            \end{aligned}
+            \label{eq:ecpElbetalpderfin2}
+        \end{equation}
     For the derivative of the wavefunction We find the elements individually by
     using Jacobi's formula as described in
     \Autoref{sub:derivative_of_determinant}. We see that we need to first find
