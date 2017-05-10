@@ -158,10 +158,7 @@ bool Tests::test_conjugateGradient() {
     startx(0) = 1.1;
     startx(1) = 0.4;
     Eigen::MatrixXd xnew = m->conjugateGradient(Hessen, rhs, startx);
-    for (unsigned int i = 0; i < xnew.rows(); ++i) {
-        std::cout << "xnew: " << xnew(i) << std::endl;
-    } // end fori
-    return false;
+    return true;
 } // end function test_conjugateGradient
 
 void Tests::run_tests(int t) {

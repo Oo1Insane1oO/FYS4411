@@ -210,11 +210,20 @@ void VMC::calculate(bool perturb) {
     } // end if
 
     unsigned int halfSize = oldPositions.rows()/2;
-    double testRatio;
+    double testRatio, tmpEnergy, tmpRsum, tmphsum, transitionRatio, denom;
+    double hsum3 = 0;
+    double Rsum = 0;
+    double hsum = 0;
+    double hsqsum = 0;
+    double Rsqsum = 0;
+    double ELR = 0;
+    double ELh = 0;
+    double ELRsq = 0;
+    double ELhsq = 0;
+    double ELRh = 0;
     double determinantRatioD = 1;
     double determinantRatioU = 1;
     unsigned int cycles = 0;
-    double tmpEnergy, transitionRatio;
     Eigen::MatrixXd oldD = Eigen::MatrixXd::Zero(b->ECut, b->ECut);
     Eigen::MatrixXd oldU = Eigen::MatrixXd::Zero(b->ECut, b->ECut);
     Eigen::MatrixXd newD = Eigen::MatrixXd::Zero(b->ECut, b->ECut);
@@ -223,6 +232,8 @@ void VMC::calculate(bool perturb) {
     Eigen::MatrixXd oldInvU = Eigen::MatrixXd::Zero(b->ECut, b->ECut);
     Eigen::MatrixXd newInvD = Eigen::MatrixXd::Zero(b->ECut, b->ECut);
     Eigen::MatrixXd newInvU = Eigen::MatrixXd::Zero(b->ECut, b->ECut);
+    Eigen::MatrixXd HessenMatrix = Eigen::MatrixXd::Zero(2,2);
+    Eigen::MatrixXd newAlphaBeta = Eigen::MatrixXd::Zero(2,1);
     b->setTrialWaveFunction(oldD, oldU, oldPositions, alpha);
     oldInvD = oldD.inverse();
     oldInvU = oldU.inverse();
@@ -317,10 +328,43 @@ void VMC::calculate(bool perturb) {
 //         tmpEnergy = localEnergyDiff(newD,newU,newPositions,perturb);
         energy += tmpEnergy;
         energySq += tmpEnergy*tmpEnergy;
+
+        // calculate values for Hessen matrix
+        tmpRsum = 0;
+        tmphsum = 0;
+        for (unsigned int i = 0; i < newPositions.rows(); ++i) {
+            tmpRsum += newPositions.row(i).norm();
+            for (unsigned int j = 0; j < newPositions.rows(); ++j) {
+                if (i != j) {
+                    denom = beta + 1 / (newPositions.row(i) -
+                            newPositions.row(j)).norm();
+                    tmphsum = b->padejastrow(i,j) / (denom*denom);
+                    hsum3 += tmphsum / (denom*denom*denom);
+                } // end if
+            } // end forj
+        } // end fori
+        Rsum += tmpRsum;
+        hsum += tmphsum;
+        Rsqsum += tmpRsum*tmpRsum;
+        hsqsum += tmphsum*tmphsum;
+        ELR += tmpEnergy*tmpRsum;
+        ELH += tmpEnergy*tmphsum;
+        ELRsq += tmpEnergy*tmpRsum*tmpRsum;
+        ELhsq += tmpEnergy*tmphsum*tmphsum;
+        ELRh += tmpEnergy*Rsum*hsum;
+
+        // set HessenMatrix
+
         cycles++;
     } // end while
+
+    // set Hessen matrix
 
     // calculate final energy estimation
     energy /= cycles;
     energySq /= cycles;
+    Rsum /= cycles;
+    hsum /= cycles
+    Rsqsum /= cycles;
+    hsqsum /= cycles;
 } // end function calculate
