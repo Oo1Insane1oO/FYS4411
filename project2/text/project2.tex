@@ -1382,21 +1382,31 @@
             \label{eq:psiderbetasec}
         \end{align}
     where we simply used the product rule for differentiation. \\
+    The mixed second derivative is found with
+    \Autoref{eq:psideralpha,eq:psiderbeta} giving
+        \begin{align}
+            \frac{\prtl^2\psi_T}{\prtl\alpha\beta} &=
+            \prd{\beta}\left(-\psi_T\frac{\omega}{2}\suml{i}{N}r^2_i\right)
+            \nonumber \\
+            &= \psi_T\frac{\omega}{2}\suml{i}{N}r^2_i\sum_{i\neq
+            j}\frac{1}{\left(\beta + \frac{1}{r_{ij}}\right)}
+            \label{eq:psideralpbetsec}
+        \end{align}
     The final expression for the elements in the Hessen matrix is thus
         \begin{equation}
             \begin{aligned}
                 \prd{\alpha}[\ecp{E_L}][2] &=
-                \frac{\omega^2}{2}\left(1-\ecp{E_L}\right)
-                \ecp{E_LR^2} -
-                \frac{8\omega}{2}\ecp{E_LR}
-                \ecp{R} - \frac{\omega^2}{2}\ecp{E_L}
-                \ecp{R^2} +
-                2\omega^2\ecp{E_L}\ecp{R}^2 \\
+                \frac{\omega^2}{2}\left(1-\ecp{E_L}\right) \ecp{E_LR^2} -
+                4\omega\ecp{E_LR} \ecp{R} - \frac{\omega^2}{2}\ecp{E_L}
+                \ecp{R^2} + 2\omega^2\ecp{E_L}\ecp{R}^2 \\
                 \prd{\beta}[\ecp{E_L}][2] &= 2\left(1-\ecp{E_L}\right)
                 \ecp{E_Lh^2} - 8\ecp{E_Lh^2}\ecp{h^2} - 2\ecp{h^2 +
                 2\sum\limits_{i\neq j}\frac{a}{\left(\beta +
-                \frac{1}{r_{ij}}\right)}} + 8\ecp{E_L}\ecp{h}^2 \\
-                \frac{\prtl^2\ecp{E_L}}{\prtl\alpha\prtl\beta} &= 
+                \frac{1}{r_{ij}}\right)^3}} + 8\ecp{E_L}\ecp{h}^2 \\
+                \frac{\prtl^2\ecp{E_L}}{\prtl\alpha\prtl\beta} &=
+                2\omega\left(\ecp{E_LRh} - \ecp{R}\ecp{E_Lh}\right) +
+                2\ecp{h}\left(\ecp{E_L}\left(2 + \omega\left(\ecp{R}\right) -
+                \ecp{E_LR}\right)\right)
             \end{aligned}
         \end{equation}
     where 
