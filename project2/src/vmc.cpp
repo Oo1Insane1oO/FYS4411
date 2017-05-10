@@ -245,138 +245,162 @@ void VMC::calculate(bool perturb) {
     } // end if
     newD = oldD;
     newU = oldU;
-    while (cycles < maxIterations) {
-        /* run Monte Carlo cycles */
-        for (unsigned int i = 0; i < oldPositions.rows(); ++i) {
-            /* loop over number of particles(move only 1 particle at a time) */
-            for (unsigned int j = 0; j < dim; ++j) {
-                /* propose new position */
-                if (imp) {
-                    newPositions(i,j) = oldPositions(i,j) +
-                        0.5*qForceOld(i,j)*step + normDist(mt)*sqrt(step);
+    while (true) {
+        while (cycles < maxIterations) {
+            /* run Monte Carlo cycles */
+            for (unsigned int i = 0; i < oldPositions.rows(); ++i) {
+                /* loop over number of particles(move only 1 particle at a time) */
+                for (unsigned int j = 0; j < dim; ++j) {
+                    /* propose new position */
+                    if (imp) {
+                        newPositions(i,j) = oldPositions(i,j) +
+                            0.5*qForceOld(i,j)*step + normDist(mt)*sqrt(step);
+                    } else {
+                        newPositions(i,j) = oldPositions(i,j) +
+                            step*(dist(mt)-0.5);
+                    } // end ifelse
+                } // end forj
+
+                // update (probability distribution function)
+                if (i < halfSize) {
+                    b->updateTrialWaveFunction(newD, newPositions.row(i), alpha,
+                            i/2);
                 } else {
-                    newPositions(i,j) = oldPositions(i,j) +
-                        step*(dist(mt)-0.5);
+                    b->updateTrialWaveFunction(newU, newPositions.row(i), alpha,
+                            i/2);
                 } // end ifelse
-            } // end forj
 
-            // update (probability distribution function)
-            if (i < halfSize) {
-                b->updateTrialWaveFunction(newD, newPositions.row(i), alpha,
-                        i/2);
-            } else {
-                b->updateTrialWaveFunction(newU, newPositions.row(i), alpha,
-                        i/2);
-            } // end ifelse
-
-            if (imp) {
-                /* set new quantum force */
-                updateDiff(newPositions, qForceNew, i);
-                qForceNew.row(i) *= 2;
-            } // end if
-
-            // calculate Greens function ratio
-            if (imp) {
-                transitionRatio = exp(0.125*step*(qForceOld.row(i).norm() -
-                            qForceNew.row(i).norm()) +
-                        0.25*step*((oldPositions(i,0)-newPositions(i,0)) *
-                            (qForceNew(i,0)+qForceOld(i,0)) +
-                            (oldPositions(i,1)-newPositions(i,1)) *
-                            (qForceNew(i,1)+qForceOld(i,1))));
-            } // end if
-
-            if ((i<halfSize)) {
-                determinantRatioD = meth->determinantRatio(newD, oldInvD, i/2);
-            } else if ((i>=halfSize)) {
-                determinantRatioU = meth->determinantRatio(newU, oldInvU, i/2);
-            } // end ifelseif
-
-            testRatio = determinantRatioD*determinantRatioD *
-                determinantRatioU*determinantRatioU * (!perturb ?  1 :
-                        b->jastrowRatio(oldPositions, newPositions, beta, i));
-            if (imp) {
-                /* importance sampling */
-                testRatio *= transitionRatio;
-            } //end if
-
-            if (testRatio >= dist(mt)) {
-                /* update positions according to Metropolis test */
-                oldPositions.row(i) = newPositions.row(i);
-                if (i<halfSize) {
-                    oldD.row(i/2) = newD.row(i/2);
-                } else {
-                    oldU.row(i/2) = newU.row(i/2);
-                } // end if
                 if (imp) {
-                    qForceOld.row(i) = qForceNew.row(i);
+                    /* set new quantum force */
+                    updateDiff(newPositions, qForceNew, i);
+                    qForceNew.row(i) *= 2;
                 } // end if
-            } else {
-                /* reset position */
-                newPositions.row(i) = oldPositions.row(i);
-            } // end if
 
-            // update inverse
-            if (i < halfSize) {
-                meth->updateMatrixInverse(oldD, newD, oldInvD, newInvD,
-                        determinantRatioD, i/2);
-            } else {
-                meth->updateMatrixInverse(oldU, newU, oldInvU, newInvU,
-                        determinantRatioU, i/2);
-            } // end ifelse
-        } // end fori
-
-        // calculate local energy and local energy squared
-        tmpEnergy = localEnergy2(oldPositions,perturb);
-//         tmpEnergy = localEnergyDiff(newD,newU,newPositions,perturb);
-        energy += tmpEnergy;
-        energySq += tmpEnergy*tmpEnergy;
-
-        // calculate values for Hessen matrix
-        tmpRsum = 0;
-        tmphsum = 0;
-        for (unsigned int i = 0; i < newPositions.rows(); ++i) {
-            tmpRsum += newPositions.row(i).norm();
-            for (unsigned int j = 0; j < newPositions.rows(); ++j) {
-                if (i != j) {
-                    denom = beta + 1 / (newPositions.row(i) -
-                            newPositions.row(j)).norm();
-                    tmphsum = b->padejastrow(i,j) / (denom*denom);
-                    hsum3 += tmphsum / (denom*denom*denom);
+                // calculate Greens function ratio
+                if (imp) {
+                    transitionRatio = exp(0.125*step*(qForceOld.row(i).norm() -
+                                qForceNew.row(i).norm()) +
+                            0.25*step*((oldPositions(i,0)-newPositions(i,0)) *
+                                (qForceNew(i,0)+qForceOld(i,0)) +
+                                (oldPositions(i,1)-newPositions(i,1)) *
+                                (qForceNew(i,1)+qForceOld(i,1))));
                 } // end if
-            } // end forj
-        } // end fori
-        Rsum += tmpRsum;
-        hsum += tmphsum;
-        Rsqsum += tmpRsum*tmpRsum;
-        hsqsum += tmphsum*tmphsum;
-        ELR += tmpEnergy*tmpRsum;
-        ELh += tmpEnergy*tmphsum;
-        ELRsq += tmpEnergy*tmpRsum*tmpRsum;
-        ELhsq += tmpEnergy*tmphsum*tmphsum;
-        ELRh += tmpEnergy*Rsum*hsum;
 
-        cycles++;
-    } // end while
+                if ((i<halfSize)) {
+                    determinantRatioD = meth->determinantRatio(newD, oldInvD, i/2);
+                } else if ((i>=halfSize)) {
+                    determinantRatioU = meth->determinantRatio(newU, oldInvU, i/2);
+                } // end ifelseif
 
-    // calculate final energy estimation
-    energy /= cycles;
-    energySq /= cycles;
-    Rsum /= cycles;
-    hsum /= cycles;
-    Rsqsum /= cycles;
-    hsqsum /= cycles;
-    hsum3 /= cycles;
-    
-    // set Hessen matrix
-    HessenMatrix(0,0) = 0.5*b->omega*b->omega*((1-energy)*ELRsq - energy*Rsqsum
-            + 4*energy*Rsum*Rsum) - 4*b->omega*ELR*Rsum;
-    HessenMatrix(1,0) = 2*(b->omega*(ELRh - Rsum*ELh) -
-            hsum*(energy*(2-b->omega*Rsum) + b->omega*ELR));
-    HessenMatrix(0,1) = HessenMatrix(1,0);
-    HessenMatrix(1,1) = 2*(((1-energy) - 4*hsqsum)*ELhsq - hsqsum + hsum3 +
-            4*energy*hsum*hsum);
+                testRatio = determinantRatioD*determinantRatioD *
+                    determinantRatioU*determinantRatioU * (!perturb ?  1 :
+                            b->jastrowRatio(oldPositions, newPositions, beta, i));
+                if (imp) {
+                    /* importance sampling */
+                    testRatio *= transitionRatio;
+                } //end if
 
-    newAlphaBeta = meth->conjugateGradient(HessenMatrix, rhs, startx);
-    alpha = newAlphaBeta(0);
-    beta = newAlphaBeta(1);
+                if (testRatio >= dist(mt)) {
+                    /* update positions according to Metropolis test */
+                    oldPositions.row(i) = newPositions.row(i);
+                    if (i<halfSize) {
+                        oldD.row(i/2) = newD.row(i/2);
+                    } else {
+                        oldU.row(i/2) = newU.row(i/2);
+                    } // end if
+                    if (imp) {
+                        qForceOld.row(i) = qForceNew.row(i);
+                    } // end if
+                } else {
+                    /* reset position */
+                    newPositions.row(i) = oldPositions.row(i);
+                } // end if
+
+                // update inverse
+                if (i < halfSize) {
+                    meth->updateMatrixInverse(oldD, newD, oldInvD, newInvD,
+                            determinantRatioD, i/2);
+                } else {
+                    meth->updateMatrixInverse(oldU, newU, oldInvU, newInvU,
+                            determinantRatioU, i/2);
+                } // end ifelse
+            } // end fori
+
+            // calculate local energy and local energy squared
+            tmpEnergy = localEnergy2(oldPositions,perturb);
+    //         tmpEnergy = localEnergyDiff(newD,newU,newPositions,perturb);
+            energy += tmpEnergy;
+            energySq += tmpEnergy*tmpEnergy;
+
+            // calculate values for Hessen matrix
+            tmpRsum = 0;
+            tmphsum = 0;
+            for (unsigned int i = 0; i < newPositions.rows(); ++i) {
+                tmpRsum += newPositions.row(i).norm();
+                for (unsigned int j = 0; j < newPositions.rows(); ++j) {
+                    if (i != j) {
+                        denom = beta + 1 / (newPositions.row(i) -
+                                newPositions.row(j)).norm();
+                        tmphsum = b->padejastrow(i,j) / (denom*denom);
+                        hsum3 += tmphsum / (denom*denom*denom);
+                    } // end if
+                } // end forj
+            } // end fori
+            Rsum += tmpRsum;
+            hsum += tmphsum;
+            Rsqsum += tmpRsum*tmpRsum;
+            hsqsum += tmphsum*tmphsum;
+            ELR += tmpEnergy*tmpRsum;
+            ELh += tmpEnergy*tmphsum;
+            ELRsq += tmpEnergy*tmpRsum*tmpRsum;
+            ELhsq += tmpEnergy*tmphsum*tmphsum;
+            ELRh += tmpEnergy*Rsum*hsum;
+
+            cycles++;
+        } // end while
+
+        // calculate final energy estimation
+        energy /= cycles;
+        energySq /= cycles;
+        Rsum /= cycles;
+        hsum /= cycles;
+        Rsqsum /= cycles;
+        hsqsum /= cycles;
+        hsum3 /= cycles;
+        ELR /= cycles;
+        ELh /= cycles;
+        ELRsq /= cycles;
+        ELhsq /= cycles;
+        ELRh /= cycles;
+        
+        // set Hessen matrix
+        HessenMatrix(0,0) = 0.5*b->omega*b->omega*((1-energy)*ELRsq - energy*Rsqsum
+                + 4*energy*Rsum*Rsum) - 4*b->omega*ELR*Rsum;
+        HessenMatrix(1,0) = 2*(b->omega*(ELRh - Rsum*ELh) -
+                hsum*(energy*(2-b->omega*Rsum) + b->omega*ELR));
+        HessenMatrix(0,1) = HessenMatrix(1,0);
+        HessenMatrix(1,1) = 2*(((1-energy) - 4*hsqsum)*ELhsq - hsqsum + hsum3 +
+                4*energy*hsum*hsum);
+
+        newAlphaBeta = meth->conjugateGradient(HessenMatrix, rhs, startx);
+        if (fabs(newAlphaBeta(0)-alpha)<=1e-3 &&
+                fabs(newAlphaBeta(1)-beta)<=1e-3) {
+            /* break when variational parameters are steady */
+            break;
+        } // end if
+        alpha = newAlphaBeta(0);
+        beta = newAlphaBeta(1);
+        energy = 0;
+        energySq = 0;
+        Rsum = 0;
+        hsum = 0;
+        Rsqsum = 0;
+        hsqsum = 0;
+        hsum3 = 0;
+        ELR = 0;
+        ELh = 0;
+        ELRsq = 0;
+        ELhsq = 0;
+        ELRh = 0;
+    } // end while true
 } // end function calculate
