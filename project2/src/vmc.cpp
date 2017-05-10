@@ -233,7 +233,9 @@ void VMC::calculate(bool perturb) {
     Eigen::MatrixXd newInvD = Eigen::MatrixXd::Zero(b->ECut, b->ECut);
     Eigen::MatrixXd newInvU = Eigen::MatrixXd::Zero(b->ECut, b->ECut);
     Eigen::MatrixXd HessenMatrix = Eigen::MatrixXd::Zero(2,2);
-    Eigen::MatrixXd newAlphaBeta = Eigen::MatrixXd::Zero(2,1);
+    Eigen::MatrixXd rhs = Eigen::MatrixXd::Zero(2,1);
+    Eigen::MatrixXd startx = Eigen::MatrixXd::Zero(2,1);
+    Eigen::MatrixXd newAlphaBeta;
     b->setTrialWaveFunction(oldD, oldU, oldPositions, alpha);
     oldInvD = oldD.inverse();
     oldInvU = oldU.inverse();
@@ -348,23 +350,33 @@ void VMC::calculate(bool perturb) {
         Rsqsum += tmpRsum*tmpRsum;
         hsqsum += tmphsum*tmphsum;
         ELR += tmpEnergy*tmpRsum;
-        ELH += tmpEnergy*tmphsum;
+        ELh += tmpEnergy*tmphsum;
         ELRsq += tmpEnergy*tmpRsum*tmpRsum;
         ELhsq += tmpEnergy*tmphsum*tmphsum;
         ELRh += tmpEnergy*Rsum*hsum;
 
-        // set HessenMatrix
-
         cycles++;
     } // end while
-
-    // set Hessen matrix
 
     // calculate final energy estimation
     energy /= cycles;
     energySq /= cycles;
     Rsum /= cycles;
-    hsum /= cycles
+    hsum /= cycles;
     Rsqsum /= cycles;
     hsqsum /= cycles;
+    hsum3 /= cycles;
+    
+    // set Hessen matrix
+    HessenMatrix(0,0) = 0.5*b->omega*b->omega*((1-energy)*ELRsq - energy*Rsqsum
+            + 4*energy*Rsum*Rsum) - 4*b->omega*ELR*Rsum;
+    HessenMatrix(1,0) = 2*(b->omega*(ELRh - Rsum*ELh) -
+            hsum*(energy*(2-b->omega*Rsum) + b->omega*ELR));
+    HessenMatrix(0,1) = HessenMatrix(1,0);
+    HessenMatrix(1,1) = 2*(((1-energy) - 4*hsqsum)*ELhsq - hsqsum + hsum3 +
+            4*energy*hsum*hsum);
+
+    newAlphaBeta = meth->conjugateGradient(HessenMatrix, rhs, startx);
+    alpha = newAlphaBeta(0);
+    beta = newAlphaBeta(1);
 } // end function calculate
