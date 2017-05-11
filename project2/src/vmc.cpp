@@ -210,8 +210,8 @@ void VMC::calculate(bool perturb) {
     } // end if
 
     unsigned int halfSize = oldPositions.rows()/2;
-    double testRatio, tmpEnergy, tmpRsum, tmphsum, tmphsum3, tmpELalpsum,
-           tmpELbetsum, transitionRatio, denom;
+    double testRatio, tmpEnergy, tmpRsum, tmphsum, tmphsum3, tmpELalpRsum,
+           tmpELbethsum, transitionRatio, denom, denomsq, denomcu, a, rkl;
     double ELhsum3 = 0;
     double hsum3 = 0;
     double Rsum = 0;
@@ -223,11 +223,12 @@ void VMC::calculate(bool perturb) {
     double ELRsq = 0;
     double ELhsq = 0;
     double ELRh = 0;
-    double ELalpsum = 0;
-    double ELbetsum = 0;
+    double ELalpRsum = 0;
+    double ELbethsum = 0;
     double determinantRatioD = 1;
     double determinantRatioU = 1;
     unsigned int cycles = 0;
+    int nkx, nky;
     Eigen::MatrixXd oldD = Eigen::MatrixXd::Zero(b->ECut, b->ECut);
     Eigen::MatrixXd oldU = Eigen::MatrixXd::Zero(b->ECut, b->ECut);
     Eigen::MatrixXd newD = Eigen::MatrixXd::Zero(b->ECut, b->ECut);
@@ -344,20 +345,34 @@ void VMC::calculate(bool perturb) {
             tmpRsum = 0;
             tmphsum = 0;
             tmphsum3 = 0;
-            tmpELalpsum = 0;
-            tmpELbetsum = 0;
-            for (unsigned int i = 0; i < newPositions.rows(); ++i) {
-                tmpRsum += newPositions.row(i).norm();
-                ELalpsum += alpha*b->omega*newPositions.row(i).norm() -
-                    2*(*(b->states[i][0]) + *(b->states[i][1]) + 1);
-                for (unsigned int j = 0; j < newPositions.rows(); ++j) {
-                    if (i != j) {
-                        denom = beta + 1 / (newPositions.row(i) -
-                                newPositions.row(j)).norm();
-                        tmphsum = b->padejastrow(i,j) / (denom*denom);
-                        tmphsum3 += tmphsum / denom;
-                        tmpELalpsum -= 0.5*b->padejastrow(i,j)*b->omega/(denom*denom*denom)*(newPositions(i,0)*(newPositions(i,0)-newPositions(j,0)) + newPositions(i,1)*(newPositions(i,1)-newPositions(j,0)));
-                        tmpELbetsum -= b->padejastrow(i,j)/(denom*denom*denom)*(2+3*beta*beta*(newPositions.row(i)-newPositions.row(j)).norm() - 2*(newPositions.row(i)-newPositions.row(j)).norm()/(denom*denom) - 4*(newPositions.row(i)-newPositions.row(j)).norm()/(denom*denom*denom));
+            tmpELalpRsum = 0;
+            tmpELbethsum = 0;
+            for (unsigned int k = 0; k < newPositions.rows(); ++k) {
+                nkx = *(b->states[k][0]);
+                nky = *(b->states[k][1]);
+                tmpRsum -= newPositions.row(k).norm();
+                ELalpRsum += 2*(nkx+nky+1) - nkx*(nkx-1) *
+                    H(newPositions(k,0),nkx-2)/H(newPositions(k,0),nkx) -
+                    nky*(nky-1) *
+                    H(newPositions(k,1),nky-2)/H(newPositions(k,1),nky) -
+                    alpha*b->omega*newPositions.row(k).norm();
+                for (unsigned int l = 0; l < newPositions.rows(); ++l) {
+                    if (k != l) {
+                        a = b->padejastrow(k,l);
+                        rkl = (newPositions.row(k) -
+                                newPositions.row(l)).norm();
+                        denom = beta + 1 / rkl;
+                        denomsq = denom*denom;
+                        denomcu = denom*denom*denom;
+                        tmphsum += a / denomsq;
+                        tmphsum3 += a / denomcu;
+                        tmpELalpRsum += 0.5*a*b->omega/denomcu *
+                            (newPositions(k,0) *
+                             (newPositions(k,0)-newPositions(l,0)) +
+                             newPositions(k,1) *
+                             (newPositions(k,1)-newPositions(l,1)));
+                        tmpELbethsum += a/denomcu*(2 + 3*beta*beta*rkl +
+                                2*rkl*(2 - 1/denomsq));
                     } // end if
                 } // end forj
             } // end fori
@@ -370,9 +385,9 @@ void VMC::calculate(bool perturb) {
             ELRsq += tmpEnergy*tmpRsum*tmpRsum;
             ELhsq += tmpEnergy*tmphsum*tmphsum;
             ELRh += tmpEnergy*Rsum*hsum;
-            ELalpsum += tmpELalpsum*tmpRsum;
-            ELbetsum += tmpELbetsum*tmphsum;
-            hsum3 +=tmphsum3; 
+            ELalpRsum += tmpELalpRsum*tmpRsum;
+            ELbethsum += tmpELbethsum*tmphsum;
+            hsum3 += tmphsum3; 
             ELhsum3 += tmphsum3*tmpEnergy;
 
             cycles++;
@@ -391,12 +406,12 @@ void VMC::calculate(bool perturb) {
         ELRsq /= cycles;
         ELhsq /= cycles;
         ELRh /= cycles;
-        ELalpsum /= cycles;
-        ELbetsum /= cycles;
+        ELalpRsum /= cycles;
+        ELbethsum /= cycles;
         ELhsum3 /= cycles;
         
         // set Hessen matrix
-        HessenMatrix(0,0) = b->omega*b->omega*ELRsq - b->omega*ELalpsum +
+        HessenMatrix(0,0) = b->omega*b->omega*ELRsq - b->omega*ELalpRsum +
             0.5*b->omega*b->omega * (ELRsq + energy*Rsum*Rsum -
                     3*b->omega*energy*Rsum);
 //         HessenMatrix(1,0) = 2*(b->omega*(ELRh - Rsum*ELh) -
@@ -405,7 +420,7 @@ void VMC::calculate(bool perturb) {
 //         std::cout << HessenMatrix(0,1) << " " << HessenMatrix(1,0) << std::endl;
         HessenMatrix(0,1) = 0;
         HessenMatrix(1,0) = 0;
-        HessenMatrix(1,1) = 4*ELhsq - 2*ELbetsum + 2*(ELhsq +
+        HessenMatrix(1,1) = 4*ELhsq - 2*ELbethsum + 2*(ELhsq +
                 2*energy*hsum*hsum) - 6*ELh*hsum + 4*(hsum3*energy + ELhsum3);
 
         // optimalize with CG
@@ -438,8 +453,8 @@ void VMC::calculate(bool perturb) {
         ELRsq = 0;
         ELhsq = 0;
         ELRh = 0;
-        ELalpsum = 0;
-        ELbetsum = 0;
+        ELalpRsum = 0;
+        ELbethsum = 0;
         ELhsum3 = 0;
         cycles = 0;
     } // end while true
