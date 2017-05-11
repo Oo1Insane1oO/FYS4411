@@ -211,7 +211,8 @@ void VMC::calculate(bool perturb) {
 
     unsigned int halfSize = oldPositions.rows()/2;
     double testRatio, tmpEnergy, tmpRsum, tmphsum, tmphsum3, tmpELalpRsum,
-           tmpELbethsum, transitionRatio, denom, denomsq, denomcu, a, rkl;
+           tmpELbethsum, transitionRatio, denom, denomsq, denomcu, a, rkl,
+           Hxfactor, Hyfactor;
     double ELhsum3 = 0;
     double hsum3 = 0;
     double Rsum = 0;
@@ -351,11 +352,12 @@ void VMC::calculate(bool perturb) {
                 nkx = *(b->states[k][0]);
                 nky = *(b->states[k][1]);
                 tmpRsum -= newPositions.row(k).norm();
-                ELalpRsum += 2*(nkx+nky+1) - nkx*(nkx-1) *
-                    H(newPositions(k,0),nkx-2)/H(newPositions(k,0),nkx) -
-                    nky*(nky-1) *
-                    H(newPositions(k,1),nky-2)/H(newPositions(k,1),nky) -
-                    alpha*b->omega*newPositions.row(k).norm();
+                Hxfactor = nkx*(nkx-1) *
+                    H(newPositions(k,0),nkx-2)/H(newPositions(k,0),nkx);
+                Hyfactor = nky*(nky-1) *
+                    H(newPositions(k,1),nky-2)/H(newPositions(k,1),nky);
+                ELalpRsum += 2*(nkx+nky+1) - Hxfactor - Hyfactor -
+                    alpha*b->omega*newPositions.row(k).squaredNorm();
                 for (unsigned int l = 0; l < newPositions.rows(); ++l) {
                     if (k != l) {
                         a = b->padejastrow(k,l);
@@ -372,7 +374,11 @@ void VMC::calculate(bool perturb) {
                              newPositions(k,1) *
                              (newPositions(k,1)-newPositions(l,1)));
                         tmpELbethsum += a/denomcu*(2 + 3*beta*beta*rkl +
-                                2*rkl*(2 - 1/denomsq));
+                                2*rkl*(2*((Hxfactor-alpha*b->omega) *
+                                        (newPositions(k,0)-newPositions(l,0)) +
+                                        (Hyfactor-alpha*b->omega) *
+                                        (newPositions(k,1)-newPositions(l,1)))
+                                    - 1/denomsq));
                     } // end if
                 } // end forj
             } // end fori
