@@ -130,17 +130,16 @@ bool Tests::test_padejastrow() {
 
 bool Tests::test_conjugateGradient() {
     /* check ouput from conjugateGradient in class Methods */
-    // set hessen matrix
+    // set A and b in Ax=b matrix
     Eigen::MatrixXd A = Eigen::MatrixXd::Zero(2,2);
     Eigen::MatrixXd startx = Eigen::MatrixXd::Zero(2,1);
-    Eigen::MatrixXd rhs = Eigen::MatrixXd::Zero(2,1);
+    Eigen::MatrixXd b = Eigen::MatrixXd::Zero(2,1);
     A << 4, 1,
          1, 3;
     startx << 2, 1;
-    rhs << 1, 2;
-    Eigen::MatrixXd xnew = m->conjugateGradient(A, rhs, startx);
-    return ((fabs(xnew(0)-1./11)<=eps && fabs(xnew(1)-7./11)<=eps ? true :
-                false));
+    b << 1, 2;
+    Eigen::MatrixXd x = m->conjugateGradient(A, b, startx);
+    return ((fabs(x(0)-1./11)<=eps && fabs(x(1)-7./11)<=eps ? true : false));
 } // end function test_conjugateGradient
 
 void Tests::run_tests(int t) {
