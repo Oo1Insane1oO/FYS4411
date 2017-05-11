@@ -1279,7 +1279,12 @@
             2\left(\prd{\beta}\ecp{\frac{E_L}{\abs{\psi_T}}\psialphder} -
             \ecp{E_L}\prd{\beta}\ecp{\frac{1}{\abs{\psi_T}}\psialphder} -
             \ecp{\frac{1}{\abs{\psi_T}}\psialphder}\prd{\beta}[\ecp{E_L}]
-            \right)
+            \right) \nonumber \\
+            &= 2\left(\prd{\beta}\ecp{\frac{E_L}{\abs{\psi_T}}\psialphder} -
+            \ecp{E_L}\prd{\beta}\ecp{\frac{1}{\abs{\psi_T}}\psialphder} -
+            2\ecp{\frac{1}{\abs{\psi_T}}\psialphder}\left(
+            \ecp{\frac{E_L}{\abs{\psi_T}}\psibetder} -
+            \ecp{E_L}\ecp{\frac{1}{\abs{\psi_T}}\psibetder}\right) \right)
             \label{eq:ecpElbetalpderfir}
         \end{align}
     Solving the derivative terms
@@ -1293,12 +1298,15 @@
             \frac{\int\abs{\psi_T}\prd{\beta}[\psi_T]\md^N
             r}{\psinorm}\right)\md^N r \nonumber \\
             &= \ecp{\frac{E_L}{\abs{\psi_T}^2} \prd{\alpha}[\abs{\psi_T}]
-            \prd{\beta}[\abs{\psi_T}]} + \ecp{\frac{E_L}{\abs{\psi_T}}
+            \prd{\beta}[\abs{\psi_T}]} + \ecp{\frac{1}{\abs{\psi_T}}
+            \prd{\alpha}[\abs{\psi_T}] \prd{\beta}[E_L]} +
+            \ecp{\frac{E_L}{\abs{\psi_T}}
             \frac{\prtl^2\abs{\psi_T}}{\prtl\alpha\prtl\beta}} -
             2\ecp{\frac{E_L}{\abs{\psi_T}}\prd{\alpha}[\psi_T]}
             \ecp{\frac{1}{\abs{\psi_T}}\prd{\beta}[\abs{\psi_T}]}
             \label{eq:ecpElbetalpderfirfir}
         \end{align}
+    and
         \begin{align}
             \prd{\beta}\ecp{\frac{1}{\abs{\psi_T}}\psialphder} &=
             \int\left(\frac{\prd{\alpha}[\abs{\psi_T}]
@@ -1320,18 +1328,22 @@
             \begin{aligned}
                 \frac{\prtl^2\ecp{E_L}}{\prtl\alpha\prtl\beta} &=
                 2\ecp{\frac{E_L}{\abs{\psi_T}^2} \prd{\alpha}[\abs{\psi_T}]
-                \prd{\beta}[\abs{\psi_T}]} + 2\ecp{\frac{E_L}{\abs{\psi_T}}
-                \frac{\prtl^2\abs{\psi_T}}{\prtl\alpha\prtl\beta}} - 2\ecp{E_L}
-                \left(\ecp{\frac{1}{\abs{\psi_T}^2} \prd{\alpha}[\abs{\psi_T}]
-                \prd{\beta}[\abs{\psi_T}]} - \ecp{\frac{1}{\abs{\psi_T}}
-                \frac{\prtl^2\abs{\psi_T}}{\prtl\alpha\prtl\beta}}\right) \\
-                &+ 4\ecp{\frac{1}{\abs{\psi_T}}\prd{\beta}[\abs{\psi_T}]}
-                \left(\ecp{E_L}\left(1+\ecp{\frac{1}{\abs{\psi_T}}
-                \prd{\alpha}[\abs{\psi_T}]}\right) -
-                \ecp{\frac{E_L}{\abs{\psi_T}}
-                \prd{\alpha}[\abs{\psi_T}]}\right) -
-                4\ecp{\frac{1}{\abs{\psi_T}} \prd{\alpha}[\abs{\psi_T}]}
-                \ecp{\frac{E_L}{\abs{\psi_T}} \prd{\beta}[\abs{\psi_T}]}
+                \prd{\beta}[\abs{\psi_T}]} + 2\ecp{\frac{1}{\abs{\psi_T}}
+                \prd{\alpha}[\abs{\psi_T}] \prd{\beta}[E_L]} +
+                2\ecp{\frac{E_L}{\abs{\psi_T}}
+                \frac{\prtl^2\abs{\psi_T}}{\prtl\alpha\prtl\beta}} -
+                4\ecp{\frac{E_L}{\abs{\psi_T}} \prd{\alpha}[\abs{\psi_T}]}
+                \ecp{\frac{1}{\abs{\psi_T}} \prd{\beta}[\abs{\psi_T}]} \\
+                &- 2\ecp{E_L} \ecp{\frac{1}{\abs{\psi_T}^2}
+                \prd{\alpha}[\abs{\psi_T}] \prd{\beta}[\abs{\psi_T}]} -
+                2\ecp{E_L} \ecp{\frac{1}{\abs{\psi_T}}
+                \frac{\prtl^2\abs{\psi_T}}{\prtl\alpha\prtl\beta}} + 4\ecp{E_L}
+                \ecp{\frac{1}{\abs{\psi_T}} \prd{\alpha}[\abs{\psi_T}]}
+                \ecp{\frac{1}{\abs{\psi_T}} \prd{\beta}[\abs{\psi_T}]} \\
+                &- 2\ecp{\frac{1}{\abs{\psi_T}} \prd{\alpha}[\abs{\psi_T}]}
+                \ecp{\frac{E_L}{\abs{\psi_T}} \prd{\beta}[\abs{\psi_T}]} +
+                2\ecp{E_L} \ecp{\frac{1}{\abs{\psi_T}}
+                \prd{\beta}[\abs{\psi_T}]}
             \end{aligned}
             \label{eq:ecpElbetalpderfin2}
         \end{equation}
@@ -1414,14 +1426,14 @@
     The final expression for the elements in the Hessen matrix is thus
         \begin{equation}
             \begin{aligned}
-                \prd{\alpha}[\ecp{E_L}][2] &=
-                \frac{\omega^2}{2}\left(1-\ecp{E_L}\right) \ecp{E_LR^2} -
-                4\omega\ecp{E_LR} \ecp{R} - \frac{\omega^2}{2}\ecp{E_L}
-                \ecp{R^2} + 2\omega^2\ecp{E_L}\ecp{R}^2 \\
-                \prd{\beta}[\ecp{E_L}][2] &= 2\left(1-\ecp{E_L}\right)
-                \ecp{E_Lh^2} - 8\ecp{E_Lh^2}\ecp{h^2} - 2\ecp{h^2} +
-                2\ecp{\sum\limits_{i\neq j}\frac{a}{\left(\beta +
-                \frac{1}{r_{ij}}\right)^3}} + 8\ecp{E_L}\ecp{h}^2 \\
+                \prd{\alpha}[\ecp{E_L}][2] &= \omega^2\ecp{E_LR^2} -
+                \omega\ecp{\prd{\alpha}[E_L]R} +
+                \frac{\omega^2}{2}\left(\ecp{E_LR^2} + \ecp{E_L}\ecp{R}^2 -
+                3\omega\ecp{E_LR}\ecp{R}\right) \\
+                \prd{\beta}[\ecp{E_L}][2] &= 4\ecp{E_Lh^2} -
+                2\ecp{\prd{\beta}[E_L]h} + 2\left(\ecp{E_Lh^2} +
+                2\ecp{E_L}\ecp{h}^2\right) -6\ecp{E_Lh}\ecp{h} +
+                4\left(\ecp{l}\ecp{E_L} + \ecp{E_Ll}\right) \\
                 \frac{\prtl^2\ecp{E_L}}{\prtl\alpha\prtl\beta} &=
                 2\omega\left[\ecp{E_LRh} - \ecp{R}\ecp{E_Lh}\right] -
                 2\ecp{h}\left[\ecp{E_L}\left(2 - \omega\ecp{R}\right) +
@@ -1433,7 +1445,9 @@
         \begin{equation}
             \begin{aligned}
                 R &\equiv \suml{i}{N}r^2_i \\
-                h &\equiv \gsum
+                h &\equiv \gsum \\
+                l &\equiv \sum\limits_{i\neq j} \frac{a}{\left(\beta +
+                \frac{1}{r_{ij}}\right)^3}
             \end{aligned}
             \label{eq:rhdef}
         \end{equation}
