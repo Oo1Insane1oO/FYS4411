@@ -131,34 +131,16 @@ bool Tests::test_padejastrow() {
 bool Tests::test_conjugateGradient() {
     /* check ouput from conjugateGradient in class Methods */
     // set hessen matrix
-    Eigen::MatrixXd Hessen = Eigen::MatrixXd::Zero(2,2);
-    double rsum = 0;
-    double gsum = 0;
-    double denom, a;
-    for (unsigned int i = 0; i < oldM.rows(); ++i) {
-        rsum += oldM.row(i).norm();
-        for (unsigned int j = 0; j < oldM.rows(); ++j) {
-            if (i != j) {
-                a = b->padejastrow(i,j);
-                denom = v->beta + 1/(oldM.row(i)-oldM.row(j)).norm();
-                gsum += a / (denom*denom);
-                Hessen(1,1) += a / (denom*denom*denom);
-            } // end if
-        } // end forj
-    } // end fori
-    rsum *= b->omega/2;
-    Hessen(0,0) = rsum*rsum;
-    Hessen(0,1) = rsum*gsum;
-    Hessen(1,0) = rsum*gsum;
-    Hessen(1,1) += gsum*gsum;
-
-    // run conjugate gradient method
-    Eigen::MatrixXd rhs = Eigen::MatrixXd::Zero(2,1);
+    Eigen::MatrixXd A = Eigen::MatrixXd::Zero(2,2);
     Eigen::MatrixXd startx = Eigen::MatrixXd::Zero(2,1);
-    startx(0) = 1.1;
-    startx(1) = 0.4;
-    Eigen::MatrixXd xnew = m->conjugateGradient(Hessen, rhs, startx);
-    return true;
+    Eigen::MatrixXd rhs = Eigen::MatrixXd::Zero(2,1);
+    A << 4, 1,
+         1, 3;
+    startx << 2, 1;
+    rhs << 1, 2;
+    Eigen::MatrixXd xnew = m->conjugateGradient(A, rhs, startx);
+    return ((fabs(xnew(0)-1./11)<=eps && fabs(xnew(1)-7./11)<=eps ? true :
+                false));
 } // end function test_conjugateGradient
 
 void Tests::run_tests(int t) {
@@ -169,12 +151,12 @@ void Tests::run_tests(int t) {
         } else {
             std::cout << "Energies wrong" << std::endl;
         } // end ifelse
-        if(test_2particle()) {
-            std::cout << "Energy unperturbed 2 electron good" << std::endl;
-        } else { 
-            std::cout << "Energy unperturbed 2 electron wrong" << std::endl;
-            std::cout << std::setprecision(15) << "  Energy is: " << v->energy << std::endl;
-        } // end ifelse
+//         if(test_2particle()) {
+//             std::cout << "Energy unperturbed 2 electron good" << std::endl;
+//         } else { 
+//             std::cout << "Energy unperturbed 2 electron wrong" << std::endl;
+//             std::cout << std::setprecision(15) << "  Energy is: " << v->energy << std::endl;
+//         } // end ifelse
         if(test_determinantratio()) {
             std::cout << "Determinant ratio good" << std::endl;
         } else { 

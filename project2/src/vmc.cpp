@@ -210,7 +210,9 @@ void VMC::calculate(bool perturb) {
     } // end if
 
     unsigned int halfSize = oldPositions.rows()/2;
-    double testRatio, tmpEnergy, tmpRsum, tmphsum, transitionRatio, denom;
+    double testRatio, tmpEnergy, tmpRsum, tmphsum, tmphsum3, tmpELalpsum,
+           tmpELbetsum, transitionRatio, denom;
+    double ELhsum3 = 0;
     double hsum3 = 0;
     double Rsum = 0;
     double hsum = 0;
@@ -221,6 +223,8 @@ void VMC::calculate(bool perturb) {
     double ELRsq = 0;
     double ELhsq = 0;
     double ELRh = 0;
+    double ELalpsum = 0;
+    double ELbetsum = 0;
     double determinantRatioD = 1;
     double determinantRatioU = 1;
     unsigned int cycles = 0;
@@ -339,14 +343,21 @@ void VMC::calculate(bool perturb) {
             // calculate values for Hessen matrix
             tmpRsum = 0;
             tmphsum = 0;
+            tmphsum3 = 0;
+            tmpELalpsum = 0;
+            tmpELbetsum = 0;
             for (unsigned int i = 0; i < newPositions.rows(); ++i) {
                 tmpRsum += newPositions.row(i).norm();
+                ELalpsum += alpha*b->omega*newPositions.row(i).norm() -
+                    2*(*(b->states[i][0]) + *(b->states[i][1]) + 1);
                 for (unsigned int j = 0; j < newPositions.rows(); ++j) {
                     if (i != j) {
                         denom = beta + 1 / (newPositions.row(i) -
                                 newPositions.row(j)).norm();
                         tmphsum = b->padejastrow(i,j) / (denom*denom);
-                        hsum3 += tmphsum / denom;
+                        tmphsum3 += tmphsum / denom;
+                        tmpELalpsum -= 0.5*b->padejastrow(i,j)*b->omega/(denom*denom*denom)*(newPositions(i,0)*(newPositions(i,0)-newPositions(j,0)) + newPositions(i,1)*(newPositions(i,1)-newPositions(j,0)));
+                        tmpELbetsum -= b->padejastrow(i,j)/(denom*denom*denom)*(2+3*beta*beta*(newPositions.row(i)-newPositions.row(j)).norm() - 2*(newPositions.row(i)-newPositions.row(j)).norm()/(denom*denom) - 4*(newPositions.row(i)-newPositions.row(j)).norm()/(denom*denom*denom));
                     } // end if
                 } // end forj
             } // end fori
@@ -359,6 +370,10 @@ void VMC::calculate(bool perturb) {
             ELRsq += tmpEnergy*tmpRsum*tmpRsum;
             ELhsq += tmpEnergy*tmphsum*tmphsum;
             ELRh += tmpEnergy*Rsum*hsum;
+            ELalpsum += tmpELalpsum*tmpRsum;
+            ELbetsum += tmpELbetsum*tmphsum;
+            hsum3 +=tmphsum3; 
+            ELhsum3 += tmphsum3*tmpEnergy;
 
             cycles++;
         } // end while
@@ -376,17 +391,26 @@ void VMC::calculate(bool perturb) {
         ELRsq /= cycles;
         ELhsq /= cycles;
         ELRh /= cycles;
+        ELalpsum /= cycles;
+        ELbetsum /= cycles;
+        ELhsum3 /= cycles;
         
         // set Hessen matrix
-        HessenMatrix(0,0) = 0.5*b->omega*b->omega*((1-energy)*ELRsq -
-                energy*Rsqsum + 4*energy*Rsum*Rsum) - 4*b->omega*ELR*Rsum;
-        HessenMatrix(1,0) = 2*(b->omega*(ELRh - Rsum*ELh) -
-                hsum*(energy*(2-b->omega*Rsum) + b->omega*ELR));
-        HessenMatrix(0,1) = HessenMatrix(1,0);
-        HessenMatrix(1,1) = 2*(((1-energy) - 4*hsqsum)*ELhsq - hsqsum + hsum3 +
-                4*energy*hsum*hsum);
+        HessenMatrix(0,0) = b->omega*b->omega*ELRsq - b->omega*ELalpsum +
+            0.5*b->omega*b->omega * (ELRsq + energy*Rsum*Rsum -
+                    3*b->omega*energy*Rsum);
+//         HessenMatrix(1,0) = 2*(b->omega*(ELRh - Rsum*ELh) -
+//                 hsum*(energy*(2-b->omega*Rsum) + b->omega*ELR));
+//         HessenMatrix(0,1) = HessenMatrix(1,0);
+//         std::cout << HessenMatrix(0,1) << " " << HessenMatrix(1,0) << std::endl;
+        HessenMatrix(0,1) = 0;
+        HessenMatrix(1,0) = 0;
+        HessenMatrix(1,1) = 4*ELhsq - 2*ELbetsum + 2*(ELhsq +
+                2*energy*hsum*hsum) - 6*ELh*hsum + 4*(hsum3*energy + ELhsum3);
 
         // optimalize with CG
+        rhs(0) = -energy;
+        rhs(1) = -energy;
         newAlphaBeta = meth->conjugateGradient(HessenMatrix, rhs, newAlphaBeta);
 
         // conditional break
@@ -401,7 +425,7 @@ void VMC::calculate(bool perturb) {
         beta = newAlphaBeta(1);
         std::cout << "alpha: " << alpha << ", beta: " << beta << std::endl;
 
-        // set set variables used in Monte Carlo loop
+        // Reset set variables used in Monte Carlo loop
         energy = 0;
         energySq = 0;
         Rsum = 0;
@@ -414,6 +438,9 @@ void VMC::calculate(bool perturb) {
         ELRsq = 0;
         ELhsq = 0;
         ELRh = 0;
+        ELalpsum = 0;
+        ELbetsum = 0;
+        ELhsum3 = 0;
         cycles = 0;
     } // end while true
 } // end function calculate
