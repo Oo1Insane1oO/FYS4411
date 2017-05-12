@@ -1343,7 +1343,8 @@
                 &- 2\ecp{\frac{1}{\abs{\psi_T}} \prd{\alpha}[\abs{\psi_T}]}
                 \ecp{\frac{E_L}{\abs{\psi_T}} \prd{\beta}[\abs{\psi_T}]} +
                 2\ecp{E_L} \ecp{\frac{1}{\abs{\psi_T}}
-                \prd{\beta}[\abs{\psi_T}]}
+                \prd{\beta}[\abs{\psi_T}]} \ecp{\frac{1}{\abs{\psi_T}}
+                \prd{\alpha}[\abs{\psi_T}]}
             \end{aligned}
             \label{eq:ecpElbetalpderfin2}
         \end{equation}
@@ -1426,18 +1427,14 @@
     The final expression for the elements in the Hessen matrix is thus
         \begin{equation}
             \begin{aligned}
-                \prd{\alpha}[\ecp{E_L}][2] &= \omega^2\ecp{E_LR^2} -
-                \omega\ecp{\prd{\alpha}[E_L]R} +
-                \frac{\omega^2}{2}\left(\ecp{E_LR^2} + \ecp{E_L}\ecp{R}^2 -
-                3\omega\ecp{E_LR}\ecp{R}\right) \\
-                \prd{\beta}[\ecp{E_L}][2] &= 4\ecp{E_Lh^2} -
-                2\ecp{\prd{\beta}[E_L]h} + 2\left(\ecp{E_Lh^2} +
-                2\ecp{E_L}\ecp{h}^2\right) -6\ecp{E_Lh}\ecp{h} +
-                4\left(\ecp{l}\ecp{E_L} + \ecp{E_Ll}\right) \\
-                \frac{\prtl^2\ecp{E_L}}{\prtl\alpha\prtl\beta} &=
-                2\omega\left[\ecp{E_LRh} - \ecp{R}\ecp{E_Lh}\right] -
-                2\ecp{h}\left[\ecp{E_L}\left(2 - \omega\ecp{R}\right) +
-                \omega\ecp{E_LR}\right]
+                \prd{\alpha}[\ecp{E_L}][2] &= \omega^2\left(\ecp{E_LR^2} -
+                \frac{1}{2}\ecp{E_L}\ecp{R^2} - 2\ecp{E_LR}\ecp{R} +
+                \ecp{E_L}\ecp{R}^2\right) -
+                \omega\left(\ecp{\prd{\alpha}[E_L]R} + 2\ecp{R}\right) \\
+                \prd{\beta}[\ecp{E_L}][2] &= 4\left(\ecp{E_Lh^2}
+                + \ecp{E_Ll} - 2\ecp{E_Lh}\ecp{l} + \ecp{E_L}\left(\ecp{h}^2 -
+                \ecp{h^2} - \ecp{l} - \ecp{h}\right)\right) -
+                2\ecp{\prd{\beta}[E_L]h} 
             \end{aligned}
             \label{eq:HessenElemFin}
         \end{equation}
