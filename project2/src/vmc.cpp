@@ -356,7 +356,7 @@ void VMC::calculate(bool perturb) {
                     H(newPositions(k,0),nkx-2)/H(newPositions(k,0),nkx);
                 Hyfactor = nky*(nky-1) *
                     H(newPositions(k,1),nky-2)/H(newPositions(k,1),nky);
-                ELalpRsum += 2*(nkx+nky+1) - Hxfactor - Hyfactor -
+                ELalpRsum += (nkx+nky+1) + 0.5*(Hxfactor + Hyfactor) -
                     alpha*b->omega*newPositions.row(k).squaredNorm();
                 for (unsigned int l = 0; l < newPositions.rows(); ++l) {
                     if (k != l) {
@@ -368,17 +368,19 @@ void VMC::calculate(bool perturb) {
                         denomcu = denom*denom*denom;
                         tmphsum += a / denomsq;
                         tmphsum3 += a / denomcu;
-                        tmpELalpRsum += 0.5*a*b->omega/denomcu *
+                        tmpELalpRsum += a*b->omega/(rkl*denomsq) *
                             (newPositions(k,0) *
                              (newPositions(k,0)-newPositions(l,0)) +
                              newPositions(k,1) *
                              (newPositions(k,1)-newPositions(l,1)));
-                        tmpELbethsum += a/denomcu*(2 + 3*beta*beta*rkl +
-                                2*rkl*(2*((Hxfactor-alpha*b->omega) *
-                                        (newPositions(k,0)-newPositions(l,0)) +
-                                        (Hyfactor-alpha*b->omega) *
-                                        (newPositions(k,1)-newPositions(l,1)))
-                                    - 1/denomsq));
+                        tmpELbethsum -= a/denomcu * (rkl/denom *
+                                (2*beta+a*(1+beta)/denom - 1/rkl) +
+                                2*(((nkx+Hxfactor)/newPositions(k,0) -
+                                        alpha*b->omega*newPositions(k,0)) *
+                                    (newPositions(k,0)-newPositions(l,0)) +
+                                    ((nky+Hyfactor)/newPositions(k,1) -
+                                     alpha*b->omega*newPositions(k,1)) *
+                                    (newPositions(k,1)-newPositions(l,1))));
                     } // end if
                 } // end forj
             } // end fori
@@ -417,21 +419,21 @@ void VMC::calculate(bool perturb) {
         ELhsum3 /= cycles;
         
         // set Hessen matrix
-        HessenMatrix(0,0) = b->omega*b->omega*ELRsq - b->omega*ELalpRsum +
-            0.5*b->omega*b->omega * (ELRsq + energy*Rsum*Rsum -
-                    3*b->omega*energy*Rsum);
+        HessenMatrix(0,0) = b->omega*(b->omega*(ELRsq - 0.5*energy*Rsqsum -
+                    2*ELR*Rsum + energy*Rsum*Rsum) - ELalpRsum + 2*Rsum);
 //         HessenMatrix(1,0) = 2*(b->omega*(ELRh - Rsum*ELh) -
 //                 hsum*(energy*(2-b->omega*Rsum) + b->omega*ELR));
 //         HessenMatrix(0,1) = HessenMatrix(1,0);
 //         std::cout << HessenMatrix(0,1) << " " << HessenMatrix(1,0) << std::endl;
         HessenMatrix(0,1) = 0;
         HessenMatrix(1,0) = 0;
-        HessenMatrix(1,1) = 4*ELhsq - 2*ELbethsum + 2*(ELhsq +
-                2*energy*hsum*hsum) - 6*ELh*hsum + 4*(hsum3*energy + ELhsum3);
-
+        HessenMatrix(1,1) = 2*(2*(ELhsq + ELhsum3 - 2*ELh*hsum3 +
+                    energy*(hsum*hsum - hsqsum - hsum3 - hsum)) - ELbethsum);
         // optimalize with CG
-        rhs(0) = -energy;
-        rhs(1) = -energy;
+//         rhs(0) = -energy;
+//         rhs(1) = -energy;
+        rhs(0) = b->omega*(ELR - energy*Rsum);
+        rhs(1) = 2*(ELh - energy*hsum);
         newAlphaBeta = meth->conjugateGradient(HessenMatrix, rhs, newAlphaBeta);
 
         // conditional break
@@ -442,9 +444,9 @@ void VMC::calculate(bool perturb) {
 //         } // end if
 
         // set new variational parameters
+        std::cout << "alpha: " << alpha << ", beta: " << beta << ", Energy: " << energy << std::endl;
         alpha = newAlphaBeta(0);
         beta = newAlphaBeta(1);
-        std::cout << "alpha: " << alpha << ", beta: " << beta << std::endl;
 
         // Reset set variables used in Monte Carlo loop
         energy = 0;
