@@ -1336,9 +1336,9 @@
                 \frac{\prtl^2\psi_T}{\prtl\alpha\prtl\beta}} + 4\ecp{E_L}
                 \ecp{\frac{1}{\psi_T} \prd{\alpha}[\psi_T]}
                 \ecp{\frac{1}{\psi_T} \prd{\beta}[\psi_T]} \\
-                &- 2\ecp{\frac{1}{\psi_T} \prd{\alpha}[\psi_T]}
+                &- 4\ecp{\frac{1}{\psi_T} \prd{\alpha}[\psi_T]}
                 \ecp{\frac{E_L}{\psi_T} \prd{\beta}[\psi_T]} +
-                2\ecp{E_L} \ecp{\frac{1}{\psi_T}
+                4\ecp{E_L} \ecp{\frac{1}{\psi_T}
                 \prd{\beta}[\psi_T]} \ecp{\frac{1}{\psi_T}
                 \prd{\alpha}[\psi_T]}
             \end{aligned}
@@ -1417,20 +1417,20 @@
             \prd{\beta}\left(-\psi_T\frac{\omega}{2}\suml{i}{N}r^2_i\right)
             \nonumber \\
             &= \psi_T\frac{\omega}{2}\suml{i}{N}r^2_i\sum_{i\neq
-            j}\frac{1}{\left(\beta + \frac{1}{r_{ij}}\right)}
+            j}\frac{1}{\left(\beta + \frac{1}{r_{ij}}\right)^2}
             \label{eq:psideralpbetsec}
         \end{align}
     The final expression for the elements in the Hessen matrix is thus
         \begin{equation}
             \begin{aligned}
-                \prd{\alpha}[\ecp{E_L}][2] &= \omega^2\left(\ecp{E_LR^2} -
-                \frac{1}{2}\ecp{E_L}\ecp{R^2} - 2\ecp{E_LR}\ecp{R} +
-                \ecp{E_L}\ecp{R}^2\right) -
-                \omega\left(\ecp{\prd{\alpha}[E_L]R} + 2\ecp{R}\right) \\
-                \prd{\beta}[\ecp{E_L}][2] &= 4\left(\ecp{E_Lh^2}
-                + \ecp{E_Ll} - 2\ecp{E_Lh}\ecp{l} + \ecp{E_L}\left(\ecp{h}^2 -
-                \ecp{h^2} - \ecp{l} - \ecp{h}\right)\right) -
-                2\ecp{\prd{\beta}[E_L]h} 
+                \prd{\alpha}[\ecp{E_L}][2] &=
+                \omega\left(\omega\left(\ecp{R^2E_L} -
+                2\ecp{RE_L}\ecp{R}\right) + 2\ecp{E_L}\ecp{R}^2 -
+                \ecp{R\prd{\alpha}[E_L]}\right) \\
+                \prd{\beta}[\ecp{E_L}][2] &= 2\left(2\left(\ecp{E_LB_2^2} +
+                \ecp{E_LB_3} - 2\ecp{E_LB_2}\ecp{B_2} +
+                \ecp{E_L}\left(\ecp{B_3} + \ecp{B_2}^2\right)\right) -
+                \ecp{B_2\prd{\beta}[E_L]}\right)
             \end{aligned}
             \label{eq:HessenElemFin}
         \end{equation}
@@ -1438,10 +1438,8 @@
         \begin{equation}
             \begin{aligned}
                 R &\equiv \suml{i}{N}r^2_i \\
-                h &\equiv \sum\limits_{i\neq j} \frac{a}{\left(\beta +
-                \frac{1}{r_{ij}}\right)^2} \\
-                l &\equiv \sum\limits_{i\neq j} \frac{a}{\left(\beta +
-                \frac{1}{r_{ij}}\right)^3}
+                B_n &\equiv \sum\limits_{i\neq j} \frac{a}{\left(\beta +
+                \frac{1}{r_{ij}}\right)^n} \\
             \end{aligned}
             \label{eq:rhdef}
         \end{equation}

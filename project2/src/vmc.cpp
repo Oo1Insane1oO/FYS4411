@@ -210,22 +210,22 @@ void VMC::calculate(bool perturb) {
     } // end if
 
     unsigned int halfSize = oldPositions.rows()/2;
-    double testRatio, tmpEnergy, tmpRsum, tmphsum, tmphsum3, tmpELalpRsum,
-           tmpELbethsum, transitionRatio, denom, denomsq, denomcu, a, rkl,
+    double testRatio, tmpEnergy, tmpR, tmpB2, tmpB3, tmpELalpR,
+           tmpELbetB2, transitionRatio, denom, denomsq, denomcu, a, rkl,
            Hxfactor, Hyfactor;
-    double ELhsum3 = 0;
-    double hsum3 = 0;
-    double Rsum = 0;
-    double hsum = 0;
-    double hsqsum = 0;
-    double Rsqsum = 0;
+    double ELB3 = 0;
+    double B3 = 0;
+    double R = 0;
+    double B2 = 0;
+    double B2sq = 0;
+    double Rsq = 0;
     double ELR = 0;
-    double ELh = 0;
+    double ELB2 = 0;
     double ELRsq = 0;
-    double ELhsq = 0;
-    double ELRh = 0;
-    double ELalpRsum = 0;
-    double ELbethsum = 0;
+    double ELB2sq = 0;
+    double ELRB2 = 0;
+    double ELalpR = 0;
+    double ELbetB2 = 0;
     double determinantRatioD = 1;
     double determinantRatioU = 1;
     unsigned int cycles = 0;
@@ -268,7 +268,7 @@ void VMC::calculate(bool perturb) {
                     } // end ifelse
                 } // end forj
 
-                // update (probability distribution function)
+                // update Slater matrix
                 if (i < halfSize) {
                     b->updateTrialWaveFunction(newD, newPositions.row(i),
                             alpha, i/2);
@@ -283,7 +283,7 @@ void VMC::calculate(bool perturb) {
                     qForceNew.row(i) *= 2;
                 } // end if
 
-                // calculate Greens function ratio
+                // calculate transition function ratio for Metropolis test
                 if (imp) {
                     transitionRatio = exp(0.125*step*(qForceOld.row(i).norm() -
                                 qForceNew.row(i).norm()) +
@@ -293,6 +293,7 @@ void VMC::calculate(bool perturb) {
                                 (qForceNew(i,1)+qForceOld(i,1))));
                 } // end if
 
+                // calculate determinant ratio
                 if ((i<halfSize)) {
                     determinantRatioD = meth->determinantRatio(newD, oldInvD,
                             i/2);
@@ -301,6 +302,7 @@ void VMC::calculate(bool perturb) {
                             i/2);
                 } // end ifelseif
 
+                // set Metropolis test
                 testRatio = determinantRatioD*determinantRatioD *
                     determinantRatioU*determinantRatioU * (!perturb ?  1 :
                             b->jastrowRatio(oldPositions, newPositions, beta,
@@ -343,20 +345,20 @@ void VMC::calculate(bool perturb) {
             energySq += tmpEnergy*tmpEnergy;
 
             // calculate values for Hessen matrix
-            tmpRsum = 0;
-            tmphsum = 0;
-            tmphsum3 = 0;
-            tmpELalpRsum = 0;
-            tmpELbethsum = 0;
+            tmpR = 0;
+            tmpB2 = 0;
+            tmpB3 = 0;
+            tmpELalpR = 0;
+            tmpELbetB2 = 0;
             for (unsigned int k = 0; k < newPositions.rows(); ++k) {
                 nkx = *(b->states[k][0]);
                 nky = *(b->states[k][1]);
-                tmpRsum -= newPositions.row(k).norm();
+                tmpR -= newPositions.row(k).norm();
                 Hxfactor = nkx*(nkx-1) *
                     H(newPositions(k,0),nkx-2)/H(newPositions(k,0),nkx);
                 Hyfactor = nky*(nky-1) *
                     H(newPositions(k,1),nky-2)/H(newPositions(k,1),nky);
-                ELalpRsum += (nkx+nky+1) + 0.5*(Hxfactor + Hyfactor) -
+                ELalpR += (nkx+nky+1) + 0.5*(Hxfactor + Hyfactor) -
                     alpha*b->omega*newPositions.row(k).squaredNorm();
                 for (unsigned int l = 0; l < newPositions.rows(); ++l) {
                     if (k != l) {
@@ -366,14 +368,14 @@ void VMC::calculate(bool perturb) {
                         denom = beta + 1 / rkl;
                         denomsq = denom*denom;
                         denomcu = denom*denom*denom;
-                        tmphsum += a / denomsq;
-                        tmphsum3 += a / denomcu;
-                        tmpELalpRsum += a*b->omega/(rkl*denomsq) *
+                        tmpB2 += a / denomsq;
+                        tmpB3 += a / denomcu;
+                        tmpELalpR += a*b->omega/(rkl*denomsq) *
                             (newPositions(k,0) *
                              (newPositions(k,0)-newPositions(l,0)) +
                              newPositions(k,1) *
                              (newPositions(k,1)-newPositions(l,1)));
-                        tmpELbethsum -= a/denomcu * (rkl/denom *
+                        tmpELbetB2 -= a/denomcu * (rkl/denom *
                                 (2*beta+a*(1+beta)/denom - 1/rkl) +
                                 2*(((nkx+Hxfactor)/newPositions(k,0) -
                                         alpha*b->omega*newPositions(k,0)) *
@@ -384,19 +386,19 @@ void VMC::calculate(bool perturb) {
                     } // end if
                 } // end forj
             } // end fori
-            Rsum += tmpRsum;
-            hsum += tmphsum;
-            Rsqsum += tmpRsum*tmpRsum;
-            hsqsum += tmphsum*tmphsum;
-            ELR += tmpEnergy*tmpRsum;
-            ELh += tmpEnergy*tmphsum;
-            ELRsq += tmpEnergy*tmpRsum*tmpRsum;
-            ELhsq += tmpEnergy*tmphsum*tmphsum;
-            ELRh += tmpEnergy*Rsum*hsum;
-            ELalpRsum += tmpELalpRsum*tmpRsum;
-            ELbethsum += tmpELbethsum*tmphsum;
-            hsum3 += tmphsum3; 
-            ELhsum3 += tmphsum3*tmpEnergy;
+            R += tmpR;
+            B2 += tmpB2;
+            Rsq += tmpR*tmpR;
+            B2sq += tmpB2*tmpB2;
+            ELR += tmpEnergy*tmpR;
+            ELB2 += tmpEnergy*tmpB2;
+            ELRsq += tmpEnergy*tmpR*tmpR;
+            ELB2sq += tmpEnergy*tmpB2*tmpB2;
+            ELRB2 += tmpEnergy*R*B2;
+            ELalpR += tmpELalpR*tmpR;
+            ELbetB2 += tmpELbetB2*tmpB2;
+            B3 += B3; 
+            ELB3 += B3*tmpEnergy;
 
             cycles++;
         } // end while
@@ -404,36 +406,38 @@ void VMC::calculate(bool perturb) {
         // calculate final energy estimation
         energy /= cycles;
         energySq /= cycles;
-        Rsum /= cycles;
-        hsum /= cycles;
-        Rsqsum /= cycles;
-        hsqsum /= cycles;
-        hsum3 /= cycles;
+        R /= cycles;
+        B2 /= cycles;
+        Rsq /= cycles;
+        B2sq /= cycles;
+        B3 /= cycles;
         ELR /= cycles;
-        ELh /= cycles;
+        ELB2 /= cycles;
         ELRsq /= cycles;
-        ELhsq /= cycles;
-        ELRh /= cycles;
-        ELalpRsum /= cycles;
-        ELbethsum /= cycles;
-        ELhsum3 /= cycles;
+        ELB2sq /= cycles;
+        ELRB2 /= cycles;
+        ELalpR /= cycles;
+        ELbetB2 /= cycles;
+        ELB3 /= cycles;
+
+        std::cout << ELRsq << " " << ELR*R << " " << energy*Rsq << std::endl;
         
         // set Hessen matrix
-        HessenMatrix(0,0) = b->omega*(b->omega*(ELRsq - 0.5*energy*Rsqsum -
-                    2*ELR*Rsum + energy*Rsum*Rsum) - ELalpRsum + 2*Rsum);
-//         HessenMatrix(1,0) = 2*(b->omega*(ELRh - Rsum*ELh) -
-//                 hsum*(energy*(2-b->omega*Rsum) + b->omega*ELR));
+        HessenMatrix(0,0) = b->omega*(b->omega*(ELRsq - 2*energy*R) -
+                2*ELR*Rsq - ELalpR);
+//         HessenMatrix(1,0) = 2*(b->omega*(ELRh - R*ELh) -
+//                 h*(energy*(2-b->omega*R) + b->omega*ELR));
 //         HessenMatrix(0,1) = HessenMatrix(1,0);
 //         std::cout << HessenMatrix(0,1) << " " << HessenMatrix(1,0) << std::endl;
         HessenMatrix(0,1) = 0;
         HessenMatrix(1,0) = 0;
-        HessenMatrix(1,1) = 2*(2*(ELhsq + ELhsum3 - 2*ELh*hsum3 +
-                    energy*(hsum*hsum - hsqsum - hsum3 - hsum)) - ELbethsum);
+        HessenMatrix(1,1) = 2*(2*(ELB2sq + ELB3 - 2*ELB2*B2 + energy*(B3
+                        + B2*B2)) - ELbetB2);
         // optimalize with CG
 //         rhs(0) = -energy;
 //         rhs(1) = -energy;
-        rhs(0) = b->omega*(ELR - energy*Rsum);
-        rhs(1) = 2*(ELh - energy*hsum);
+        rhs(0) = b->omega*(ELR - energy*R);
+        rhs(1) = 2*(ELB2 - energy*B2);
         newAlphaBeta = meth->conjugateGradient(HessenMatrix, rhs, newAlphaBeta);
 
         // conditional break
@@ -451,19 +455,19 @@ void VMC::calculate(bool perturb) {
         // Reset set variables used in Monte Carlo loop
         energy = 0;
         energySq = 0;
-        Rsum = 0;
-        hsum = 0;
-        Rsqsum = 0;
-        hsqsum = 0;
-        hsum3 = 0;
+        R = 0;
+        B2 = 0;
+        Rsq = 0;
+        B2sq = 0;
+        B3 = 0;
         ELR = 0;
-        ELh = 0;
+        ELB2 = 0;
         ELRsq = 0;
-        ELhsq = 0;
-        ELRh = 0;
-        ELalpRsum = 0;
-        ELbethsum = 0;
-        ELhsum3 = 0;
+        ELB2sq = 0;
+        ELRB2 = 0;
+        ELalpR = 0;
+        ELbetB2 = 0;
+        ELB3 = 0;
         cycles = 0;
     } // end while true
 } // end function calculate
