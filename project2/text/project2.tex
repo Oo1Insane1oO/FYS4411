@@ -1,9 +1,9 @@
 \documentclass[a4paper, hidelinks, 10pt]{article}\usepackage[utf8]{inputenc}
 % \usepackage[T1]{fontenc}
-\usepackage{libertine}
-\usepackage[libertine]{newtxmath}
-% \usepackage{charter}
-% \usepackage[expert, charter]{mathdesign}
+% \usepackage{libertine}
+% \usepackage[libertine]{newtxmath}
+\usepackage{charter}
+\usepackage[expert, charter]{mathdesign}
 \usepackage{listings}
 \usepackage[pdftex]{graphicx}
 \usepackage{color}
@@ -1154,11 +1154,11 @@
 \subsubsection{Analytic Expression for Hessen Matrix}
 \label{ssub:analytic_expression_for_hessen_matrix}
 \newcommand{\adj}[1]{\text{adj}\left(#1\right)}
-\newcommand{\psinorm}{\int\abs{\psi_T}^2\md^N r}
-\newcommand{\psialphder}{\prd{\alpha}[\abs{\psi_T}]}
-\newcommand{\psialphsecder}{\prd{\alpha}[\abs{\psi_T}][2]}
-\newcommand{\psibetder}{\prd{\beta}[\abs{\psi_T}]}
-\newcommand{\psibetsecder}{\prd{\beta}[\abs{\psi_T}][2]}
+\newcommand{\psinorm}{\int\psi_T^2\md\tau}
+\newcommand{\psialphder}{\prd{\alpha}[\psi_T]}
+\newcommand{\psialphsecder}{\prd{\alpha}[\psi_T][2]}
+\newcommand{\psibetder}{\prd{\beta}[\psi_T]}
+\newcommand{\psibetsecder}{\prd{\beta}[\psi_T][2]}
 \newcommand{\gsum}{\sum\limits_{i\neq j} \frac{a}{\left(\beta + \frac{1}{r_{ij}}\right)}}
     The Hessen matrix is needed in order to minimize with the conjugate
     gradient method as described in \Autoref{sub:conjugate_gradient_method}.
@@ -1180,64 +1180,64 @@
     the product rule and the hermiticity of the Hamiltonian, we have
         \begin{align}
             \prd{\alpha}[\ecp{E_L}] &=
-            \prd{\alpha}\left(\int\frac{\abs{\psi_T}^2E_L}{\psinorm}\right)
+            \prd{\alpha}\left(\int\frac{\psi_T^2E_L}{\psinorm}\right)
             \nonumber \\
-            &= \int\left(\frac{\psinorm\left(2\abs{\psi_T}E_L\psialphder +
-            \abs{\psi_T}^2\prd{\alpha}[E_L]\right) -
-            2\abs{\psi_T}^2E_L\int\abs{\psi_T}\psialphder\md^N
-            r}{\left(\psinorm\right)^2}\right) \md^N r \nonumber \\
-            &= 2\ecp{\frac{E_L}{\abs{\psi_T}}\psialphder} -
-            2\ecp{E_L}\ecp{\frac{1}{\abs{\psi_T}}\psialphder}
+            &= \int\left(\frac{\psinorm\left(2\psi_TE_L\psialphder +
+            \psi_T^2\prd{\alpha}[E_L]\right) -
+            2\psi_T^2E_L\int\psi_T\psialphder\md\tau}
+            {\left(\psinorm\right)^2}\right) \md\tau \nonumber \\
+            &= 2\ecp{\frac{E_L}{\psi_T}\psialphder} -
+            2\ecp{E_L}\ecp{\frac{1}{\psi_T}\psialphder}
             \label{eq:deralpahecpEl}
         \end{align}
     In the last step the hermiticity of the Hamiltonian was used. \\
     The second derivative is then
         \begin{align}
             \prd{\alpha}[\ecp{E_L}][2] &=
-            2\left(\prd{\alpha}\ecp{\frac{E_L}{\abs{\psi_T}}\psialphder} -
-            \ecp{E_L}\prd{\alpha}\ecp{\frac{1}{\abs{\psi_T}}\psialphder} -
-            \ecp{\frac{1}{\abs{\psi_T}}\psialphder}
+            2\left(\prd{\alpha}\ecp{\frac{E_L}{\psi_T}\psialphder} -
+            \ecp{E_L}\prd{\alpha}\ecp{\frac{1}{\psi_T}\psialphder} -
+            \ecp{\frac{1}{\psi_T}\psialphder}
             \prd{\alpha}[\ecp{E_L}]\right) \nonumber \\
-            &= 2\left(\prd{\alpha}\ecp{\frac{E_L}{\abs{\psi_T}}\psialphder} -
-            \ecp{E_L}\prd{\alpha}\ecp{\frac{1}{\abs{\psi_T}}\psialphder} -
-            2\ecp{\frac{1}{\abs{\psi_T}}\psialphder}
-            \left(\ecp{\frac{E_L}{\abs{\psi_T}}\psialphder} -
-            \ecp{E_L}\ecp{\frac{1}{\abs{\psi_T}}\psialphder}\right)\right)
+            &= 2\left(\prd{\alpha}\ecp{\frac{E_L}{\psi_T}\psialphder} -
+            \ecp{E_L}\prd{\alpha}\ecp{\frac{1}{\psi_T}\psialphder} -
+            2\ecp{\frac{1}{\psi_T}\psialphder}
+            \left(\ecp{\frac{E_L}{\psi_T}\psialphder} -
+            \ecp{E_L}\ecp{\frac{1}{\psi_T}\psialphder}\right)\right)
             \label{eq:der2alpahecpElfir}
         \end{align}
     We solve the derivatives individually
         \begin{align}
-            \prd{\alpha}\ecp{\frac{E_L}{\abs{\psi_T}}\psialphder} &=
+            \prd{\alpha}\ecp{\frac{E_L}{\psi_T}\psialphder} &=
             \prd{\alpha}\left(\int
-            \frac{\abs{\psi_T}E_L\psialphder}{\psinorm}\md^N r\right) \nonumber
+            \frac{\psi_TE_L\psialphder}{\psinorm}\md\tau\right) \nonumber
             \\ 
             &= \int\left(\frac{E_L\left(\psialphder\right)^2 +
-            \abs{\psi_T}\prd{\alpha}[E_L]\psialphder +
-            \abs{\psi_T}E_L\psialphsecder}{\psinorm} -
-            2\frac{\abs{\psi_T}E_L\psialphder}{\psinorm}
-            \frac{\int\abs{\psi_T}\psialphder\md^N r}{\psinorm}\right) \md^N r
+            \psi_T\prd{\alpha}[E_L]\psialphder +
+            \psi_TE_L\psialphsecder}{\psinorm} -
+            2\frac{\psi_TE_L\psialphder}{\psinorm}
+            \frac{\int\psi_T\psialphder\md\tau}{\psinorm}\right) \md\tau
             \nonumber \\
-            &= \ecp{\frac{E_L}{\abs{\psi_T}^2}\left(\psialphder\right)^2} +
-            \ecp{\frac{1}{\abs{\psi_T}} \prd{\alpha}[E_L]
-            \prd{\alpha}[\abs{\psi_T}]} +
-            \ecp{\frac{E_L}{\abs{\psi_T}}\psialphsecder} -
-            2\ecp{\frac{E_L}{\abs{\psi_T}}\psialphder}
-            \ecp{\frac{1}{\abs{\psi_T}}\psialphder}
+            &= \ecp{\frac{E_L}{\psi_T^2}\left(\psialphder\right)^2} +
+            \ecp{\frac{1}{\psi_T} \prd{\alpha}[E_L]
+            \prd{\alpha}[\psi_T]} +
+            \ecp{\frac{E_L}{\psi_T}\psialphsecder} -
+            2\ecp{\frac{E_L}{\psi_T}\psialphder}
+            \ecp{\frac{1}{\psi_T}\psialphder}
             \label{eq:der2alpahecpElfirfir}
         \end{align}
     and
         \begin{align}
-            \prd{\alpha}\ecp{\frac{1}{\abs{\psi_T}}\psialphder} &= \prd{\alpha}
-            \left(\int\frac{\abs{\psi_T}\psialphder}{\psinorm}\md^N r\right)
+            \prd{\alpha}\ecp{\frac{1}{\psi_T}\psialphder} &= \prd{\alpha}
+            \left(\int\frac{\psi_T\psialphder}{\psinorm}\md\tau\right)
             \nonumber \\
             &= \int \left(\frac{\left(\psialphder\right)^2 +
-            \abs{\psi_T}\psialphsecder}{\psinorm} -
-            2\frac{\abs{\psi_T}\psialphder}{\psinorm} \frac{\int
-            \abs{\psi_T}\psialphder\md^N r}{\psinorm}\right)\md^N r \nonumber
+            \psi_T\psialphsecder}{\psinorm} -
+            2\frac{\psi_T\psialphder}{\psinorm} \frac{\int
+            \psi_T\psialphder\md\tau}{\psinorm}\right)\md\tau \nonumber
             \\
-            &= \ecp{\frac{1}{\abs{\psi_T}^2}\left(\psialphder\right)^2} +
-            \ecp{\frac{1}{\abs{\psi_T}}\psialphsecder} -
-            2\ecp{\frac{1}{\abs{\psi_T}}\psialphder}^2
+            &= \ecp{\frac{1}{\psi_T^2}\left(\psialphder\right)^2} +
+            \ecp{\frac{1}{\psi_T}\psialphsecder} -
+            2\ecp{\frac{1}{\psi_T}\psialphder}^2
             \label{eq:der2alpahecpElfirsec}
         \end{align}
     Gathering \Autoref{eq:der2alpahecpElfirfir,eq:der2alpahecpElfirsec} with
@@ -1245,81 +1245,77 @@
     expectation value of the local energy with respect to $\alpha$ is
         \begin{align}
             \prd{\alpha}[\ecp{E_L}][2] &=
-            2\ecp{\frac{E_L}{\abs{\psi_T}^2}\left(\psialphder\right)^2} +
-            2\ecp{\frac{1}{\abs{\psi_T}} \prd{\alpha}[E_L]
-            \prd{\alpha}[\abs{\psi_T}]} +
-            2\ecp{\frac{E_L}{\abs{\psi_T}}\psialphsecder} -
-            6\ecp{\frac{E_L}{\abs{\psi_T}}\psialphder}
-            \ecp{\frac{1}{\abs{\psi_T}}\psialphder} \nonumber \\
-            &- 2\ecp{E_L} \left(\ecp{\frac{1}{\abs{\psi_T}^2}
-            \left(\psialphder\right)^2} -
-            \ecp{\frac{1}{\abs{\psi_T}}\psialphsecder} -
-            \ecp{\frac{1}{\abs{\psi_T}}\psialphder}^2\right) \\
+            2\left(\ecp{\frac{E_L}{\psi_T^2}\left(\psialphder\right)^2} +
+            \ecp{\frac{1}{\psi_T} \prd{\alpha}[E_L] \prd{\alpha}[\psi_T]} +
+            \ecp{\frac{E_L}{\psi_T}\psialphsecder} -
+            4\ecp{\frac{E_L}{\psi_T}\psialphder}
+            \ecp{\frac{1}{\psi_T}\psialphder}\right) \nonumber \\
+            &- 2\ecp{E_L} \left(\ecp{\frac{1}{\psi_T^2}
+            \left(\psialphder\right)^2} - \ecp{\frac{1}{\psi_T}\psialphsecder}
+            - 2\ecp{\frac{1}{\psi_T}\psialphder}^2\right) \\
             \label{eq:ecpElalphasecder}
         \end{align}
     For beta we have the same expression as for $\alpha$(just with $\alpha$
     replaced by $\beta$).
         \begin{align}
             \prd{\beta}[\ecp{E_L}][2] &=
-            2\ecp{\frac{E_L}{\abs{\psi_T}^2}\left(\psibetder\right)^2} +
-            2\ecp{\frac{1}{\abs{\psi_T}} \prd{\beta}[E_L]
-            \prd{\beta}[\abs{\psi_T}]} +
-            2\ecp{\frac{E_L}{\abs{\psi_T}}\psibetsecder} -
-            6\ecp{\frac{E_L}{\abs{\psi_T}}\psibetder}
-            \ecp{\frac{1}{\abs{\psi_T}}\psibetder} \nonumber \\
-            &- 2\ecp{E_L} \left(\ecp{\frac{1}{\abs{\psi_T}^2}
-            \left(\psibetder\right)^2} -
-            \ecp{\frac{1}{\abs{\psi_T}}\psibetsecder} -
-            \ecp{\frac{1}{\abs{\psi_T}}\psibetder}^2\right) \\
+            2\left(\ecp{\frac{E_L}{\psi_T^2}\left(\psibetder\right)^2} +
+            \ecp{\frac{1}{\psi_T} \prd{\beta}[E_L] \prd{\beta}[\psi_T]} +
+            \ecp{\frac{E_L}{\psi_T}\psibetsecder} -
+            4\ecp{\frac{E_L}{\psi_T}\psibetder}
+            \ecp{\frac{1}{\psi_T}\psibetder}\right) \nonumber \\
+            &- 2\ecp{E_L} \left(\ecp{\frac{1}{\psi_T^2}
+            \left(\psibetder\right)^2} - \ecp{\frac{1}{\psi_T}\psibetsecder}
+            - 2\ecp{\frac{1}{\psi_T}\psibetder}^2\right) \\
             \label{eq:ecpElbetasecder}
         \end{align}
     As for the off-diagonal terms we have similar derivations
         \begin{align}
             \frac{\prtl^2\ecp{E_L}}{\prtl\alpha\prtl\beta} &=
-            2\left(\prd{\beta}\ecp{\frac{E_L}{\abs{\psi_T}}\psialphder} -
-            \ecp{E_L}\prd{\beta}\ecp{\frac{1}{\abs{\psi_T}}\psialphder} -
-            \ecp{\frac{1}{\abs{\psi_T}}\psialphder}\prd{\beta}[\ecp{E_L}]
+            2\left(\prd{\beta}\ecp{\frac{E_L}{\psi_T}\psialphder} -
+            \ecp{E_L}\prd{\beta}\ecp{\frac{1}{\psi_T}\psialphder} -
+            \ecp{\frac{1}{\psi_T}\psialphder}\prd{\beta}[\ecp{E_L}]
             \right) \nonumber \\
-            &= 2\left(\prd{\beta}\ecp{\frac{E_L}{\abs{\psi_T}}\psialphder} -
-            \ecp{E_L}\prd{\beta}\ecp{\frac{1}{\abs{\psi_T}}\psialphder} -
-            2\ecp{\frac{1}{\abs{\psi_T}}\psialphder}\left(
-            \ecp{\frac{E_L}{\abs{\psi_T}}\psibetder} -
-            \ecp{E_L}\ecp{\frac{1}{\abs{\psi_T}}\psibetder}\right) \right)
+            &= 2\left(\prd{\beta}\ecp{\frac{E_L}{\psi_T}\psialphder} -
+            \ecp{E_L}\prd{\beta}\ecp{\frac{1}{\psi_T}\psialphder} -
+            2\ecp{\frac{1}{\psi_T}\psialphder}\left(
+            \ecp{\frac{E_L}{\psi_T}\psibetder} -
+            \ecp{E_L}\ecp{\frac{1}{\psi_T}\psibetder}\right) \right)
             \label{eq:ecpElbetalpderfir}
         \end{align}
     Solving the derivative terms
         \begin{align}
-            \prd{\beta}\ecp{\frac{E_L}{\abs{\psi_T}}\psialphder} &=
-            \int\left(\frac{\prd{\alpha}[\abs{\psi_T}]
-            \prd{\beta}[\abs{\psi_T}]E_L +
-            \abs{\psi_T}\prd{\alpha}[\psi_T]\prd{\beta}[E_L] + \abs{\psi_T}E_L
-            \frac{\prtl^2\abs{\psi_T}}{\prtl\alpha\prtl\beta}}{\psinorm} -
+            \prd{\beta}\ecp{\frac{E_L}{\psi_T}\psialphder} &=
+            \int\left(\frac{\prd{\alpha}[\psi_T]
+            \prd{\beta}[\psi_T]E_L +
+            \psi_T\prd{\alpha}[\psi_T]\prd{\beta}[E_L] + \psi_TE_L
+            \frac{\prtl^2\psi_T}{\prtl\alpha\prtl\beta}}{\psinorm} -
             2\frac{\psi_TE_L\prd{\alpha}[\psi_T]}{\psinorm}
-            \frac{\int\abs{\psi_T}\prd{\beta}[\psi_T]\md^N
-            r}{\psinorm}\right)\md^N r \nonumber \\
-            &= \ecp{\frac{E_L}{\abs{\psi_T}^2} \prd{\alpha}[\abs{\psi_T}]
-            \prd{\beta}[\abs{\psi_T}]} + \ecp{\frac{1}{\abs{\psi_T}}
-            \prd{\alpha}[\abs{\psi_T}] \prd{\beta}[E_L]} +
-            \ecp{\frac{E_L}{\abs{\psi_T}}
-            \frac{\prtl^2\abs{\psi_T}}{\prtl\alpha\prtl\beta}} -
-            2\ecp{\frac{E_L}{\abs{\psi_T}}\prd{\alpha}[\psi_T]}
-            \ecp{\frac{1}{\abs{\psi_T}}\prd{\beta}[\abs{\psi_T}]}
+            \frac{\int\psi_T\prd{\beta}[\psi_T]\md^N
+            r}{\psinorm}\right)\md\tau \nonumber \\
+            &= \ecp{\frac{E_L}{\psi_T^2} \prd{\alpha}[\psi_T]
+            \prd{\beta}[\psi_T]} + \ecp{\frac{1}{\psi_T}
+            \prd{\alpha}[\psi_T] \prd{\beta}[E_L]} +
+            \ecp{\frac{E_L}{\psi_T}
+            \frac{\prtl^2\psi_T}{\prtl\alpha\prtl\beta}} -
+            2\ecp{\frac{E_L}{\psi_T}\prd{\alpha}[\psi_T]}
+            \ecp{\frac{1}{\psi_T}\prd{\beta}[\psi_T]}
             \label{eq:ecpElbetalpderfirfir}
         \end{align}
     and
         \begin{align}
-            \prd{\beta}\ecp{\frac{1}{\abs{\psi_T}}\psialphder} &=
-            \int\left(\frac{\prd{\alpha}[\abs{\psi_T}]
-            \prd{\beta}[\abs{\psi_T}] + \abs{\psi_T}
-            \frac{\prtl^2\abs{\psi_T}}{\prtl\alpha\prtl\beta}}{\psinorm} -
-            2\frac{\abs{\psi_T} \prd{\alpha}[\abs{\psi_T}]}{\psinorm}
-            \frac{\int\abs{\psi_T}
-            \prd{\beta}[\abs{\psi_T}]}{\psinorm}\right)\md^N r \nonumber \\
-            &= \ecp{\frac{1}{\abs{\psi_T}^2} \prd{\alpha}[\abs{\psi_T}]
-            \prd{\beta}[\abs{\psi_T}]} + \ecp{\frac{1}{\abs{\psi_T}}
-            \frac{\prtl^2\abs{\psi_T}}{\prtl\alpha\prtl\beta}} -
-            2\ecp{\frac{1}{\abs{\psi_T}}\prd{\alpha}[\abs{\psi_T}]}
-            \ecp{\frac{1}{\abs{\psi_T}}\prd{\beta}[\abs{\psi_T}]}
+            \prd{\beta}\ecp{\frac{1}{\psi_T}\psialphder} &=
+            \int\left(\frac{\prd{\alpha}[\psi_T]
+            \prd{\beta}[\psi_T] + \psi_T
+            \frac{\prtl^2\psi_T}{\prtl\alpha\prtl\beta}}{\psinorm} -
+            2\frac{\psi_T \prd{\alpha}[\psi_T]}{\psinorm}
+            \frac{\int\psi_T
+            \prd{\beta}[\psi_T]}{\psinorm}\right)\md\tau \nonumber \\
+            &= \ecp{\frac{1}{\psi_T^2} \prd{\alpha}[\psi_T]
+            \prd{\beta}[\psi_T]} + \ecp{\frac{1}{\psi_T}
+            \frac{\prtl^2\psi_T}{\prtl\alpha\prtl\beta}} -
+            2\ecp{\frac{1}{\psi_T}\prd{\alpha}[\psi_T]}
+            \ecp{\frac{1}{\psi_T}\prd{\beta}[\psi_T]}
             \label{eq:ecpElbetalpderfin1}
         \end{align}
     Thus the off-diagonal elements(which are symmetric due to Schwarz'
@@ -1327,24 +1323,24 @@
         \begin{equation}
             \begin{aligned}
                 \frac{\prtl^2\ecp{E_L}}{\prtl\alpha\prtl\beta} &=
-                2\ecp{\frac{E_L}{\abs{\psi_T}^2} \prd{\alpha}[\abs{\psi_T}]
-                \prd{\beta}[\abs{\psi_T}]} + 2\ecp{\frac{1}{\abs{\psi_T}}
-                \prd{\alpha}[\abs{\psi_T}] \prd{\beta}[E_L]} +
-                2\ecp{\frac{E_L}{\abs{\psi_T}}
-                \frac{\prtl^2\abs{\psi_T}}{\prtl\alpha\prtl\beta}} -
-                4\ecp{\frac{E_L}{\abs{\psi_T}} \prd{\alpha}[\abs{\psi_T}]}
-                \ecp{\frac{1}{\abs{\psi_T}} \prd{\beta}[\abs{\psi_T}]} \\
-                &- 2\ecp{E_L} \ecp{\frac{1}{\abs{\psi_T}^2}
-                \prd{\alpha}[\abs{\psi_T}] \prd{\beta}[\abs{\psi_T}]} -
-                2\ecp{E_L} \ecp{\frac{1}{\abs{\psi_T}}
-                \frac{\prtl^2\abs{\psi_T}}{\prtl\alpha\prtl\beta}} + 4\ecp{E_L}
-                \ecp{\frac{1}{\abs{\psi_T}} \prd{\alpha}[\abs{\psi_T}]}
-                \ecp{\frac{1}{\abs{\psi_T}} \prd{\beta}[\abs{\psi_T}]} \\
-                &- 2\ecp{\frac{1}{\abs{\psi_T}} \prd{\alpha}[\abs{\psi_T}]}
-                \ecp{\frac{E_L}{\abs{\psi_T}} \prd{\beta}[\abs{\psi_T}]} +
-                2\ecp{E_L} \ecp{\frac{1}{\abs{\psi_T}}
-                \prd{\beta}[\abs{\psi_T}]} \ecp{\frac{1}{\abs{\psi_T}}
-                \prd{\alpha}[\abs{\psi_T}]}
+                2\ecp{\frac{E_L}{\psi_T^2} \prd{\alpha}[\psi_T]
+                \prd{\beta}[\psi_T]} + 2\ecp{\frac{1}{\psi_T}
+                \prd{\alpha}[\psi_T] \prd{\beta}[E_L]} +
+                2\ecp{\frac{E_L}{\psi_T}
+                \frac{\prtl^2\psi_T}{\prtl\alpha\prtl\beta}} -
+                4\ecp{\frac{E_L}{\psi_T} \prd{\alpha}[\psi_T]}
+                \ecp{\frac{1}{\psi_T} \prd{\beta}[\psi_T]} \\
+                &- 2\ecp{E_L} \ecp{\frac{1}{\psi_T^2}
+                \prd{\alpha}[\psi_T] \prd{\beta}[\psi_T]} -
+                2\ecp{E_L} \ecp{\frac{1}{\psi_T}
+                \frac{\prtl^2\psi_T}{\prtl\alpha\prtl\beta}} + 4\ecp{E_L}
+                \ecp{\frac{1}{\psi_T} \prd{\alpha}[\psi_T]}
+                \ecp{\frac{1}{\psi_T} \prd{\beta}[\psi_T]} \\
+                &- 2\ecp{\frac{1}{\psi_T} \prd{\alpha}[\psi_T]}
+                \ecp{\frac{E_L}{\psi_T} \prd{\beta}[\psi_T]} +
+                2\ecp{E_L} \ecp{\frac{1}{\psi_T}
+                \prd{\beta}[\psi_T]} \ecp{\frac{1}{\psi_T}
+                \prd{\alpha}[\psi_T]}
             \end{aligned}
             \label{eq:ecpElbetalpderfin2}
         \end{equation}
