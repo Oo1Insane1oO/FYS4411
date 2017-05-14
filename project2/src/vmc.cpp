@@ -451,7 +451,7 @@ void VMC::calculate(bool perturb) {
         alpha = newAlphaBeta(0);
         beta = newAlphaBeta(1);
 
-        // Reset set variables used in Monte Carlo loop
+        // Reset variables used in Monte Carlo loop
         energy = 0;
         energySq = 0;
         R = 0;
