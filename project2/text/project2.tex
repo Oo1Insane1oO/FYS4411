@@ -1437,11 +1437,26 @@
     where 
         \begin{equation}
             \begin{aligned}
-                R &\equiv \suml{i}{N}r^2_i \\
+                R &\equiv \suml{i}{N}r^2_i \\ 
                 B_n &\equiv \sum\limits_{i\neq j} \frac{a}{\left(\beta +
-                \frac{1}{r_{ij}}\right)^n} \\
+                \frac{1}{r_{ij}}\right)^n} 
             \end{aligned}
-            \label{eq:rhdef}
+            \hspace{0.5cm}
+            \begin{aligned}
+                \prd{\alpha}[\psi_T] &= -\frac{\omega}{2}R\psi_T  \\
+                \prd{\beta}[\psi_T] &= -B_2\psi_T 
+            \end{aligned}
+            \hspace{0.5cm}
+            \begin{aligned}
+                \prd{\alpha}[\psi_T][2] &= \frac{\omega^2}{4}R^2\psi_T \\
+                \prd{\beta}[\psi_T][2] &= \left(B^2_2 + 2B_3\right)\psi_T
+            \end{aligned}
+            \hspace{0.5cm}
+            \begin{aligned}
+                \frac{\prtl^2\ecp{E_L}}{\prtl\alpha\prtl\beta} =
+                \frac{\omega}{2}RB_2\psi_T
+            \end{aligned}
+            \label{eq:RBdef}
         \end{equation}
 
 \subsection{Optimization}

@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2017.3.22)  13 MAY 2017 16:36
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2017.3.22)  14 MAY 2017 19:59
 entering extended mode
  \write18 enabled.
  file:line:error style messages enabled.
@@ -2470,24 +2470,28 @@ Overfull \hbox (2.60045pt too wide) in paragraph at lines 935--935
 
 [8] [9] [10] [11] [12] [13] [14]
 LaTeX Font Info:    Font shape `T1/mdbch/m/it' will be
-(Font)              scaled to size 9.60007pt on input line 1649.
+(Font)              scaled to size 9.60007pt on input line 1664.
  [15] [16]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 1684.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 1684.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 1699.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 1699.
 
 (/home/saintz/localStuff/FYS4411/project2/text/project2.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 1684.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 1684.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 1699.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 1699.
 
 Package rerunfilecheck Info: File `project2.out' has not changed.
 (rerunfilecheck)             Checksum: <no file>.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 1684.
+
+
+LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
+
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 1699.
  ) 
 Here is how much of TeX's memory you used:
- 30856 strings out of 494497
- 561038 string characters out of 6172400
+ 30857 strings out of 494497
+ 561048 string characters out of 6172400
  636349 words of memory out of 5000000
- 33567 multiletter control sequences out of 15000+600000
+ 33568 multiletter control sequences out of 15000+600000
  53393 words of font info for 102 fonts, out of 8000000 for 9000
  264 hyphenation exceptions out of 8191
  64i,17n,94p,10410b,451s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -2504,7 +2508,7 @@ lic/mathdesign/mdbch/md-chr8t.pfb></usr/share/texlive/texmf-dist/fonts/type1/pu
 blic/mathdesign/mdbch/md-chri7m.pfb></usr/share/texlive/texmf-dist/fonts/type1/
 public/mathdesign/mdbch/md-chrma.pfb>
 Output written on /home/saintz/localStuff/FYS4411/project2/text/project2.pdf (1
-7 pages, 153861 bytes).
+7 pages, 154290 bytes).
 PDF statistics:
  558 PDF objects out of 1000 (max. 8388607)
  522 compressed objects within 6 object streams
