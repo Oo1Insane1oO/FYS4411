@@ -57,7 +57,7 @@ bool Tests::test_energies() {
 bool Tests::test_2particle() {
     /* check that energy in case of unperturbed harmonic oscillator system with
      * 2 electrons is correct */
-    v->calculate(true);
+    v->calculate(false);
     return ((fabs(v->energy-2)<=eps &&
                 fabs(m->variance(v->energy,v->energySq))<=eps) ? true : false);
 } // end function test_2particle
@@ -150,12 +150,12 @@ void Tests::run_tests(int t) {
         } else {
             std::cout << "Energies wrong" << std::endl;
         } // end ifelse
-//         if(test_2particle()) {
-//             std::cout << "Energy unperturbed 2 electron good" << std::endl;
-//         } else { 
-//             std::cout << "Energy unperturbed 2 electron wrong" << std::endl;
-//             std::cout << std::setprecision(15) << "  Energy is: " << v->energy << std::endl;
-//         } // end ifelse
+        if(test_2particle()) {
+            std::cout << "Energy unperturbed 2 electron good" << std::endl;
+        } else { 
+            std::cout << "Energy unperturbed 2 electron wrong" << std::endl;
+            std::cout << std::setprecision(15) << "  Energy is: " << v->energy << std::endl;
+        } // end ifelse
         if(test_determinantratio()) {
             std::cout << "Determinant ratio good" << std::endl;
         } else { 

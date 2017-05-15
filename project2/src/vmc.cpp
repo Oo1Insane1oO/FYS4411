@@ -210,9 +210,10 @@ void VMC::calculate(bool perturb) {
     } // end if
 
     unsigned int halfSize = oldPositions.rows()/2;
-    double testRatio, tmpEnergy, tmpR, tmpB2, tmpB3, tmpELalpR,
-           tmpELbetB2, transitionRatio, denom, denomsq, denomcu, a, rkl,
-           Hxfactor, Hyfactor;
+    double testRatio, tmpEnergy, tmpR, tmpB2, tmpB3, tmpELalp, tmpELbet,
+           transitionRatio, denom, denomsq, denomcu, a, rkl, Hxfactor,
+           Hyfactor;
+    double RB2 = 0;
     double ELB3 = 0;
     double B3 = 0;
     double R = 0;
@@ -225,6 +226,8 @@ void VMC::calculate(bool perturb) {
     double ELB2sq = 0;
     double ELRB2 = 0;
     double ELalpR = 0;
+    double ELbetR = 0;
+    double ELalpB2 = 0;
     double ELbetB2 = 0;
     double determinantRatioD = 1;
     double determinantRatioU = 1;
@@ -348,8 +351,8 @@ void VMC::calculate(bool perturb) {
             tmpR = 0;
             tmpB2 = 0;
             tmpB3 = 0;
-            tmpELalpR = 0;
-            tmpELbetB2 = 0;
+            tmpELalp = 0;
+            tmpELbet = 0;
             for (unsigned int k = 0; k < newPositions.rows(); ++k) {
                 nkx = *(b->states[k][0]);
                 nky = *(b->states[k][1]);
@@ -358,7 +361,7 @@ void VMC::calculate(bool perturb) {
                     H(newPositions(k,0),nkx-2)/H(newPositions(k,0),nkx);
                 Hyfactor = nky*(nky-1) *
                     H(newPositions(k,1),nky-2)/H(newPositions(k,1),nky);
-                tmpELalpR += (nkx+nky+1) + 0.5*(Hxfactor + Hyfactor) -
+                tmpELalp += (nkx+nky+1) + 0.5*(Hxfactor + Hyfactor) -
                     alpha*b->omega*b->omega*newPositions.row(k).squaredNorm();
                 for (unsigned int l = 0; l < newPositions.rows(); ++l) {
                     if (k != l) {
@@ -370,12 +373,12 @@ void VMC::calculate(bool perturb) {
                         denomcu = denom*denom*denom;
                         tmpB2 += a / denomsq;
                         tmpB3 += a / denomcu;
-                        tmpELalpR += a*b->omega/(rkl*denomsq) *
+                        tmpELalp += a*b->omega/(rkl*denomsq) *
                             (newPositions(k,0) *
                              (newPositions(k,0)-newPositions(l,0)) +
                              newPositions(k,1) *
                              (newPositions(k,1)-newPositions(l,1)));
-                        tmpELbetB2 += a/denomcu * (rkl/denom *
+                        tmpELbet += a/denomcu * (rkl/denom *
                                 (2*beta+a*(1+beta)/denom - 1/rkl) +
                                 2*(((nkx+Hxfactor)/newPositions(k,0) -
                                         alpha*b->omega*newPositions(k,0)) *
@@ -386,17 +389,20 @@ void VMC::calculate(bool perturb) {
                     } // end if
                 } // end forj
             } // end fori
-            B3 += B3; 
             R += tmpR;
             B2 += tmpB2;
+            B3 += tmpB3; 
+            RB2 += tmpR*tmpB2;
             Rsq += tmpR*tmpR;
             B2sq += tmpB2*tmpB2;
             ELB3 += tmpEnergy*B3;
             ELR += tmpEnergy*tmpR;
             ELB2 += tmpEnergy*tmpB2;
             ELRB2 += tmpEnergy*R*B2;
-            ELalpR += tmpELalpR*tmpR;
-            ELbetB2 += tmpELbetB2*tmpB2;
+            ELalpR += tmpELalp*tmpR;
+            ELalpB2 += tmpELalp*tmpB2;
+            ELbetB2 += tmpELbet*tmpB2;
+            ELbetR += tmpELbet*tmpR;
             ELRsq += tmpEnergy*tmpR*tmpR;
             ELB2sq += tmpEnergy*tmpB2*tmpB2;
 
@@ -406,8 +412,10 @@ void VMC::calculate(bool perturb) {
         // calculate final expectation values
         energy /= cycles;
         energySq /= cycles;
+        break;
         R /= cycles;
         B2 /= cycles;
+        RB2 /= cycles;
         Rsq /= cycles;
         B2sq /= cycles;
         B3 /= cycles;
@@ -425,12 +433,12 @@ void VMC::calculate(bool perturb) {
                 2*ELR*Rsq - ELalpR);
         HessenMatrix(0,1) = 0;
         HessenMatrix(1,0) = 0;
+//         HessenMatrix(0,1) = b->omega * (2*ELRB2 - energy*RB2 + energy*R*B2 -
+//                 ELR*B2 - ELB2*R - ELbetR);
+//         HessenMatrix(1,0) = b->omega * (2*ELRB2 - energy*RB2 + energy*R*B2 -
+//                 ELR*B2 - ELB2*R - ELalpB2);
         HessenMatrix(1,1) = 2*(2*(ELB2sq + ELB3 - 2*ELB2*B2 + energy*(B3
                         + B2*B2)) - ELbetB2);
-//         HessenMatrix(0,0) = 2*b->omega*(ELRsq*(1 - b->omega) - ELalpR);
-//         HessenMatrix(0,1) = 0;
-//         HessenMatrix(1,0) = 0;
-//         HessenMatrix(1,1) = 2*(2*(2*ELB3 - ELB2sq) - ELbetB2);
 
         // optimalize with CG
 //         rhs(0) = -energy;
