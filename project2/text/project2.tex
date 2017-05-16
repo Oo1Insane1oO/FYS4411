@@ -426,7 +426,7 @@
             \label{eq:cgitrk}
         \end{equation}
 
-\subsection{Second Derivative Test}
+\subsection{SECOND DERIVATIVE TEST}
 \label{sub:second_derivative_test}
     Given a real valued function $f(\vec{x}):\mathbb{R}^n\rarr\mathbb{R}$ where
     $\vec{x}\in\mathbb{R}^n$ and $f$ has second partial derivatives which exist
@@ -448,6 +448,23 @@
             \item If $A$ is positive-semi-definite, the test is inconclusive
                 and $\vec{x}$ might be a local extremal or a saddle point.
         \end{itemize}
+
+\subsection{PORDUCT OF SUMS}
+\label{sub:porduct_of_sums}
+    The product of two sums $A$ and $B$ can be written as
+        \begin{align}
+            A\cdot B &= \left(\suml{n}{N} f_n\right)\cdot\left(\suml{m}{N}
+            g_m\right) \nonumber \\
+            &= \left(\suml{n}{N}\suml{m}{N}f_ng_m - \suml{n}{N}f_ng_n\right) +
+            \suml{n}{N}f_ng_n \nonumber \\
+            &= \suml{n}{N}f_n\left(\suml{m}{N}g_m-g_n\right) +
+            \suml{n}{N}f_ng_n \nonumber \\
+            &= \suml{n}{N}f_n\left(\sum\limits_{m\neq n}g_m\right) +
+            \suml{n}{N}f_ng_n \nonumber \\
+            &= \suml{n}{N}\sum\limits_{m\neq n}\left(f_n\left(g_m +
+            g_n\right)\right)
+            \label{eq:sumprod}
+        \end{align}
 
 \subsection{LAPLACE EXPANSION}
 \label{sub:laplace_expansion}
@@ -1034,30 +1051,29 @@
         \begin{align}
             \nabla^2_k g(\vec{r},\beta) &= \nabla^2_k \prod_{i<j} \gJ \nonumber
             \\
-            &= g(\vec{r},\beta)\sum_{j\neq k}\nabla^2_k\left(\frac{a}{\beta +
-            \frac{1}{r_{kj}}}\right)
+            &= \nabla_k\left(g(\vec{r},\beta)\sum_{j\neq k}\nabla_k\left(\frac{a}{\beta +
+            \frac{1}{r_{kj}}}\right)\right) \nonumber \\
+            &= \nabla_k\left(g(\vec{r},\beta)\sum\limits_{j\neq k}
+            \left(\frac{a}{\left(1+\beta
+            r_{kj}\right)^2}\left(x_k-x_j,y_k-y_j\right)\right)\right) \nonumber \\
+            &= g(\vec{r},\beta) \left(\left(\sum\limits_{j\neq k}
+            \frac{a(x_k-x_j)}{r_{kj}\left(1+\beta r_{kj}\right)^2}\right)^2 +
+            \left(\sum\limits_{j\neq k} \frac{a(y_k-y_j)}{r_{kj}\left(1+\beta
+            r_{kj}\right)^2}\right)^2 + \sum\limits_{j\neq k}
+            \left(\frac{a}{r_{kj}\left(1+\beta r_{kj}\right)^2} \left(1 -
+            \frac{2}{1 + \frac{1}{\beta r_{kj}}}\right)\right)\right)
             \label{eq:lapg}
-        \end{align}
-    and solve for the $k$-th part of the sum
-        \begin{align}
-            \nabla^2_k\left(\frac{a}{\beta + \frac{1}{r_{kj}}}\right) &=
-            \prd{x_k}[][2]\left(\frac{a}{\beta + \frac{1}{r_{kj}}}\right) +
-            \prd{y_k}[][2]\left(\frac{a}{\beta + \frac{1}{r_{kj}}}\right)
-            \nonumber \\
-            &= \frac{2a}{r_{kj}(1+\beta r_{kj})^2} - \frac{a(1+3\beta
-            r_{kj})}{r_{kj}(1+\beta r_{kj})^3} + \frac{a^2}{(1+\beta r_{kj})^4}
-            \nonumber \\
-            &= \frac{a}{(1+\beta r_{kj})^2}\left(\frac{1}{r_{kj}} -
-            \frac{2\beta}{1+\beta r_{kj}} + \frac{a}{(1+\beta r_{kj})^2}\right)
-            \label{eq:derxkg}
         \end{align}
     We have just reused the results from \Autoref{eq:derx1first2,eq:dery1} in
     the differentiation above. \\
     We define a new function
         \begin{equation}
-            Q\left(r_k,\beta\right) \equiv \sum_{j\neq k} \frac{a}{(1+\beta
-            r_{kj})^2}\left(\frac{1}{r_{kj}} - \frac{2\beta}{1+\beta r_{kj}} +
-            \frac{a}{(1+\beta r_{kj})^2}\right)
+            Q\left(r_k,\beta\right) \equiv \left(\left(\sum\limits_{j\neq k}
+            \frac{a(x_k-x_j)}{r_{kj}\left(1+\beta r_{kj}\right)^2}\right)^2 +
+            \left(\sum\limits_{j\neq k} \frac{a(y_k-y_j)}{r_{kj}\left(1+\beta
+            r_{kj}\right)^2}\right)^2 + \sum\limits_{j\neq k}
+            \left(\frac{a}{r_{kj}\left(1+\beta r_{kj}\right)^2} \left(1 -
+            \frac{2}{1 + \frac{1}{\beta r_{kj}}}\right)\right)\right)
             \label{eq:Qdef}
         \end{equation}
     and insert this into \Autoref{eq:lapg} yielding
@@ -1081,7 +1097,7 @@
             \alpha\omega x_k\right)
             \label{eq:detder1}
         \end{align}
-    For $g(\vec{r},\beta)$ we have with \Autoref{eq:lapg,eq:derxkg}
+    For $g(\vec{r},\beta)$ we have with \Autoref{eq:lapg}
         \begin{align}
             \prd{x_k}{g(\vec{r},\alpha)} &= \prd{x_k}\left(\prod_{i<j}
             \gJ\right) \nonumber \\
@@ -1097,7 +1113,7 @@
         \begin{equation}
             \begin{aligned}
                 \Upsilon_{n_{x_k}n_{y_k}}(x_k,y_k,\alpha) \equiv \sum_{j\neq k}
-                \frac{2a}{r_{kj}\left(1+\beta r_{kj}\right)^2}
+                \frac{a}{r_{kj}\left(1+\beta r_{kj}\right)^2}
                 \Bigg[&\left(\frac{n_{x_k}}{x_k} +
                 \frac{n_{x_k}(n_{x_k}-1)}{x_k}\frac{H_{n_{x_k}-2}}{H_{n_{x_k}}}
                 - \alpha\omega x_k\right)\left(x_k-x_j\right) \\
@@ -1133,13 +1149,17 @@
                 \frac{H_{n_{y_k}-2}}{H_{n_{y_k}}}\right] +
                 \alpha\omega\left(\alpha \omega r_k^2 - 2\left(n_{x_k} +
                 n_{y_k} + 1\right)\right) \\
-                &\hspace{1.4cm}Q\left(r_k,\beta\right) \equiv \sum_{j\neq k}
-                \frac{a}{(1+\beta r_{kj})^2}\left(\frac{1}{r_{kj}} -
-                \frac{2\beta}{1+\beta r_{kj}} + \frac{a}{(1+\beta
-                r_{kj})^2}\right) \\
-                &\hspace{0.05cm}\begin{aligned}
+                &\hspace{1.25cm}
+                Q\left(r_k,\beta\right) \equiv \left(\left(\sum\limits_{j\neq
+                k} \frac{a(x_k-x_j)}{r_{kj}\left(1+\beta
+                r_{kj}\right)^2}\right)^2 + \left(\sum\limits_{j\neq k}
+                \frac{a(y_k-y_j)}{r_{kj}\left(1+\beta r_{kj}\right)^2}\right)^2
+                + \sum\limits_{j\neq k} \left(\frac{a}{r_{kj}\left(1+\beta
+                r_{kj}\right)^2} \left(1 - \frac{2}{1 + \frac{1}{\beta
+                r_{kj}}}\right)\right)\right) \\
+                &\begin{aligned}
                     \Upsilon_{n_{x_k}n_{y_k}}(x_k,y_k,\alpha) \equiv
-                    \sum_{j\neq k} \frac{2a}{r_{kj}\left(1+\beta
+                    \sum_{j\neq k} \frac{a}{r_{kj}\left(1+\beta
                     r_{kj}\right)^2} \Bigg[&\left(\frac{n_{x_k}}{x_k} +
                     \frac{n_{x_k}(n_{x_k}-1)}{x_k}\frac{H_{n_{x_k}-2}}
                     {H_{n_{x_k}}} - \alpha\omega x_k\right)\left(x_k-x_j\right)

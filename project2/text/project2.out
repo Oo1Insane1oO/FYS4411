@@ -6,30 +6,31 @@
 \BOOKMARK [2][-]{subsection.2.3}{FOURIER TRANSFORMATION}{section.2}% 6
 \BOOKMARK [2][-]{subsection.2.4}{CONJUGATE GRADIENT METHOD}{section.2}% 7
 \BOOKMARK [3][-]{subsubsection.2.4.1}{Iterative Method}{subsection.2.4}% 8
-\BOOKMARK [2][-]{subsection.2.5}{Second Derivative Test}{section.2}% 9
-\BOOKMARK [2][-]{subsection.2.6}{LAPLACE EXPANSION}{section.2}% 10
-\BOOKMARK [2][-]{subsection.2.7}{DERIVATIVE OF DETERMINANT}{section.2}% 11
-\BOOKMARK [2][-]{subsection.2.8}{METROPOLIS-HASTINGS ALGORITHM}{section.2}% 12
-\BOOKMARK [2][-]{subsection.2.9}{VARIATIONAL PRINCIPLE}{section.2}% 13
-\BOOKMARK [2][-]{subsection.2.10}{IMPORTANCE SAMPLING}{section.2}% 14
-\BOOKMARK [3][-]{subsubsection.2.10.1}{Quantum Force}{subsection.2.10}% 15
-\BOOKMARK [3][-]{subsubsection.2.10.2}{Solution}{subsection.2.10}% 16
-\BOOKMARK [2][-]{subsection.2.11}{VMC}{section.2}% 17
-\BOOKMARK [3][-]{subsubsection.2.11.1}{Expectation Value and Local Energy}{subsection.2.11}% 18
-\BOOKMARK [3][-]{subsubsection.2.11.2}{Analytical Expression for Local Energy}{subsection.2.11}% 19
-\BOOKMARK [3][-]{subsubsection.2.11.3}{Two Electron Case}{subsection.2.11}% 20
-\BOOKMARK [3][-]{subsubsection.2.11.4}{General Case}{subsection.2.11}% 21
-\BOOKMARK [3][-]{subsubsection.2.11.5}{Analytic Expression for Hessen Matrix}{subsection.2.11}% 22
-\BOOKMARK [2][-]{subsection.2.12}{Optimization}{section.2}% 23
-\BOOKMARK [3][-]{subsubsection.2.12.1}{Determinant Ratio}{subsection.2.12}% 24
-\BOOKMARK [3][-]{subsubsection.2.12.2}{Inverse of Matrix}{subsection.2.12}% 25
-\BOOKMARK [2][-]{subsection.2.13}{STATISTICAL ANALYSIS}{section.2}% 26
-\BOOKMARK [3][-]{subsubsection.2.13.1}{STANDARD DEVIATION, VARIANCE AND COVARIANCE}{subsection.2.13}% 27
-\BOOKMARK [3][-]{subsubsection.2.13.2}{Central Limit Theorem}{subsection.2.13}% 28
-\BOOKMARK [3][-]{subsubsection.2.13.3}{Statistical Error}{subsection.2.13}% 29
-\BOOKMARK [3][-]{subsubsection.2.13.4}{Autocorrelation Function}{subsection.2.13}% 30
-\BOOKMARK [1][-]{section.3}{SETUP}{}% 31
-\BOOKMARK [1][-]{section.4}{RESULTS}{}% 32
-\BOOKMARK [1][-]{section.5}{DISCUSSION}{}% 33
-\BOOKMARK [1][-]{section.6}{CONCLUSION}{}% 34
-\BOOKMARK [1][-]{section.7}{References}{}% 35
+\BOOKMARK [2][-]{subsection.2.5}{SECOND DERIVATIVE TEST}{section.2}% 9
+\BOOKMARK [2][-]{subsection.2.6}{PORDUCT OF SUMS}{section.2}% 10
+\BOOKMARK [2][-]{subsection.2.7}{LAPLACE EXPANSION}{section.2}% 11
+\BOOKMARK [2][-]{subsection.2.8}{DERIVATIVE OF DETERMINANT}{section.2}% 12
+\BOOKMARK [2][-]{subsection.2.9}{METROPOLIS-HASTINGS ALGORITHM}{section.2}% 13
+\BOOKMARK [2][-]{subsection.2.10}{VARIATIONAL PRINCIPLE}{section.2}% 14
+\BOOKMARK [2][-]{subsection.2.11}{IMPORTANCE SAMPLING}{section.2}% 15
+\BOOKMARK [3][-]{subsubsection.2.11.1}{Quantum Force}{subsection.2.11}% 16
+\BOOKMARK [3][-]{subsubsection.2.11.2}{Solution}{subsection.2.11}% 17
+\BOOKMARK [2][-]{subsection.2.12}{VMC}{section.2}% 18
+\BOOKMARK [3][-]{subsubsection.2.12.1}{Expectation Value and Local Energy}{subsection.2.12}% 19
+\BOOKMARK [3][-]{subsubsection.2.12.2}{Analytical Expression for Local Energy}{subsection.2.12}% 20
+\BOOKMARK [3][-]{subsubsection.2.12.3}{Two Electron Case}{subsection.2.12}% 21
+\BOOKMARK [3][-]{subsubsection.2.12.4}{General Case}{subsection.2.12}% 22
+\BOOKMARK [3][-]{subsubsection.2.12.5}{Analytic Expression for Hessen Matrix}{subsection.2.12}% 23
+\BOOKMARK [2][-]{subsection.2.13}{Optimization}{section.2}% 24
+\BOOKMARK [3][-]{subsubsection.2.13.1}{Determinant Ratio}{subsection.2.13}% 25
+\BOOKMARK [3][-]{subsubsection.2.13.2}{Inverse of Matrix}{subsection.2.13}% 26
+\BOOKMARK [2][-]{subsection.2.14}{STATISTICAL ANALYSIS}{section.2}% 27
+\BOOKMARK [3][-]{subsubsection.2.14.1}{STANDARD DEVIATION, VARIANCE AND COVARIANCE}{subsection.2.14}% 28
+\BOOKMARK [3][-]{subsubsection.2.14.2}{Central Limit Theorem}{subsection.2.14}% 29
+\BOOKMARK [3][-]{subsubsection.2.14.3}{Statistical Error}{subsection.2.14}% 30
+\BOOKMARK [3][-]{subsubsection.2.14.4}{Autocorrelation Function}{subsection.2.14}% 31
+\BOOKMARK [1][-]{section.3}{SETUP}{}% 32
+\BOOKMARK [1][-]{section.4}{RESULTS}{}% 33
+\BOOKMARK [1][-]{section.5}{DISCUSSION}{}% 34
+\BOOKMARK [1][-]{section.6}{CONCLUSION}{}% 35
+\BOOKMARK [1][-]{section.7}{References}{}% 36
