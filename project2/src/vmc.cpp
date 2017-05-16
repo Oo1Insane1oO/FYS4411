@@ -108,10 +108,9 @@ void VMC::updateDiff(const Eigen::MatrixXd &R, Eigen::MatrixXd &der, unsigned
     /* calculate first derivative ratio of wave functions for partikle k */
     double rkj;
     for (unsigned int d = 0; d < R.cols(); ++d) {
-        der(k,d) = (*(b->states[k][d])*(1 + (*(b->states[k][d])-1) *
-                    H(R(k,d),*(b->states[k][d])-2) /
-                    H(R(k,d),*(b->states[k][d]))))/R(k,d) -
-            alpha*b->omega*R(k,d);
+        der(k,d) = (*(b->states[k][d]) + 2*(*(b->states[k][d]) - 1) *
+                H(R(k,d),*(b->states[k][d])-2)/H(R(k,d),*(b->states[k][d]))) /
+            R(k,d) - alpha*b->omega*R(k,d);
         for (unsigned int j = 0; j < R.rows(); ++j) {
             if (j != k) {
                 rkj = (R.row(k) - R.row(j)).norm();
@@ -414,6 +413,7 @@ void VMC::calculate(bool perturb) {
         // calculate final expectation values
         energy /= cycles;
         energySq /= cycles;
+        break;
         R /= cycles;
         B2 /= cycles;
         RB2 /= cycles;

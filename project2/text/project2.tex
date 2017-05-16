@@ -963,7 +963,7 @@
     formula given in \Autoref{sub:derivative_of_determinant}. We see that we
     need to derivative to the individual elements of the Slater matrix $\Phi$.
     These are with the substitution substituting
-    $s=\sqrt{\omega}x_k=\sqrt{\omega}y_k$ and labeling $n_x,n_y\rarr n$,
+    $s=\sqrt{\omega}x_k=\sqrt{\omega}y_k$
         \begin{align}
             \prd{x_k}[\Phi_{ij}] &= \sqrt{\omega}
             H_{n_{y_j}}\left(\sqrt{\omega}y_k\right)
@@ -974,16 +974,7 @@
             \me^{-\frac{\alpha\omega}{2}y^2_k} \me^{-\frac{\alpha}{2}s^2}
             \left(2n_{x_j}H_{n_{x_j}-1}\left(s\right) -\alpha
             sH_{n_{x_j}}\left(s\right)\right) \nonumber \\
-            &= \sqrt{\omega} H_{n_{y_j}}\left(\sqrt{\omega}y_k\right)
-            \me^{-\frac{\alpha\omega}{2}r^2_k}
-            H_{n_{x_j}}\left(\sqrt{\omega}x_k\right)
-            \left(\frac{n_{x_j}}{\sqrt{\omega}x_k}
-            \left(1+2\left(n_{x_j}-1\right)
-            \frac{H_{n_{x_j}-2}}{H_{n_{x_j}}}\right) -
-            \alpha\sqrt{\omega}x_k\right) \nonumber \\
-            &= \Phi_{ij}\left(\frac{n_{x_j}}{x_k}
-            \left(1+2\left(n_{x_j}-1\right)
-            \frac{H_{n_{x_j}-2}}{H_{n_{x_j}}}\right) - \alpha\omega x_k\right)
+            &= \Phi_{ij}\left(2\sqrt{\omega}n_{x_j} \frac{H_{n_{x_j}-1}}{H_{n_{x_j}}} - \alpha\omega x_k\right)
             \nonumber \\
             \label{eq:Phisingleder}
         \end{align}
@@ -991,7 +982,9 @@
     $\Phi_{ij}$ for $f_{x_k}$ and $f_{y_k}$ respectively and find the
     differentials to be
         \begin{align}
-            \prd{x_k}[f_{x_k}] &= 
+            \prd{x_k}[f_{x_k}] &= \prd{x_k} \left(2\sqrt{\omega}n_{x_j}
+            \frac{H_{n_{x_j}-1}}{H_{n_{x_j}}} - \alpha\omega x_k\right)
+            \nonumber \\
             \label{eq:Phisinglederf}
         \end{align}
         \begin{align}
