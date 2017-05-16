@@ -28,7 +28,7 @@ class Methods {
         double variance(double, double);
 
         Eigen::MatrixXd conjugateGradient(const Eigen::MatrixXd&, const
-                Eigen::MatrixXd&, const Eigen::MatrixXd&);
+                Eigen::MatrixXd&, const Eigen::MatrixXd&, unsigned int=100000);
 };
 
 #endif /* METHODS_H */

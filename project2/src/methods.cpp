@@ -70,7 +70,8 @@ double Methods::variance(double p,double psq) {
 } // end function variance
 
 Eigen::MatrixXd Methods::conjugateGradient(const Eigen::MatrixXd &A, const
-        Eigen::MatrixXd &rhs, const Eigen::MatrixXd &x0) {
+        Eigen::MatrixXd &rhs, const Eigen::MatrixXd &x0, unsigned int
+        maxIterations) {
     /* solve a linear system, Ax=b with Conjugate Gradient method */
     Eigen::MatrixXd res = rhs - A*x0;
     Eigen::MatrixXd p = res;
@@ -80,6 +81,8 @@ Eigen::MatrixXd Methods::conjugateGradient(const Eigen::MatrixXd &A, const
     double C = res.squaredNorm();
     double rInner;
     rnew << 1, 1;
+    unsigned int iter = 0;
+//     while (rnew.norm() > 1e-14 && iter < maxIterations) {
     while (rnew.norm() > 1e-14) {
         rInner = res.squaredNorm();
         C = rInner / (p.transpose()*A*p).sum();
@@ -88,6 +91,7 @@ Eigen::MatrixXd Methods::conjugateGradient(const Eigen::MatrixXd &A, const
         p = rnew + rnew.squaredNorm()/rInner * p;
         res = rnew;
         xold = xnew;
+        iter++;
     } // end while
     return xnew;
 } // end function conjugateGradient

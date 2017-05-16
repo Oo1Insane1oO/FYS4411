@@ -57,6 +57,8 @@ double VMC::localEnergy2(const Eigen::MatrixXd &R, bool coulomb) {
     double nx, ny, nxHermiteFactor, nyHermiteFactor, rk, rkj, jFactor, denom,
            a;
     double E = 0;
+    double Qx = 0;
+    double Qy = 0;
     for (unsigned int k = 0; k < R.rows(); ++k) {
         /* loop over particles */
         rk = R.row(k).norm();
@@ -74,12 +76,14 @@ double VMC::localEnergy2(const Eigen::MatrixXd &R, bool coulomb) {
                     a = b->padejastrow(k,j);
                     rkj = (R.row(k) - R.row(j)).norm();
                     denom = 1 + beta*rkj;
-                    jFactor = 0.5*a/pow(denom,2); 
+                    jFactor = 0.5*a/pow(denom,2);
                     E -= jFactor * (2/rkj*(((nx + nxHermiteFactor)/R(k,0) -
                                     alpha*b->omega*R(k,0))*(R(k,0)-R(j,0)) +
                                 ((ny + nyHermiteFactor)/R(k,1) -
-                                 alpha*b->omega*R(k,1))*(R(k,1)-R(j,1))) +
-                            1/rkj - 2*beta/denom + a / pow(denom,2));
+                                 alpha*b->omega*R(k,1))*(R(k,1)-R(j,1))) + 1 -
+                            2/(1+1/(beta*rkj)));
+                    Qx += 0.5*jFactor * (R(k,0) - R(j,0));
+                    Qy += 0.5*jFactor * (R(k,1) - R(j,1));
                     if (j > k) {
                         /* Coulomb part */
                         E += 1/rkj;
@@ -88,6 +92,7 @@ double VMC::localEnergy2(const Eigen::MatrixXd &R, bool coulomb) {
             } // end forj
         } // end if
     } // end fork
+    E -= Qx*Qx + Qy*Qy;
     return E;
 } // end function localEnergy
 
@@ -256,7 +261,7 @@ void VMC::calculate(bool perturb) {
     newD = oldD;
     newU = oldU;
     while (true) {
-        while (cycles < maxIterations) {
+        for (cycles = 0; cycles < maxIterations; ++cycles) {
             /* run Monte Carlo cycles */
             for (unsigned int i = 0; i < oldPositions.rows(); ++i) {
                 /* loop over number of particles(move only 1 particle) */
@@ -346,7 +351,6 @@ void VMC::calculate(bool perturb) {
     //         tmpEnergy = localEnergyDiff(newD,newU,newPositions,perturb);
             energy += tmpEnergy;
             energySq += tmpEnergy*tmpEnergy;
-
             // calculate values for Hessen matrix
             tmpR = 0;
             tmpB2 = 0;
@@ -405,14 +409,11 @@ void VMC::calculate(bool perturb) {
             ELbetR += tmpELbet*tmpR;
             ELRsq += tmpEnergy*tmpR*tmpR;
             ELB2sq += tmpEnergy*tmpB2*tmpB2;
-
-            cycles++;
-        } // end while
+        } // end for cycles
 
         // calculate final expectation values
         energy /= cycles;
         energySq /= cycles;
-        break;
         R /= cycles;
         B2 /= cycles;
         RB2 /= cycles;
@@ -475,6 +476,5 @@ void VMC::calculate(bool perturb) {
         ELalpR = 0;
         ELbetB2 = 0;
         ELB3 = 0;
-        cycles = 0;
     } // end while true
 } // end function calculate
