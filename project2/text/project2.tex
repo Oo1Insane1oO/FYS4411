@@ -161,6 +161,7 @@
 \newcommand{\veps}{\varepsilon} %\varepsilon is to long :P
 \newcommand{\suml}[2]{\sum\limits_{#1=1}^{#2}}
 \newcommand{\prodl}[2]{\prod\limits_{#1}^{#2}}
+\newcommand{\adj}[1]{\text{adj}\left(#1\right)}
 
 \newcommand{\fij}[3]{#1\left(#2\rarr#3\right)}
 \newcommand{\ufij}[3]{#1_{#2\rarr#3}}
@@ -958,16 +959,48 @@
             \label{eq:Phidef}
         \end{equation}
     and used the product rule for differentiation. \\
-    Starting by solving $\nabla^2_k\det(\Phi(\vec{r},\alpha))$ and write out
-    the determinant with the Laplace expansion given in
-    \Autoref{sub:laplace_expansion}.
+    Starting by solving $\nabla^2_k\det(\Phi(\vec{r},\alpha))$ with Jacobi's
+    formula given in \Autoref{sub:derivative_of_determinant}. We see that we
+    need to derivative to the individual elements of the Slater matrix $\Phi$.
+    These are with the substitution substituting
+    $s=\sqrt{\omega}x_k=\sqrt{\omega}y_k$ and labeling $n_x,n_y\rarr n$,
         \begin{align}
-            \nabla^2_k\det(\Phi(\vec{r},\alpha)) &=
-            \nabla^2_k\suml{i}{N}\Phi_{ij}C_{ij} \nonumber \\
-            &= \suml{k}{N}\nabla^2_k\left(\Phi_{kj}C_{kj}\right) \nonumber \\
-            &= \suml{k}{N}\left(\prodsecrule{\Phi_{kj}}{C_{kj}}\right)
+            \prd{x_k}[\Phi_{ij}] &= \sqrt{\omega}
+            H_{n_{y_j}}\left(\sqrt{\omega}y_k\right)
+            \me^{-\frac{\alpha\omega}{2}y^2_k}
+            \prd{s}\left(H_{n_{x_j}}\left(s\right)
+            \me^{-\frac{\alpha}{2}s^2}\right) \nonumber \\
+            &= \sqrt{\omega} H_{n_{y_j}}\left(\sqrt{\omega}y_k\right)
+            \me^{-\frac{\alpha\omega}{2}y^2_k} \me^{-\frac{\alpha}{2}s^2}
+            \left(2n_{x_j}H_{n_{x_j}-1}\left(s\right) -\alpha
+            sH_{n_{x_j}}\left(s\right)\right) \nonumber \\
+            &= \sqrt{\omega} H_{n_{y_j}}\left(\sqrt{\omega}y_k\right)
+            \me^{-\frac{\alpha\omega}{2}r^2_k}
+            H_{n_{x_j}}\left(\sqrt{\omega}x_k\right)
+            \left(\frac{n_{x_j}}{\sqrt{\omega}x_k}
+            \left(1+2\left(n_{x_j}-1\right)
+            \frac{H_{n_{x_j}-2}}{H_{n_{x_j}}}\right) -
+            \alpha\sqrt{\omega}x_k\right) \nonumber \\
+            &= \Phi_{ij}\left(\frac{n_{x_j}}{x_k}
+            \left(1+2\left(n_{x_j}-1\right)
+            \frac{H_{n_{x_j}-2}}{H_{n_{x_j}}}\right) - \alpha\omega x_k\right)
             \nonumber \\
-            &= \suml{k}{N}C_{kj} \nabla^2_k \Phi_{kj}
+            \label{eq:Phisingleder}
+        \end{align}
+    The same differentiation goes for $y_k$. We label the factor in front of
+    $\Phi_{ij}$ for $f_{x_k}$ and $f_{y_k}$ respectively and find the
+    differentials to be
+        \begin{align}
+            \prd{x_k}[f_{x_k}] &= 
+            \label{eq:Phisinglederf}
+        \end{align}
+        \begin{align}
+            \suml{k}{N}\nabla^2_k \left(\det(\Phi)\right) &= \suml{k}{N}
+            \nabla_k\cdot\left(\prd{x_k}\left(\det(\Phi)\right),
+            \prd{y_k}\left(\det(\Phi)\right)\right) \nonumber \\
+            &= \suml{k}{N} \nabla_k \cdot
+            \left(\Tr(\adj{\phi}\prd{x_k}[\Phi_{ij}]),
+            \Tr(\adj{\phi}\prd{y_k}[\Phi_{ij}])\right)
             \label{eq:PhiLapexp}
         \end{align}
     The latter equality is due to the fact that the cofactor to row $k$ is not
@@ -1174,7 +1207,6 @@
 
 \subsubsection{Analytic Expression for Hessen Matrix}
 \label{ssub:analytic_expression_for_hessen_matrix}
-\newcommand{\adj}[1]{\text{adj}\left(#1\right)}
 \newcommand{\psinorm}{\int\psi_T^2\md\tau}
 \newcommand{\psigender}[1]{\prd{c_{#1}}[\psi_T]}
 \newcommand{\psialphder}{\prd{\alpha}[\psi_T]}
