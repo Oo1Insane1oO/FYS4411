@@ -431,28 +431,27 @@ void VMC::calculate(bool perturb) {
         ELB3 /= cycles;
         
         // set Hessen matrix
-        HessenMatrix(1,1) = b->omega*(b->omega*(ELRsq - 2*ELR*R) -
-                2*ELR*Rsq - ELalpR);
+        HessenMatrix(0,0) = b->omega*(b->omega*(ELRsq - energy*Rsq + energy*R*R
+                    - ELR*R) - ELalpR);
         HessenMatrix(0,1) = 0;
         HessenMatrix(1,0) = 0;
-//         HessenMatrix(0,1) = b->omega * (2*ELRB2 - energy*RB2 + energy*R*B2 -
-//                 ELR*B2 - ELB2*R - ELbetR);
-//         HessenMatrix(1,0) = b->omega * (2*ELRB2 - energy*RB2 + energy*R*B2 -
-//                 ELR*B2 - ELB2*R - ELalpB2);
-        HessenMatrix(0,0) = 2*(2*(ELB2sq + ELB3 - 2*ELB2*B2 + energy*(B3
-                        + B2*B2)) - ELbetB2);
+//         HessenMatrix(0,1) = b->omega * (2*(ELRB2 - energy*RB2) +
+//                 0.5*energy*R*B2 - ELR*B2 - ELB2*R - ELbetR);
+//         HessenMatrix(1,0) = b->omega * (2*(ELRB2 - energy*RB2) +
+//                 0.5*energy*R*B2 - ELR*B2 - ELB2*R - ELalpB2);
+        HessenMatrix(1,1) = -4*(ELB2sq - energy*B2sq) + energy*B2*B2 - ELB2*B2 -
+            2*ELbetB2;
+
+        std::cout << "Hessen: \n" << "  " << HessenMatrix(0,0) << " " << HessenMatrix(0,1) << "\n" << "  " << HessenMatrix(1,0) << " " << HessenMatrix(1,1) << std::endl;
 
         // optimalize with CG
-//         rhs(0) = -energy;
-//         rhs(1) = -energy;
         rhs(0) = b->omega*(energy*R - ELR);
         rhs(1) = 2*(energy*B2 - ELB2);
         newAlphaBeta += HessenMatrix.inverse()*rhs;
-//         newAlphaBeta = meth->conjugateGradient(HessenMatrix, rhs, newAlphaBeta);
 
         // conditional break
-//         if (fabs(newAlphaBeta(0)-alpha)<=1e-10 &&
-//                 fabs(newAlphaBeta(1)-beta)<=1e-10) {
+//         if (fabs(newAlphaBeta(0)-alpha)<=1e-5 &&
+//                 fabs(newAlphaBeta(1)-beta)<=1e-5) {
 //             /* break when variational parameters are steady */
 //             break;
 //         } // end if

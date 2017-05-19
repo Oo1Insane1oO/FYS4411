@@ -1027,7 +1027,7 @@
             \Theta_{n_{x_k}n_{y_k}}(x_k,y_k,\alpha)\Phi_{kj}(r_k,\alpha)
             \label{eq:nablakthfinal}
         \end{equation}
-    which gives that \Autoref{eq:PhiLapexp} is
+    such that
         \begin{equation}
             \suml{k}{N}C_{kj}\nabla^2_k\Phi_{kj} = \det(\Phi(\vec{r},\alpha))
             \suml{k}{N}\Theta_{n_{x_k}n_{y_k}}(x_k,y_k,\alpha)
@@ -1070,7 +1070,7 @@
         \end{equation}
     For the cross-term in \Autoref{eq:lapPsiT1} we need the single derivatives.
     Starting with $\det(\Phi(\vec{r},\alpha))$ and using a similar approach as
-    in \Autoref{eq:PhiLapexp} with \Autoref{eq:diffs2} gives
+    in \Autoref{eq:PhiLapExpfin} with \Autoref{eq:diffs2} gives
         \begin{align}
             \prd{x_k}[\Phi_{kj}] &= \sqrt{\omega}\left(2n\frac{H_{n-1}}{H_n} -
             \alpha s\right)H_n(s)e(s)
@@ -1321,18 +1321,16 @@
     The final expression for the elements in the Hessen matrix is thus
         \begin{equation}
             \begin{aligned}
-                \prd{\alpha}[\ecp{E_L}][2] &=
-                \omega\left(\omega\left(\ecp{R^2E_L} -
-                2\ecp{RE_L}\ecp{R}\right) + 2\ecp{E_L}\ecp{R}^2 -
-                \ecp{R\prd{\alpha}[E_L]}\right) \\
-                \prd{\beta}[\ecp{E_L}][2] &= 2\left(2\left(\ecp{E_LB_2^2} +
-                \ecp{E_LB_3} - 2\ecp{E_LB_2}\ecp{B_2} +
-                \ecp{E_L}\left(\ecp{B_3} + \ecp{B_2}^2\right)\right) -
-                \ecp{B_2\prd{\beta}[E_L]}\right) \\
-                \mixprd{\ecp{E_L}}[\alpha][\beta] &= \omega\left(2\ecp{E_LRB_2}
-                - \ecp{E_L}\ecp{RB_2} + \ecp{E_L}\ecp{R}\ecp{B_2} -
-                \ecp{E_LR}\ecp{B_2} - \ecp{E_LB_2}\ecp{R} -
-                \ecp{R\prd{\beta}[E_L]}\right)
+                \prd{\alpha}[\ecp{E_L}][2] &= \omega^2 \left(\ecp{E_LR^2} -
+                \ecp{E_L}\ecp{R^2} + \ecp{E_L}\ecp{R}^2 -
+                \ecp{E_LR}\ecp{R}\right) - \omega\ecp{R\prd{\alpha}[E_L]} \\
+                \prd{\beta}[\ecp{E_L}][2] &= 4\left(\ecp{E_LB^2_2} -
+                \ecp{E_L}\ecp{B^2_2}\right) + \ecp{E_L}\ecp{B_2}^2 -
+                \ecp{E_LB_2}\ecp{B_2} - 2\ecp{B_2\prd{\beta}[E_L]} \\
+                \mixprd{\ecp{E_L}}[\alpha][\beta] &=
+                \omega\left(2\left(\ecp{E_LRB_2} - \ecp{E_L}\ecp{RB_2}\right) +
+                \frac{1}{2}\ecp{E_L}\ecp{R}\ecp{B_2} - \ecp{E_LR}\ecp{B_2} -
+                \ecp{E_LB_2}\ecp{R} - \ecp{R\prd{\beta}[E_L]}\right)
             \end{aligned}
             \label{eq:HessenElemFin}
         \end{equation}
