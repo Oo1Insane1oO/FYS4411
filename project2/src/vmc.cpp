@@ -365,8 +365,8 @@ void VMC::calculate(bool perturb) {
                     H(newPositions(k,0),nkx-2)/H(newPositions(k,0),nkx);
                 Hyfactor = nky*(nky-1) *
                     H(newPositions(k,1),nky-2)/H(newPositions(k,1),nky);
-                tmpELalp += (nkx+nky+1) + 0.5*(Hxfactor + Hyfactor) -
-                    alpha*b->omega*b->omega*newPositions.row(k).squaredNorm();
+                tmpELalp += b->omega*(nkx+nky+1 + (Hxfactor + Hyfactor) -
+                        alpha*b->omega*newPositions.row(k).squaredNorm());
                 for (unsigned int l = 0; l < newPositions.rows(); ++l) {
                     if (k != l) {
                         a = b->padejastrow(k,l);
@@ -382,17 +382,27 @@ void VMC::calculate(bool perturb) {
                              (newPositions(k,0)-newPositions(l,0)) +
                              newPositions(k,1) *
                              (newPositions(k,1)-newPositions(l,1)));
-                        tmpELbet += a/denomcu * (rkl/denom *
-                                (2*beta+a*(1+beta)/denom - 1/rkl) +
-                                2*(((nkx+Hxfactor)/newPositions(k,0) -
+//                         tmpELbet += a/denomcu * (rkl/denom *
+//                                 (2*beta+a*(1+beta)/denom - 1/rkl) +
+//                                 2*(((nkx+Hxfactor)/newPositions(k,0) -
+//                                         alpha*b->omega*newPositions(k,0)) *
+//                                     (newPositions(k,0)-newPositions(l,0)) +
+//                                     ((nky+Hyfactor)/newPositions(k,1) -
+//                                      alpha*b->omega*newPositions(k,1)) *
+//                                     (newPositions(k,1)-newPositions(l,1)))
+//                                 );
+                        tmpELbet -= a/denomsq * ((beta*rkl-2)/denomsq -
+                                2*(newPositions(k,0)-newPositions(l,0) +
+                                    newPositions(k,1)-newPositions(l,1))/rkl -
+                                1/denom * (((nkx+Hxfactor)/newPositions(k,0) -
                                         alpha*b->omega*newPositions(k,0)) *
                                     (newPositions(k,0)-newPositions(l,0)) +
                                     ((nky+Hyfactor)/newPositions(k,1) -
                                      alpha*b->omega*newPositions(k,1)) *
                                     (newPositions(k,1)-newPositions(l,1))));
                     } // end if
-                } // end forj
-            } // end fori
+                } // end fork
+            } // end forl
             R += tmpR;
             B2 += tmpB2;
             B3 += tmpB3; 
