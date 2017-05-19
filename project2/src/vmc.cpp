@@ -6,6 +6,7 @@
 //////////////////////////////////////////////////////////////////////////////
 
 #include "vmc.h" // header
+#include <iomanip>
 #include "hermite.h"
 #include <iostream>
 #include <fstream>
@@ -413,7 +414,7 @@ void VMC::calculate(bool perturb) {
         // calculate final expectation values
         energy /= cycles;
         energySq /= cycles;
-        break;
+//         break;
         R /= cycles;
         B2 /= cycles;
         RB2 /= cycles;
@@ -430,7 +431,7 @@ void VMC::calculate(bool perturb) {
         ELB3 /= cycles;
         
         // set Hessen matrix
-        HessenMatrix(0,0) = b->omega*(b->omega*(ELRsq - 2*ELR*R) -
+        HessenMatrix(1,1) = b->omega*(b->omega*(ELRsq - 2*ELR*R) -
                 2*ELR*Rsq - ELalpR);
         HessenMatrix(0,1) = 0;
         HessenMatrix(1,0) = 0;
@@ -438,15 +439,16 @@ void VMC::calculate(bool perturb) {
 //                 ELR*B2 - ELB2*R - ELbetR);
 //         HessenMatrix(1,0) = b->omega * (2*ELRB2 - energy*RB2 + energy*R*B2 -
 //                 ELR*B2 - ELB2*R - ELalpB2);
-        HessenMatrix(1,1) = 2*(2*(ELB2sq + ELB3 - 2*ELB2*B2 + energy*(B3
+        HessenMatrix(0,0) = 2*(2*(ELB2sq + ELB3 - 2*ELB2*B2 + energy*(B3
                         + B2*B2)) - ELbetB2);
 
         // optimalize with CG
 //         rhs(0) = -energy;
 //         rhs(1) = -energy;
-        rhs(0) = b->omega*(ELR - energy*R);
-        rhs(1) = 2*(ELB2 - energy*B2);
-        newAlphaBeta = meth->conjugateGradient(HessenMatrix, rhs, newAlphaBeta);
+        rhs(0) = b->omega*(energy*R - ELR);
+        rhs(1) = 2*(energy*B2 - ELB2);
+        newAlphaBeta += HessenMatrix.inverse()*rhs;
+//         newAlphaBeta = meth->conjugateGradient(HessenMatrix, rhs, newAlphaBeta);
 
         // conditional break
 //         if (fabs(newAlphaBeta(0)-alpha)<=1e-10 &&
@@ -456,7 +458,7 @@ void VMC::calculate(bool perturb) {
 //         } // end if
 
         // set new variational parameters
-        std::cout << "alpha: " << alpha << ", beta: " << beta << ", Energy: " << energy << std::endl;
+        std::cout << std::setprecision(10) << "alpha: " << alpha << ", beta: " << beta << ", Energy: " << energy << std::endl;
         alpha = newAlphaBeta(0);
         beta = newAlphaBeta(1);
 
