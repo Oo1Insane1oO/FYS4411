@@ -391,15 +391,15 @@ void VMC::calculate(bool perturb) {
 //                                      alpha*b->omega*newPositions(k,1)) *
 //                                     (newPositions(k,1)-newPositions(l,1)))
 //                                 );
-                        tmpELbet -= a/denomsq * ((beta*rkl-2)/denomsq -
-                                2*(newPositions(k,0)-newPositions(l,0) +
-                                    newPositions(k,1)-newPositions(l,1))/rkl -
-                                1/denom * (((nkx+Hxfactor)/newPositions(k,0) -
-                                        alpha*b->omega*newPositions(k,0)) *
-                                    (newPositions(k,0)-newPositions(l,0)) +
-                                    ((nky+Hyfactor)/newPositions(k,1) -
-                                     alpha*b->omega*newPositions(k,1)) *
-                                    (newPositions(k,1)-newPositions(l,1))));
+                        tmpELbet -= a/denomcu * ((beta*rkl-2)/denom -
+                                (newPositions(k,0)-newPositions(l,0) +
+                                 newPositions(k,1)-newPositions(l,1)) -
+                                (((nkx+Hxfactor)/newPositions(k,0) -
+                                  alpha*b->omega*newPositions(k,0)) *
+                                 (newPositions(k,0)-newPositions(l,0)) +
+                                 ((nky+Hyfactor)/newPositions(k,1) -
+                                  alpha*b->omega*newPositions(k,1)) *
+                                 (newPositions(k,1)-newPositions(l,1))));
                     } // end if
                 } // end fork
             } // end forl
@@ -443,13 +443,13 @@ void VMC::calculate(bool perturb) {
         // set Hessen matrix
         HessenMatrix(0,0) = b->omega*(b->omega*(ELRsq - energy*Rsq + energy*R*R
                     - ELR*R) - ELalpR);
-        HessenMatrix(0,1) = 0;
-        HessenMatrix(1,0) = 0;
-//         HessenMatrix(0,1) = b->omega * (2*(ELRB2 - energy*RB2) +
-//                 0.5*energy*R*B2 - ELR*B2 - ELB2*R - ELbetR);
-//         HessenMatrix(1,0) = b->omega * (2*(ELRB2 - energy*RB2) +
-//                 0.5*energy*R*B2 - ELR*B2 - ELB2*R - ELalpB2);
-        HessenMatrix(1,1) = -4*(ELB2sq - energy*B2sq) + energy*B2*B2 - ELB2*B2 -
+//         HessenMatrix(0,1) = 0;
+//         HessenMatrix(1,0) = 0;
+        HessenMatrix(0,1) = b->omega * (2*(ELRB2 - energy*RB2) +
+                0.5*energy*R*B2 - ELR*B2 - ELB2*R - ELbetR);
+        HessenMatrix(1,0) = b->omega * (2*(ELRB2 - energy*RB2) +
+                0.5*energy*R*B2 - ELR*B2 - ELB2*R - ELalpB2);
+        HessenMatrix(1,1) = 4*(ELB2sq - energy*B2sq) + energy*B2*B2 - ELB2*B2 -
             2*ELbetB2;
 
         std::cout << "Hessen: \n" << "  " << HessenMatrix(0,0) << " " << HessenMatrix(0,1) << "\n" << "  " << HessenMatrix(1,0) << " " << HessenMatrix(1,1) << std::endl;
