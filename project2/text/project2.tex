@@ -1522,7 +1522,31 @@
                 \frac{\nabla^2\psi_T}{\psi_T} &=
                 \suml{j}{N}\nabla^2_i\phi_j(r_i)\psi_{\phi,ji}^{-1}(\vec{r})
             \end{aligned}
+            \label{eq:phiderrats}
         \end{equation}
+    For the correlation factor $\psi_J$ we have an exponential form(see
+    \Autoref{eq:psiT}). The first derivative ratio is thus
+        \begin{equation}
+            \left[\frac{\nabla\psi_J}{\psi_J}\right]_x = \suml{i}{k-1}
+            \frac{x_i-x_k}{r_{ik}}\prd{r_{ik}}[f_{ik}] -
+            \sum\limits_{i=k+1}^N\frac{x_k-x_i}{r_{ki}}\prd{r_{ki}}[f_{ki}]
+            \label{eq:jastoptfirstder}
+        \end{equation}
+    due to the fact that the Jastrow-factor factor $g$ is only dependant of the
+    relative distance $r_{ij}$ and is of exponential form and only the $N-1$
+    terms differentiated survive. \\
+    For the second derivative ratio we have similarly
+        \begin{equation}
+            \left[\frac{\nabla^2\psi_J}{\psi_J}\right]_x = \sum\limits_{i,j\neq
+            k} \frac{\left(\vec{r_k} - \vec{r_i}\right) \left(\vec{r_k} -
+            \vec{r_j}\right)}{r_{ki}r_{kj}}
+            \prd{r_{ki}}[f_{ki}]\prd{r_{kj}}[f_{kj}] + \sum\limits_{j\neq k}
+            \left(\prd{r_{kj}}[f_{kj}][2] +
+            \frac{2}{r_{kj}}\prd{r_{kj}}[f_{kj}]\right)
+            \label{eq:jastoptsecder}
+        \end{equation}
+    The factor $f_{ij}$ is just the function appearing in the exponent of the
+    Jastrow factor.
 
 \subsection{STATISTICAL ANALYSIS}
 \label{sub:statistical_analysis}
