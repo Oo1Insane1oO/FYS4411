@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2017.3.22)  20 MAY 2017 23:03
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2017.3.22)  21 MAY 2017 00:27
 entering extended mode
  \write18 enabled.
  file:line:error style messages enabled.
@@ -2469,26 +2469,24 @@ LaTeX Font Info:    Try loading font information for U+bbm on input line 507.
 (/usr/share/texlive/texmf-dist/tex/latex/bbm-macros/ubbm.fd
 File: ubbm.fd 1999/03/15 V 1.2 Font definition for bbm font - TH
 ) [4] [5] [6]
-[7] [8]
+[7] [8] [9]
 
-LaTeX Warning: Reference `eq:lapg' on page 9 undefined on input line 1095.
-
-
-LaTeX Warning: Reference `eq:lapPsiT1' on page 9 undefined on input line 1101.
+LaTeX Warning: Reference `eq:Qdef' on page 10 undefined on input line 1156.
 
 
-LaTeX Warning: Reference `eq:lapg' on page 9 undefined on input line 1116.
+LaTeX Warning: Reference `eq:upsilondef' on page 10 undefined on input line 115
+6.
 
-[9] [10] [11] [12] [13] [14]
+[10] [11] [12] [13] [14]
 LaTeX Font Info:    Font shape `T1/mdbch/m/it' will be
-(Font)              scaled to size 9.60007pt on input line 1660.
+(Font)              scaled to size 9.60007pt on input line 1627.
  [15] [16]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 1695.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 1695.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 1662.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 1662.
 
 (/home/saintz/localStuff/FYS4411/project2/text/project2.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 1695.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 1695.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 1662.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 1662.
 
 Package rerunfilecheck Info: File `project2.out' has not changed.
 (rerunfilecheck)             Checksum: <no file>.
@@ -2496,13 +2494,13 @@ Package rerunfilecheck Info: File `project2.out' has not changed.
 
 LaTeX Warning: There were undefined references.
 
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 1695.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 1662.
  ) 
 Here is how much of TeX's memory you used:
- 30863 strings out of 494497
- 561112 string characters out of 6172400
- 640290 words of memory out of 5000000
- 33575 multiletter control sequences out of 15000+600000
+ 30854 strings out of 494497
+ 561010 string characters out of 6172400
+ 637115 words of memory out of 5000000
+ 33571 multiletter control sequences out of 15000+600000
  53393 words of font info for 102 fonts, out of 8000000 for 9000
  264 hyphenation exceptions out of 8191
  64i,19n,94p,10410b,451s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -2519,10 +2517,10 @@ lic/mathdesign/mdbch/md-chr8t.pfb></usr/share/texlive/texmf-dist/fonts/type1/pu
 blic/mathdesign/mdbch/md-chri7m.pfb></usr/share/texlive/texmf-dist/fonts/type1/
 public/mathdesign/mdbch/md-chrma.pfb>
 Output written on /home/saintz/localStuff/FYS4411/project2/text/project2.pdf (1
-7 pages, 154581 bytes).
+7 pages, 153246 bytes).
 PDF statistics:
- 555 PDF objects out of 1000 (max. 8388607)
- 519 compressed objects within 6 object streams
- 203 named destinations out of 1000 (max. 500000)
+ 543 PDF objects out of 1000 (max. 8388607)
+ 507 compressed objects within 6 object streams
+ 198 named destinations out of 1000 (max. 500000)
  309 words of extra memory for PDF output out of 10000 (max. 10000000)
 

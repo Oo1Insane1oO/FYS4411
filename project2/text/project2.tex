@@ -1034,7 +1034,9 @@
     The ratios for the one-body part are thus
         \begin{equation}
             \begin{aligned}
-                \frac{\nabla\det(\Phi)}{\det(\Phi)} &= \suml{k}{N} \nabla_k \phi_j\left(\vec{r}_k,\alpha\right)\phi^{-1}_{jk}\left(\vec{r},\alpha\right) \\
+                \frac{\nabla\det(\Phi)}{\det(\Phi)} &= \suml{k}{N} \nabla_k
+                \phi_j\left(\vec{r}_k,\alpha\right)\phi^{-1}_{jk}\left(\vec{r},\alpha\right)
+                \\
                 &= \suml{k}{N}
                 \left[2\sqrt{\omega}\left(n_{x_j}\frac{H_{n_{x_j}-1}\left(\sqrt{\omega}x_k\right)}
                 {H_{n_{x_j}}\left(\sqrt{\omega}x_k\right)} +
@@ -1061,7 +1063,7 @@
             \label{eq:detdersecrat}
         \end{equation}
     The lack of the inverse function is due to fact that we drag $\phi_{ij}$
-    out from the derivatives which with the inverse just equals $1$.
+    out from the derivatives which with the inverse just equals $1$. \\
     For the Jastrow-factor we need the derivatives to the function in the
     exponent. Label this $f_{ij}$ and find
         \begin{align}
@@ -1077,84 +1079,49 @@
             \label{eq:gfijder2}
         \end{equation}
     Giving the first derivative and the Laplacian of the Jastrow-factor
-    BLARG
         \begin{equation}
             \begin{aligned}
+                \frac{\nabla g(\vec{r},\beta)}{g(\vec{r},\beta)} &=
+                \suml{i}{k-1}
+                \frac{a\left(\vec{r}_i-\vec{r}_k\right)}{r_{ik}\left(1+\beta
+                r_{ik}\right)^2} - \sum\limits_{i=k+1}^N
+                \frac{a\left(\vec{r}_k-\vec{r}_i\right)}{r_{ki}\left(1+\beta
+                r_{ki}\right)^2} \\
+                &= \sum\limits_{i\neq k} \frac{2a\left(\vec{r_i} -
+                \vec{r_k}\right)}{r_{ik}\left(1+\beta r_{ik}\right)^2}
             \end{aligned}
+            \label{eq:jastfirderrat}
         \end{equation}
-    We define a new function
-        \begin{equation}
-            Q\left(r_k,\beta\right) \equiv \left(\left(\sum\limits_{j\neq k}
-            \frac{a(x_k-x_j)}{r_{kj}\left(1+\beta r_{kj}\right)^2}\right)^2 +
-            \left(\sum\limits_{j\neq k} \frac{a(y_k-y_j)}{r_{kj}\left(1+\beta
-            r_{kj}\right)^2}\right)^2 + \sum\limits_{j\neq k}
-            \left(\frac{a}{r_{kj}\left(1+\beta r_{kj}\right)^2} \left(1 -
-            \frac{2}{1 + \frac{1}{\beta r_{kj}}}\right)\right)\right)
-            \label{eq:Qdef}
-        \end{equation}
-    and insert this into \Autoref{eq:lapg} yielding
-        \begin{equation}
-            \nabla^2_k g\left(\vec{r},\beta\right) =
-            g\left(\vec{r},\beta\right)Q\left(r_k,\beta\right)
-            \label{eq:lapgfin}
-        \end{equation}
-    For the cross-term in \Autoref{eq:lapPsiT1} we need the single derivatives.
-    Starting with $\det(\Phi(\vec{r},\alpha))$ and using a similar approach as
-    in \Autoref{eq:PhiLapExpfin} with \Autoref{eq:diffs2} gives
-        \begin{align}
-            \prd{x_k}[\Phi_{kj}] &= \sqrt{\omega}\left(2n\frac{H_{n-1}}{H_n} -
-            \alpha s\right)H_n(s)e(s)
-            \nonumber \\
-            &= \Phi_{kj}
-            \sqrt{\omega}\left(2n_{x_k}\frac{H_{n_{x_k}-1}}{H_{n_{x_k}}} -
-            \alpha \sqrt{\omega}x_k\right) \nonumber \\
-            &= \Phi_{kj} \left(\frac{n_{x_k}}{x_k} +
-            \frac{n_{x_k}(n_{x_k}-1)}{x_k}\frac{H_{n_{x_k}-2}}{H_{n_{x_k}}} -
-            \alpha\omega x_k\right)
-            \label{eq:detder1}
-        \end{align}
-    For $g(\vec{r},\beta)$ we have with \Autoref{eq:lapg}
-        \begin{align}
-            \prd{x_k}{g(\vec{r},\alpha)} &= \prd{x_k}\left(\prod_{i<j}
-            \gJ\right) \nonumber \\
-            &= g(\vec{r},\beta) \sum_{j\neq k}\prd{x_k}\left(\frac{a}{\beta +
-            \frac{1}{r_{kj}}}\right) \nonumber \\
-            &= g(\vec{r},\beta) \sum_{j\neq k} \frac{a\left(x_k-x_j\right)}
-            {r_{kj}\left(1+\beta r_{kj}\right)^2}
-            \label{eq:gder1}
-        \end{align}
-    For the derivative with respect to $y_k$ the derivation is exactly as given
-    in \Autoref{eq:detder1,eq:gder1} above. \\
-    Defining
+    and the Laplacian is
         \begin{equation}
             \begin{aligned}
-                \Upsilon_{n_{x_k}n_{y_k}}(x_k,y_k,\alpha) \equiv \sum_{j\neq k}
-                \frac{a}{r_{kj}\left(1+\beta r_{kj}\right)^2}
-                \Bigg[&\left(\frac{n_{x_k}}{x_k} +
-                \frac{n_{x_k}(n_{x_k}-1)}{x_k}\frac{H_{n_{x_k}-2}}{H_{n_{x_k}}}
-                - \alpha\omega x_k\right)\left(x_k-x_j\right) \\
-                + &\left(\frac{n_{y_k}}{y_k} +
-                \frac{n_{y_k}(n_{y_k}-1)}{y_k}\frac{H_{n_{y_k}-2}}{H_{n_{y_k}}}
-                - \alpha\omega y_k\right)\left(y_k-y_j\right) \Bigg]
+                \frac{\nabla^2 g(\vec{r},\beta)}{g(\vec{r},\beta)} &=
+                \sum\limits_{i,j\neq k}
+                \frac{\vec{r}_{ki}\cdot\vec{r}_{kj}}{r_{ki}r_{kj}}
+                \frac{a_{ki}a_{kj}}{\left(1+\beta r_{ki}\right)^2 \left(1+\beta
+                r_{kj}\right)^2} + \sum_{j\neq k}
+                \frac{2a_{kj}}{r_{kj}\left(1+\beta r_{kj}\right)^3} \\
+                &= \sum_{i\neq k}\left[\sum_{j\neq k}
+                \frac{a_{kj}}{r_{kj}\left(1+\beta r_{kj}\right)^2}
+                \left(\frac{\vec{r}_{ki}\cdot\vec{r}_{kj}}{r_{ki}}
+                \frac{a_{ki}}{\left(1+\beta r_{ki}\right)^2} + \frac{2}{1+\beta
+                r_{kj}}\right)\right]
             \end{aligned}
-            \label{eq:upsilondef}
-        \end{equation}
-    gives the final expression for the Laplacian for our wavefunction
-        \begin{equation}
-            \nabla^2_N\Psi_T = \suml{k}{N}
-            \left(\Upsilon_{n_{x_k}n_{y_k}}(x_k,y_k,\alpha) +
-            \Theta_{n_{x_k}n_{y_k}}(x_k,y_k,\alpha) +
-            Q\left(r_k,\beta\right)\right)\Psi_T
-            \label{eq:lapNfin}
+            \label{eq:jastsecderrat}
         \end{equation}
     and the local energy is thus
-        \begin{equation}
-            E_L = \frac{1}{2}\suml{k}{N} \left(\omega^2r_k -
-            \Upsilon_{n_{x_k}n_{y_k}}(x_k,y_k,\alpha) -
-            \Theta_{n_{x_k}n_{y_k}}(x_k,y_k,\alpha) -
-            Q\left(r_k,\beta\right)\right) + \sum^N_{i<j} \frac{1}{r_{ij}}
+        \begin{align}
+            E_L &= \frac{1}{2}\suml{k}{N} \left(\omega^2r^2_k -
+            \frac{\nabla^2_k\psi_T}{\psi_T}\right) + \sum_{i<j}
+            \frac{1}{r_{ij}} \nonumber \\
+            &= \frac{1}{2}\suml{k}{N} \left(\omega^2r^2_k -
+            \frac{\nabla^2_k\det(\Phi(\vec{r},\alpha))}{\det(\Phi(\vec{r},\alpha))}
+            - \frac{\nabla^2_kg(\vec{r},\beta)}{g(\vec{r},\beta)} -
+            2\frac{\nabla_k\det(\Phi(\vec{r},\alpha))}{\det(\Phi(\vec{r},\alpha))}
+            \cdot \frac{\nabla_kg(\vec{r},\beta)}{g(\vec{r},\beta)}\right) +
+            \sum_{i<j} \frac{1}{r_{ij}}
             \label{eq:ELNfin}
-        \end{equation}
+        \end{align}
     with
         \begin{equation}
             \begin{aligned}
