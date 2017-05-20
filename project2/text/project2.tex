@@ -938,12 +938,25 @@
             \label{eq:nablaN}
         \end{equation}
     that is a sum over the single-particle spacial Laplacians. \\
-    We define a new function $g(\vec{r},\beta)$ as the Jastrow-factor
+    As mentioned we derive an expression based on the fact that we only move
+    one particle at a time. This means we can rewrite the derivative ratio
+    given in the local energy and arrive at
+        \begin{equation}
+            E_L = \frac{1}{2}\suml{k}{N}\left(\omega^2r^2_k -
+            \nabla^2_k\phi_j(r_k)\psi^{-1}_{jk}(\vec{r})\right)
+            \sum\limits_{i<j} \frac{1}{r_{ij}}
+            \label{eq:ELgenfir}
+        \end{equation}
+    See \Autoref{sub:optimization} for a more clear derivation for the above
+    expression. We now need the derivative to the single particle wave
+    functions. Start by defining a new function $g(\vec{r},\beta)$ as the
+    Jastrow-factor
         \begin{equation}
             g(\vec{r},\beta) \equiv \prod_{i<j} \gJ
             \label{eq:g}
         \end{equation}
-    and apply \Autoref{eq:nablaN} to the trial wavefunction $\psi_T$ giving
+    and apply \Autoref{eq:nablaN} to the single particle wave function
+    BLAAARGGG
         \begin{align}
             \nabla^2_N\psi^2_T &=
             \suml{k}{N}\nabla^2_k\left[\det(\Phi(\vec{r},\alpha))
@@ -952,7 +965,7 @@
             {\det(\Phi(\vec{r},\alpha))}\right)
             \label{eq:lapPsiT1}
         \end{align}
-    We have used a short-hand $\det(\Phi)$ defined as
+    We have used a short-hand notation $\det(\Phi)$ defined as
         \begin{equation}
             \det(\Phi(\vec{r},\alpha)) \equiv
             \det(\phi_1(r_1),\dots,\phi_N(r_N))
@@ -960,23 +973,38 @@
         \end{equation}
     and used the product rule for differentiation. \\
     Starting by solving $\nabla^2_k\det(\Phi(\vec{r},\alpha))$ with the Laplace
-    expansion given in \Autoref{sub:laplace_expansion}. The single particle
+    expansion given in \Autoref{sub:laplace_expansion}. The Laplace expansion
+    simplifies the expression due to the fact that the cofactors are
+    independant of the $k$-th particle. This gives us
+        \begin{align}
+            \nabla^2_k\det(\Phi(\vec{r},\alpha)) &=
+            \nabla^2_k\suml{i}{N}C_{ij}\Phi_{ij} \nonumber \\
+            &= \nabla_k\cdot\left(C_{kj}\nabla_k\Phi_{kj}\right) \nonumber \\
+            &= C_{kj}\nabla^2_k\Phi_{kj}
+            \label{eq:nablakPhilapexp}
+        \end{align}
+    The single particle
     wave function is
         \begin{equation}
-            \Phi_{kj} = \phi_{n_{x_k}n_{y_k}}(r_k,\alpha) =
-            H_{n_{x_k}}\left(\sqrt{\omega}x_k\right)
-            H_{n_{y_k}}\left(\sqrt{\omega}y_k\right)
+            \Phi_{kj} = \phi_{n_{x_j}n_{y_j}}(r_k,\alpha) =
+            H_{n_{x_j}}\left(\sqrt{\omega}x_k\right)
+            H_{n_{y_j}}\left(\sqrt{\omega}y_k\right)
             \exp(-\frac{\alpha\omega}{2}\left(x^2_k + y^2_k\right))
             \label{eq:Phikj}
         \end{equation}
     The expression to be solved for the $k$-th particle is thus
         \begin{equation}
-            \nabla^2_k \Phi_{kj} = \exp(-\frac{\alpha\omega}{2}y^2_k)
-            \prd{x_k}[][2]\left(H_{n_{x_k}}\left(\sqrt{\omega}x_k\right)
-            \exp(-\frac{\alpha\omega}{2}x^2_k)\right) +
-            \exp(-\frac{\alpha\omega}{2}x^2_k)
-            \prd{y_k}[][2]\left(H_{n_{y_k}}\left(\sqrt{\omega}y_k\right)
-            \exp(-\frac{\alpha\omega}{2}y^2_k)\right)
+            \begin{aligned}
+                \nabla^2_k \Phi_{kj} &=
+                H_{n_{y_j}}\left(\sqrt{\omega}y_k\right)
+                \exp(-\frac{\alpha\omega}{2}y^2_k)
+                \prd{x_k}[][2]\left(H_{n_{x_j}}\left(\sqrt{\omega}x_k\right)
+                \exp(-\frac{\alpha\omega}{2}x^2_k)\right) \\
+                &+ H_{n_{x_j}}\left(\sqrt{\omega}x_k\right)
+                \exp(-\frac{\alpha\omega}{2}x^2_k)
+                \prd{y_k}[][2]\left(H_{n_{y_j}}\left(\sqrt{\omega}y_k\right)
+                \exp(-\frac{\alpha\omega}{2}y^2_k)\right)
+            \end{aligned}
             \label{eq:nablakth}
         \end{equation}
     Solving the differential for $x_k$ and similarly $y_k$ by substituting
@@ -994,7 +1022,7 @@
     in \Autoref{eq:hermiteReq} for $H_n(s)$ gives
         \begin{align}
             \omega \prd{s}[][2]\left(H_n(s)e(s))\right) &=
-            \omega\left(\prd{x}[H_n][2] - 2\alpha s\prd{x}[H] +
+            \omega\left(\prd{x}[H_n][2] - 2\alpha s\prd{x}[H_n] +
             \alpha\left(\alpha s^2 - 1\right)H_n(s)\right)e(s) \nonumber \\
             &= \omega\left(8n(n-1)H_{n-2}(s) - 4n\alpha sH_{n-1}(s) +
             \alpha(\alpha s^2-1)(2sH_{n-1}(s)-2(n-1)H_{n-2})\right)e(s)
@@ -1432,6 +1460,12 @@
             \suml{j}{N}\nabla_i\phi_j(\rnew_i)\phi^{-1}_{ji}(\rold)
             \label{eq:Rder}
         \end{equation}
+    And a similarly for the Laplacian
+        \begin{equation}
+            \frac{\nabla^2_i\abs{D(r_i)}}{\abs{D(r_i)}} =
+            \suml{j}{N}\nabla^2_i\phi_j(\rnew_i)\phi^{-1}_{ji}(\rold)
+            \label{eq:Rdersec}
+        \end{equation}
 
 \subsubsection{Inverse of Matrix}
 \label{ssub:inverse_of_matrix}
@@ -1453,6 +1487,42 @@
             \label{eq:InvUpdate}
         \end{equation}
     as described by Sherman and Morris \cite{vmc,shermorInv}. 
+
+\subsubsection{Derivative Ratios}
+\label{ssub:derivative_ratios}
+    In the calculation of the local energy and quantum force we need to
+    calculate the ratio between the derivatives of the trial wave function and
+    the wave function it self. In this section we will derive a formula for
+    these ratios based on the mentioned fact that we move only one particle at
+    a time. \\
+    We start with the first derivative and define the one body part to be
+    $\psi_{\phi}$ and the correlation term(Jastrow) to be $\psi_J$ meaning
+    $\psi_T=\psi_{\phi}\psi_J$. This gives the ratio
+        \begin{equation}
+            \frac{\nabla\psi_T}{\psi_T} = \frac{\nabla\psi_{\phi}}{\psi_{\phi}}
+            + \frac{\nabla\psi_J}{\psi_J}
+            \label{eq:optfirstdirrat}
+        \end{equation}
+    and for the second derivative we have
+        \begin{equation}
+            \frac{\nabla^2\psi_T}{\psi_T} =
+            \frac{\nabla^2\psi_{\phi}}{\psi_{\phi}} +
+            \frac{\nabla^2\psi_J}{\psi_J} +
+            2\frac{\nabla\psi_{\phi}}{\psi_{\phi}} \cdot
+            \frac{\nabla\psi_J}{\psi_J}
+            \label{eq:optseconddirrat}
+        \end{equation}
+    For one-body part $\psi_{\phi}$ we know that the expression is just a
+    determinant(from \Autoref{eq:psiT}). Using \Autoref{eq:Rder,eq:Rdersec} the
+    expressions for the derivative ratios is
+        \begin{equation}
+            \begin{aligned}
+                \frac{\nabla\psi_{\phi}}{\psi_{\phi}} &=
+                \suml{j}{N}\nabla_i\phi_j(r_i)\psi_{\phi,ji}^{-1}(\vec{r}) \\
+                \frac{\nabla^2\psi_T}{\psi_T} &=
+                \suml{j}{N}\nabla^2_i\phi_j(r_i)\psi_{\phi,ji}^{-1}(\vec{r})
+            \end{aligned}
+        \end{equation}
 
 \subsection{STATISTICAL ANALYSIS}
 \label{sub:statistical_analysis}
