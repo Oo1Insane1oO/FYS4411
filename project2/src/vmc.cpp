@@ -341,6 +341,9 @@ void VMC::calculate(bool perturb) {
                 } else {
                     /* reset position */
                     newPositions.row(i) = oldPositions.row(i);
+                    if (imp) {
+                        qForceNew.row(i) = qForceOld.row(i);
+                    } // end if
                 } // end if
 
                 // update inverse
@@ -426,7 +429,7 @@ void VMC::calculate(bool perturb) {
         // calculate final expectation values
         energy /= cycles;
         energySq /= cycles;
-        break;
+//         break;
         R /= cycles;
         B2 /= cycles;
         RB2 /= cycles;
