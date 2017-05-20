@@ -267,7 +267,10 @@ void VMC::calculate(bool perturb) {
             /* run Monte Carlo cycles */
             for (unsigned int i = 0; i < oldPositions.rows(); ++i) {
                 /* loop over number of particles(move only 1 particle) */
+                // set references to matrices used (update only spin-up or
+                // spin-down depending on which particle moved)
                 if (i<halfSize) {
+                    /* spin down for first N/2 particles */
                     oldWave = &oldD;
                     newWave = &newD;
                     oldInv = &oldInvD;
@@ -275,6 +278,7 @@ void VMC::calculate(bool perturb) {
                     determinantRatio = &determinantRatioD;
                     halfIdx = i;
                 } else {
+                    /* spin up for remaining N/2+1 to N particles */
                     oldWave = &oldU;
                     newWave = &newU;
                     oldInv = &oldInvU;
@@ -314,7 +318,8 @@ void VMC::calculate(bool perturb) {
                 } // end if
 
                 // calculate determinant ratio
-                *determinantRatio = meth->determinantRatio(*newWave, *oldInv, halfIdx);
+                *determinantRatio = meth->determinantRatio(*newWave, *oldInv,
+                        halfIdx);
 
                 // set Metropolis test
                 testRatio = determinantRatioD*determinantRatioD *
@@ -421,7 +426,7 @@ void VMC::calculate(bool perturb) {
         // calculate final expectation values
         energy /= cycles;
         energySq /= cycles;
-//         break;
+        break;
         R /= cycles;
         B2 /= cycles;
         RB2 /= cycles;
