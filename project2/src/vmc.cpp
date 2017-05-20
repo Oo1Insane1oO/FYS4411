@@ -217,7 +217,7 @@ void VMC::calculate(bool perturb) {
     unsigned int halfSize = oldPositions.rows()/2;
     double testRatio, tmpEnergy, tmpR, tmpB2, tmpB3, tmpELalp, tmpELbet,
            transitionRatio, denom, denomsq, denomcu, a, rkl, Hxfactor,
-           Hyfactor;
+           Hyfactor, halfIdx;
     double RB2 = 0;
     double ELB3 = 0;
     double B3 = 0;
@@ -238,6 +238,8 @@ void VMC::calculate(bool perturb) {
     double determinantRatioU = 1;
     unsigned int cycles = 0;
     int nkx, nky;
+    double *determinantRatio;
+    Eigen::MatrixXd *oldWave, *newWave, *oldInv, *newInv;
     Eigen::MatrixXd oldD = Eigen::MatrixXd::Zero(b->ECut, b->ECut);
     Eigen::MatrixXd oldU = Eigen::MatrixXd::Zero(b->ECut, b->ECut);
     Eigen::MatrixXd newD = Eigen::MatrixXd::Zero(b->ECut, b->ECut);
@@ -265,6 +267,21 @@ void VMC::calculate(bool perturb) {
             /* run Monte Carlo cycles */
             for (unsigned int i = 0; i < oldPositions.rows(); ++i) {
                 /* loop over number of particles(move only 1 particle) */
+                if (i<halfSize) {
+                    oldWave = &oldD;
+                    newWave = &newD;
+                    oldInv = &oldInvD;
+                    newInv = &newInvD;
+                    determinantRatio = &determinantRatioD;
+                    halfIdx = i;
+                } else {
+                    oldWave = &oldU;
+                    newWave = &newU;
+                    oldInv = &oldInvU;
+                    newInv = &newInvU;
+                    determinantRatio = &determinantRatioU;
+                    halfIdx = i - halfSize;
+                } // end if
                 for (unsigned int j = 0; j < dim; ++j) {
                     /* propose new position */
                     if (imp) {
@@ -277,13 +294,8 @@ void VMC::calculate(bool perturb) {
                 } // end forj
 
                 // update Slater matrix
-                if (i < halfSize) {
-                    b->updateTrialWaveFunction(newD, newPositions.row(i),
-                            alpha, i/2);
-                } else {
-                    b->updateTrialWaveFunction(newU, newPositions.row(i),
-                            alpha, i/2);
-                } // end ifelse
+                b->updateTrialWaveFunction(*newWave, newPositions.row(i),
+                        alpha, halfIdx);
 
                 if (imp) {
                     /* set new quantum force */
@@ -302,19 +314,13 @@ void VMC::calculate(bool perturb) {
                 } // end if
 
                 // calculate determinant ratio
-                if ((i<halfSize)) {
-                    determinantRatioD = meth->determinantRatio(newD, oldInvD,
-                            i/2);
-                } else if ((i>=halfSize)) {
-                    determinantRatioU = meth->determinantRatio(newU, oldInvU,
-                            i/2);
-                } // end ifelseif
+                *determinantRatio = meth->determinantRatio(*newWave, *oldInv, halfIdx);
 
                 // set Metropolis test
                 testRatio = determinantRatioD*determinantRatioD *
                     determinantRatioU*determinantRatioU * (!perturb ?  1 :
-                            b->jastrowRatio(oldPositions, newPositions, beta,
-                                i));
+                            exp(2*b->jastrowRatio(oldPositions, newPositions,
+                                    beta, i)));
                 if (imp) {
                     /* importance sampling */
                     testRatio *= transitionRatio;
@@ -323,11 +329,7 @@ void VMC::calculate(bool perturb) {
                 if (testRatio >= dist(mt)) {
                     /* update positions according to Metropolis test */
                     oldPositions.row(i) = newPositions.row(i);
-                    if (i<halfSize) {
-                        oldD.row(i/2) = newD.row(i/2);
-                    } else {
-                        oldU.row(i/2) = newU.row(i/2);
-                    } // end if
+                    oldWave->row(halfIdx) = newWave->row(halfIdx);
                     if (imp) {
                         qForceOld.row(i) = qForceNew.row(i);
                     } // end if
@@ -337,13 +339,8 @@ void VMC::calculate(bool perturb) {
                 } // end if
 
                 // update inverse
-                if (i < halfSize) {
-                    meth->updateMatrixInverse(oldD, newD, oldInvD, newInvD,
-                            determinantRatioD, i/2);
-                } else {
-                    meth->updateMatrixInverse(oldU, newU, oldInvU, newInvU,
-                            determinantRatioU, i/2);
-                } // end ifelse
+                meth->updateMatrixInverse(*oldWave, *newWave, *oldInv, *newInv,
+                        *determinantRatio, halfIdx);
             } // end fori
 
             // calculate local energy and local energy squared

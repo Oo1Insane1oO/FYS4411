@@ -137,7 +137,7 @@ double Basis::jastrowRatio(const Eigen::MatrixXd &rold, const Eigen::MatrixXd
                         1/(rold.row(k)-rold.row(j)).norm()));
         } // end if
     } // end forj
-    return exp(2*ratio);
+    return ratio;
 } // end function jastrowRatio
 
 double Basis::harmonicOscillatorWaveFunction(double alpha, double x, double y,
