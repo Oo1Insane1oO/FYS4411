@@ -940,51 +940,9 @@
     that is a sum over the single-particle spacial Laplacians. \\
     As mentioned we derive an expression based on the fact that we only move
     one particle at a time. This means we can rewrite the derivative ratio
-    given in the local energy and arrive at
-        \begin{equation}
-            E_L = \frac{1}{2}\suml{k}{N}\left(\omega^2r^2_k -
-            \nabla^2_k\phi_j(r_k)\psi^{-1}_{jk}(\vec{r})\right)
-            \sum\limits_{i<j} \frac{1}{r_{ij}}
-            \label{eq:ELgenfir}
-        \end{equation}
-    See \Autoref{sub:optimization} for a more clear derivation for the above
-    expression. We now need the derivative to the single particle wave
-    functions. Start by defining a new function $g(\vec{r},\beta)$ as the
-    Jastrow-factor
-        \begin{equation}
-            g(\vec{r},\beta) \equiv \prod_{i<j} \gJ
-            \label{eq:g}
-        \end{equation}
-    and apply \Autoref{eq:nablaN} to the single particle wave function
-    BLAAARGGG
-        \begin{align}
-            \nabla^2_N\psi^2_T &=
-            \suml{k}{N}\nabla^2_k\left[\det(\Phi(\vec{r},\alpha))
-            g(\vec{r},\beta)\right] \nonumber \\
-            &= \suml{k}{N} \left(\prodsecrule{g(\vec{r},\beta)}
-            {\det(\Phi(\vec{r},\alpha))}\right)
-            \label{eq:lapPsiT1}
-        \end{align}
-    We have used a short-hand notation $\det(\Phi)$ defined as
-        \begin{equation}
-            \det(\Phi(\vec{r},\alpha)) \equiv
-            \det(\phi_1(r_1),\dots,\phi_N(r_N))
-            \label{eq:Phidef}
-        \end{equation}
-    and used the product rule for differentiation. \\
-    Starting by solving $\nabla^2_k\det(\Phi(\vec{r},\alpha))$ with the Laplace
-    expansion given in \Autoref{sub:laplace_expansion}. The Laplace expansion
-    simplifies the expression due to the fact that the cofactors are
-    independant of the $k$-th particle. This gives us
-        \begin{align}
-            \nabla^2_k\det(\Phi(\vec{r},\alpha)) &=
-            \nabla^2_k\suml{i}{N}C_{ij}\Phi_{ij} \nonumber \\
-            &= \nabla_k\cdot\left(C_{kj}\nabla_k\Phi_{kj}\right) \nonumber \\
-            &= C_{kj}\nabla^2_k\Phi_{kj}
-            \label{eq:nablakPhilapexp}
-        \end{align}
-    The single particle
-    wave function is
+    given in the local energy by using the formulas from
+    \Autoref{sub:optimization}. We see that we need the second derivatives to
+    the single particle wave functions.  The single particle wave function is
         \begin{equation}
             \Phi_{kj} = \phi_{n_{x_j}n_{y_j}}(r_k,\alpha) =
             H_{n_{x_j}}\left(\sqrt{\omega}x_k\right)
@@ -1061,25 +1019,69 @@
             \suml{k}{N}\Theta_{n_{x_k}n_{y_k}}(x_k,y_k,\alpha)
             \label{eq:PhiLapExpfin}
         \end{equation}
-    The Laplacian for $g$ is derived as follows
+    We reuse the notation and differentiation from \Autoref{eq:diffs2} and find
+    the first derivatives to be
         \begin{align}
-            \nabla^2_k g(\vec{r},\beta) &= \nabla^2_k \prod_{i<j} \gJ \nonumber
+            \sqrt{\omega}\prd{s}\left(H_n(s)e(s)\right) &=
+            \sqrt{\omega}\left(\prd{s}[H_n] - \alpha sH_n\right)e(s) \nonumber
             \\
-            &= \nabla_k\left(g(\vec{r},\beta)\sum_{j\neq k}\nabla_k\left(\frac{a}{\beta +
-            \frac{1}{r_{kj}}}\right)\right) \nonumber \\
-            &= \nabla_k\left(g(\vec{r},\beta)\sum\limits_{j\neq k}
-            \left(\frac{a}{\left(1+\beta
-            r_{kj}\right)^2}\left(x_k-x_j,y_k-y_j\right)\right)\right) \nonumber \\
-            &= g(\vec{r},\beta) \left(\left(\sum\limits_{j\neq k}
-            \frac{a(x_k-x_j)}{r_{kj}\left(1+\beta r_{kj}\right)^2}\right)^2 +
-            \left(\sum\limits_{j\neq k} \frac{a(y_k-y_j)}{r_{kj}\left(1+\beta
-            r_{kj}\right)^2}\right)^2 + \sum\limits_{j\neq k}
-            \left(\frac{a}{r_{kj}\left(1+\beta r_{kj}\right)^2} \left(1 -
-            \frac{2}{1 + \frac{1}{\beta r_{kj}}}\right)\right)\right)
-            \label{eq:lapg}
+            &= \sqrt{\omega}\left(2nH_{n-1} - \alpha sH_n\right)e(s) \nonumber
+            \\
+            &= \sqrt{\omega}\left(2n\frac{H_{n-1}}{H_n} - \alpha
+            s\right)H_n(s)e(s)
+            \label{eq:sfirstder}
         \end{align}
-    We have just reused the results from \Autoref{eq:derx1first2,eq:dery1} in
-    the differentiation above. \\
+    The ratios for the one-body part are thus
+        \begin{equation}
+            \begin{aligned}
+                \frac{\nabla\det(\Phi)}{\det(\Phi)} &= \suml{k}{N} \nabla_k \phi_j\left(\vec{r}_k,\alpha\right)\phi^{-1}_{jk}\left(\vec{r},\alpha\right) \\
+                &= \suml{k}{N}
+                \left[2\sqrt{\omega}\left(n_{x_j}\frac{H_{n_{x_j}-1}\left(\sqrt{\omega}x_k\right)}
+                {H_{n_{x_j}}\left(\sqrt{\omega}x_k\right)} +
+                n_{y_j}\frac{H_{n_{y_j}-1}\left(\sqrt{\omega}y_k\right)}
+                {H_{n_{y_j}}\left(\sqrt{\omega}y_k\right)}\right) -
+                \alpha\omega\left(x_k + y_k\right)\right]
+            \end{aligned}
+            \label{eq:detderfirrat}
+        \end{equation}
+    and the Laplacian
+        \begin{equation}
+            \begin{aligned}
+                \frac{\nabla^2\det(\Phi)}{\det(\Phi)} &= \suml{k}{N} \nabla^2_k
+                \phi_j\left(\vec{r}_k,\alpha\right)\phi^{-1}_{jk}\left(\vec{r},\alpha\right)
+                \\
+                &= \suml{k}{N} \left[2\omega
+                \left(2-\alpha\right)\left[n_{x_k}\left(n_{x_k}-1\right)
+                \frac{H_{n_{x_k}-2}}{H_{n_{x_k}}} +
+                n_{y_k}\left(n_{y_k}-1\right)
+                \frac{H_{n_{y_k}-2}}{H_{n_{y_k}}}\right] +
+                \alpha\omega\left(\alpha \omega r_k^2 - 2\left(n_{x_k} +
+                n_{y_k} + 1\right)\right)\right]
+            \end{aligned}
+            \label{eq:detdersecrat}
+        \end{equation}
+    The lack of the inverse function is due to fact that we drag $\phi_{ij}$
+    out from the derivatives which with the inverse just equals $1$.
+    For the Jastrow-factor we need the derivatives to the function in the
+    exponent. Label this $f_{ij}$ and find
+        \begin{align}
+            \prd{r_{ij}}[f_{ij}] &= \prd{r_{ij}}\left(\frac{a}{\beta +
+            \frac{1}{r_{ij}}}\right) \nonumber \\
+            &= \frac{a}{\left(1+\beta r_{ij}\right)^2}
+            \label{eq:gfijder1}
+        \end{align}
+    and
+        \begin{equation}
+            \prd{r_{ij}}[f_{ij}][2] = -\frac{2a\beta}{\left(1+\beta
+            r_{ij}\right)^3}
+            \label{eq:gfijder2}
+        \end{equation}
+    Giving the first derivative and the Laplacian of the Jastrow-factor
+    BLARG
+        \begin{equation}
+            \begin{aligned}
+            \end{aligned}
+        \end{equation}
     We define a new function
         \begin{equation}
             Q\left(r_k,\beta\right) \equiv \left(\left(\sum\limits_{j\neq k}
