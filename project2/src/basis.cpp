@@ -161,11 +161,11 @@ void Basis::setTrialWaveFunction(Eigen::MatrixXd &psiD, Eigen::MatrixXd &psiU,
 } // end function trialWaveFunction
 
 void Basis::updateTrialWaveFunction(Eigen::MatrixXd &psi, const Eigen::MatrixXd
-        &r, double alpha, unsigned int i) {
+        &r, double alpha, unsigned int i, unsigned int jstart) {
     /* update row i */
-    for (unsigned int j = 0; j < r.rows()/2; ++j) {
-        psi(i,j) = harmonicOscillatorWaveFunction(alpha, r(i,0), r(i,1),
-                *states[j][0], *states[j][1]);
+    for (unsigned int j = 0; j < r.rows(); j+=2) {
+        psi(i,j/2) = harmonicOscillatorWaveFunction(alpha, r(0), r(1),
+                *states[j+jstart][0], *states[j+jstart][1]);
     } // end forj
 } // end function updateTrialWaveFunction
 
