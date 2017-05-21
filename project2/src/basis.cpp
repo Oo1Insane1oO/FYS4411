@@ -53,8 +53,7 @@ Basis::Basis(double w, int cut) {
         /* loop over values for nx */
         for (int j = 0; j <= i; ++j) {
             /* set states not yet pushed */
-            
-            if (i+j>=ECut) {
+            if (i+j>=cut) {
                 /* end when cutoff is reached */
                 break;
             } // end if

@@ -980,18 +980,15 @@
     in \Autoref{eq:hermiteReq} for $H_n(s)$ gives
         \begin{align}
             \alpha\omega \prd{s}[][2]\left(H_n(s)e(s))\right) &=
-            \alpha\omega\left(\prd{x}[H_n][2] - 2s\prd{x}[H_n] + \left(s^2 -
+            \alpha\omega\left(\prd{s}[H_n][2] - 2s\prd{s}[H_n] + \left(s^2 -
             1\right)H_n(s)\right)e(s) \nonumber \\
             &= \alpha\omega\left(8n(n-1)H_{n-2}(s) - 4nsH_{n-1}(s) +
-            (s^2-1)(2sH_{n-1}(s)-2(n-1)H_{n-2})\right)e(s) \nonumber \\
-            &= \alpha\omega \left[2(n-1)\left(4n - \left(s^2 -
-            1\right)\right)H_{n-2}(s) + 2s\left(s^2 - 1 -
-            2n\right)H_{n-1}(s)\right]e(s) \nonumber \\
-            &= \alpha\omega \left[2(n-1)\left(4n - \left(s^2 -
-            1\right)\right)H_{n-2}(s) + \left(s^2 - 1 - 2n\right)\left(H_n(s) +
-            2(n-1)H_{n-2}(s)\right)\right]e(s) \nonumber \\
-            &= \alpha\omega \left[4n(n-1)\frac{H_{n-2}}{H_n} + \left(s^2 -
-            1 - 2n\right)\right]H_n(s)e(s)
+            (s^2-1)H_n(s)\right)e(s) \nonumber \\
+            &= \alpha\omega\left(8n(n-1)H_{n-2}(s) - 2n\left(H_n(s) +
+            2(n-1)H_{n-2}(s)\right) + \left(s^2-1\right)H_n(s)\right)e(s)
+            \nonumber \\
+            &= \alpha\omega\left(4n(n-1)\frac{H_{n-2}(s)}{H_n(s)} +
+            \left(s^2-1-2n\right)\right)H_n(s)e(s)
             \label{eq:diffs2}
         \end{align}
     We have in the latter step used \Autoref{eq:hermiteReq} to find $H_{n-1}$.

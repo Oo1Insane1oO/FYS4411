@@ -64,10 +64,10 @@ void VMC::oneBodyFirstDerivativeRatio(Eigen::MatrixXd &der, const
     double n;
     der.row(k).setZero();
     for (unsigned int d = 0; d < R.cols(); ++d) {
-        for (unsigned int j = 0; j < R.rows(); ++j) {
-            n = *(b->states[j][d]);
+//         for (unsigned int j = 0; j < R.rows(); ++j) {
+            n = *(b->states[k][d]);
             der(k,d) += 2*awsqr*n*H(awsqr*R(k,d),n-1)/H(awsqr*R(k,d),n); 
-        } // end forj
+//         } // end forj
         der(k,d) -= aw*R(k,d);
     } // end ford
 } // end function oneBodyFirstDerivativeRatio
@@ -78,11 +78,11 @@ double VMC::oneBodySecondDerivativeRatio(const Eigen::MatrixXd &R, const int k) 
     double ratio = 0;
     double n;
     for (unsigned int d = 0; d < R.cols(); ++d) {
-        for (unsigned int j = 0; j < R.rows(); ++j) {
-            n = *(b->states[j][d]);
-            ratio += 4*n*(n-1)*H(awsqr*R(k,d),n-2)/H(awsqr*R(k,d),n) - 2*n-1;
-        } // end forj
-            ratio += aw*R(k,d)*R(k,d);
+//         for (unsigned int j = 0; j < R.rows(); ++j) {
+            n = *(b->states[k][d]);
+            ratio += 4*n*(n-1)*H(awsqr*R(k,d),n-2)/H(awsqr*R(k,d),n) - 2*n - 1;
+//         } // end forj
+        ratio += aw*R(k,d)*R(k,d);
     } // end ford
     return ratio*aw;
 } // end function oneBodySecondDerivativeRatio
@@ -152,9 +152,9 @@ double VMC::localEnergy2(const Eigen::MatrixXd &R, Eigen::MatrixXd &der1,
     double E = 0;
     for (unsigned int k = 0; k < R.rows(); ++k) {
         E += 0.5*(b->omega*b->omega*R.row(k).squaredNorm() -
-                oneBodySecondDerivativeRatio(R,k) + (!coulomb ? 0 : (-
-                        jastrowSecondDerivativeRatio(R,k) -
-                        2*der1.row(k).dot(der2.row(k)) + 2*coulombFactor(R))));
+                oneBodySecondDerivativeRatio(R,k)) + (!coulomb ? 0 : (-
+                    0.5*jastrowSecondDerivativeRatio(R,k) -
+                    der1.row(k).dot(der2.row(k)) + coulombFactor(R)));
     } // end fork
     return E;
 } // end function localEnergy2
@@ -420,8 +420,10 @@ void VMC::calculate(bool perturb) {
                         alpha, halfIdx, uIdx);
 
                 // update first derivatives
-                oneBodyFirstDerivativeRatio(derOB, newPositions, i);
-                jastrowFirstDerivativeRatio(derJ, newPositions, i);
+                if (imp) {
+                    oneBodyFirstDerivativeRatio(derOB, newPositions, i);
+                    jastrowFirstDerivativeRatio(derJ, newPositions, i);
+                } // end if
 
                 if (imp) {
                     /* set new quantum force */
@@ -546,8 +548,8 @@ void VMC::calculate(bool perturb) {
         } // end for cycles
 
         // calculate final expectation values
-        energy /= cycles * newPositions.rows();
-        energySq /= cycles * newPositions.rows();
+        energy /= cycles;
+        energySq /= cycles;
         break;
         R /= cycles;
         B2 /= cycles;
