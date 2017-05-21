@@ -143,7 +143,8 @@ double Basis::jastrowRatio(const Eigen::MatrixXd &rold, const Eigen::MatrixXd
 double Basis::harmonicOscillatorWaveFunction(double alpha, double x, double y,
         int nx, int ny) {
     /* calculate harmonic oscillator wave function in 2D */
-    return H(x,nx)*H(y,ny) * exp(-alpha*(x*x+y*y)/2);
+    return H(sqrt(omega*alpha)*x,nx) * H(sqrt(omega*alpha)*y,ny) *
+        exp(-alpha*omega*(x*x+y*y)/2);
 } // end function harmonicOscillatorWaveFunction
 
 void Basis::setTrialWaveFunction(Eigen::MatrixXd &psiD, Eigen::MatrixXd &psiU,
