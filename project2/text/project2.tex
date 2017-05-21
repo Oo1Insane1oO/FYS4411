@@ -980,20 +980,18 @@
     in \Autoref{eq:hermiteReq} for $H_n(s)$ gives
         \begin{align}
             \alpha\omega \prd{s}[][2]\left(H_n(s)e(s))\right) &=
-            \alpha\omega\left(\prd{x}[H_n][2] - 2\alpha s\prd{x}[H_n] +
-            \alpha\left(\alpha s^2 - 1\right)H_n(s)\right)e(s) \nonumber \\
-            &= \alpha\omega\left(8n(n-1)H_{n-2}(s) - 4n\alpha sH_{n-1}(s) +
-            \alpha(\alpha s^2-1)(2sH_{n-1}(s)-2(n-1)H_{n-2})\right)e(s)
-            \nonumber \\
-            &= \alpha\omega \left[2(n-1)\left(4n - \alpha\left(\alpha s^2 -
-            1\right)\right)H_{n-2}(s) + 2\alpha s\left(\alpha s^2 - 1 -
+            \alpha\omega\left(\prd{x}[H_n][2] - 2s\prd{x}[H_n] + \left(s^2 -
+            1\right)H_n(s)\right)e(s) \nonumber \\
+            &= \alpha\omega\left(8n(n-1)H_{n-2}(s) - 4nsH_{n-1}(s) +
+            (s^2-1)(2sH_{n-1}(s)-2(n-1)H_{n-2})\right)e(s) \nonumber \\
+            &= \alpha\omega \left[2(n-1)\left(4n - \left(s^2 -
+            1\right)\right)H_{n-2}(s) + 2s\left(s^2 - 1 -
             2n\right)H_{n-1}(s)\right]e(s) \nonumber \\
-            &= \alpha\omega \left[2(n-1)\left(4n - \alpha\left(\alpha s^2 -
-            1\right)\right)H_{n-2}(s) + \alpha\left(\alpha s^2 - 1 -
-            2n\right)\left(H_n(s) + 2(n-1)H_{n-2}(s)\right)\right]e(s)
-            \nonumber \\
-            &= \alpha\omega \left[2n(n-1)(2-\alpha)\frac{H_{n-2}}{H_n} +
-            \alpha\left(\alpha s^2 - 1 - 2n\right)\right]H_n(s)e(s)
+            &= \alpha\omega \left[2(n-1)\left(4n - \left(s^2 -
+            1\right)\right)H_{n-2}(s) + \left(s^2 - 1 - 2n\right)\left(H_n(s) +
+            2(n-1)H_{n-2}(s)\right)\right]e(s) \nonumber \\
+            &= \alpha\omega \left[2n(n-1)\frac{H_{n-2}}{H_n} + \left(s^2 -
+            1 - 2n\right)\right]H_n(s)e(s)
             \label{eq:diffs2}
         \end{align}
     We have in the latter step used \Autoref{eq:hermiteReq} to find $H_{n-1}$.
@@ -1002,28 +1000,28 @@
     the first derivatives to be
         \begin{align}
             \sqrt{\alpha\omega}\prd{s}\left(H_n(s)e(s)\right) &=
-            \sqrt{\alpha\omega}\left(\prd{s}[H_n] - \alpha sH_n\right)e(s)
-            \nonumber \\
-            &= \sqrt{\alpha\omega}\left(2nH_{n-1} - \alpha sH_n\right)e(s)
-            \nonumber \\
-            &= \sqrt{\alpha\omega}\left(2n\frac{H_{n-1}}{H_n} - \alpha
-            s\right)H_n(s)e(s)
+            \sqrt{\alpha\omega}\left(\prd{s}[H_n] - sH_n\right)e(s) \nonumber
+            \\
+            &= \sqrt{\alpha\omega}\left(2nH_{n-1} - sH_n\right)e(s) \nonumber
+            \\
+            &= \sqrt{\alpha\omega}\left(2n\frac{H_{n-1}}{H_n} - s\right)
+            H_n(s)e(s)
             \label{eq:sfirstder}
         \end{align}
     The ratios for the one-body part are thus
         \begin{equation}
             \begin{aligned}
                 \frac{\nabla\det(\Phi)}{\det(\Phi)} &= \suml{k}{N} \nabla_k
-                \phi_j\left(\vec{r}_k,\alpha\right)\phi^{-1}_{jk}\left(\vec{r},\alpha\right)
-                \\
+                \phi_j\left(\vec{r}_k,\alpha\right)
+                \phi^{-1}_{jk}\left(\vec{r},\alpha\right) \\
                 &= \suml{k}{N}
                 \left(2\sqrt{\alpha\omega}
                 \left(n_{x_j}\frac{H_{n_{x_j}-1}\left(\sqrt{\alpha\omega}x_k\right)}
                 {H_{n_{x_j}}\left(\sqrt{\alpha\omega}x_k\right)}\right) -
-                \alpha^2\omega x_k, 2\sqrt{\alpha\omega}
+                \alpha\omega x_k, 2\sqrt{\alpha\omega}
                 \left(n_{y_j}\frac{H_{n_{y_j}-1}\left(\sqrt{\alpha\omega}y_k\right)}
                 {H_{n_{y_j}}\left(\sqrt{\alpha\omega}y_k\right)}\right) -
-                \alpha^2\omega y_k\right)
+                \alpha\omega y_k\right)
             \end{aligned}
             \label{eq:detderfirrat}
         \end{equation}
@@ -1034,11 +1032,11 @@
                 \phi_j\left(\vec{r}_k,\alpha\right)
                 \phi^{-1}_{jk}\left(\vec{r},\alpha\right) \\
                 &= \alpha\omega\suml{k}{N} \left[2
-                \left(2-\alpha\right)\left[n_{x_k}\left(n_{x_k}-1\right)
+                \left[n_{x_k}\left(n_{x_k}-1\right)
                 \frac{H_{n_{x_k}-2}}{H_{n_{x_k}}} +
                 n_{y_k}\left(n_{y_k}-1\right)
                 \frac{H_{n_{y_k}-2}}{H_{n_{y_k}}}\right] +
-                \alpha\left(\alpha^2 \omega r_k^2 - 2\left(n_{x_k} +
+                \left(\alpha \omega r_k^2 - 2\left(n_{x_k} +
                 n_{y_k} + 1\right)\right)\right]
             \end{aligned}
             \label{eq:detdersecrat}
