@@ -998,27 +998,6 @@
         \end{align}
     We have in the latter step used \Autoref{eq:hermiteReq} to find $H_{n-1}$.
     \\
-    Defining
-        \begin{equation}
-            \Theta_{n_{x_k}n_{y_k}}(x_k,y_k,\alpha) \equiv 2\omega
-            \left(2-\alpha\right)\left[n_{x_k}\left(n_{x_k}-1\right)
-            \frac{H_{n_{x_k}-2}}{H_{n_{x_k}}} + n_{y_k}\left(n_{y_k}-1\right)
-            \frac{H_{n_{y_k}-2}}{H_{n_{y_k}}}\right] + \alpha\omega\left(\alpha
-            \omega r_k^2 - 2\left(n_{x_k} + n_{y_k} + 1\right)\right)
-            \label{eq:thetadef}
-        \end{equation}
-    gives
-        \begin{equation}
-            \nabla^2_k\Phi_{kj} =
-            \Theta_{n_{x_k}n_{y_k}}(x_k,y_k,\alpha)\Phi_{kj}(r_k,\alpha)
-            \label{eq:nablakthfinal}
-        \end{equation}
-    such that
-        \begin{equation}
-            \suml{k}{N}C_{kj}\nabla^2_k\Phi_{kj} = \det(\Phi(\vec{r},\alpha))
-            \suml{k}{N}\Theta_{n_{x_k}n_{y_k}}(x_k,y_k,\alpha)
-            \label{eq:PhiLapExpfin}
-        \end{equation}
     We reuse the notation and differentiation from \Autoref{eq:diffs2} and find
     the first derivatives to be
         \begin{align}
@@ -1122,38 +1101,6 @@
             \sum_{i<j} \frac{1}{r_{ij}}
             \label{eq:ELNfin}
         \end{align}
-    with
-        \begin{equation}
-            \begin{aligned}
-                &\Theta_{n_{x_k}n_{y_k}}(x_k,y_k,\alpha) \equiv 2\omega
-                \left(2-\alpha\right)\left[n_{x_k}\left(n_{x_k}-1\right)
-                \frac{H_{n_{x_k}-2}}{H_{n_{x_k}}} +
-                n_{y_k}\left(n_{y_k}-1\right)
-                \frac{H_{n_{y_k}-2}}{H_{n_{y_k}}}\right] +
-                \alpha\omega\left(\alpha \omega r_k^2 - 2\left(n_{x_k} +
-                n_{y_k} + 1\right)\right) \\
-                &\hspace{1.25cm}
-                Q\left(r_k,\beta\right) \equiv \left(\left(\sum\limits_{j\neq
-                k} \frac{a(x_k-x_j)}{r_{kj}\left(1+\beta
-                r_{kj}\right)^2}\right)^2 + \left(\sum\limits_{j\neq k}
-                \frac{a(y_k-y_j)}{r_{kj}\left(1+\beta r_{kj}\right)^2}\right)^2
-                + \sum\limits_{j\neq k} \left(\frac{a}{r_{kj}\left(1+\beta
-                r_{kj}\right)^2} \left(1 - \frac{2}{1 + \frac{1}{\beta
-                r_{kj}}}\right)\right)\right) \\
-                &\begin{aligned}
-                    \Upsilon_{n_{x_k}n_{y_k}}(x_k,y_k,\alpha) \equiv
-                    \sum_{j\neq k} \frac{a}{r_{kj}\left(1+\beta
-                    r_{kj}\right)^2} \Bigg[&\left(\frac{n_{x_k}}{x_k} +
-                    \frac{n_{x_k}(n_{x_k}-1)}{x_k}\frac{H_{n_{x_k}-2}}
-                    {H_{n_{x_k}}} - \alpha\omega x_k\right)\left(x_k-x_j\right)
-                    \\ + &\left(\frac{n_{y_k}}{y_k} +
-                    \frac{n_{y_k}(n_{y_k}-1)}{y_k}\frac{H_{n_{y_k}-2}}
-                    {H_{n_{y_k}}} - \alpha\omega y_k\right)\left(y_k-y_j\right)
-                    \Bigg]
-                \end{aligned}
-            \end{aligned}
-        \end{equation}
-    exactly as given in \Autoref{eq:thetadef,eq:Qdef,eq:upsilondef}.
 
 \subsubsection{Analytic Expression for Hessen Matrix}
 \label{ssub:analytic_expression_for_hessen_matrix}
