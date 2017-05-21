@@ -23,6 +23,9 @@ VMC::VMC(Basis *B, double alp, double bet, unsigned int d, double s, unsigned
     maxIterations = max;
     imp = sample;
 
+    aw = alpha*b->omega;
+    awsqr = sqrt(aw);
+
     meth = new Methods(); 
 } // end constructor
 
@@ -63,10 +66,10 @@ void VMC::oneBodyFirstDerivativeRatio(Eigen::MatrixXd &der, const
     for (unsigned int j = 0; j < R.rows(); ++j) {
         nx = *(b->states[j][0]);
         ny = *(b->states[j][1]);
-        der(k,0) += 2*sqrt(b->omega)*nx*H(R(k,0),nx-1)/H(R(k,0),nx) -
-            alpha*b->omega*R(k,0);
-        der(k,1) += 2*sqrt(b->omega)*ny*H(R(k,1),ny-1)/H(R(k,1),ny) -
-            alpha*b->omega*R(k,1);
+        der(k,0) += 2*awsqr*nx*H(awsqr*R(k,0),nx-1)/H(awsqr*R(k,0),nx) -
+            aw*R(k,0);
+        der(k,1) += 2*awsqr*ny*H(awsqr*R(k,1),ny-1)/H(awsqr*R(k,1),ny) -
+            aw*R(k,1);
     } // end forj
 } // end function oneBodyFirstDerivativeRatio
 
@@ -78,11 +81,11 @@ double VMC::oneBodySecondDerivativeRatio(const Eigen::MatrixXd &R, const int k) 
     for (unsigned int j = 0; j < R.rows(); ++j) {
         nx = *(b->states[j][0]);
         ny = *(b->states[j][1]);
-        ratio += 2*(2-alpha) * (nx*(nx-1)*H(R(k,0),nx-2)/H(R(k,0),nx) +
-                ny*(ny-1)*H(R(k,1),ny-2)/H(R(k,1),ny)) +
-            alpha*(alpha*b->omega*R.row(k).squaredNorm() - 2*(nx+ny+1));
+        ratio += 2 * (nx*(nx-1)*H(awsqr*R(k,0),nx-2)/H(awsqr*R(k,0),nx) +
+                ny*(ny-1)*H(awsqr*R(k,1),ny-2)/H(awsqr*R(k,1),ny)) +
+            (aw*R.row(k).squaredNorm() - 2*(nx+ny+1));
     } // end forj
-    return ratio*b->omega;
+    return ratio*alpha*b->omega;
 } // end function oneBodySecondDerivativeRatio
 
 void VMC::jastrowFirstDerivativeRatio(Eigen::MatrixXd &der, const
@@ -149,10 +152,10 @@ double VMC::localEnergy2(const Eigen::MatrixXd &R, Eigen::MatrixXd &der1,
     /* calculate analytic expression of local energy */
     double E = 0;
     for (unsigned int k = 0; k < R.rows(); ++k) {
-     E += 0.5*(b->omega*b->omega*R.row(k).squaredNorm() -
-             oneBodySecondDerivativeRatio(R,k) + (!coulomb ? 0 : -
-                 jastrowSecondDerivativeRatio(R,k) -
-                 2*der1.row(k).dot(der2.row(k)) + coulombFactor(R)));
+        E += 0.5*(b->omega*b->omega*R.row(k).squaredNorm() -
+                oneBodySecondDerivativeRatio(R,k) + (!coulomb ? 0 : -
+                    jastrowSecondDerivativeRatio(R,k) -
+                    2*der1.row(k).dot(der2.row(k)) + 2*coulombFactor(R)));
     } // end fork
     return E;
 } // end function localEnergy2
@@ -590,6 +593,10 @@ void VMC::calculate(bool perturb) {
         std::cout << std::setprecision(10) << "alpha: " << alpha << ", beta: " << beta << ", Energy: " << energy << std::endl;
         alpha = newAlphaBeta(0);
         beta = newAlphaBeta(1);
+       
+        // stupid
+        aw = alpha*b->omega;
+        awsqr = sqrt(aw);
 
         // Reset variables used in Monte Carlo loop
         energy = 0;
