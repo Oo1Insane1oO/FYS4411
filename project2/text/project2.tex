@@ -945,8 +945,8 @@
     the single particle wave functions.  The single particle wave function is
         \begin{equation}
             \Phi_{kj} = \phi_{n_{x_j}n_{y_j}}(r_k,\alpha) =
-            H_{n_{x_j}}\left(\sqrt{\omega}x_k\right)
-            H_{n_{y_j}}\left(\sqrt{\omega}y_k\right)
+            H_{n_{x_j}}\left(\sqrt{\alpha\omega}x_k\right)
+            H_{n_{y_j}}\left(\sqrt{\alpha\omega}y_k\right)
             \exp(-\frac{\alpha\omega}{2}\left(x^2_k + y^2_k\right))
             \label{eq:Phikj}
         \end{equation}
@@ -954,20 +954,20 @@
         \begin{equation}
             \begin{aligned}
                 \nabla^2_k \Phi_{kj} &=
-                H_{n_{y_j}}\left(\sqrt{\omega}y_k\right)
+                H_{n_{y_j}}\left(\sqrt{\alpha\omega}y_k\right)
                 \exp(-\frac{\alpha\omega}{2}y^2_k)
-                \prd{x_k}[][2]\left(H_{n_{x_j}}\left(\sqrt{\omega}x_k\right)
-                \exp(-\frac{\alpha\omega}{2}x^2_k)\right) \\
-                &+ H_{n_{x_j}}\left(\sqrt{\omega}x_k\right)
+                \prd{x_k}[][2]\left(H_{n_{x_j}}\left(\sqrt{\alpha\omega}x_k\right)
+                \exp(-\frac{\alpha\omega}{2}x^2_k)\right) \\ &+
+                H_{n_{x_j}}\left(\sqrt{\alpha\omega}x_k\right)
                 \exp(-\frac{\alpha\omega}{2}x^2_k)
-                \prd{y_k}[][2]\left(H_{n_{y_j}}\left(\sqrt{\omega}y_k\right)
+                \prd{y_k}[][2]\left(H_{n_{y_j}}\left(\sqrt{\alpha\omega}y_k\right)
                 \exp(-\frac{\alpha\omega}{2}y^2_k)\right)
             \end{aligned}
             \label{eq:nablakth}
         \end{equation}
     Solving the differential for $x_k$ and similarly $y_k$ by substituting
-    $s=\sqrt{\omega}x_k=\sqrt{\omega}y_k$ and labeling $n_x,n_y\rarr n$ and
-    defining
+    $s=\sqrt{\alpha\omega}x_k=\sqrt{\alpha\omega}y_k$(respectively) and
+    labeling $n_x,n_y\rarr n$ and defining
         \begin{equation}
             \begin{aligned}
                 e(x_k) &\equiv \exp(-\frac{\alpha\omega}{2}x^2_k) \\
@@ -979,20 +979,20 @@
     the derivative of the Hermite polynomials with the recursion relation given
     in \Autoref{eq:hermiteReq} for $H_n(s)$ gives
         \begin{align}
-            \omega \prd{s}[][2]\left(H_n(s)e(s))\right) &=
-            \omega\left(\prd{x}[H_n][2] - 2\alpha s\prd{x}[H_n] +
+            \alpha\omega \prd{s}[][2]\left(H_n(s)e(s))\right) &=
+            \alpha\omega\left(\prd{x}[H_n][2] - 2\alpha s\prd{x}[H_n] +
             \alpha\left(\alpha s^2 - 1\right)H_n(s)\right)e(s) \nonumber \\
-            &= \omega\left(8n(n-1)H_{n-2}(s) - 4n\alpha sH_{n-1}(s) +
+            &= \alpha\omega\left(8n(n-1)H_{n-2}(s) - 4n\alpha sH_{n-1}(s) +
             \alpha(\alpha s^2-1)(2sH_{n-1}(s)-2(n-1)H_{n-2})\right)e(s)
             \nonumber \\
-            &= \omega \left[2(n-1)\left(4n - \alpha\left(\alpha s^2 -
+            &= \alpha\omega \left[2(n-1)\left(4n - \alpha\left(\alpha s^2 -
             1\right)\right)H_{n-2}(s) + 2\alpha s\left(\alpha s^2 - 1 -
             2n\right)H_{n-1}(s)\right]e(s) \nonumber \\
-            &= \omega \left[2(n-1)\left(4n - \alpha\left(\alpha s^2 -
+            &= \alpha\omega \left[2(n-1)\left(4n - \alpha\left(\alpha s^2 -
             1\right)\right)H_{n-2}(s) + \alpha\left(\alpha s^2 - 1 -
             2n\right)\left(H_n(s) + 2(n-1)H_{n-2}(s)\right)\right]e(s)
             \nonumber \\
-            &= \omega \left[2n(n-1)(2-\alpha)\frac{H_{n-2}}{H_n} +
+            &= \alpha\omega \left[2n(n-1)(2-\alpha)\frac{H_{n-2}}{H_n} +
             \alpha\left(\alpha s^2 - 1 - 2n\right)\right]H_n(s)e(s)
             \label{eq:diffs2}
         \end{align}
@@ -1001,12 +1001,12 @@
     We reuse the notation and differentiation from \Autoref{eq:diffs2} and find
     the first derivatives to be
         \begin{align}
-            \sqrt{\omega}\prd{s}\left(H_n(s)e(s)\right) &=
-            \sqrt{\omega}\left(\prd{s}[H_n] - \alpha sH_n\right)e(s) \nonumber
-            \\
-            &= \sqrt{\omega}\left(2nH_{n-1} - \alpha sH_n\right)e(s) \nonumber
-            \\
-            &= \sqrt{\omega}\left(2n\frac{H_{n-1}}{H_n} - \alpha
+            \sqrt{\alpha\omega}\prd{s}\left(H_n(s)e(s)\right) &=
+            \sqrt{\alpha\omega}\left(\prd{s}[H_n] - \alpha sH_n\right)e(s)
+            \nonumber \\
+            &= \sqrt{\alpha\omega}\left(2nH_{n-1} - \alpha sH_n\right)e(s)
+            \nonumber \\
+            &= \sqrt{\alpha\omega}\left(2n\frac{H_{n-1}}{H_n} - \alpha
             s\right)H_n(s)e(s)
             \label{eq:sfirstder}
         \end{align}
@@ -1017,11 +1017,13 @@
                 \phi_j\left(\vec{r}_k,\alpha\right)\phi^{-1}_{jk}\left(\vec{r},\alpha\right)
                 \\
                 &= \suml{k}{N}
-                \left[2\sqrt{\omega}\left(n_{x_j}\frac{H_{n_{x_j}-1}\left(\sqrt{\omega}x_k\right)}
-                {H_{n_{x_j}}\left(\sqrt{\omega}x_k\right)} +
-                n_{y_j}\frac{H_{n_{y_j}-1}\left(\sqrt{\omega}y_k\right)}
-                {H_{n_{y_j}}\left(\sqrt{\omega}y_k\right)}\right) -
-                \alpha\omega\left(x_k + y_k\right)\right]
+                \left(2\sqrt{\alpha\omega}
+                \left(n_{x_j}\frac{H_{n_{x_j}-1}\left(\sqrt{\alpha\omega}x_k\right)}
+                {H_{n_{x_j}}\left(\sqrt{\alpha\omega}x_k\right)}\right) -
+                \alpha^2\omega x_k, 2\sqrt{\alpha\omega}
+                \left(n_{y_j}\frac{H_{n_{y_j}-1}\left(\sqrt{\alpha\omega}y_k\right)}
+                {H_{n_{y_j}}\left(\sqrt{\alpha\omega}y_k\right)}\right) -
+                \alpha^2\omega y_k\right)
             \end{aligned}
             \label{eq:detderfirrat}
         \end{equation}
@@ -1029,14 +1031,14 @@
         \begin{equation}
             \begin{aligned}
                 \frac{\nabla^2\det(\Phi)}{\det(\Phi)} &= \suml{k}{N} \nabla^2_k
-                \phi_j\left(\vec{r}_k,\alpha\right)\phi^{-1}_{jk}\left(\vec{r},\alpha\right)
-                \\
-                &= \suml{k}{N} \left[2\omega
+                \phi_j\left(\vec{r}_k,\alpha\right)
+                \phi^{-1}_{jk}\left(\vec{r},\alpha\right) \\
+                &= \alpha\omega\suml{k}{N} \left[2
                 \left(2-\alpha\right)\left[n_{x_k}\left(n_{x_k}-1\right)
                 \frac{H_{n_{x_k}-2}}{H_{n_{x_k}}} +
                 n_{y_k}\left(n_{y_k}-1\right)
                 \frac{H_{n_{y_k}-2}}{H_{n_{y_k}}}\right] +
-                \alpha\omega\left(\alpha \omega r_k^2 - 2\left(n_{x_k} +
+                \alpha\left(\alpha^2 \omega r_k^2 - 2\left(n_{x_k} +
                 n_{y_k} + 1\right)\right)\right]
             \end{aligned}
             \label{eq:detdersecrat}
