@@ -57,41 +57,43 @@ VMC::~VMC() {
 // } // end function
 // 
 
-void VMC::oneBodyFirstDerivativeRatio(Eigen::MatrixXd &der, const
-        Eigen::MatrixXd &R, const int k) {
+void VMC::oneBodyFirstDerivativeRatio(const Eigen::MatrixXd &wave, const
+        Eigen::MatrixXd &waveInv, Eigen::MatrixXd &der, const Eigen::MatrixXd
+        &R, const unsigned int k, const unsigned int kIdx, const unsigned
+        jstart) {
     /* Analytic first derivative ratio of one body part of wave function  for
      * particle k */
     double n;
-    der.row(k).setZero();
-    for (unsigned int d = 0; d < R.cols(); ++d) {
-//         for (unsigned int j = 0; j < R.rows(); ++j) {
-            n = *(b->states[k][d]);
-            der(k,d) += 2*awsqr*n*H(awsqr*R(k,d),n-1)/H(awsqr*R(k,d),n); 
-//         } // end forj
-        der(k,d) -= aw*R(k,d);
-    } // end ford
+    for (unsigned int j = 0; j < R.rows(); j+=2) {
+        for (unsigned int d = 0; d < R.cols(); ++d) {
+            n = *(b->states[j+jstart][d]);
+            der(k,d) = (2*awsqr*n*H(awsqr*R(k,d),n-1)/H(awsqr*R(k,d),n) -
+                    aw*R(k,d)) * wave(kIdx,j/2)*waveInv(j/2,kIdx);
+        } // end ford
+    } // end forj
 } // end function oneBodyFirstDerivativeRatio
 
-double VMC::oneBodySecondDerivativeRatio(const Eigen::MatrixXd &R, const int k) {
-    /* Analytic second derivative ratio of one body part of wave function for
+void VMC::oneBodySecondDerivativeRatio(const Eigen::MatrixXd &wave, const
+        Eigen::MatrixXd &waveInv, Eigen::MatrixXd &der, const Eigen::MatrixXd
+        &R, const unsigned int k, const unsigned int kIdx, const unsigned int
+        jstart){
+    /* Analytic second derivative of one body part of wave function for
      * particle k */
-    double ratio = 0;
     double n;
-    for (unsigned int d = 0; d < R.cols(); ++d) {
-//         for (unsigned int j = 0; j < R.rows(); ++j) {
-            n = *(b->states[k][d]);
-            ratio += 4*n*(n-1)*H(awsqr*R(k,d),n-2)/H(awsqr*R(k,d),n) - 2*n - 1;
-//         } // end forj
-        ratio += aw*R(k,d)*R(k,d);
-    } // end ford
-    return ratio*aw;
+    for (unsigned int j = 0; j < R.rows(); j+=2) {
+        for (unsigned int d = 0; d < R.cols(); ++d) {
+            n = *(b->states[j+jstart][d]);
+            der(kIdx,j/2) = (4*n*(n-1)*H(awsqr*R(k,d),n-2)/H(awsqr*R(k,d),n) -
+                    2*n - 1 + aw*R(k,d)*R(k,d)) * wave(kIdx,j/2) * waveInv(j/2,kIdx);
+        } // end ford
+    } // end forj
 } // end function oneBodySecondDerivativeRatio
 
 void VMC::jastrowFirstDerivativeRatio(Eigen::MatrixXd &der, const
         Eigen::MatrixXd &R, const int k) {
     /* Analytic first derivative ratio of Jastrow part of wave function for
      * particle k */
-    double rjk, rjk2;
+    double rjk;
     der.row(k).setZero();
     for (unsigned int j = 0; j < k; ++j) {
         rjk = (R.row(j) - R.row(k)).norm();
@@ -146,18 +148,18 @@ double coulombFactor(const Eigen::MatrixXd &R) {
     return C;
 } // end function coulombFactor
 
-double VMC::localEnergy2(const Eigen::MatrixXd &R, Eigen::MatrixXd &der1,
-        Eigen::MatrixXd &der2, bool coulomb) {
-    /* calculate analytic expression of local energy */
-    double E = 0;
-    for (unsigned int k = 0; k < R.rows(); ++k) {
-        E += 0.5*(b->omega*b->omega*R.row(k).squaredNorm() -
-                oneBodySecondDerivativeRatio(R,k)) + (!coulomb ? 0 : (-
-                    0.5*jastrowSecondDerivativeRatio(R,k) -
-                    der1.row(k).dot(der2.row(k)) + coulombFactor(R)));
-    } // end fork
-    return E;
-} // end function localEnergy2
+// double VMC::localEnergy2(const Eigen::MatrixXd &R, Eigen::MatrixXd &der1,
+//         Eigen::MatrixXd &der2, bool coulomb) {
+//     /* calculate analytic expression of local energy */
+//     double E = 0;
+//     for (unsigned int k = 0; k < R.rows(); ++k) {
+//         E += 0.5*(b->omega*b->omega*R.row(k).squaredNorm() -
+//                 oneBodySecondDerivativeRatio(R,k)) + (!coulomb ? 0 : (-
+//                     0.5*jastrowSecondDerivativeRatio(R,k) -
+//                     der1.row(k).dot(der2.row(k)) + coulombFactor(R)));
+//     } // end fork
+//     return E;
+// } // end function localEnergy2
 
 // double VMC::localEnergy2(const Eigen::MatrixXd &R, bool coulomb) {
 //     /* calculate analytic expression of local energy */
@@ -324,6 +326,7 @@ void VMC::calculate(bool perturb) {
     double testRatio, tmpEnergy, tmpR, tmpB2, tmpB3, tmpELalp, tmpELbet,
            transitionRatio, denom, denomsq, denomcu, a, rkl, Hxfactor,
            Hyfactor, halfIdx;
+    double A = 0;
     double RB2 = 0;
     double ELB3 = 0;
     double B3 = 0;
@@ -350,7 +353,9 @@ void VMC::calculate(bool perturb) {
             oldPositions.cols());
     Eigen::MatrixXd derJ = Eigen::MatrixXd::Zero(oldPositions.rows(),
             oldPositions.cols());
-    Eigen::MatrixXd *oldWave, *newWave, *oldInv, *newInv;
+    Eigen::MatrixXd lapU = Eigen::MatrixXd::Zero(b->ECut, b->ECut);
+    Eigen::MatrixXd lapD = Eigen::MatrixXd::Zero(b->ECut, b->ECut);
+    Eigen::MatrixXd *oldWave, *newWave, *oldInv, *newInv, *lap;
     Eigen::MatrixXd oldD = Eigen::MatrixXd::Zero(b->ECut, b->ECut);
     Eigen::MatrixXd oldU = Eigen::MatrixXd::Zero(b->ECut, b->ECut);
     Eigen::MatrixXd newD = Eigen::MatrixXd::Zero(b->ECut, b->ECut);
@@ -369,7 +374,17 @@ void VMC::calculate(bool perturb) {
     oldInvU = oldU.inverse();
     for (unsigned int k = 0; k < oldPositions.rows(); ++k) {
         /* set first derivatives */
-        oneBodyFirstDerivativeRatio(derOB, oldPositions, k);
+        if (k<halfSize) {
+            oneBodyFirstDerivativeRatio(oldD, oldInvD, derOB, oldPositions, k,
+                    k, 0);
+            oneBodySecondDerivativeRatio(oldD, oldInvD, lapD, oldPositions, k,
+                    k, 0);
+        } else {
+            oneBodyFirstDerivativeRatio(oldU, oldInvU, derOB, oldPositions, k,
+                    k-halfSize, 1);
+            oneBodySecondDerivativeRatio(oldU, oldInvU, lapU, oldPositions, k,
+                    k-halfSize, 1);
+        } // end if
         jastrowFirstDerivativeRatio(derJ, oldPositions, k);
     } // end fork
     if (imp) {
@@ -392,6 +407,7 @@ void VMC::calculate(bool perturb) {
                     oldInv = &oldInvD;
                     newInv = &newInvD;
                     determinantRatio = &determinantRatioD;
+                    lap = &lapD;
                     halfIdx = i;
                     uIdx = 0;
                 } else {
@@ -401,6 +417,7 @@ void VMC::calculate(bool perturb) {
                     oldInv = &oldInvU;
                     newInv = &newInvU;
                     determinantRatio = &determinantRatioU;
+                    lap = &lapU;
                     halfIdx = i - halfSize;
                     uIdx = 1;
                 } // end if
@@ -421,8 +438,8 @@ void VMC::calculate(bool perturb) {
 
                 // update first derivatives
                 if (imp) {
-                    oneBodyFirstDerivativeRatio(derOB, newPositions, i);
-                    jastrowFirstDerivativeRatio(derJ, newPositions, i);
+//                     oneBodyFirstDerivativeRatio(derOB, newPositions, i);
+//                     jastrowFirstDerivativeRatio(derJ, newPositions, i);
                 } // end if
 
                 if (imp) {
@@ -455,27 +472,64 @@ void VMC::calculate(bool perturb) {
                 } //end if
 
                 if (testRatio >= dist(mt)) {
-                    /* update positions according to Metropolis test */
+                    A++;
+                    /* update state according to Metropolis test */
+                    (*(newInv)).setZero();
+                    meth->updateMatrixInverse(*oldWave, *newWave, *oldInv,
+                            *newInv, *determinantRatio, halfIdx);
                     oldPositions.row(i) = newPositions.row(i);
                     oldWave->row(halfIdx) = newWave->row(halfIdx);
                     if (imp) {
                         qForceOld.row(i) = qForceNew.row(i);
                     } // end if
                 } else {
-                    /* reset position */
+                    /* reset(discard) state */
                     newPositions.row(i) = oldPositions.row(i);
-               } // end if
+                    newWave->row(halfIdx) = oldWave->row(halfIdx);
+                } // end ifelse
 
                 // update inverse
-                meth->updateMatrixInverse(*oldWave, *newWave, *oldInv, *newInv,
-                        *determinantRatio, halfIdx);
+//                 *newInv = (*(newWave)).inverse();
+                oneBodySecondDerivativeRatio(*newWave, *newInv, *lap,
+                        newPositions, i, halfIdx, uIdx);
+//                 std::cout << *newWave**newInv << std::endl;
+
+                // update derivatives
+                oneBodyFirstDerivativeRatio(*newWave, *newInv, derOB,
+                        newPositions, i, halfIdx, uIdx);
+
+                tmpEnergy = 0;
+                for (unsigned int l = 0; l < newPositions.rows(); ++l) {
+                    tmpEnergy += 0.5*b->omega*b->omega *
+                        newPositions.row(l).squaredNorm();
+                } // end forl
+                for (unsigned int j = 0; j < halfSize; ++j) {
+                    tmpEnergy -= 0.5*(*(lap))(halfIdx,j);
+                } // end forj
+//                 tmpEnergy -= 0.5*meth->determinantRatio(*lap, *newInv, halfIdx);
+                energy += tmpEnergy;
+                energySq += tmpEnergy*tmpEnergy;
             } // end fori
                 
             // calculate local energy and local energy squared
-            tmpEnergy = localEnergy2(newPositions, derOB, derJ, perturb);
+//             tmpEnergy = localEnergy2(newPositions, derOB, derJ, perturb);
     //         tmpEnergy = localEnergyDiff(newD,newU,newPositions,perturb);
-            energy += tmpEnergy;
-            energySq += tmpEnergy*tmpEnergy;
+//             energy += tmpEnergy;
+//             energySq += tmpEnergy*tmpEnergy;
+//             tmpEnergy = 0;
+//             for (unsigned int k = 0; k < halfSize; ++k) {
+//                 tmpEnergy += 0.5*b->omega*b->omega *
+//                     newPositions.row(k).squaredNorm();
+//                 for (unsigned int j = 0; j < halfSize; ++j) {
+//                     if (k < halfSize) {
+//                         tmpEnergy -= 0.5*lapD(k,j);
+//                     } else {
+//                         tmpEnergy -= 0.5*lapU(k-halfSize,j);
+//                     } // end ifelse
+//                 }
+//             } // end forl
+//             energy += tmpEnergy;
+//             energySq += tmpEnergy*tmpEnergy;
 
             // calculate values for Hessen matrix
             tmpR = 0;
@@ -548,8 +602,10 @@ void VMC::calculate(bool perturb) {
         } // end for cycles
 
         // calculate final expectation values
-        energy /= cycles;
-        energySq /= cycles;
+        energy /= cycles * newPositions.rows();
+        energySq /= cycles * newPositions.rows();
+
+        std::cout << "Acceptance: " << A/(cycles*newPositions.rows()) << std::endl;
         break;
         R /= cycles;
         B2 /= cycles;

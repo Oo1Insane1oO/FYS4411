@@ -44,11 +44,11 @@ int main(int argc, const char** argv) {
     std::vector<int> magicNumber = b->getMagicNumbers();
     std::vector<int>::iterator it;
     it = std::find(magicNumber.begin(), magicNumber.end(), num);
-//     if (it == magicNumber.end()) {
-//         std::cout << "make sure num is a magic number N=2,6,12,20,30,42..." <<
-//             std::endl;
-//         exit(1);
-//     } // end if
+    if (it == magicNumber.end()) {
+        std::cout << "make sure num is a magic number N=2,6,12,20,30,42..." <<
+            std::endl;
+        exit(1);
+    } // end if
 
     std::cout << "Basis made" << std::endl;
     
