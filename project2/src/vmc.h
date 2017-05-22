@@ -15,6 +15,8 @@ class VMC {
 
         unsigned long int seed = 1286754;
 
+        double aw, awsqr;
+
     public:
         VMC (Basis*, double, double, unsigned int, double, unsigned int, bool);
         virtual ~VMC ();

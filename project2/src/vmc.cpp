@@ -23,6 +23,9 @@ VMC::VMC(Basis *B, double alp, double bet, unsigned int d, double s, unsigned
     maxIterations = max;
     imp = sample;
 
+    aw = alpha*b->omega;
+    awsqr = sqrt(aw);
+
     meth = new Methods(); 
 } // end constructor
 
@@ -65,11 +68,11 @@ double VMC::localEnergy2(const Eigen::MatrixXd &R, bool coulomb) {
         rk = R.row(k).norm();
         nx = *(b->states[k][0]);
         ny = *(b->states[k][1]);
-        nxHermiteFactor = nx*(nx-1)*H(R(k,0),nx-2)/H(R(k,0),nx);
-        nyHermiteFactor = ny*(ny-1)*H(R(k,1),ny-2)/H(R(k,1),ny);
+        nxHermiteFactor = nx*(nx-1)*H(awsqr*R(k,0),nx-2)/H(awsqr*R(k,0),nx);
+        nyHermiteFactor = ny*(ny-1)*H(awsqr*R(k,1),ny-2)/H(awsqr*R(k,1),ny);
         E += 0.5 * pow(b->omega,2)*rk*rk;
-        E -= b->omega*(2-alpha) * (nxHermiteFactor + nyHermiteFactor) +
-            0.5*alpha*b->omega * (alpha*b->omega*rk*rk - 2*(nx+ny+1));
+        E -= 2*aw*(nxHermiteFactor + nyHermiteFactor) +
+            0.5*aw* (aw*rk*rk - 2*(nx+ny+1));
         if (coulomb) {
             /* Add Jastrow part */
             for (unsigned int j = 0; j < R.rows(); ++j) {
@@ -78,10 +81,10 @@ double VMC::localEnergy2(const Eigen::MatrixXd &R, bool coulomb) {
                     rkj = (R.row(k) - R.row(j)).norm();
                     denom = 1 + beta*rkj;
                     jFactor = 0.5*a/pow(denom,2);
-                    E -= jFactor * (2/rkj*(((nx + nxHermiteFactor)/R(k,0) -
-                                    alpha*b->omega*R(k,0))*(R(k,0)-R(j,0)) +
+                    E -= jFactor * (2*awsqr/rkj*(((nx + nxHermiteFactor)/R(k,0)
+                                    - alpha*b->omega*R(k,0))*(R(k,0)-R(j,0)) +
                                 ((ny + nyHermiteFactor)/R(k,1) -
-                                 alpha*b->omega*R(k,1))*(R(k,1)-R(j,1))) + 1 -
+                                 awsqr*R(k,1))*(R(k,1)-R(j,1))) + 1 -
                             2/(1+1/(beta*rkj)));
                     Qx += 0.5*jFactor * (R(k,0) - R(j,0));
                     Qy += 0.5*jFactor * (R(k,1) - R(j,1));
@@ -106,12 +109,12 @@ void VMC::diff(const Eigen::MatrixXd &R, Eigen::MatrixXd &der) {
 
 void VMC::updateDiff(const Eigen::MatrixXd &R, Eigen::MatrixXd &der, unsigned
         int k) {
-    /* calculate first derivative ratio of wave functions for partikle k */
-    double rkj;
+    /* calculate first derivative ratio of wave functions for particle k */
+    double rkj, n;
     for (unsigned int d = 0; d < R.cols(); ++d) {
-        der(k,d) = (*(b->states[k][d]) + 2*(*(b->states[k][d]) - 1) *
-                H(R(k,d),*(b->states[k][d])-2)/H(R(k,d),*(b->states[k][d]))) /
-            R(k,d) - alpha*b->omega*R(k,d);
+        n = *(b->states[k][d]);
+        der(k,d) = awsqr*(2*n*H(awsqr*R(k,d),n-1)/H(awsqr*R(k,d),n) -
+                awsqr*R(k,d));
         for (unsigned int j = 0; j < R.rows(); ++j) {
             if (j != k) {
                 rkj = (R.row(k) - R.row(j)).norm();
@@ -132,7 +135,7 @@ double VMC::localEnergyDiff(Eigen::MatrixXd &psiD, Eigen::MatrixXd &psiU, const
         (psiD.determinant()*psiU.determinant());
     for (unsigned int i = 0; i < R.rows(); ++i) {
         /* calculate potential part */
-        diff += pow(b->omega,2) * R.row(i).squaredNorm();
+        diff += b->omega*b->omega * R.row(i).squaredNorm();
     } // end fori
     diff *= 0.5;
 
@@ -217,7 +220,8 @@ void VMC::calculate(bool perturb) {
     unsigned int halfSize = oldPositions.rows()/2;
     double testRatio, tmpEnergy, tmpR, tmpB2, tmpB3, tmpELalp, tmpELbet,
            transitionRatio, denom, denomsq, denomcu, a, rkl, Hxfactor,
-           Hyfactor, halfIdx;
+           Hyfactor, halfIdx, uIdx;
+    double A = 0;
     double RB2 = 0;
     double ELB3 = 0;
     double B3 = 0;
@@ -277,6 +281,7 @@ void VMC::calculate(bool perturb) {
                     newInv = &newInvD;
                     determinantRatio = &determinantRatioD;
                     halfIdx = i;
+                    uIdx = 0;
                 } else {
                     /* spin up for remaining N/2+1 to N particles */
                     oldWave = &oldU;
@@ -285,6 +290,7 @@ void VMC::calculate(bool perturb) {
                     newInv = &newInvU;
                     determinantRatio = &determinantRatioU;
                     halfIdx = i - halfSize;
+                    uIdx = 1;
                 } // end if
                 for (unsigned int j = 0; j < dim; ++j) {
                     /* propose new position */
@@ -299,7 +305,7 @@ void VMC::calculate(bool perturb) {
 
                 // update Slater matrix
                 b->updateTrialWaveFunction(*newWave, newPositions.row(i),
-                        alpha, halfIdx);
+                        alpha, halfIdx, uIdx);
 
                 if (imp) {
                     /* set new quantum force */
@@ -322,10 +328,9 @@ void VMC::calculate(bool perturb) {
                         halfIdx);
 
                 // set Metropolis test
-                testRatio = determinantRatioD*determinantRatioD *
-                    determinantRatioU*determinantRatioU * (!perturb ?  1 :
-                            exp(2*b->jastrowRatio(oldPositions, newPositions,
-                                    beta, i)));
+                testRatio = *determinantRatio**determinantRatio * (!perturb ?
+                        1 : exp(2*b->jastrowRatio(oldPositions, newPositions,
+                                beta, i)));
                 if (imp) {
                     /* importance sampling */
                     testRatio *= transitionRatio;
@@ -333,6 +338,10 @@ void VMC::calculate(bool perturb) {
 
                 if (testRatio >= dist(mt)) {
                     /* update positions according to Metropolis test */
+                    A++;
+                    (*(newInv)).setZero();
+                    meth->updateMatrixInverse(*oldWave, *newWave, *oldInv,
+                            *newInv, *determinantRatio, halfIdx);
                     oldPositions.row(i) = newPositions.row(i);
                     oldWave->row(halfIdx) = newWave->row(halfIdx);
                     if (imp) {
@@ -341,18 +350,16 @@ void VMC::calculate(bool perturb) {
                 } else {
                     /* reset position */
                     newPositions.row(i) = oldPositions.row(i);
+                    newWave->row(halfIdx) = oldWave->row(halfIdx);
                 } // end if
 
-                // update inverse
-                meth->updateMatrixInverse(*oldWave, *newWave, *oldInv, *newInv,
-                        *determinantRatio, halfIdx);
+                // calculate local energy and local energy squared
+                tmpEnergy = localEnergy2(newPositions,perturb);
+        //         tmpEnergy = localEnergyDiff(newD,newU,newPositions,perturb);
+                energy += tmpEnergy;
+                energySq += tmpEnergy*tmpEnergy;
             } // end fori
 
-            // calculate local energy and local energy squared
-            tmpEnergy = localEnergy2(oldPositions,perturb);
-    //         tmpEnergy = localEnergyDiff(newD,newU,newPositions,perturb);
-            energy += tmpEnergy;
-            energySq += tmpEnergy*tmpEnergy;
             // calculate values for Hessen matrix
             tmpR = 0;
             tmpB2 = 0;
@@ -363,10 +370,10 @@ void VMC::calculate(bool perturb) {
                 nkx = *(b->states[k][0]);
                 nky = *(b->states[k][1]);
                 tmpR += newPositions.row(k).norm();
-                Hxfactor = nkx*(nkx-1) *
-                    H(newPositions(k,0),nkx-2)/H(newPositions(k,0),nkx);
-                Hyfactor = nky*(nky-1) *
-                    H(newPositions(k,1),nky-2)/H(newPositions(k,1),nky);
+                Hxfactor = nkx*(nkx-1) * H(awsqr*newPositions(k,0),nkx-2) /
+                    H(awsqr*newPositions(k,0),nkx);
+                Hyfactor = nky*(nky-1) * H(awsqr*newPositions(k,1),nky-2) /
+                    H(awsqr*newPositions(k,1),nky);
                 tmpELalp += b->omega*(nkx+nky+1 + (Hxfactor + Hyfactor) -
                         alpha*b->omega*newPositions.row(k).squaredNorm());
                 for (unsigned int l = 0; l < newPositions.rows(); ++l) {
@@ -424,8 +431,10 @@ void VMC::calculate(bool perturb) {
         } // end for cycles
 
         // calculate final expectation values
-        energy /= cycles;
-        energySq /= cycles;
+        energy /= cycles * newPositions.rows();
+        energySq /= cycles * newPositions.rows();
+        A /= cycles * newPositions.rows();
+        std::cout << "Acceptance: " << A << std::endl;
         break;
         R /= cycles;
         B2 /= cycles;
@@ -472,6 +481,9 @@ void VMC::calculate(bool perturb) {
         std::cout << std::setprecision(10) << "alpha: " << alpha << ", beta: " << beta << ", Energy: " << energy << std::endl;
         alpha = newAlphaBeta(0);
         beta = newAlphaBeta(1);
+
+        aw = alpha*b->omega;
+        awsqr = sqrt(aw);
 
         // Reset variables used in Monte Carlo loop
         energy = 0;
