@@ -80,11 +80,11 @@ void VMC::oneBodySecondDerivativeRatio(const Eigen::MatrixXd &wave, const
     /* Analytic second derivative of one body part of wave function for
      * particle k */
     double n;
-    for (unsigned int j = 0; j < R.rows(); j+=2) {
+    for (unsigned int i = 0; i < R.rows(); i+=2) {
         for (unsigned int d = 0; d < R.cols(); ++d) {
             n = *(b->states[jstart][d]);
-            der(kIdx) += aw*(4*n*(n-1)*H(awsqr*R(k,d),n-2)/H(awsqr*R(k,d),n) -
-                    2*n - 1 + aw*R(k,d)*R(k,d)) * wave(kIdx,0)*waveInv(0,j/2);
+            der(kIdx) += aw*(4*n*(n-1)*H(awsqr*R(d),n-2)/H(awsqr*R(d),n) - 2*n
+                    - 1 + aw*R(d)*R(d)) * wave(kIdx,0)*waveInv(0,i/2);
         } // end ford
     } // end forj
 } // end function oneBodySecondDerivativeRatio
@@ -432,9 +432,17 @@ void VMC::calculate(bool perturb) {
                     } // end ifelse
                 } // end forj
 
-                // update Slater matrix
+                // update Slater matrix and inverse(set newInv)
                 b->updateTrialWaveFunction(*newWave, newPositions.row(i),
                         alpha, halfIdx, uIdx);
+
+                // calculate determinant ratio
+                *determinantRatio = meth->determinantRatio(*newWave, *oldInv,
+                        halfIdx);
+
+                (*(newInv)).setZero();
+                meth->updateMatrixInverse(*oldWave, *newWave, *oldInv, *newInv,
+                        *determinantRatio, halfIdx);
 
                 // update first derivatives
                 if (imp) {
@@ -458,10 +466,6 @@ void VMC::calculate(bool perturb) {
                                 (qForceNew(i,1)+qForceOld(i,1))));
                 } // end if
 
-                // calculate determinant ratio
-                *determinantRatio = meth->determinantRatio(*newWave, *oldInv,
-                        halfIdx);
-
                 // set Metropolis test
                 testRatio = *determinantRatio**determinantRatio * (!perturb ?
                         1 : exp(2*b->jastrowRatio(oldPositions, newPositions,
@@ -474,9 +478,7 @@ void VMC::calculate(bool perturb) {
                 if (testRatio >= dist(mt)) {
                     A++;
                     /* update state according to Metropolis test */
-                    (*(newInv)).setZero();
-                    meth->updateMatrixInverse(*oldWave, *newWave, *oldInv,
-                            *newInv, *determinantRatio, halfIdx);
+                    *oldInv = *newInv;
                     oldPositions.row(i) = newPositions.row(i);
                     oldWave->row(halfIdx) = newWave->row(halfIdx);
                     if (imp) {
@@ -484,22 +486,24 @@ void VMC::calculate(bool perturb) {
                     } // end if
                 } else {
                     /* reset(discard) state */
-                    newPositions.row(i) = oldPositions.row(i);
-                    newWave->row(halfIdx) = oldWave->row(halfIdx);
+//                     *newInv = *oldInv;
+//                     newPositions.row(i) = oldPositions.row(i);
+//                     oldPositions = newPositions;
+//                     newWave->row(halfIdx) = oldWave->row(halfIdx);
+//                     *oldWave = *newWave;
                 } // end ifelse
-//                 *newInv = newWave->inverse();
-                std::cout << (*newWave)*(*newInv) << std::endl;
-                std::cout << std::endl;
+//                 std::cout << (*oldWave)*(*oldInv) << std::endl;
+//                 std::cout << std::endl;
 
-                // update inverse
+                // update laplacian
                 lap->row(halfIdx).setZero();
-                oneBodySecondDerivativeRatio(*newWave, *newInv, *lap,
-                        newPositions, i, halfIdx, uIdx);
+                oneBodySecondDerivativeRatio(*oldWave, *oldInv, *lap,
+                        oldPositions.row(i), i, halfIdx, uIdx);
 
                 tmpEnergy = 0;
-                for (unsigned int l = 0; l < newPositions.rows(); ++l) {
+                for (unsigned int l = 0; l < oldPositions.rows(); ++l) {
                     tmpEnergy += 0.5*b->omega*b->omega *
-                            newPositions.row(l).squaredNorm();
+                            oldPositions.row(l).squaredNorm();
                 } // end forl
                 for (unsigned int l = 0; l < halfSize; ++l) {
                     tmpEnergy -= 0.5*(*(lap))(l);

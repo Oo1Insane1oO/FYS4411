@@ -102,7 +102,7 @@ bool Tests::test_wavefunction2() {
             oldM(0,1), 0, 0) * b->harmonicOscillatorWaveFunction(v->alpha,
             oldM(1,0), oldM(1,1), 0, 0);
     return (fabs(trial-wave2) <= eps ? true : false);
-} // end function test_wavefunction2 
+} // end function test_wavefunction2
 
 bool Tests::test_padejastrow() {
     /* check that Pade-Jastrow factor gives correct values for corresponding
