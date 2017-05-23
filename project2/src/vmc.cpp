@@ -388,6 +388,8 @@ void VMC::calculate(bool perturb) {
 
                 // update first derivatives
                 if (imp) {
+                    derOB.row(i).setZero();
+                    derJ.row(i).setZero();
                     oneBodyFirstDerivativeRatio(*newWave, *newInv, derOB,
                             newPositions, i, halfIdx, uIdx);
                     jastrowFirstDerivativeRatio(derJ, newPositions, i);
@@ -438,6 +440,8 @@ void VMC::calculate(bool perturb) {
                 oneBodySecondDerivativeRatio(*oldWave, *oldInv, *lap,
                         oldPositions, halfIdx, uIdx);
                 if (imp) {
+                    derOB.row(i).setZero();
+                    derJ.row(i).setZero();
                     oneBodyFirstDerivativeRatio(*oldWave, *oldInv, derOB,
                             oldPositions, i, halfIdx, uIdx);
                     jastrowFirstDerivativeRatio(derJ, oldPositions, i);
