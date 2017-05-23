@@ -66,9 +66,9 @@ void VMC::oneBodyFirstDerivativeRatio(const Eigen::MatrixXd &wave, const
     double n;
     for (unsigned int j = 0; j < R.rows(); j+=2) {
         for (unsigned int d = 0; d < R.cols(); ++d) {
-            n = *(b->states[j+jstart][d]);
-            der(k,d) = (2*awsqr*n*H(awsqr*R(k,d),n-1)/H(awsqr*R(k,d),n) -
-                    aw*R(k,d)) * wave(kIdx,j/2)*waveInv(j/2,kIdx);
+            n = *(b->states[jstart][d]);
+            der(k,d) += (2*awsqr*n*H(awsqr*R(k,d),n-1)/H(awsqr*R(k,d),n) -
+                    aw*R(k,d)) * wave(kIdx,0)*waveInv(0,j/2);
         } // end ford
     } // end forj
 } // end function oneBodyFirstDerivativeRatio
@@ -82,10 +82,9 @@ void VMC::oneBodySecondDerivativeRatio(const Eigen::MatrixXd &wave, const
     double n;
     for (unsigned int j = 0; j < R.rows(); j+=2) {
         for (unsigned int d = 0; d < R.cols(); ++d) {
-            n = *(b->states[j+jstart][d]);
-            der(kIdx,j/2) = aw*(4*n*(n-1)*H(awsqr*R(k,d),n-2)/H(awsqr*R(k,d),n)
-                    - 2*n - 1 + aw*R(k,d)*R(k,d)) * wave(kIdx,j/2) *
-                waveInv(j/2,kIdx);
+            n = *(b->states[jstart][d]);
+            der(kIdx) += aw*(4*n*(n-1)*H(awsqr*R(k,d),n-2)/H(awsqr*R(k,d),n) -
+                    2*n - 1 + aw*R(k,d)*R(k,d)) * wave(kIdx,0)*waveInv(0,j/2);
         } // end ford
     } // end forj
 } // end function oneBodySecondDerivativeRatio
@@ -354,8 +353,8 @@ void VMC::calculate(bool perturb) {
             oldPositions.cols());
     Eigen::MatrixXd derJ = Eigen::MatrixXd::Zero(oldPositions.rows(),
             oldPositions.cols());
-    Eigen::MatrixXd lapU = Eigen::MatrixXd::Zero(b->ECut, b->ECut);
-    Eigen::MatrixXd lapD = Eigen::MatrixXd::Zero(b->ECut, b->ECut);
+    Eigen::MatrixXd lapU = Eigen::MatrixXd::Zero(b->ECut, 1);
+    Eigen::MatrixXd lapD = Eigen::MatrixXd::Zero(b->ECut, 1);
     Eigen::MatrixXd *oldWave, *newWave, *oldInv, *newInv, *lap;
     Eigen::MatrixXd oldD = Eigen::MatrixXd::Zero(b->ECut, b->ECut);
     Eigen::MatrixXd oldU = Eigen::MatrixXd::Zero(b->ECut, b->ECut);
@@ -439,7 +438,8 @@ void VMC::calculate(bool perturb) {
 
                 // update first derivatives
                 if (imp) {
-//                     oneBodyFirstDerivativeRatio(derOB, newPositions, i);
+                    oneBodyFirstDerivativeRatio(*newWave, *newInv, derOB,
+                            newPositions, i, halfIdx, uIdx);
 //                     jastrowFirstDerivativeRatio(derJ, newPositions, i);
                 } // end if
 
@@ -463,10 +463,9 @@ void VMC::calculate(bool perturb) {
                         halfIdx);
 
                 // set Metropolis test
-                testRatio = determinantRatioD*determinantRatioD *
-                    determinantRatioU*determinantRatioU * (!perturb ?  1 :
-                            exp(2*b->jastrowRatio(oldPositions, newPositions,
-                                    beta, i)));
+                testRatio = *determinantRatio**determinantRatio * (!perturb ?
+                        1 : exp(2*b->jastrowRatio(oldPositions, newPositions,
+                                beta, i)));
                 if (imp) {
                     /* importance sampling */
                     testRatio *= transitionRatio;
@@ -488,45 +487,26 @@ void VMC::calculate(bool perturb) {
                     newPositions.row(i) = oldPositions.row(i);
                     newWave->row(halfIdx) = oldWave->row(halfIdx);
                 } // end ifelse
+//                 *newInv = newWave->inverse();
+                std::cout << (*newWave)*(*newInv) << std::endl;
+                std::cout << std::endl;
 
                 // update inverse
+                lap->row(halfIdx).setZero();
                 oneBodySecondDerivativeRatio(*newWave, *newInv, *lap,
                         newPositions, i, halfIdx, uIdx);
-//                 std::cout << *newWave**newInv << std::endl;
 
-                // update derivatives
-                oneBodyFirstDerivativeRatio(*newWave, *newInv, derOB,
-                        newPositions, i, halfIdx, uIdx);
-
-//                 tmpEnergy = 0;
-//                 for (unsigned int l = 0; l < newPositions.rows(); ++l) {
-//                     tmpEnergy += 0.5*b->omega*b->omega *
-//                         newPositions.row(l).squaredNorm();
-//                 } // end forl
-//                 for (unsigned int j = 0; j < halfSize; ++j) {
-//                     tmpEnergy -= 0.5*(*(lap))(halfIdx,j);
-//                 } // end forj
-//                 tmpEnergy -= 0.5*meth->determinantRatio(*lap, *newInv, halfIdx);
-//                 energy += tmpEnergy;
-//                 energySq += tmpEnergy*tmpEnergy;
+                tmpEnergy = 0;
+                for (unsigned int l = 0; l < newPositions.rows(); ++l) {
+                    tmpEnergy += 0.5*b->omega*b->omega *
+                            newPositions.row(l).squaredNorm();
+                } // end forl
+                for (unsigned int l = 0; l < halfSize; ++l) {
+                    tmpEnergy -= 0.5*(*(lap))(l);
+                } // end forl
+                energy += tmpEnergy;
+                energySq += tmpEnergy*tmpEnergy;
             } // end fori
-
-            tmpEnergy = 0;
-            for (unsigned int k = 0; k < newPositions.rows(); ++k) {
-                tmpEnergy += 0.5*b->omega*b->omega *
-                    newPositions.row(k).squaredNorm();
-                if (k < halfSize) {
-                    halfIdx = k;
-                } else {
-                    halfIdx = k - halfSize;
-                }
-                for (unsigned int j = 0; j < halfSize; ++j) {
-                    tmpEnergy -= 0.5*(*(lap))(halfIdx,j);
-                } // end forj
-            }
-//                 tmpEnergy -= 0.5*meth->determinantRatio(*lap, *newInv, halfIdx);
-            energy += tmpEnergy;
-            energySq += tmpEnergy*tmpEnergy;
                 
             // calculate local energy and local energy squared
 //             tmpEnergy = localEnergy2(newPositions, derOB, derJ, perturb);
@@ -619,10 +599,10 @@ void VMC::calculate(bool perturb) {
         } // end for cycles
 
         // calculate final expectation values
-//         energy /= cycles * newPositions.rows();
-//         energySq /= cycles * newPositions.rows();
-        energy /= cycles;
-        energySq /= cycles;
+        energy /= cycles * newPositions.rows();
+        energySq /= cycles * newPositions.rows();
+//         energy /= cycles;
+//         energySq /= cycles;
 
         std::cout << "Acceptance: " << A/(cycles*newPositions.rows()) << std::endl;
         break;
