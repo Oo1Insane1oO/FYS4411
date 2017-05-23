@@ -34,7 +34,8 @@ class VMC {
         double diff2(Eigen::MatrixXd&, Eigen::MatrixXd&, const
                 Eigen::MatrixXd&, double);
 
-        double localEnergy2(const Eigen::MatrixXd&, Eigen::MatrixXd&,
+        double localEnergy2(const Eigen::MatrixXd&, const Eigen::MatrixXd&,
+                const Eigen::MatrixXd&, const Eigen::MatrixXd&, const
                 Eigen::MatrixXd&, bool=true);
         double localEnergyDiff(Eigen::MatrixXd&, Eigen::MatrixXd&, const
                 Eigen::MatrixXd&, bool=true);
