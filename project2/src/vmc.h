@@ -44,7 +44,7 @@ class VMC {
                 const unsigned int, const unsigned int, const unsigned int);
         void oneBodySecondDerivativeRatio(const Eigen::MatrixXd&, const
                 Eigen::MatrixXd&, Eigen::MatrixXd&, const Eigen::MatrixXd&,
-                const unsigned int, const unsigned int, const unsigned int);
+                const unsigned int, const unsigned int);
 
         void jastrowFirstDerivativeRatio(Eigen::MatrixXd&, const
                 Eigen::MatrixXd&, const int);

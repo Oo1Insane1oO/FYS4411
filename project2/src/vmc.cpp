@@ -75,18 +75,22 @@ void VMC::oneBodyFirstDerivativeRatio(const Eigen::MatrixXd &wave, const
 
 void VMC::oneBodySecondDerivativeRatio(const Eigen::MatrixXd &wave, const
         Eigen::MatrixXd &waveInv, Eigen::MatrixXd &der, const Eigen::MatrixXd
-        &R, const unsigned int k, const unsigned int kIdx, const unsigned int
-        jstart){
+        &R, const unsigned int kIdx, const unsigned int jstart){
     /* Analytic second derivative of one body part of wave function for
      * particle k */
-    double n;
-    for (unsigned int i = 0; i < R.rows(); i+=2) {
-        for (unsigned int d = 0; d < R.cols(); ++d) {
-            n = *(b->states[jstart][d]);
+    double n, Hn1, Hn;
+    for (unsigned int d = 0; d < R.cols(); ++d) {
+        n = *(b->states[jstart][d]);
+        Hn = H(R(d),n);
+        Hn1 = H(R(d),n-1);
+        for (unsigned int i = 0; i < R.rows()/2; ++i) {
             der(kIdx) += aw*(4*n*(n-1)*H(awsqr*R(d),n-2)/H(awsqr*R(d),n) - 2*n
-                    - 1 + aw*R(d)*R(d)) * wave(kIdx,0)*waveInv(0,i/2);
-        } // end ford
-    } // end forj
+                    - 1 + aw*R(d)*R(d)) * wave(kIdx,0)*waveInv(0,i);
+            der(kIdx) += aw*(4*n*(n-1)*H(awsqr*R(d),n-2)/Hn -
+                    4*n*n*Hn1*Hn1/(Hn*Hn) - 1 + pow(2*n*Hn1/Hn - awsqr*R(d),2))
+                * wave(kIdx,0)*waveInv(0,i);
+        } // end fori
+    } // end ford
 } // end function oneBodySecondDerivativeRatio
 
 void VMC::jastrowFirstDerivativeRatio(Eigen::MatrixXd &der, const
@@ -325,7 +329,8 @@ void VMC::calculate(bool perturb) {
     unsigned int halfSize = oldPositions.rows()/2;
     double testRatio, tmpEnergy, tmpR, tmpB2, tmpB3, tmpELalp, tmpELbet,
            transitionRatio, denom, denomsq, denomcu, a, rkl, Hxfactor,
-           Hyfactor, halfIdx;
+           Hyfactor;
+    unsigned int halfIdx;
     double A = 0;
     double RB2 = 0;
     double ELB3 = 0;
@@ -377,13 +382,13 @@ void VMC::calculate(bool perturb) {
         if (k<halfSize) {
             oneBodyFirstDerivativeRatio(oldD, oldInvD, derOB, oldPositions, k,
                     k, 0);
-            oneBodySecondDerivativeRatio(oldD, oldInvD, lapD, oldPositions, k,
-                    k, 0);
+            oneBodySecondDerivativeRatio(oldD, oldInvD, lapD,
+                    oldPositions.row(k), k, 0);
         } else {
             oneBodyFirstDerivativeRatio(oldU, oldInvU, derOB, oldPositions, k,
                     k-halfSize, 1);
-            oneBodySecondDerivativeRatio(oldU, oldInvU, lapU, oldPositions, k,
-                    k-halfSize, 1);
+            oneBodySecondDerivativeRatio(oldU, oldInvU, lapU,
+                    oldPositions.row(k), k-halfSize, 1);
         } // end if
         jastrowFirstDerivativeRatio(derJ, oldPositions, k);
     } // end fork
@@ -432,7 +437,7 @@ void VMC::calculate(bool perturb) {
                     } // end ifelse
                 } // end forj
 
-                // update Slater matrix and inverse(set newInv)
+                // update Slater matrix
                 b->updateTrialWaveFunction(*newWave, newPositions.row(i),
                         alpha, halfIdx, uIdx);
 
@@ -440,6 +445,7 @@ void VMC::calculate(bool perturb) {
                 *determinantRatio = meth->determinantRatio(*newWave, *oldInv,
                         halfIdx);
 
+                // set newInv
                 (*(newInv)).setZero();
                 meth->updateMatrixInverse(*oldWave, *newWave, *oldInv, *newInv,
                         *determinantRatio, halfIdx);
@@ -467,9 +473,9 @@ void VMC::calculate(bool perturb) {
                 } // end if
 
                 // set Metropolis test
-                testRatio = *determinantRatio**determinantRatio * (!perturb ?
-                        1 : exp(2*b->jastrowRatio(oldPositions, newPositions,
-                                beta, i)));
+                testRatio = pow(*determinantRatio,2) * (!perturb ?  1 :
+                        exp(2*b->jastrowRatio(oldPositions, newPositions, beta,
+                                i)));
                 if (imp) {
                     /* importance sampling */
                     testRatio *= transitionRatio;
@@ -488,29 +494,23 @@ void VMC::calculate(bool perturb) {
                     /* reset(discard) state */
 //                     *newInv = *oldInv;
 //                     newPositions.row(i) = oldPositions.row(i);
-//                     oldPositions = newPositions;
 //                     newWave->row(halfIdx) = oldWave->row(halfIdx);
-//                     *oldWave = *newWave;
                 } // end ifelse
-//                 std::cout << (*oldWave)*(*oldInv) << std::endl;
-//                 std::cout << std::endl;
 
                 // update laplacian
                 lap->row(halfIdx).setZero();
                 oneBodySecondDerivativeRatio(*oldWave, *oldInv, *lap,
-                        oldPositions.row(i), i, halfIdx, uIdx);
-
-                tmpEnergy = 0;
-                for (unsigned int l = 0; l < oldPositions.rows(); ++l) {
-                    tmpEnergy += 0.5*b->omega*b->omega *
-                            oldPositions.row(l).squaredNorm();
-                } // end forl
-                for (unsigned int l = 0; l < halfSize; ++l) {
-                    tmpEnergy -= 0.5*(*(lap))(l);
-                } // end forl
-                energy += tmpEnergy;
-                energySq += tmpEnergy*tmpEnergy;
+                        oldPositions.row(i), halfIdx, uIdx);
             } // end fori
+
+            tmpEnergy = 0;
+            for (unsigned int l = 0; l < oldPositions.rows(); ++l) {
+                tmpEnergy += 0.5*(b->omega*b->omega *
+                        oldPositions.row(l).squaredNorm() - ((l<halfSize) ?
+                            oldD(l) : oldU(l-halfSize)));
+            } // end forl
+            energy += tmpEnergy;
+            energySq += tmpEnergy*tmpEnergy;
                 
             // calculate local energy and local energy squared
 //             tmpEnergy = localEnergy2(newPositions, derOB, derJ, perturb);
@@ -533,36 +533,36 @@ void VMC::calculate(bool perturb) {
 //             energySq += tmpEnergy*tmpEnergy;
 
             // calculate values for Hessen matrix
-            tmpR = 0;
-            tmpB2 = 0;
-            tmpB3 = 0;
-            tmpELalp = 0;
-            tmpELbet = 0;
-            for (unsigned int k = 0; k < newPositions.rows(); ++k) {
-                nkx = *(b->states[k][0]);
-                nky = *(b->states[k][1]);
-                tmpR += newPositions.row(k).norm();
-                Hxfactor = nkx*(nkx-1) *
-                    H(newPositions(k,0),nkx-2)/H(newPositions(k,0),nkx);
-                Hyfactor = nky*(nky-1) *
-                    H(newPositions(k,1),nky-2)/H(newPositions(k,1),nky);
-                tmpELalp += b->omega*(nkx+nky+1 + (Hxfactor + Hyfactor) -
-                        alpha*b->omega*newPositions.row(k).squaredNorm());
-                for (unsigned int l = 0; l < newPositions.rows(); ++l) {
-                    if (k != l) {
-                        a = b->padejastrow(k,l);
-                        rkl = (newPositions.row(k) -
-                                newPositions.row(l)).norm();
-                        denom = beta + 1 / rkl;
-                        denomsq = denom*denom;
-                        denomcu = denom*denom*denom;
-                        tmpB2 += a / denomsq;
-                        tmpB3 += a / denomcu;
-                        tmpELalp += a*b->omega/(rkl*denomsq) *
-                            (newPositions(k,0) *
-                             (newPositions(k,0)-newPositions(l,0)) +
-                             newPositions(k,1) *
-                             (newPositions(k,1)-newPositions(l,1)));
+//             tmpR = 0;
+//             tmpB2 = 0;
+//             tmpB3 = 0;
+//             tmpELalp = 0;
+//             tmpELbet = 0;
+//             for (unsigned int k = 0; k < newPositions.rows(); ++k) {
+//                 nkx = *(b->states[k][0]);
+//                 nky = *(b->states[k][1]);
+//                 tmpR += newPositions.row(k).norm();
+//                 Hxfactor = nkx*(nkx-1) *
+//                     H(newPositions(k,0),nkx-2)/H(newPositions(k,0),nkx);
+//                 Hyfactor = nky*(nky-1) *
+//                     H(newPositions(k,1),nky-2)/H(newPositions(k,1),nky);
+//                 tmpELalp += b->omega*(nkx+nky+1 + (Hxfactor + Hyfactor) -
+//                         alpha*b->omega*newPositions.row(k).squaredNorm());
+//                 for (unsigned int l = 0; l < newPositions.rows(); ++l) {
+//                     if (k != l) {
+//                         a = b->padejastrow(k,l);
+//                         rkl = (newPositions.row(k) -
+//                                 newPositions.row(l)).norm();
+//                         denom = beta + 1 / rkl;
+//                         denomsq = denom*denom;
+//                         denomcu = denom*denom*denom;
+//                         tmpB2 += a / denomsq;
+//                         tmpB3 += a / denomcu;
+//                         tmpELalp += a*b->omega/(rkl*denomsq) *
+//                             (newPositions(k,0) *
+//                              (newPositions(k,0)-newPositions(l,0)) +
+//                              newPositions(k,1) *
+//                              (newPositions(k,1)-newPositions(l,1)));
  //                         tmpELbet += a/denomcu * (rkl/denom *
  //                                 (2*beta+a*(1+beta)/denom - 1/rkl) +
  //                                 2*(((nkx+Hxfactor)/newPositions(k,0) -
@@ -572,41 +572,41 @@ void VMC::calculate(bool perturb) {
  //                                      alpha*b->omega*newPositions(k,1)) *
  //                                     (newPositions(k,1)-newPositions(l,1)))
  //                                 );
-                        tmpELbet -= a/denomcu * ((beta*rkl-2)/denom -
-                                (newPositions(k,0)-newPositions(l,0) +
-                                 newPositions(k,1)-newPositions(l,1)) -
-                                (((nkx+Hxfactor)/newPositions(k,0) -
-                                  alpha*b->omega*newPositions(k,0)) *
-                                 (newPositions(k,0)-newPositions(l,0)) +
-                                 ((nky+Hyfactor)/newPositions(k,1) -
-                                  alpha*b->omega*newPositions(k,1)) *
-                                 (newPositions(k,1)-newPositions(l,1))));
-                    } // end if
-                } // end fork
-            } // end forl
-            R += tmpR;
-            B2 += tmpB2;
-            B3 += tmpB3; 
-            RB2 += tmpR*tmpB2;
-            Rsq += tmpR*tmpR;
-            B2sq += tmpB2*tmpB2;
-            ELB3 += tmpEnergy*B3;
-            ELR += tmpEnergy*tmpR;
-            ELB2 += tmpEnergy*tmpB2;
-            ELRB2 += tmpEnergy*R*B2;
-            ELalpR += tmpELalp*tmpR;
-            ELalpB2 += tmpELalp*tmpB2;
-            ELbetB2 += tmpELbet*tmpB2;
-            ELbetR += tmpELbet*tmpR;
-            ELRsq += tmpEnergy*tmpR*tmpR;
-            ELB2sq += tmpEnergy*tmpB2*tmpB2;
+//                         tmpELbet -= a/denomcu * ((beta*rkl-2)/denom -
+//                                 (newPositions(k,0)-newPositions(l,0) +
+//                                  newPositions(k,1)-newPositions(l,1)) -
+//                                 (((nkx+Hxfactor)/newPositions(k,0) -
+//                                   alpha*b->omega*newPositions(k,0)) *
+//                                  (newPositions(k,0)-newPositions(l,0)) +
+//                                  ((nky+Hyfactor)/newPositions(k,1) -
+//                                   alpha*b->omega*newPositions(k,1)) *
+//                                  (newPositions(k,1)-newPositions(l,1))));
+//                     } // end if
+//                 } // end fork
+//             } // end forl
+//             R += tmpR;
+//             B2 += tmpB2;
+//             B3 += tmpB3; 
+//             RB2 += tmpR*tmpB2;
+//             Rsq += tmpR*tmpR;
+//             B2sq += tmpB2*tmpB2;
+//             ELB3 += tmpEnergy*B3;
+//             ELR += tmpEnergy*tmpR;
+//             ELB2 += tmpEnergy*tmpB2;
+//             ELRB2 += tmpEnergy*R*B2;
+//             ELalpR += tmpELalp*tmpR;
+//             ELalpB2 += tmpELalp*tmpB2;
+//             ELbetB2 += tmpELbet*tmpB2;
+//             ELbetR += tmpELbet*tmpR;
+//             ELRsq += tmpEnergy*tmpR*tmpR;
+//             ELB2sq += tmpEnergy*tmpB2*tmpB2;
         } // end for cycles
 
         // calculate final expectation values
-        energy /= cycles * newPositions.rows();
-        energySq /= cycles * newPositions.rows();
-//         energy /= cycles;
-//         energySq /= cycles;
+//         energy /= cycles * newPositions.rows();
+//         energySq /= cycles * newPositions.rows();
+        energy /= cycles;
+        energySq /= cycles;
 
         std::cout << "Acceptance: " << A/(cycles*newPositions.rows()) << std::endl;
         break;
