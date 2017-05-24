@@ -75,20 +75,17 @@ void VMC::oneBodyFirstDerivativeRatio(const Eigen::MatrixXd &wave, const
 
 void VMC::oneBodySecondDerivativeRatio(const Eigen::MatrixXd &wave, const
         Eigen::MatrixXd &waveInv, Eigen::MatrixXd &der, const Eigen::MatrixXd
-        &R, const unsigned int kIdx, const unsigned int jstart){
+        &R, const unsigned int k, const unsigned int kIdx, const unsigned int
+        jstart){
     /* Analytic second derivative of one body part of wave function for
      * particle k */
     double n, Hn1, Hn;
     for (unsigned int d = 0; d < R.cols(); ++d) {
         n = *(b->states[jstart][d]);
-        Hn = H(R(kIdx,d),n);
-        Hn1 = H(R(kIdx,d),n-1);
         for (unsigned int i = 0; i < R.rows()/2; ++i) {
-//             der(kIdx) += aw*(4*n*(n-1)*H(awsqr*R(d),n-2)/H(awsqr*R(d),n) - 2*n
-//                     - 1 + aw*R(d)*R(d)) * wave(kIdx,0)*waveInv(0,i);
-            der(kIdx) += aw*(4*n*(n-1)*H(awsqr*R(kIdx,d),n-2)/Hn -
-                    4*n*n*Hn1*Hn1/(Hn*Hn) - 1 + pow(2*n*Hn1/Hn -
-                        awsqr*R(kIdx,d),2)) * wave(kIdx,0)*waveInv(0,i);
+            der(kIdx) += aw*(4*n*pow(n-1,2) * H(R(k,d),n-2)/H(R(k,d),n) +
+                    aw*R(k,d)*R(k,d) - 1 - n) *
+                wave(kIdx,0)*waveInv(0,i);
         } // end fori
     } // end ford
 } // end function oneBodySecondDerivativeRatio
@@ -317,11 +314,11 @@ void VMC::calculate(bool perturb) {
             oneBodyFirstDerivativeRatio(oldD, oldInvD, derOB, oldPositions, k,
                     k, 0);
             oneBodySecondDerivativeRatio(oldD, oldInvD, lapD, oldPositions, k,
-                    0);
+                    k, 0);
         } else {
             oneBodyFirstDerivativeRatio(oldU, oldInvU, derOB, oldPositions, k,
                     k-halfSize, 1);
-            oneBodySecondDerivativeRatio(oldU, oldInvU, lapU, oldPositions,
+            oneBodySecondDerivativeRatio(oldU, oldInvU, lapU, oldPositions, k,
                     k-halfSize, 1);
         } // end if
         jastrowFirstDerivativeRatio(derJ, oldPositions, k);
@@ -433,12 +430,17 @@ void VMC::calculate(bool perturb) {
 //                     *newInv = *oldInv;
 //                     newPositions.row(i) = oldPositions.row(i);
 //                     newWave->row(halfIdx) = oldWave->row(halfIdx);
+//                     if (imp) {
+//                         qForceNew.row(i) = qForceOld.row(i);
+//                     } // end if
                 } // end ifelse
 
                 // update laplacian
-                lap->row(halfIdx).setZero();
+                (*(lap))(halfIdx) = 0;
                 oneBodySecondDerivativeRatio(*oldWave, *oldInv, *lap,
-                        oldPositions, halfIdx, uIdx);
+                        oldPositions, i, halfIdx, uIdx);
+
+                // update first derivatives
                 if (imp) {
                     derOB.row(i).setZero();
                     derJ.row(i).setZero();
@@ -451,6 +453,7 @@ void VMC::calculate(bool perturb) {
             // calculate local energy and local energy squared
             tmpEnergy = localEnergy2(lapD, lapU, derOB, derJ, oldPositions,
                     perturb); 
+//             tmpEnergy = localEnergy2(oldPositions, perturb);
             energy += tmpEnergy;
             energySq += tmpEnergy*tmpEnergy;
                 
