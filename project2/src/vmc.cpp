@@ -33,16 +33,23 @@ VMC::~VMC() {
     delete meth;
 } // end deconstructor
         
-// double VMC::localEnergy2(const Eigen::MatrixXd &R, bool coulomb) {
-//     /* calculate analytic expression of local energy for 2 electrons */
-//     double r12 = (R.row(0) - R.row(1)).norm();
-//     double denom = 1 + beta*r12;
-//     double denomsq = denom*denom;
-//     return 0.5 * pow(b->omega,2) * (1 - alpha*alpha) * (R.row(0).squaredNorm()
-//             + R.row(1).squaredNorm()) + 2*alpha*b->omega + (coulomb ?
-//             -1/denomsq * (1/denomsq - alpha*b->omega*r12 + 1/r12 -
-//                     2*beta/denom) + 1/r12 : 0);
-// } // end function localEnergy
+double VMC::localEnergy2(const Eigen::MatrixXd &R, bool coulomb) {
+    /* calculate analytic expression of local energy for 2 electrons */
+    double r12 = (R.row(0) - R.row(1)).norm();
+    double denom = 1 + beta*r12;
+    double denomsq = denom*denom;
+    double jast = 0;
+    for (unsigned int k = 0; k < R.rows(); ++k) {
+        jast += 0.5*jastrowSecondDerivativeRatio(R,k);
+    }
+//     std::cout << 1/denomsq * (1/denomsq +1/r12 - 2*beta/denom) << " " << jast << std::endl;
+    std::cout << 1/denomsq * (1/denomsq + 1/r12 - 2*beta/denom) - jast << std::endl;
+
+    return 0.5 * pow(b->omega,2) * (1 - alpha*alpha) * (R.row(0).squaredNorm()
+            + R.row(1).squaredNorm()) + 2*alpha*b->omega + (coulomb ?
+            -1/denomsq * (1/denomsq - alpha*b->omega*r12 + 1/r12 -
+                    2*beta/denom) + 1/r12 : 0);
+} // end function localEnergy
 // 
 // void VMC::diff(const Eigen::MatrixXd &R, Eigen::MatrixXd &der) {
 //     /* calculate first derivative ratio of single particle wave functions */
@@ -95,7 +102,6 @@ void VMC::jastrowFirstDerivativeRatio(Eigen::MatrixXd &der, const
     /* Analytic first derivative ratio of Jastrow part of wave function for
      * particle k */
     double rjk;
-    der.row(k).setZero();
     for (unsigned int j = 0; j < R.rows(); ++j) {
         if (j != k) {
             rjk = (R.row(k) - R.row(j)).norm();
@@ -115,22 +121,27 @@ double VMC::jastrowSecondDerivativeRatio(const Eigen::MatrixXd &R, const int k) 
             aki = b->padejastrow(k,i);
             rki = (R.row(k) - R.row(i)).norm();
             denomi = 1 + beta*rki;
-            if (j != k) {
-                for (unsigned int j = 0; j < R.rows(); ++j) {
+            for (unsigned int j = 0; j < R.rows(); ++j) {
+                if (j != k) {
                     akj = b->padejastrow(k,j);
                     rkj = (R.row(k) - R.row(j)).norm();
                     denomj = 1 + beta*rkj;
-                    ratio += (R.row(k)-R.row(i)).dot(R.row(k)-R.row(j)) / (rki*rkj)
-                        *aki*akj / (denomi*denomi*denomj*denomj);
-                } // end forj
-            } // end if
+                    ratio += (R.row(k)-R.row(i)).dot(R.row(k)-R.row(j)) /
+                        (rki*rkj) * aki*akj/(denomi*denomi*denomj*denomj);
+//                     ratio += (R.row(k)-R.row(i)).dot(R.row(k)-R.row(j)) /
+//                         (rki*rkj) * akj/(denomj*denomj) * (aki /
+//                                 (denomi*denomi) + 2 / (rkj*denomj));
+                } // end if
+            } // end forj
         } // end if
     } // end fori
     for (unsigned int j = 0; j < R.rows(); ++j) {
         if (j != k) {
             rkj = (R.row(k) - R.row(j)).norm();
             denomj = 1 + beta*rkj;
-            ratio += 2*b->padejastrow(k,j) / (rkj*denomj*denomj*denomj);
+//             ratio += 2*b->padejastrow(k,j) / (rkj*denomj*denomj*denomj);
+            ratio += b->padejastrow(k,j)/(denomj*denomj) * (1/rkj -
+                    2*beta/denomj);
         } // end if
     } // end forj
 //     for (unsigned int j = 0; j < R.rows(); ++j) {
@@ -167,7 +178,7 @@ double VMC::localEnergy2(const Eigen::MatrixXd &lapD, const Eigen::MatrixXd
     for (unsigned int k = 0; k < R.rows(); ++k) {
         E += 0.5*(b->omega*b->omega*R.row(k).squaredNorm() - (k<halfSize ?
                     lapD(k) : lapU(k-halfSize)) - (coulomb ?
-                    jastrowSecondDerivativeRatio(R,k) -
+                    jastrowSecondDerivativeRatio(R,k) +
                     2*derOB.row(k).dot(derJ.row(k)) : 0));
     } // end fork
     E += (coulomb ? coulombFactor(R) : 0);
@@ -421,11 +432,6 @@ void VMC::calculate(bool perturb) {
                         exp(2*b->jastrowRatio(oldPositions, newPositions, beta,
                                 i)));
 
-//                 if (i < halfSize) {
-//                     std::cout << determinantRatioU << "U" << std::endl;
-//                 } else {
-//                     std::cout << determinantRatioD << "D" << std::endl;
-//                 } // end if
                 if (imp) {
                     /* importance sampling */
                     testRatio *= transitionRatio;
@@ -465,14 +471,16 @@ void VMC::calculate(bool perturb) {
                             oldPositions, i, halfIdx, uIdx);
                     jastrowFirstDerivativeRatio(derJ, oldPositions, i);
                 } // end if
+
             } // end fori
 
             // calculate local energy and local energy squared
             tmpEnergy = localEnergy2(lapD, lapU, derOB, derJ, oldPositions,
                     perturb); 
-//             tmpEnergy = localEnergy2(oldPositions, perturb);
+//                 tmpEnergy = localEnergy2(oldPositions, perturb);
             energy += tmpEnergy;
             energySq += tmpEnergy*tmpEnergy;
+
                 
             // calculate values for Hessen matrix
 //             tmpR = 0;
