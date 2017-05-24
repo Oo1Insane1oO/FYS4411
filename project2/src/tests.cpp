@@ -14,7 +14,7 @@ Tests::Tests(Basis *B, VMC *V, int n) {
     v = V;
     m = new Methods();
 
-    eps = 1e-15;
+    eps = 1e-14;
 
     std::mt19937_64 mt(123);
     std::uniform_real_distribution<double> dist(0,1);
@@ -152,10 +152,10 @@ void Tests::run_tests(int t) {
         } // end ifelse
         if(test_2particle()) {
             std::cout << "Energy unperturbed 2 electron good" << std::endl;
-            std::cout << std::setprecision(15) << "  Energy is: " << v->energy << std::endl;
+            std::cout << std::setprecision(10) << "  Energy is: " << v->energy << std::endl;
         } else { 
             std::cout << "Energy unperturbed 2 electron wrong" << std::endl;
-            std::cout << std::setprecision(15) << "  Energy is: " << v->energy << std::endl;
+            std::cout << std::setprecision(10) << "  Energy is: " << v->energy << std::endl;
         } // end ifelse
         if(test_determinantratio()) {
             std::cout << "Determinant ratio good" << std::endl;

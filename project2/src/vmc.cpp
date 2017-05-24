@@ -79,13 +79,13 @@ void VMC::oneBodySecondDerivativeRatio(const Eigen::MatrixXd &wave, const
         jstart){
     /* Analytic second derivative of one body part of wave function for
      * particle k */
-    double n, Hn1, Hn;
+    double n, factor;
     for (unsigned int d = 0; d < R.cols(); ++d) {
         n = *(b->states[jstart][d]);
+        factor = aw*(4*n*(n-1)*(n-1) * H(awsqr*R(k,d),n-2)/H(awsqr*R(k,d),n) +
+                aw*R(k,d)*R(k,d) - 1 - n);
         for (unsigned int i = 0; i < R.rows()/2; ++i) {
-            der(kIdx) += aw*(4*n*pow(n-1,2) * H(R(k,d),n-2)/H(R(k,d),n) +
-                    aw*R(k,d)*R(k,d) - 1 - n) *
-                wave(kIdx,0)*waveInv(0,i);
+            der(kIdx) += factor * wave(kIdx,0)*waveInv(0,i);
         } // end fori
     } // end ford
 } // end function oneBodySecondDerivativeRatio
@@ -96,15 +96,12 @@ void VMC::jastrowFirstDerivativeRatio(Eigen::MatrixXd &der, const
      * particle k */
     double rjk;
     der.row(k).setZero();
-    for (unsigned int j = 0; j < k; ++j) {
-        rjk = (R.row(j) - R.row(k)).norm();
-        der.row(k) += b->padejastrow(j,k)/(rjk*pow(1+beta*rjk,2)) *
-            (R.row(k)-R.row(j));
-    } // end forj
-    for (unsigned int j = k+1; j < R.rows(); ++j) {
-        rjk = (R.row(k) - R.row(j)).norm();
-        der.row(k) += b->padejastrow(k,j)/(rjk*pow(1+beta*rjk,2)) *
-            (R.row(k)-R.row(j));
+    for (unsigned int j = 0; j < R.rows(); ++j) {
+        if (j != k) {
+            rjk = (R.row(k) - R.row(j)).norm();
+            der.row(k) += b->padejastrow(k,j) * (R.row(k)-R.row(j)) /
+                (rjk*pow(1+beta*rjk,2));
+        } // end if
     } // end forj
 } // end function jastrowFirstDerivativeRatio
 
@@ -112,30 +109,20 @@ double VMC::jastrowSecondDerivativeRatio(const Eigen::MatrixXd &R, const int k) 
     /* Analytic second derivative ratio of Jastrow part of wave function for
      * particle k */
     double ratio = 0;
-    double rkj, denomi, rki, denomj;
-    for (unsigned int i = 0; i < R.rows(); ++i) {
-        if (i != k) {
-            rki = (R.row(k)-R.row(i)).norm();
-            denomi = 1 + beta*rki;
-            for (unsigned int j = 0; j < R.rows(); ++j) {
-                if (j != k) {
-                    rkj = (R.row(k)-R.row(j)).norm();
-                    denomj = 1 + beta*rkj;
-                    ratio += (R.row(k)-R.row(i)).dot(R.row(k)-R.row(j)) /
-                        (rkj*rki) * b->padejastrow(k,i) * b->padejastrow(k,j) /
-                        (denomi*denomi*denomj*denomj);
-                } // end if
-            } // end forj
-        } // end if
-    } // end fori
+    double rkj, denom, akj;
+    Eigen::VectorXd sumr = Eigen::VectorXd::Zero(R.cols());
     for (unsigned int j = 0; j < R.rows(); ++j) {
         if (j != k) {
+            akj = b->padejastrow(k,j);
             rkj = (R.row(k)-R.row(j)).norm();
-            denomj = 1 + beta*rkj;
-            ratio += 2*b->padejastrow(k,j) / (rkj*denomj*denomj*denomj);
+            denom = 1 + beta*rkj;
+            ratio += 2*akj/(denom*denom) * (1/rkj - 2*beta/denom);
+            for (unsigned int d = 0; d < R.cols(); ++d) {
+                sumr(d) += akj * (R(k,d)-R(j,d)) / rkj*denom*denom;
+            } // end ford
         } // end if
     } // end forj
-    return ratio;
+    return ratio + sumr.squaredNorm();
 } // end function jastrowSecondDerivativeRatio
 
 double coulombFactor(const Eigen::MatrixXd &R) {
@@ -411,6 +398,12 @@ void VMC::calculate(bool perturb) {
                 testRatio = pow(*determinantRatio,2) * (!perturb ?  1 :
                         exp(2*b->jastrowRatio(oldPositions, newPositions, beta,
                                 i)));
+
+//                 if (i < halfSize) {
+//                     std::cout << determinantRatioU << "U" << std::endl;
+//                 } else {
+//                     std::cout << determinantRatioD << "D" << std::endl;
+//                 } // end if
                 if (imp) {
                     /* importance sampling */
                     testRatio *= transitionRatio;
@@ -439,6 +432,8 @@ void VMC::calculate(bool perturb) {
                 (*(lap))(halfIdx) = 0;
                 oneBodySecondDerivativeRatio(*oldWave, *oldInv, *lap,
                         oldPositions, i, halfIdx, uIdx);
+                *determinantRatio = meth->determinantRatio(*oldWave, *oldInv,
+                        halfIdx);
 
                 // update first derivatives
                 if (imp) {
