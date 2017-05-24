@@ -128,9 +128,6 @@ double VMC::jastrowSecondDerivativeRatio(const Eigen::MatrixXd &R, const int k) 
                     denomj = 1 + beta*rkj;
                     ratio += (R.row(k)-R.row(i)).dot(R.row(k)-R.row(j)) /
                         (rki*rkj) * aki*akj/(denomi*denomi*denomj*denomj);
-//                     ratio += (R.row(k)-R.row(i)).dot(R.row(k)-R.row(j)) /
-//                         (rki*rkj) * akj/(denomj*denomj) * (aki /
-//                                 (denomi*denomi) + 2 / (rkj*denomj));
                 } // end if
             } // end forj
         } // end if
@@ -139,22 +136,10 @@ double VMC::jastrowSecondDerivativeRatio(const Eigen::MatrixXd &R, const int k) 
         if (j != k) {
             rkj = (R.row(k) - R.row(j)).norm();
             denomj = 1 + beta*rkj;
-//             ratio += 2*b->padejastrow(k,j) / (rkj*denomj*denomj*denomj);
             ratio += b->padejastrow(k,j)/(denomj*denomj) * (1/rkj -
                     2*beta/denomj);
         } // end if
     } // end forj
-//     for (unsigned int j = 0; j < R.rows(); ++j) {
-//         if (j != k) {
-//             akj = b->padejastrow(k,j);
-//             rkj = (R.row(k)-R.row(j)).norm();
-//             denom = 1 + beta*rkj;
-//             ratio += akj/(rkj*(denom*denom)) * (1 - 2*rkj*beta/denom);
-//             for (unsigned int d = 0; d < R.cols(); ++d) {
-//                 sumr(d) += akj * (R(k,d)-R(j,d)) / rkj*denom*denom;
-//             } // end ford
-//         } // end if
-//     } // end forj
     return ratio;
 } // end function jastrowSecondDerivativeRatio
 
@@ -446,15 +431,7 @@ void VMC::calculate(bool perturb) {
                     if (imp) {
                         qForceOld.row(i) = qForceNew.row(i);
                     } // end if
-                } else {
-                    /* reset(discard) state */
-//                     *newInv = *oldInv;
-//                     newPositions.row(i) = oldPositions.row(i);
-//                     newWave->row(halfIdx) = oldWave->row(halfIdx);
-//                     if (imp) {
-//                         qForceNew.row(i) = qForceOld.row(i);
-//                     } // end if
-                } // end ifelse
+                } // end if
 
                 // update laplacian
                 (*(lap))(halfIdx) = 0;
