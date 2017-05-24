@@ -109,20 +109,42 @@ double VMC::jastrowSecondDerivativeRatio(const Eigen::MatrixXd &R, const int k) 
     /* Analytic second derivative ratio of Jastrow part of wave function for
      * particle k */
     double ratio = 0;
-    double rkj, denom, akj;
-    Eigen::VectorXd sumr = Eigen::VectorXd::Zero(R.cols());
+    double rkj, rki, aki, akj, denomi, denomj;
+    for (unsigned int i = 0; i < R.rows(); ++i) {
+        if (i != k) {
+            aki = b->padejastrow(k,i);
+            rki = (R.row(k) - R.row(i)).norm();
+            denomi = 1 + beta*rki;
+            if (j != k) {
+                for (unsigned int j = 0; j < R.rows(); ++j) {
+                    akj = b->padejastrow(k,j);
+                    rkj = (R.row(k) - R.row(j)).norm();
+                    denomj = 1 + beta*rkj;
+                    ratio += (R.row(k)-R.row(i)).dot(R.row(k)-R.row(j)) / (rki*rkj)
+                        *aki*akj / (denomi*denomi*denomj*denomj);
+                } // end forj
+            } // end if
+        } // end if
+    } // end fori
     for (unsigned int j = 0; j < R.rows(); ++j) {
         if (j != k) {
-            akj = b->padejastrow(k,j);
-            rkj = (R.row(k)-R.row(j)).norm();
-            denom = 1 + beta*rkj;
-            ratio += 2*akj/(denom*denom) * (1/rkj - 2*beta/denom);
-            for (unsigned int d = 0; d < R.cols(); ++d) {
-                sumr(d) += akj * (R(k,d)-R(j,d)) / rkj*denom*denom;
-            } // end ford
+            rkj = (R.row(k) - R.row(j)).norm();
+            denomj = 1 + beta*rkj;
+            ratio += 2*b->padejastrow(k,j) / (rkj*denomj*denomj*denomj);
         } // end if
     } // end forj
-    return ratio + sumr.squaredNorm();
+//     for (unsigned int j = 0; j < R.rows(); ++j) {
+//         if (j != k) {
+//             akj = b->padejastrow(k,j);
+//             rkj = (R.row(k)-R.row(j)).norm();
+//             denom = 1 + beta*rkj;
+//             ratio += akj/(rkj*(denom*denom)) * (1 - 2*rkj*beta/denom);
+//             for (unsigned int d = 0; d < R.cols(); ++d) {
+//                 sumr(d) += akj * (R(k,d)-R(j,d)) / rkj*denom*denom;
+//             } // end ford
+//         } // end if
+//     } // end forj
+    return ratio;
 } // end function jastrowSecondDerivativeRatio
 
 double coulombFactor(const Eigen::MatrixXd &R) {
