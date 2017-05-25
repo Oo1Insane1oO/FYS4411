@@ -14,17 +14,20 @@
 #include <random>
 
 VMC::VMC(Basis *B, double alp, double bet, unsigned int d, double s, unsigned
-        int max, bool sample) {
+        int max) {
     alpha = alp;
     beta = bet;
     b = B;
     dim = d;
     step = s;
     maxIterations = max;
-    imp = sample;
 
     aw = alpha*b->omega;
     awsqr = sqrt(aw);
+
+    imp = false;
+    coulomb = false;
+    jastrow = false;
 
     meth = new Methods(); 
 } // end constructor
@@ -32,6 +35,28 @@ VMC::VMC(Basis *B, double alp, double bet, unsigned int d, double s, unsigned
 VMC::~VMC() {
     delete meth;
 } // end deconstructor
+
+void VMC::setImportanceSampling(bool a) {
+    /* switch importance sampling on */
+    imp = a;
+} //send function setImportanceSampling
+
+void VMC::setCoulombInteraction(bool a) {
+    /* switch Coloumb interaction on */
+    coulomb = a;
+} // end function setCoulombInteraction
+
+void VMC::setJastrow(bool a) {
+    /* switch Jastrow factor on */
+    jastrow = a;
+} // end function setCoulombInteraction
+
+void VMC::setAllOn() {
+    /* switch importance sampling, Coulomb interaction and Jastrow factor on */
+    setImportanceSampling(true);
+    setCoulombInteraction(true);
+    setJastrow(true);
+} // end function setAllOn
         
 double VMC::localEnergy2(const Eigen::MatrixXd &R, bool coulomb) {
     /* calculate analytic expression of local energy for 2 electrons */
@@ -155,18 +180,17 @@ double coulombFactor(const Eigen::MatrixXd &R) {
 
 double VMC::localEnergy2(const Eigen::MatrixXd &lapD, const Eigen::MatrixXd
         &lapU, const Eigen::MatrixXd &derOB, const Eigen::MatrixXd &derJ, const
-        Eigen::MatrixXd &R, bool coulomb) {
+        Eigen::MatrixXd &R) {
     /* calculate analytic expression of local energy */
     double E = 0;
     double halfSize = R.rows()/2;
     for (unsigned int k = 0; k < R.rows(); ++k) {
         E += 0.5*(b->omega*b->omega*R.row(k).squaredNorm() - (k<halfSize ?
-                    lapD(k) : lapU(k-halfSize)) - (coulomb ?
+                    lapD(k) : lapU(k-halfSize)) - (jastrow ?
                     jastrowSecondDerivativeRatio(R,k) +
                     2*derOB.row(k).dot(derJ.row(k)) : 0));
     } // end fork
-    E += (coulomb ? coulombFactor(R) : 0);
-    return E;
+    return (coulomb ? (E + coulombFactor(R)) : E);
 } // end function localEnergy2
 
 double VMC::localEnergyDiff(Eigen::MatrixXd &psiD, Eigen::MatrixXd &psiU, const
@@ -228,7 +252,7 @@ unsigned long int VMC::getSeed() {
     return seed;
 } // end function setSeed
 
-void VMC::calculate(bool perturb) {
+void VMC::calculate() {
     /* function for running Monte Carlo integration */
 
     // initialize Mersenne Twister random number generator and uniform
@@ -262,27 +286,8 @@ void VMC::calculate(bool perturb) {
     } // end if
 
     unsigned int halfSize = oldPositions.rows()/2;
-    double testRatio, tmpEnergy, tmpR, tmpB2, tmpB3, tmpELalp, tmpELbet,
-           transitionRatio, denom, denomsq, denomcu, a, rkl, Hxfactor,
-           Hyfactor;
+    double testRatio, tmpEnergy, A;
     unsigned int halfIdx;
-    double A = 0;
-    double RB2 = 0;
-    double ELB3 = 0;
-    double B3 = 0;
-    double R = 0;
-    double B2 = 0;
-    double B2sq = 0;
-    double Rsq = 0;
-    double ELR = 0;
-    double ELB2 = 0;
-    double ELRsq = 0;
-    double ELB2sq = 0;
-    double ELRB2 = 0;
-    double ELalpR = 0;
-    double ELbetR = 0;
-    double ELalpB2 = 0;
-    double ELbetB2 = 0;
     double determinantRatioD = 1;
     double determinantRatioU = 1;
     unsigned int cycles = 0;
@@ -315,17 +320,23 @@ void VMC::calculate(bool perturb) {
     for (unsigned int k = 0; k < oldPositions.rows(); ++k) {
         /* set first derivatives */
         if (k<halfSize) {
-            oneBodyFirstDerivativeRatio(oldD, oldInvD, derOB, oldPositions, k,
-                    k, 0);
+            if (jastrow || imp){
+                oneBodyFirstDerivativeRatio(oldD, oldInvD, derOB, oldPositions,
+                        k, k, 0);
+            } // end if
             oneBodySecondDerivativeRatio(oldD, oldInvD, lapD, oldPositions, k,
                     k, 0);
         } else {
-            oneBodyFirstDerivativeRatio(oldU, oldInvU, derOB, oldPositions, k,
-                    k-halfSize, 1);
+            if (jastrow || imp){
+                oneBodyFirstDerivativeRatio(oldU, oldInvU, derOB, oldPositions,
+                        k, k-halfSize, 1);
+            } // end if
             oneBodySecondDerivativeRatio(oldU, oldInvU, lapU, oldPositions, k,
                     k-halfSize, 1);
         } // end if
-        jastrowFirstDerivativeRatio(derJ, oldPositions, k);
+        if (jastrow || imp) {
+            jastrowFirstDerivativeRatio(derJ, oldPositions, k);
+        } // end if
     } // end fork
     if (imp) {
         /* set quantum force */
@@ -374,21 +385,17 @@ void VMC::calculate(bool perturb) {
                     } // end ifelse
                 } // end forj
 
-                // update Slater matrix
+                // update Slater, ratio and inverse
                 b->updateTrialWaveFunction(*newWave, newPositions, alpha,
                         halfIdx, uIdx);
-
-                // calculate determinant ratio
                 *determinantRatio = meth->determinantRatio(*newWave, *oldInv,
                         halfIdx);
-
-                // set newInv
                 (*(newInv)).setZero();
                 meth->updateMatrixInverse(*oldWave, *newWave, *oldInv, *newInv,
                         *determinantRatio, halfIdx);
 
                 // update first derivatives
-                if (imp) {
+                if (jastrow || imp) {
                     derOB.row(i).setZero();
                     derJ.row(i).setZero();
                     oneBodyFirstDerivativeRatio(*newWave, *newInv, derOB,
@@ -401,24 +408,19 @@ void VMC::calculate(bool perturb) {
                     qForceNew.row(i) = 2*(derOB.row(i) + derJ.row(i));
                 } // end if
 
-                // calculate transition function ratio for Metropolis test
+                // set Metropolis test
+                testRatio = *determinantRatio * *determinantRatio * (jastrow ?
+                        exp(2*b->jastrowRatio(oldPositions, newPositions, beta,
+                                i)) : 1);
                 if (imp) {
-                    transitionRatio = exp(0.125*step*(qForceOld.row(i).norm() -
+                    /* importance sampling, calculate transition function ratio
+                     * for Metropolis test */
+                    testRatio *= exp(0.125*step*(qForceOld.row(i).norm() -
                                 qForceNew.row(i).norm()) +
                             0.25*step*((oldPositions(i,0)-newPositions(i,0)) *
                                 (qForceNew(i,0)+qForceOld(i,0)) +
                                 (oldPositions(i,1)-newPositions(i,1)) *
                                 (qForceNew(i,1)+qForceOld(i,1))));
-                } // end if
-
-                // set Metropolis test
-                testRatio = pow(*determinantRatio,2) * (!perturb ?  1 :
-                        exp(2*b->jastrowRatio(oldPositions, newPositions, beta,
-                                i)));
-
-                if (imp) {
-                    /* importance sampling */
-                    testRatio *= transitionRatio;
                 } //end if
 
                 if (testRatio >= dist(mt)) {
@@ -432,101 +434,28 @@ void VMC::calculate(bool perturb) {
                     } // end if
                 } // end if
 
-                // update laplacian and determinant ratio
+                // update Laplacian and determinant ratio
                 (*(lap))(halfIdx) = 0;
                 oneBodySecondDerivativeRatio(*oldWave, *oldInv, *lap,
                         oldPositions, i, halfIdx, uIdx);
-//                 std::cout << *oldWave << " " << oldPositions << std::endl;
-//                 std::cout << std::endl;
                 *determinantRatio = meth->determinantRatio(*oldWave, *oldInv,
                         halfIdx);
 
                 // update first derivatives
-                if (imp) {
+                if (jastrow || imp) {
                     derOB.row(i).setZero();
                     derJ.row(i).setZero();
                     oneBodyFirstDerivativeRatio(*oldWave, *oldInv, derOB,
                             oldPositions, i, halfIdx, uIdx);
                     jastrowFirstDerivativeRatio(derJ, oldPositions, i);
                 } // end if
-
             } // end fori
 
             // calculate local energy and local energy squared
-            tmpEnergy = localEnergy2(lapD, lapU, derOB, derJ, oldPositions,
-                    perturb); 
+            tmpEnergy = localEnergy2(lapD, lapU, derOB, derJ, oldPositions);
             energy += tmpEnergy;
             energySq += tmpEnergy*tmpEnergy;
-
                 
-            // calculate values for Hessen matrix
-//             tmpR = 0;
-//             tmpB2 = 0;
-//             tmpB3 = 0;
-//             tmpELalp = 0;
-//             tmpELbet = 0;
-//             for (unsigned int k = 0; k < newPositions.rows(); ++k) {
-//                 nkx = *(b->states[k][0]);
-//                 nky = *(b->states[k][1]);
-//                 tmpR += newPositions.row(k).norm();
-//                 Hxfactor = nkx*(nkx-1) *
-//                     H(newPositions(k,0),nkx-2)/H(newPositions(k,0),nkx);
-//                 Hyfactor = nky*(nky-1) *
-//                     H(newPositions(k,1),nky-2)/H(newPositions(k,1),nky);
-//                 tmpELalp += b->omega*(nkx+nky+1 + (Hxfactor + Hyfactor) -
-//                         alpha*b->omega*newPositions.row(k).squaredNorm());
-//                 for (unsigned int l = 0; l < newPositions.rows(); ++l) {
-//                     if (k != l) {
-//                         a = b->padejastrow(k,l);
-//                         rkl = (newPositions.row(k) -
-//                                 newPositions.row(l)).norm();
-//                         denom = beta + 1 / rkl;
-//                         denomsq = denom*denom;
-//                         denomcu = denom*denom*denom;
-//                         tmpB2 += a / denomsq;
-//                         tmpB3 += a / denomcu;
-//                         tmpELalp += a*b->omega/(rkl*denomsq) *
-//                             (newPositions(k,0) *
-//                              (newPositions(k,0)-newPositions(l,0)) +
-//                              newPositions(k,1) *
-//                              (newPositions(k,1)-newPositions(l,1)));
- //                         tmpELbet += a/denomcu * (rkl/denom *
- //                                 (2*beta+a*(1+beta)/denom - 1/rkl) +
- //                                 2*(((nkx+Hxfactor)/newPositions(k,0) -
- //                                         alpha*b->omega*newPositions(k,0)) *
- //                                     (newPositions(k,0)-newPositions(l,0)) +
- //                                     ((nky+Hyfactor)/newPositions(k,1) -
- //                                      alpha*b->omega*newPositions(k,1)) *
- //                                     (newPositions(k,1)-newPositions(l,1)))
- //                                 );
-//                         tmpELbet -= a/denomcu * ((beta*rkl-2)/denom -
-//                                 (newPositions(k,0)-newPositions(l,0) +
-//                                  newPositions(k,1)-newPositions(l,1)) -
-//                                 (((nkx+Hxfactor)/newPositions(k,0) -
-//                                   alpha*b->omega*newPositions(k,0)) *
-//                                  (newPositions(k,0)-newPositions(l,0)) +
-//                                  ((nky+Hyfactor)/newPositions(k,1) -
-//                                   alpha*b->omega*newPositions(k,1)) *
-//                                  (newPositions(k,1)-newPositions(l,1))));
-//                     } // end if
-//                 } // end fork
-//             } // end forl
-//             R += tmpR;
-//             B2 += tmpB2;
-//             B3 += tmpB3; 
-//             RB2 += tmpR*tmpB2;
-//             Rsq += tmpR*tmpR;
-//             B2sq += tmpB2*tmpB2;
-//             ELB3 += tmpEnergy*B3;
-//             ELR += tmpEnergy*tmpR;
-//             ELB2 += tmpEnergy*tmpB2;
-//             ELRB2 += tmpEnergy*R*B2;
-//             ELalpR += tmpELalp*tmpR;
-//             ELalpB2 += tmpELalp*tmpB2;
-//             ELbetB2 += tmpELbet*tmpB2;
-//             ELbetR += tmpELbet*tmpR;
-//             ELRsq += tmpEnergy*tmpR*tmpR;
-//             ELB2sq += tmpEnergy*tmpB2*tmpB2;
         } // end for cycles
 
         // calculate final expectation values
@@ -537,71 +466,9 @@ void VMC::calculate(bool perturb) {
 
         std::cout << "Acceptance: " << A/(cycles*newPositions.rows()) << std::endl;
         break;
-        R /= cycles;
-        B2 /= cycles;
-        RB2 /= cycles;
-        Rsq /= cycles;
-        B2sq /= cycles;
-        B3 /= cycles;
-        ELR /= cycles;
-        ELB2 /= cycles;
-        ELRsq /= cycles;
-        ELB2sq /= cycles;
-        ELRB2 /= cycles;
-        ELalpR /= cycles;
-        ELbetB2 /= cycles;
-        ELB3 /= cycles;
-        
-        // set Hessen matrix
-        HessenMatrix(0,0) = b->omega*(b->omega*(ELRsq - energy*Rsq + energy*R*R
-                    - ELR*R) - ELalpR);
-//         HessenMatrix(0,1) = 0;
-//         HessenMatrix(1,0) = 0;
-        HessenMatrix(0,1) = b->omega * (2*(ELRB2 - energy*RB2) +
-                0.5*energy*R*B2 - ELR*B2 - ELB2*R - ELbetR);
-        HessenMatrix(1,0) = b->omega * (2*(ELRB2 - energy*RB2) +
-                0.5*energy*R*B2 - ELR*B2 - ELB2*R - ELalpB2);
-        HessenMatrix(1,1) = 4*(ELB2sq - energy*B2sq) + energy*B2*B2 - ELB2*B2 -
-            2*ELbetB2;
 
-        std::cout << "Hessen: \n" << "  " << HessenMatrix(0,0) << " " << HessenMatrix(0,1) << "\n" << "  " << HessenMatrix(1,0) << " " << HessenMatrix(1,1) << std::endl;
-
-        // optimalize with CG
-        rhs(0) = b->omega*(energy*R - ELR);
-        rhs(1) = 2*(energy*B2 - ELB2);
-        newAlphaBeta += HessenMatrix.inverse()*rhs;
-
-        // conditional break
-//         if (fabs(newAlphaBeta(0)-alpha)<=1e-5 &&
-//                 fabs(newAlphaBeta(1)-beta)<=1e-5) {
-//             /* break when variational parameters are steady */
-//             break;
-//         } // end if
-
-        // set new variational parameters
-        std::cout << std::setprecision(10) << "alpha: " << alpha << ", beta: " << beta << ", Energy: " << energy << std::endl;
-        alpha = newAlphaBeta(0);
-        beta = newAlphaBeta(1);
-       
         // stupid
-        aw = alpha*b->omega;
-        awsqr = sqrt(aw);
-
-        // Reset variables used in Monte Carlo loop
-        energy = 0;
-        energySq = 0;
-        R = 0;
-        B2 = 0;
-        Rsq = 0;
-        B2sq = 0;
-        B3 = 0;
-        ELR = 0;
-        ELB2 = 0;
-        ELRsq = 0;
-        ELB2sq = 0;
-        ELRB2 = 0;
-        ELalpR = 0;
-        ELbetB2 = 0;
-        ELB3 = 0;
+//         aw = alpha*b->omega;
+//         awsqr = sqrt(aw);
     } // end while true
 } // end function calculate

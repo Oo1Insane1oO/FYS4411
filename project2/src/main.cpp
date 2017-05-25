@@ -16,15 +16,17 @@ int main(int argc, const char** argv) {
     if (argc < 5) {
         /* Print usage if number of command line arguments are to few */
         std::cout << 
-            "USAGE: ./main 'omega' 'cutoff' 'particles' 'iterations' 'tests'" 
+            "USAGE: ./main 'omega' 'particles' 'iterations' 'tests' 'importance' 'Coulomb' 'Jastrow'" 
             << std::endl;
         std::cout <<
             "    " << "omega: (float) HO frequency\n" <<
             "    " << "particles: (int) Fermi level(closed shell)\n" <<
             "    " << "iterations: (int) Max iterations in VMC(MC cycles) \n" <<
             "    " << "step: (float) step size in VMC \n" <<
-            "    " << "tests: (1/0) indicating to run tests or not" <<
-            "    " << "importance sampling: (1/0) indicating to run with importance sampling or not" <<
+            "    " << "tests: (1/0) indicating to run tests or not\n" <<
+            "    " << "importance sampling: (1/0) indicating to run with importance sampling or not\n" <<
+            "    " << "Coulomb: (1/0) indicating to run with Coulomb interaction or not\n" <<
+            "    " << "Jastrow: (1/0) indicating to run with Jastrow factor or not" <<
             std::endl;
         exit(1);
     } // end if
@@ -36,6 +38,8 @@ int main(int argc, const char** argv) {
     double step = atof(argv[4]);
     int t = atoi(argv[5]);
     bool imp = atoi(argv[6]);
+    bool coul = atoi(argv[7]);
+    bool jast = atoi(argv[8]);
     
     // set basis (cartesian)
     Basis *b = new Basis(omega, num/2);
@@ -53,8 +57,11 @@ int main(int argc, const char** argv) {
     std::cout << "Basis made" << std::endl;
     
     // set vmc object for calculations
-    VMC *vmcObj = new VMC(b,1,0.4,2,step,maxIterations,imp);
+    VMC *vmcObj = new VMC(b,1,0.4,2,step,maxIterations);
 //     VMC *vmcObj = new VMC(b,1.03741,0.472513,2,step,maxIterations,imp);
+    vmcObj->setImportanceSampling(imp);
+    vmcObj->setCoulombInteraction(coul);
+    vmcObj->setJastrow(jast);
     
     if (t) {
         /* run tests */
@@ -64,7 +71,7 @@ int main(int argc, const char** argv) {
     } // end if
 
     // run calculations
-    vmcObj->calculate(imp);
+    vmcObj->calculate();
     std::cout << std::setprecision(10) << "<E> = " << vmcObj->energy << ", " <<
         "<E^2> = " << vmcObj->energySq << std::endl;
     std::cout << std::setprecision(10) << "<E^2> - <E>^2 = " <<

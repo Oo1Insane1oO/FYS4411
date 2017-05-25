@@ -17,11 +17,12 @@ class VMC {
 
         double aw, awsqr;
 
+        bool imp, coulomb, jastrow;
+
     public:
-        VMC (Basis*, double, double, unsigned int, double, unsigned int, bool);
+        VMC (Basis*, double, double, unsigned int, double, unsigned int);
         virtual ~VMC ();
 
-        bool imp;
         unsigned int dim, maxIterations;
         double alpha, beta, energy, energySq, step;
 
@@ -36,7 +37,7 @@ class VMC {
 
         double localEnergy2(const Eigen::MatrixXd&, const Eigen::MatrixXd&,
                 const Eigen::MatrixXd&, const Eigen::MatrixXd&, const
-                Eigen::MatrixXd&, bool=true);
+                Eigen::MatrixXd&);
         double localEnergy2(const Eigen::MatrixXd &R, bool=true);
         double localEnergyDiff(Eigen::MatrixXd&, Eigen::MatrixXd&, const
                 Eigen::MatrixXd&, bool=true);
@@ -52,7 +53,12 @@ class VMC {
                 Eigen::MatrixXd&, const int);
         double jastrowSecondDerivativeRatio(const Eigen::MatrixXd&, const int);
 
-        void calculate(bool=true);
+        void setImportanceSampling(bool);
+        void setCoulombInteraction(bool);
+        void setJastrow(bool);
+        void setAllOn();
+
+        void calculate();
 };
 
 #endif /* VMC_H */
