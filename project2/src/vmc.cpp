@@ -89,12 +89,9 @@ void VMC::oneBodySecondDerivativeRatio(const Eigen::MatrixXd &wave, const
     int n;
     for (unsigned int j = 0; j < R.rows(); j+=2) {
         for (unsigned int d = 0; d < R.cols(); ++d) {
-//             der(kIdx) += aw*(4*n*(n-1)*(n-1) *
-//                     H(awsqr*R(k,d),n-2)/H(awsqr*R(k,d),n) + aw*R(k,d)*R(k,d) -
-//                     1 - n)* wave(kIdx,j/2) * waveInv(j/2,kIdx);
-                der(kIdx) += aw * (aw*R(k,d)*R(k,d) - 1 -
-                        2**(b->states[j+jstart][d])) * wave(kIdx,j/2)
-                    * waveInv(j/2,kIdx);
+            der(kIdx) += aw * (aw*R(k,d)*R(k,d) - 1 -
+                    2**(b->states[j+jstart][d])) * wave(kIdx,j/2)
+                * waveInv(j/2,kIdx);
         } // end ford
     } // end forj
 } // end function oneBodySecondDerivativeRatio
@@ -454,14 +451,10 @@ void VMC::calculate(bool perturb) {
                 } // end if
 
             } // end fori
-//             if (cycles == 50) {
-//                 break;
-//             }
 
             // calculate local energy and local energy squared
             tmpEnergy = localEnergy2(lapD, lapU, derOB, derJ, oldPositions,
                     perturb); 
-//                 tmpEnergy = localEnergy2(oldPositions, perturb);
             energy += tmpEnergy;
             energySq += tmpEnergy*tmpEnergy;
 

@@ -1007,10 +1007,10 @@
     The ratios for the one-body part are thus
         \begin{equation}
             \begin{aligned}
-                \frac{\nabla\det(\Phi)}{\det(\Phi)} &= \suml{k}{N} \nabla_k
+                \frac{\nabla\det(\Phi)}{\det(\Phi)} &= \suml{k,j}{N} \nabla_k
                 \phi_j\left(\vec{r}_k,\alpha\right)
                 \phi^{-1}_{jk}\left(\vec{r},\alpha\right) \\
-                &= \suml{k}{N} \left(2\sqrt{\alpha\omega}
+                &= \suml{k,j}{N} \left(2\sqrt{\alpha\omega}
                 \left(n_{x_j}\frac{H_{n_{x_j}-1}
                 \left(\sqrt{\alpha\omega}x_k\right)}
                 {H_{n_{x_j}}\left(\sqrt{\alpha\omega}x_k\right)}\right) -
@@ -1018,28 +1018,21 @@
                 \left(n_{y_j}\frac{H_{n_{y_j}-1}
                 \left(\sqrt{\alpha\omega}y_k\right)}
                 {H_{n_{y_j}}\left(\sqrt{\alpha\omega}y_k\right)}\right) -
-                \alpha\omega y_k\right)
+                \alpha\omega y_k\right) \Phi_{kj}\Phi^{-1}_{jk}
             \end{aligned}
             \label{eq:detderfirrat}
         \end{equation}
     and the Laplacian
         \begin{equation}
             \begin{aligned}
-                \frac{\nabla^2\det(\Phi)}{\det(\Phi)} &= \suml{k}{N} \nabla^2_k
+                \frac{\nabla^2\det(\Phi)}{\det(\Phi)} &= \suml{k,j}{N} \nabla^2_k
                 \phi_j\left(\vec{r}_k,\alpha\right)
                 \phi^{-1}_{jk}\left(\vec{r},\alpha\right) \\
-                &= \alpha\omega\suml{k}{N} \left[4
-                \left[n_{x_k}\left(n_{x_k}-1\right)
-                \frac{H_{n_{x_k}-2}}{H_{n_{x_k}}} +
-                n_{y_k}\left(n_{y_k}-1\right)
-                \frac{H_{n_{y_k}-2}}{H_{n_{y_k}}}\right] +
-                \left(\alpha \omega r_k^2 - 2\left(n_{x_k} +
-                n_{y_k} + 1\right)\right)\right]
+                &= \alpha\omega\suml{k,j}{N} \left(\alpha^2\omega^2r^2_k -
+                2\left(n_{x_j} + n_{y_j} + 1\right)\right) \Phi_{kj}\Phi^{-1}_{jk}
             \end{aligned}
             \label{eq:detdersecrat}
         \end{equation}
-    The lack of the inverse function is due to fact that we drag $\phi_{ij}$
-    out from the derivatives which with the inverse just equals $1$. \\
     For the Jastrow-factor we need the derivatives to the function in the
     exponent. Label this $f_{ij}$ and find
         \begin{align}
@@ -1076,12 +1069,8 @@
                 \frac{\vec{r}_{ki}\cdot\vec{r}_{kj}}{r_{ki}r_{kj}}
                 \frac{a_{ki}a_{kj}}{\left(1+\beta r_{ki}\right)^2 \left(1+\beta
                 r_{kj}\right)^2} + \sum_{j\neq k}
-                \frac{2a_{kj}}{r_{kj}\left(1+\beta r_{kj}\right)^3} \\
-                &= \sum_{i\neq k}\left[\sum_{j\neq k}
                 \frac{a_{kj}}{r_{kj}\left(1+\beta r_{kj}\right)^2}
-                \left(\frac{\vec{r}_{ki}\cdot\vec{r}_{kj}}{r_{ki}}
-                \frac{a_{ki}}{\left(1+\beta r_{ki}\right)^2} + \frac{2}{1+\beta
-                r_{kj}}\right)\right]
+                \left(\frac{1}{r_{kj}} - \frac{2\beta}{1+\beta r_{kj}}\right)
             \end{aligned}
             \label{eq:jastsecderrat}
         \end{equation}
