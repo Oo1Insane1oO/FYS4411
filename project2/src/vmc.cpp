@@ -70,14 +70,14 @@ void VMC::oneBodyFirstDerivativeRatio(const Eigen::MatrixXd &wave, const
         jstart) {
     /* Analytic first derivative ratio of one body part of wave function  for
      * particle k */
-    double n;
-    for (unsigned int d = 0; d < R.cols(); ++d) {
-        n = *(b->states[jstart][d]);
-        for (unsigned int i = 0; i < R.rows()/2; ++i) {
+    int n;
+    for (unsigned int j = 0; j < R.rows(); j+=2) {
+        for (unsigned int d = 0; d < R.cols(); ++d) {
+            n = *(b->states[j+jstart][d]);
             der(k,d) += (2*awsqr*n*H(awsqr*R(k,d),n-1)/H(awsqr*R(k,d),n) -
-                    aw*R(k,d)) * wave(kIdx,0)*waveInv(0,i);
-        } // end forj
-    } // end ford
+                    aw*R(k,d)) * wave(kIdx,j/2)*waveInv(j/2,kIdx);
+        } // end ford
+    } // end forj
 } // end function oneBodyFirstDerivativeRatio
 
 void VMC::oneBodySecondDerivativeRatio(const Eigen::MatrixXd &wave, const
@@ -86,15 +86,16 @@ void VMC::oneBodySecondDerivativeRatio(const Eigen::MatrixXd &wave, const
         jstart){
     /* Analytic second derivative of one body part of wave function for
      * particle k */
-    double n, factor;
-    for (unsigned int d = 0; d < R.cols(); ++d) {
-        n = *(b->states[jstart][d]);
-        factor = aw*(4*n*(n-1)*(n-1) * H(awsqr*R(k,d),n-2)/H(awsqr*R(k,d),n) +
-                aw*R(k,d)*R(k,d) - 1 - n);
-        for (unsigned int i = 0; i < R.rows()/2; ++i) {
-            der(kIdx) += factor * wave(kIdx,0)*waveInv(0,i);
-        } // end fori
-    } // end ford
+    for (unsigned int j = 0; j < R.rows(); j+=2) {
+        for (unsigned int d = 0; d < R.cols(); ++d) {
+//             der(kIdx) += aw*(4*n*(n-1)*(n-1) *
+//                     H(awsqr*R(k,d),n-2)/H(awsqr*R(k,d),n) + aw*R(k,d)*R(k,d) -
+//                     1 - n)* wave(kIdx,j/2) * waveInv(j/2,kIdx);
+                der(kIdx) += aw * (aw*R(k,d)*R(k,d) - 1 -
+                        2**(b->states[j+jstart][d])) * wave(kIdx,j/2)
+                    * waveInv(j/2,kIdx);
+        } // end ford
+    } // end forj
 } // end function oneBodySecondDerivativeRatio
 
 void VMC::jastrowFirstDerivativeRatio(Eigen::MatrixXd &der, const
