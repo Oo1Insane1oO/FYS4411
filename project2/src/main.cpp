@@ -53,6 +53,7 @@ int main(int argc, const char** argv) {
     std::cout << "Basis made" << std::endl;
     
     // set vmc object for calculations
+//     VMC *vmcObj = new VMC(b,1,0.4,2,step,maxIterations,imp);
     VMC *vmcObj = new VMC(b,1,0.4,2,step,maxIterations,imp);
 //     VMC *vmcObj = new VMC(b,1.03741,0.472513,2,step,maxIterations,imp);
     
