@@ -86,6 +86,7 @@ void VMC::oneBodySecondDerivativeRatio(const Eigen::MatrixXd &wave, const
         jstart){
     /* Analytic second derivative of one body part of wave function for
      * particle k */
+    int n;
     for (unsigned int j = 0; j < R.rows(); j+=2) {
         for (unsigned int d = 0; d < R.cols(); ++d) {
 //             der(kIdx) += aw*(4*n*(n-1)*(n-1) *
@@ -377,8 +378,8 @@ void VMC::calculate(bool perturb) {
                 } // end forj
 
                 // update Slater matrix
-                b->updateTrialWaveFunction(*newWave, newPositions.row(i),
-                        alpha, halfIdx, uIdx);
+                b->updateTrialWaveFunction(*newWave, newPositions, alpha,
+                        halfIdx, uIdx);
 
                 // calculate determinant ratio
                 *determinantRatio = meth->determinantRatio(*newWave, *oldInv,
@@ -434,10 +435,12 @@ void VMC::calculate(bool perturb) {
                     } // end if
                 } // end if
 
-                // update laplacian
+                // update laplacian and determinant ratio
                 (*(lap))(halfIdx) = 0;
                 oneBodySecondDerivativeRatio(*oldWave, *oldInv, *lap,
                         oldPositions, i, halfIdx, uIdx);
+//                 std::cout << *oldWave << " " << oldPositions << std::endl;
+//                 std::cout << std::endl;
                 *determinantRatio = meth->determinantRatio(*oldWave, *oldInv,
                         halfIdx);
 
@@ -451,6 +454,9 @@ void VMC::calculate(bool perturb) {
                 } // end if
 
             } // end fori
+//             if (cycles == 50) {
+//                 break;
+//             }
 
             // calculate local energy and local energy squared
             tmpEnergy = localEnergy2(lapD, lapU, derOB, derJ, oldPositions,

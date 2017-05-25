@@ -164,7 +164,7 @@ void Basis::updateTrialWaveFunction(Eigen::MatrixXd &psi, const Eigen::MatrixXd
         &r, double alpha, unsigned int i, unsigned int jstart) {
     /* update row i given r(i) */
     for (unsigned int j = 0; j < r.rows(); j+=2) {
-        psi(i,j/2) = harmonicOscillatorWaveFunction(alpha, r(0), r(1),
+        psi(i,j/2) = harmonicOscillatorWaveFunction(alpha, r(i,0), r(i,1),
                 *states[j+jstart][0], *states[j+jstart][1]);
     } // end forj
 } // end function updateTrialWaveFunction
