@@ -252,6 +252,34 @@ unsigned long int VMC::getSeed() {
     return seed;
 } // end function setSeed
 
+double VMC::Afunc(const Eigen::MatrixXd &R) {
+    double A = 0;
+    double n;
+    for (unsigned int i = 0; i < R.rows(); ++i) {
+        for (unsigned int d = 0; d < R.cols(); ++d) {
+            n = *(b->states[i][d]);
+            A += b->omega*n*(1 + R(i,d)*(n-1) * sqrt(b->omega/alpha) *
+                    H(awsqr*R(i,d),n-2)/H(awsqr*R(i,d),n));
+        } // end ford
+        A -= R.row(i).squaredNorm();
+    } // end fori
+    return A;
+} // end function Afunc
+
+double VMC::Bfunc(const Eigen::MatrixXd &R) {
+    double B = 0;
+    double n;
+    for (unsigned int i = 0; i < R.rows(); ++i) {
+        for (unsigned int j = 0; j < R.rows(); ++j) {
+            if (i != j)  {
+                B -= b->padejastrow(i,j) / pow((beta +
+                            1/(R.row(i)-R.row(j)).norm()),2);
+            } // end if
+        } // end forj
+    } // end fori
+    return B;
+} // end function Bfunc
+
 void VMC::calculate() {
     /* function for running Monte Carlo integration */
 
@@ -284,9 +312,19 @@ void VMC::calculate() {
         qForceNew = Eigen::MatrixXd::Zero(oldPositions.rows(),
                 oldPositions.cols());
     } // end if
+   
+    double tmpA, tmpB;
+    double A = 0;
+    double ELA = 0;
+    double B = 0;
+    double ELB = 0;
+
+    double steepStep = 0.1;
+
+    Eigen::MatrixXd steepb = Eigen::VectorXd::Zero(2);
 
     unsigned int halfSize = oldPositions.rows()/2;
-    double testRatio, tmpEnergy, A;
+    double testRatio, tmpEnergy, acceptance;
     unsigned int halfIdx;
     double determinantRatioD = 1;
     double determinantRatioU = 1;
@@ -425,7 +463,7 @@ void VMC::calculate() {
 
                 if (testRatio >= dist(mt)) {
                     /* update state according to Metropolis test */
-                    A++;
+                    acceptance++;
                     *oldInv = *newInv;
                     oldPositions.row(i) = newPositions.row(i);
                     oldWave->row(halfIdx) = newWave->row(halfIdx);
@@ -455,7 +493,14 @@ void VMC::calculate() {
             tmpEnergy = localEnergy2(lapD, lapU, derOB, derJ, oldPositions);
             energy += tmpEnergy;
             energySq += tmpEnergy*tmpEnergy;
-                
+
+            tmpA = Afunc(oldPositions);
+            A += tmpA;
+            ELA += tmpEnergy*tmpA;
+
+            tmpB = Bfunc(oldPositions);
+            B += tmpB;
+            ELB += tmpEnergy*tmpB;
         } // end for cycles
 
         // calculate final expectation values
@@ -463,12 +508,33 @@ void VMC::calculate() {
 //         energySq /= cycles * newPositions.rows();
         energy /= cycles;
         energySq /= cycles;
+        A /= cycles;
+        ELA /= cycles;
+        ELB /= cycles;
+        B /= cycles;
 
-        std::cout << "Acceptance: " << A/(cycles*newPositions.rows()) << std::endl;
-        break;
+        std::cout << "Acceptance: " << acceptance/(cycles*newPositions.rows()) << std::endl;
+
+        steepb(0) = b->omega*(ELA - energy*A);
+        steepb(1) = 2*(ELB - energy*B);
+        newAlphaBeta -= steepStep*steepb;
+
+        alpha = newAlphaBeta(0);
+        beta = newAlphaBeta(1);
+
+        std::cout << "alpha: " << alpha << " beta: " << beta << " Energy: " <<
+            energy << std::endl;
 
         // stupid
-//         aw = alpha*b->omega;
-//         awsqr = sqrt(aw);
+        aw = alpha*b->omega;
+        awsqr = sqrt(aw);
+        
+        energy = 0;
+        energySq = 0;
+        A = 0;
+        ELA = 0;
+        B = 0;
+        ELB = 0;
+
     } // end while true
 } // end function calculate

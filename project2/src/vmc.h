@@ -19,6 +19,9 @@ class VMC {
 
         bool imp, coulomb, jastrow;
 
+        double Afunc(const Eigen::MatrixXd&);
+        double Bfunc(const Eigen::MatrixXd&);
+
     public:
         VMC (Basis*, double, double, unsigned int, double, unsigned int);
         virtual ~VMC ();
