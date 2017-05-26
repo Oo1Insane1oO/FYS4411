@@ -20,6 +20,8 @@ class VMC {
         bool imp, coulomb, jastrow;
 
         double Afunc(const Eigen::MatrixXd&);
+        double Afunc(const Eigen::MatrixXd&, const Eigen::MatrixXd&, const
+                Eigen::MatrixXd&, const unsigned int jstart);
         double Bfunc(const Eigen::MatrixXd&);
 
     public:

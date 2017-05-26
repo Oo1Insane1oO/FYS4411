@@ -1219,12 +1219,13 @@
             \prd{\alpha}\left(\det(\Phi)\right) \nonumber \\
             &= g\left(\vec{r},\beta\right) \Tr(\adj{\Phi}\prd{\alpha}[\Phi])
             \nonumber \\
-            &= g\left(\vec{r},\beta\right)
-            \det(\Phi)\frac{\omega}{2}\Tr(\Phi^{-1}\Phi\cdot \Theta^T)
+            &= 
+            g\left(\vec{r},\beta\right)
+            \det(\Phi)\suml{i,j}{N} \Phi^{-1}_{ij}\prd{\alpha}[\Phi_{ji}]
             \nonumber \\
-            &= \psi_T \frac{\omega}{2}\suml{i}{N}
-            \left(\omega\left(\Theta_{ii}(\alpha,x) +
-            \Theta_{ii}(\alpha,y)\right) - r^2_i\right)
+            &= \psi_T \suml{i,j}{N} \Phi^{-1}_{ij}
+            \Phi_{ji}\left(\left(\Theta_{ji}(\alpha,x) + \Theta_{ji}(\alpha,y)\right) -
+            \omega r^2_j\right)
             \label{eq:psideralpha}
         \end{align}
     where we have used \Autoref{eq:aadja} and defined $\Theta$ to be the vector

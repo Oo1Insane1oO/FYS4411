@@ -266,6 +266,24 @@ double VMC::Afunc(const Eigen::MatrixXd &R) {
     return A;
 } // end function Afunc
 
+double VMC::Afunc(const Eigen::MatrixXd &wave, const Eigen::MatrixXd &waveInv,
+        const Eigen::MatrixXd &R, const unsigned int jstart) {
+    double A = 0;
+    double n;
+    for (unsigned int i = 0; i < 2*R.rows(); i+=2) {
+        for (unsigned int j = 0; j < R.rows(); ++j) {
+            for (unsigned int d = 0; d < R.cols(); ++d) {
+                n = *(b->states[i+jstart][d]);
+                A += n/(alpha) * (sqrt(alpha) + 2*R(j,d)*(n-1)*sqrt(b->omega) *
+                        H(awsqr*R(j,d),n-2)/H(awsqr*R(j,d),n) -
+                        b->omega*R.row(j).squaredNorm()) * waveInv(i/2,j) *
+                    wave(j,i/2);
+            } // end ford
+         } // end forj
+    } // end fori
+    return A;
+} // end function Afunc
+
 double VMC::Bfunc(const Eigen::MatrixXd &R) {
     double B = 0;
     double n;
@@ -494,7 +512,11 @@ void VMC::calculate() {
             energy += tmpEnergy;
             energySq += tmpEnergy*tmpEnergy;
 
-            tmpA = Afunc(oldPositions);
+            tmpA = Afunc(oldD, oldInvD, oldPositions.block(0, 0, halfSize,
+                        oldPositions.cols()), 0) + Afunc(oldU, oldInvU,
+                    oldPositions.block(halfSize, 0, halfSize,
+                        oldPositions.cols()),1);
+//             std::cout << std::fabs(tmpA-Afunc(oldPositions)) << std::endl;
             A += tmpA;
             ELA += tmpEnergy*tmpA;
 
@@ -504,8 +526,6 @@ void VMC::calculate() {
         } // end for cycles
 
         // calculate final expectation values
-//         energy /= cycles * newPositions.rows();
-//         energySq /= cycles * newPositions.rows();
         energy /= cycles;
         energySq /= cycles;
         A /= cycles;
@@ -515,19 +535,20 @@ void VMC::calculate() {
 
         std::cout << "Acceptance: " << acceptance/(cycles*newPositions.rows()) << std::endl;
 
+        // optimalize with steepest descent method
         steepb(0) = ELA - energy*A;
         steepb(1) = 2*(ELB - energy*B);
         newAlphaBeta -= steepStep*steepb;
 
+        // update variatonal parameters
         alpha = newAlphaBeta(0);
         beta = newAlphaBeta(1);
+        aw = alpha*b->omega;
+        awsqr = sqrt(aw);
 
         std::cout << "alpha: " << alpha << " beta: " << beta << " Energy: " <<
             energy << std::endl;
 
-        // stupid
-        aw = alpha*b->omega;
-        awsqr = sqrt(aw);
         
         energy = 0;
         energySq = 0;
