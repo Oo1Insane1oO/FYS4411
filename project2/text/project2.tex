@@ -1184,9 +1184,10 @@
             \prd{x_i}\Hij{x}{n}{} &=
             \frac{x_i}{2}\sqrt{\frac{\omega}{\alpha}}\prd{x_i}[H_{n_{x_j}}]
             \nonumber \\
-            &= n_{x_j}x_i\sqrt{\frac{\omega}{\alpha}}\Hij{x}{n}{-1} \nonumber \\
-            &= \frac{n_{x_j}\omega^2}{2}\left(1 +
-            \left(n_{x_j}-1\right)x_i\sqrt{\frac{\omega}{\alpha}}
+            &= n_{x_j}x_i\sqrt{\frac{\omega}{\alpha}}\Hij{x}{n}{-1} \nonumber
+            \\
+            &= \frac{n_{x_j}}{2\alpha}\left(\sqrt{\alpha} +
+            2x_i\sqrt{\omega}\left(n_{x_j}-1\right)
             \frac{\Hij{x}{n}{-2}}{\Hij{x}{n}{}}\right)\Hij{x}{n}{}
             \label{eq:phideralph1x}
         \end{align}
@@ -1199,14 +1200,15 @@
             &= \left(\Hij{y}{n}{}\prd{\alpha}\Hij{x}{n}{} +
             \Hij{x}{n}{}\prd{\alpha}\Hij{y}{n}{} - \frac{\omega
             r^2_i}{2}\right)\eri \nonumber \\
-            &=\frac{\omega}{2}\left(\omega\Theta_{ij}(\alpha,x) +
-            \omega\Theta_{ij}(\alpha,y) - r^2_i\right)\Phi_{ij}
+            &= \frac{1}{2}\left(\Theta_{ij}(\alpha,x) + \Theta_{ij}(\alpha,y) -
+            \omega r^2_i\right)\Phi_{ij}
             \label{eq:phideralpha1}
         \end{align}
     with
         \begin{equation}
-            \Theta_{ij}(\alpha,x) \equiv n_{x_j}\left(1 +
-            x_i\left(n_{x_j}-1\right) \sqrt{\frac{\omega}{\alpha}}
+            \Theta_{ij}(\alpha,x) \equiv
+            \frac{n_{x_j}}{\alpha}\left(\sqrt{\alpha} +
+            2x_i\sqrt{\omega}\left(n_{x_j}-1\right)
             \frac{\Hij{x}{n}{-2}}{\Hij{x}{n}{}}\right)
             \label{eq:Thetadef}
         \end{equation}

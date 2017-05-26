@@ -258,10 +258,10 @@ double VMC::Afunc(const Eigen::MatrixXd &R) {
     for (unsigned int i = 0; i < R.rows(); ++i) {
         for (unsigned int d = 0; d < R.cols(); ++d) {
             n = *(b->states[i][d]);
-            A += b->omega*n*(1 + R(i,d)*(n-1) * sqrt(b->omega/alpha) *
+            A += n/(alpha) * (sqrt(alpha) + 2*R(i,d)*(n-1)*sqrt(b->omega) *
                     H(awsqr*R(i,d),n-2)/H(awsqr*R(i,d),n));
         } // end ford
-        A -= R.row(i).squaredNorm();
+        A -= b->omega*R.row(i).squaredNorm();
     } // end fori
     return A;
 } // end function Afunc
@@ -319,7 +319,7 @@ void VMC::calculate() {
     double B = 0;
     double ELB = 0;
 
-    double steepStep = 0.1;
+    double steepStep = 0.01;
 
     Eigen::MatrixXd steepb = Eigen::VectorXd::Zero(2);
 
@@ -515,7 +515,7 @@ void VMC::calculate() {
 
         std::cout << "Acceptance: " << acceptance/(cycles*newPositions.rows()) << std::endl;
 
-        steepb(0) = b->omega*(ELA - energy*A);
+        steepb(0) = ELA - energy*A;
         steepb(1) = 2*(ELB - energy*B);
         newAlphaBeta -= steepStep*steepb;
 
@@ -535,6 +535,8 @@ void VMC::calculate() {
         ELA = 0;
         B = 0;
         ELB = 0;
+
+        acceptance = 0;
 
     } // end while true
 } // end function calculate
