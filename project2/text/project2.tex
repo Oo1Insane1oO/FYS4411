@@ -1172,17 +1172,44 @@
             \end{aligned}
             \label{eq:der2alpahecpElfir}
         \end{align}
+\newcommand{\Hij}[3]{H_{{#2}_{{#1}_j}#3}\left(\sqrt{\alpha\omega}{#1}_i\right)}
+\newcommand{\eri}{\exp(-\frac{\alpha\omega}{2}r^2_i)}
     For the derivative of the wavefunction, we find the elements individually
     by using Jacobi's formula as described in
     \Autoref{sub:derivative_of_determinant}. We see that we need to first find
-    the derivative to the individual elements in $\Phi$. These are simply
+    the derivative to the individual elements in $\Phi$. These are found by
+    using the product rule, but we also see that we need the derivative to the
+    individual Hermite polynomials. These are simply (with the  chain rule)
         \begin{align}
-            \prd{\alpha}[\Phi_{ij}] &= \prd{\alpha}
-            \left(H_{n_{x_j}}H_{n_{y_j}}
+            \prd{x_i}\Hij{x}{n}{} &=
+            \frac{x_i}{2}\sqrt{\frac{\omega}{\alpha}}\prd{x_i}[H_{n_{x_j}}]
+            \nonumber \\
+            &= n_{x_j}x_k\sqrt{\frac{\omega}{\alpha}}\Hij{x}{n}{-1} \nonumber \\
+            &= \frac{n_{x_j}\omega^2}{2}\left(1 +
+            \left(n_{x_j}-1\right)x_i\sqrt{\frac{\omega}{\alpha}}
+            \frac{\Hij{x}{n}{-2}}{\Hij{x}{n}{}}\right)\Hij{x}{n}{}
+            \label{eq:phideralph1x}
+        \end{align}
+    The same differentiation is valid for $H_{n_{y_j}}$ as well. In the latter
+    step we used \Autoref{eq:hermiteReq}. The first derivative of $\Phi_{ij}$
+    with respect to $\alpha$ is thus
+        \begin{align}
+            \prd{\alpha}[\Phi_{ij}] &= \prd{\alpha} \left(\Hij{x}{n}{}\Hij{y}{n}{}
             \exp(-\frac{\alpha\omega}{2}r^2_i)\right) \nonumber \\
-            &= -\frac{\omega}{2}r^2_i\Phi_{ij}
+            &= \left(\Hij{y}{n}{}\prd{\alpha}\Hij{x}{n}{} +
+            \Hij{x}{n}{}\prd{\alpha}\Hij{y}{n}{} - \frac{\omega
+            r^2_i}{2}\right)\eri \nonumber \\
+            &=\frac{\omega}{2}\left(\omega\Theta_{ij}(\alpha,x) +
+            \omega\Theta_{ij}(\alpha,y) - r^2_i\right)\Phi_{ij}
             \label{eq:phideralpha1}
         \end{align}
+    with
+        \begin{equation}
+            \Theta_{ij}(\alpha,x) \equiv n_{x_j}\left(1 +
+            x_i\left(n_{x_j}-1\right) \sqrt{\frac{\omega}{\alpha}}
+            \frac{\Hij{x}{n}{-2}}{\Hij{x}{n}{}}\right)
+            \label{eq:Thetadef}
+        \end{equation}
     Using Jacobi's formula the first derivative with respect to $\alpha$ of
     $\psi_T$ is
         \begin{align}
@@ -1190,19 +1217,16 @@
             \prd{\alpha}\left(\det(\Phi)\right) \nonumber \\
             &= g\left(\vec{r},\beta\right) \Tr(\adj{\Phi}\prd{\alpha}[\Phi])
             \nonumber \\
-            &= -g\left(\vec{r},\beta\right)
-            \frac{\omega}{2}\Tr(\adj{\Phi}\Phi\cdot R) \nonumber \\
-            &= -g\left(\vec{r},\beta\right)
-            \det(\Phi\left(\vec{r},\alpha\right)) \frac{\omega}{2} \Tr(\I\cdot
-            R) \nonumber \\
-            &= -\psi_T\frac{\omega}{2} \suml{i}{N}r^2_i
+            &= g\left(\vec{r},\beta\right)
+            \det(\Phi)\frac{\omega}{2}\Tr(\Phi^{-1}\Phi\cdot \Theta^T)
+            \nonumber \\
+            &= \psi_T \frac{\omega}{2}\suml{i}{N}
+            \left(\omega\left(\Theta_{ii}(\alpha,x) +
+            \Theta_{ii}(\alpha,y)\right) - r^2_i\right)
             \label{eq:psideralpha}
         \end{align}
-    where we have use \Autoref{eq:aadja} and defined the elements of $R$ as
-        \begin{equation}
-            R_i \equiv r^2_i
-            \label{eq:Relemdef}
-        \end{equation}
+    where we have use \Autoref{eq:aadja} and defined $\Theta$ to be the vector
+    of element as defined in \Autoref{eq:Thetadef} \\
     The second derivative with respect to $\alpha$ is with the first derivative
     just
         \begin{align}
