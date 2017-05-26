@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2017.3.22)  26 MAY 2017 13:48
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2017.3.22)  26 MAY 2017 14:54
 entering extended mode
  \write18 enabled.
  file:line:error style messages enabled.
@@ -2471,27 +2471,27 @@ File: ubbm.fd 1999/03/15 V 1.2 Font definition for bbm font - TH
 ) [4] [5] [6]
 [7] [8] [9] [10] [11] [12] [13]
 LaTeX Font Info:    Font shape `T1/mdbch/m/it' will be
-(Font)              scaled to size 9.60007pt on input line 1584.
+(Font)              scaled to size 9.60007pt on input line 1606.
  [14] [15]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 1619.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 1619.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 1641.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 1641.
 
 (/home/saintz/localStuff/FYS4411/project2/text/project2.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 1619.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 1619.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 1641.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 1641.
 
 Package rerunfilecheck Info: File `project2.out' has not changed.
 (rerunfilecheck)             Checksum: <no file>.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 1619.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 1641.
  ) 
 Here is how much of TeX's memory you used:
- 30848 strings out of 494497
- 560912 string characters out of 6172400
- 636053 words of memory out of 5000000
- 33569 multiletter control sequences out of 15000+600000
+ 30850 strings out of 494497
+ 560943 string characters out of 6172400
+ 637121 words of memory out of 5000000
+ 33570 multiletter control sequences out of 15000+600000
  53393 words of font info for 102 fonts, out of 8000000 for 9000
  264 hyphenation exceptions out of 8191
- 64i,19n,94p,10410b,449s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 64i,19n,94p,10410b,451s stack positions out of 5000i,500n,10000p,200000b,80000s
  </home/saintz/.texmf-var/fonts/pk/ljfour/public/bbm/bbm10.600pk>{/usr/share/
 texlive/texmf-dist/fonts/enc/dvips/ly1/texnansi.enc}</usr/share/texlive/texmf-d
 ist/fonts/type1/bitstrea/charter/bchb8a.pfb></usr/share/texlive/texmf-dist/font
@@ -2505,10 +2505,10 @@ lic/mathdesign/mdbch/md-chr8t.pfb></usr/share/texlive/texmf-dist/fonts/type1/pu
 blic/mathdesign/mdbch/md-chri7m.pfb></usr/share/texlive/texmf-dist/fonts/type1/
 public/mathdesign/mdbch/md-chrma.pfb>
 Output written on /home/saintz/localStuff/FYS4411/project2/text/project2.pdf (1
-6 pages, 150440 bytes).
+6 pages, 152218 bytes).
 PDF statistics:
- 537 PDF objects out of 1000 (max. 8388607)
- 502 compressed objects within 6 object streams
- 194 named destinations out of 1000 (max. 500000)
+ 538 PDF objects out of 1000 (max. 8388607)
+ 503 compressed objects within 6 object streams
+ 195 named destinations out of 1000 (max. 500000)
  309 words of extra memory for PDF output out of 10000 (max. 10000000)
 

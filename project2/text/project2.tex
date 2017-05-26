@@ -1184,7 +1184,7 @@
             \prd{x_i}\Hij{x}{n}{} &=
             \frac{x_i}{2}\sqrt{\frac{\omega}{\alpha}}\prd{x_i}[H_{n_{x_j}}]
             \nonumber \\
-            &= n_{x_j}x_k\sqrt{\frac{\omega}{\alpha}}\Hij{x}{n}{-1} \nonumber \\
+            &= n_{x_j}x_i\sqrt{\frac{\omega}{\alpha}}\Hij{x}{n}{-1} \nonumber \\
             &= \frac{n_{x_j}\omega^2}{2}\left(1 +
             \left(n_{x_j}-1\right)x_i\sqrt{\frac{\omega}{\alpha}}
             \frac{\Hij{x}{n}{-2}}{\Hij{x}{n}{}}\right)\Hij{x}{n}{}
@@ -1225,18 +1225,40 @@
             \Theta_{ii}(\alpha,y)\right) - r^2_i\right)
             \label{eq:psideralpha}
         \end{align}
-    where we have use \Autoref{eq:aadja} and defined $\Theta$ to be the vector
+    where we have used \Autoref{eq:aadja} and defined $\Theta$ to be the vector
     of element as defined in \Autoref{eq:Thetadef} \\
-    The second derivative with respect to $\alpha$ is with the first derivative
-    just
+    The second derivative of $\psi_T$ with respect to $\alpha$ we need the
+    second derivative of the Hermite polynomials. These are
         \begin{align}
-            \prd{\alpha}[\psi_T][2] &=
-            \prd{\alpha}\left(-\psi_T\frac{\omega}{2} \suml{i}{N}r^2_i\right)
+            \prd{\alpha}[][2]\Hij{x}{n}{} &= \prd{\alpha} \left(n_{x_j}x_i
+            \sqrt{\frac{\omega}{\alpha}}\Hij{x}{n}{-1}\right)
             \nonumber \\
-            &= -\frac{\omega}{2}\suml{i}{N}r^2_i\prd{\alpha}[\psi_T] \nonumber
-            \\
-            &= \left(\frac{\omega}{2}\suml{i}{N}r^2_i\right)^2\psi_T
-            \label{eq:psideralphasec}
+            &= n_{x_j}\left(n_{x_j}-1\right)x^2_i
+            \frac{\omega}{\alpha}\Hij{x}{n}{-2} -\frac{n_{x_j}x_i}{2}
+            \sqrt{\frac{\omega}{\alpha^3}}\Hij{x}{n}{-1} \nonumber \\
+            &= \frac{n_{x_j}}{\alpha} \left(\left(n_{x_j}-1\right)x_i
+            \left(\omega - \frac{1}{4}\sqrt{\frac{\omega}{\alpha}}\right)
+            \frac{\Hij{x}{n}{-2}}{\Hij{x}{n}{}} -
+            \frac{n_{x_j}}{4\alpha^2}\right)\Hij{x}{n}{}
+            \label{eq:Hderalphasec}
+        \end{align}
+    The derivation is the same for $H_{n_{y_j}}$. The second derivative of
+    $\Phi_{ij}$ is thus
+        \begin{align}
+            \prd{\alpha}[\psi_T][2] &= \prd{\alpha}\left[
+                \left(\Hij{y}{n}{}\prd{\alpha}\Hij{x}{n}{} +
+                \Hij{x}{n}{}\prd{\alpha}\Hij{y}{n}{} - \frac{\omega
+                r^2_i}{2}\right)\eri\right] \nonumber \\
+            &\hspace{-0.04cm}\begin{aligned}
+                &= \left(2\prd{\alpha}[\Hij{x}{n}{}]\prd{\alpha}[\Hij{y}{n}{}]
+                \Hij{y}{n}{}\prd{\alpha}[\Hij{x}{n}{}][2] \right.\\ 
+                &\hspace{0.6cm} + \left.
+                \Hij{x}{n}{}\prd{\alpha}[\Hij{y}{n}{}][2] -
+                \prd{\alpha}[\Phi_{ij}] \frac{\omega r^2_i}{2}\right)
+                \exp(-\frac{\alpha\omega}{2}r^2_i)
+            \end{aligned}
+            &= 
+            \label{eq:phideralphasec}
         \end{align}
     The derivative with respect to $\beta$ follows a similar approach as in
     \Autoref{ssub:general_case} giving
