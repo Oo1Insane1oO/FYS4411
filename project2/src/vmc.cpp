@@ -253,6 +253,7 @@ unsigned long int VMC::getSeed() {
 } // end function setSeed
 
 double VMC::Afunc(const Eigen::MatrixXd &R) {
+    /* first derivative of wave function with respect to alpha */
     double A = 0;
     double n;
     for (unsigned int i = 0; i < R.rows(); ++i) {
@@ -267,20 +268,21 @@ double VMC::Afunc(const Eigen::MatrixXd &R) {
 } // end function Afunc
 
 double VMC::Afunc(const Eigen::MatrixXd &wave, const Eigen::MatrixXd &waveInv,
-        const Eigen::MatrixXd &R, const unsigned int jstart) {
+        const Eigen::MatrixXd &R, const unsigned int iStart) {
+    /* first derivative of wave function with respect to beta */
     double A = 0;
     double n;
-    for (unsigned int i = 0; i < 2*R.rows(); i+=2) {
-        for (unsigned int j = 0; j < R.rows(); ++j) {
-            for (unsigned int d = 0; d < R.cols(); ++d) {
-                n = *(b->states[i+jstart][d]);
+    for (unsigned int d = 0; d < R.cols(); ++d) {
+        for (unsigned int i = 0; i < 2*R.rows(); i+=2) {
+                n = *(b->states[i+iStart][d]);
+            for (unsigned int j = 0; j < R.rows(); ++j) {
                 A += n/(alpha) * (sqrt(alpha) + 2*R(j,d)*(n-1)*sqrt(b->omega) *
                         H(awsqr*R(j,d),n-2)/H(awsqr*R(j,d),n) -
-                        b->omega*R.row(j).squaredNorm()) * waveInv(i/2,j) *
-                    wave(j,i/2);
-            } // end ford
-         } // end forj
-    } // end fori
+                        b->omega*R.row(j).squaredNorm()) * wave(j,i/2) *
+                    waveInv(i/2,j);
+             } // end forj
+        } // end fori
+    } // end ford
     return A;
 } // end function Afunc
 
@@ -337,9 +339,8 @@ void VMC::calculate() {
     double B = 0;
     double ELB = 0;
 
-    double steepStep = 0.01;
-
     Eigen::MatrixXd steepb = Eigen::VectorXd::Zero(2);
+    Eigen::MatrixXd prevSteepb = Eigen::VectorXd::Zero(2);
 
     unsigned int halfSize = oldPositions.rows()/2;
     double testRatio, tmpEnergy, acceptance;
@@ -367,12 +368,15 @@ void VMC::calculate() {
     Eigen::MatrixXd newInvU = Eigen::MatrixXd::Zero(b->ECut, b->ECut);
     Eigen::MatrixXd HessenMatrix = Eigen::MatrixXd::Zero(2,2);
     Eigen::MatrixXd rhs = Eigen::VectorXd::Zero(2,1);
-    Eigen::MatrixXd newAlphaBeta = Eigen::VectorXd::Zero(2,1);
-    newAlphaBeta(0) = alpha;
-    newAlphaBeta(1) = beta;
+    Eigen::MatrixXd newAlphaBeta = Eigen::VectorXd::Zero(2);
+    Eigen::MatrixXd oldAlphaBeta = Eigen::VectorXd::Zero(2);
+    oldAlphaBeta(0) = alpha;
+    oldAlphaBeta(1) = beta;
     b->setTrialWaveFunction(oldD, oldU, oldPositions, alpha);
     oldInvD = oldD.inverse();
     oldInvU = oldU.inverse();
+    newAlphaBeta = oldAlphaBeta;
+    double steepStep = 0.1;
     for (unsigned int k = 0; k < oldPositions.rows(); ++k) {
         /* set first derivatives */
         if (k<halfSize) {
@@ -512,17 +516,21 @@ void VMC::calculate() {
             energy += tmpEnergy;
             energySq += tmpEnergy*tmpEnergy;
 
+            // split spin up/down and calculate expected value(local) of first
+            // derivative of wave function with respect to alpha
             tmpA = Afunc(oldD, oldInvD, oldPositions.block(0, 0, halfSize,
                         oldPositions.cols()), 0) + Afunc(oldU, oldInvU,
                     oldPositions.block(halfSize, 0, halfSize,
                         oldPositions.cols()),1);
-//             std::cout << std::fabs(tmpA-Afunc(oldPositions)) << std::endl;
             A += tmpA;
             ELA += tmpEnergy*tmpA;
 
+            // No need for splitting when finding first derivative with respect
+            // to beta(only Jastrow factor gives constribution)
             tmpB = Bfunc(oldPositions);
             B += tmpB;
             ELB += tmpEnergy*tmpB;
+
         } // end for cycles
 
         // calculate final expectation values
@@ -539,10 +547,21 @@ void VMC::calculate() {
         steepb(0) = ELA - energy*A;
         steepb(1) = 2*(ELB - energy*B);
         newAlphaBeta -= steepStep*steepb;
+//         steepStep = (newAlphaBeta.row(0) -
+//                 oldAlphaBeta.row(0)).transpose().dot(steepb.row(0) -
+//                 prevSteepb.row(0)) / (steepb - prevSteepb).squaredNorm();
 
-        // update variatonal parameters
+        // update variational parameters
         alpha = newAlphaBeta(0);
         beta = newAlphaBeta(1);
+        prevSteepb = steepb;
+        oldAlphaBeta = newAlphaBeta;
+//         if (newAlphaBeta(0) > 0) {
+//             alpha = newAlphaBeta(0);
+//         }
+//         if (newAlphaBeta(1) > 0) {
+//             beta = newAlphaBeta(1);
+//         }
         aw = alpha*b->omega;
         awsqr = sqrt(aw);
 
