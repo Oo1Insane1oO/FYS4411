@@ -310,6 +310,7 @@ void VMC::calculate() {
     std::normal_distribution<double> normDist(0,1);
 
     // initialize position
+    while (true) {
     Eigen::MatrixXd oldPositions = Eigen::MatrixXd::Zero(2*b->ECut, dim);
     Eigen::MatrixXd newPositions = Eigen::MatrixXd::Zero(2*b->ECut, dim);
     for (unsigned int i = 0; i < oldPositions.rows(); ++i) {
@@ -376,7 +377,7 @@ void VMC::calculate() {
     oldInvD = oldD.inverse();
     oldInvU = oldU.inverse();
     newAlphaBeta = oldAlphaBeta;
-    double steepStep = 0.1;
+    double steepStep = 0.005;
     for (unsigned int k = 0; k < oldPositions.rows(); ++k) {
         /* set first derivatives */
         if (k<halfSize) {
@@ -406,7 +407,7 @@ void VMC::calculate() {
     newU = oldU;
     newInvD = oldInvD;
     newInvU = oldInvU;
-    while (true) {
+//     while (true) {
         for (cycles = 0; cycles < maxIterations; ++cycles) {
             /* run Monte Carlo cycles */
             for (unsigned int i = 0; i < oldPositions.rows(); ++i) {
@@ -546,37 +547,29 @@ void VMC::calculate() {
         // optimalize with steepest descent method
         steepb(0) = ELA - energy*A;
         steepb(1) = 2*(ELB - energy*B);
-        newAlphaBeta -= steepStep*steepb;
-//         steepStep = (newAlphaBeta.row(0) -
-//                 oldAlphaBeta.row(0)).transpose().dot(steepb.row(0) -
-//                 prevSteepb.row(0)) / (steepb - prevSteepb).squaredNorm();
+        newAlphaBeta = oldAlphaBeta - steepStep*steepb;
+        steepStep = (newAlphaBeta.row(0) -
+                oldAlphaBeta.row(0)).transpose().dot(steepb.row(0) -
+                prevSteepb.row(0)) / (steepb - prevSteepb).squaredNorm();
 
         // update variational parameters
         alpha = newAlphaBeta(0);
         beta = newAlphaBeta(1);
         prevSteepb = steepb;
         oldAlphaBeta = newAlphaBeta;
-//         if (newAlphaBeta(0) > 0) {
-//             alpha = newAlphaBeta(0);
-//         }
-//         if (newAlphaBeta(1) > 0) {
-//             beta = newAlphaBeta(1);
-//         }
         aw = alpha*b->omega;
         awsqr = sqrt(aw);
 
         std::cout << "alpha: " << alpha << " beta: " << beta << " Energy: " <<
             energy << std::endl;
-
-        
+       
+        // reset values used in Monte Carlo cycle
         energy = 0;
         energySq = 0;
         A = 0;
         ELA = 0;
         B = 0;
         ELB = 0;
-
         acceptance = 0;
-
     } // end while true
 } // end function calculate

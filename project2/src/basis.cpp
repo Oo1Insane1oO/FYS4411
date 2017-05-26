@@ -53,23 +53,32 @@ Basis::Basis(double w, int cut) {
         /* loop over values for nx */
         for (int j = 0; j <= i; ++j) {
             /* set states not yet pushed */
-            if (i+j>=cut) {
-                /* end when cutoff is reached */
-                break;
-            } // end if
+//             if (i+j>=cut) {
+//                 /* end when cutoff is reached */
+//                 break;
+//             } // end if
 
             // increment magic number and set values and push to states
             M[i+j]++;
             pushState(s1, i, j, 0);
             pushState(s1, i, j, 1);
+            if (states.size() >= 2*cut) {
+                break;
+            } // end if
 
             // dont set states doubly
             if (i!=j) {
-                M[i+j]++;
+//                 M[i+j]++;
                 pushState(s1, j, i, 0);
                 pushState(s1, j, i, 1);
+                if (states.size() >= 2*cut) {
+                    break;
+                } // end if
             } // end if
         } // end forj
+        if (states.size() >= 2*cut) {
+            break;
+        } // end if
     } // end fori
 
     // sum magic numbers

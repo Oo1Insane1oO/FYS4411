@@ -45,18 +45,19 @@ int main(int argc, const char** argv) {
     Basis *b = new Basis(omega, num/2);
 
     // make sure number of particles is a magic number(closed shell)
-    std::vector<int> magicNumber = b->getMagicNumbers();
-    std::vector<int>::iterator it;
-    it = std::find(magicNumber.begin(), magicNumber.end(), num);
-    if (it == magicNumber.end()) {
-        std::cout << "make sure num is a magic number N=2,6,12,20,30,42..." <<
-            std::endl;
-        exit(1);
-    } // end if
+//     std::vector<int> magicNumber = b->getMagicNumbers();
+//     std::vector<int>::iterator it;
+//     it = std::find(magicNumber.begin(), magicNumber.end(), num);
+//     if (it == magicNumber.end()) {
+//         std::cout << "make sure num is a magic number N=2,6,12,20,30,42..." <<
+//             std::endl;
+//         exit(1);
+//     } // end if
 
     std::cout << "Basis made" << std::endl;
     
     // set vmc object for calculations
+//     VMC *vmcObj = new VMC(b,1,0.4,2,step,maxIterations);
     VMC *vmcObj = new VMC(b,1,0.4,2,step,maxIterations);
 //     VMC *vmcObj = new VMC(b,1.03741,0.472513,2,step,maxIterations,imp);
     vmcObj->setImportanceSampling(imp);
