@@ -70,8 +70,7 @@ double Methods::variance(double p,double psq) {
 } // end function variance
 
 Eigen::MatrixXd Methods::conjugateGradient(const Eigen::MatrixXd &A, const
-        Eigen::MatrixXd &rhs, const Eigen::MatrixXd &x0, unsigned int
-        maxIterations) {
+        Eigen::MatrixXd &rhs, const Eigen::MatrixXd &x0) {
     /* solve a linear system, Ax=b with Conjugate Gradient method */
     Eigen::MatrixXd res = rhs - A*x0;
     Eigen::MatrixXd p = res;

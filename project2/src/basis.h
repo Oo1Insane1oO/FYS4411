@@ -20,10 +20,10 @@ class Basis {
         void setSpinMatrix();
 
     public:
-        Basis(double, int);
+        Basis(double, unsigned int);
         virtual ~Basis();
 
-        int ECut;
+        unsigned int ECut;
         double omega;
         std::vector<std::vector<int*>> states;
 

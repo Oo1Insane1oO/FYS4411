@@ -22,7 +22,7 @@
 #include <iostream>
 #include <fstream>
 
-Basis::Basis(double w, int cut) {
+Basis::Basis(double w, unsigned int cut) {
     /* initialize states */
     
     // set methods object
@@ -49,9 +49,9 @@ Basis::Basis(double w, int cut) {
     // allocate state arrays as {nx,ny,s,ms,E,M}
     M.resize(cut,0);
     std::vector<int*> s1 = std::vector<int*>(6,0);
-    for (int i = 0; i < ECut; ++i) {
+    for (unsigned int i = 0; i < ECut; ++i) {
         /* loop over values for nx */
-        for (int j = 0; j <= i; ++j) {
+        for (unsigned int j = 0; j <= i; ++j) {
             /* set states not yet pushed */
 //             if (i+j>=cut) {
 //                 /* end when cutoff is reached */

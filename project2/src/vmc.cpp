@@ -111,7 +111,6 @@ void VMC::oneBodySecondDerivativeRatio(const Eigen::MatrixXd &wave, const
         jstart){
     /* Analytic second derivative of one body part of wave function for
      * particle k */
-    int n;
     for (unsigned int j = 0; j < R.rows(); j+=2) {
         for (unsigned int d = 0; d < R.cols(); ++d) {
             der(kIdx) += aw * (aw*R(k,d)*R(k,d) - 1 -
@@ -122,7 +121,7 @@ void VMC::oneBodySecondDerivativeRatio(const Eigen::MatrixXd &wave, const
 } // end function oneBodySecondDerivativeRatio
 
 void VMC::jastrowFirstDerivativeRatio(Eigen::MatrixXd &der, const
-        Eigen::MatrixXd &R, const int k) {
+        Eigen::MatrixXd &R, const unsigned int k) {
     /* Analytic first derivative ratio of Jastrow part of wave function for
      * particle k */
     double rjk;
@@ -135,7 +134,8 @@ void VMC::jastrowFirstDerivativeRatio(Eigen::MatrixXd &der, const
     } // end forj
 } // end function jastrowFirstDerivativeRatio
 
-double VMC::jastrowSecondDerivativeRatio(const Eigen::MatrixXd &R, const int k) {
+double VMC::jastrowSecondDerivativeRatio(const Eigen::MatrixXd &R, const
+        unsigned int k) {
     /* Analytic second derivative ratio of Jastrow part of wave function for
      * particle k */
     double ratio = 0;
@@ -288,7 +288,6 @@ double VMC::Afunc(const Eigen::MatrixXd &wave, const Eigen::MatrixXd &waveInv,
 
 double VMC::Bfunc(const Eigen::MatrixXd &R) {
     double B = 0;
-    double n;
     for (unsigned int i = 0; i < R.rows(); ++i) {
         for (unsigned int j = 0; j < R.rows(); ++j) {
             if (i != j)  {
@@ -300,114 +299,126 @@ double VMC::Bfunc(const Eigen::MatrixXd &R) {
     return B;
 } // end function Bfunc
 
-void VMC::calculate() {
-    /* function for running Monte Carlo integration */
+void VMC::initializeCalculationVariables() {
+    /* initialize Eigen matrices/vectors used in function calculate */
+    oldPositions = Eigen::MatrixXd::Zero(2*b->ECut, dim);
+    newPositions = Eigen::MatrixXd::Zero(2*b->ECut, dim);
 
-    // initialize Mersenne Twister random number generator and uniform
-    // distribution engine
-    std::mt19937_64 mt(seed);
-    std::uniform_real_distribution<double> dist(0,1);
-    std::normal_distribution<double> normDist(0,1);
+    // force vector in steepest descent
+    steepb = Eigen::VectorXd::Zero(2);
+    prevSteepb = Eigen::VectorXd::Zero(2);
 
-    // initialize position
-    while (true) {
-    Eigen::MatrixXd oldPositions = Eigen::MatrixXd::Zero(2*b->ECut, dim);
-    Eigen::MatrixXd newPositions = Eigen::MatrixXd::Zero(2*b->ECut, dim);
-    for (unsigned int i = 0; i < oldPositions.rows(); ++i) {
-        for (unsigned int j = 0; j < oldPositions.cols(); ++j) {
-            if (imp) {
-                oldPositions(i,j) = normDist(mt) * sqrt(step);
-            } else {
-                oldPositions(i,j) = step * (dist(mt)-0.5);
-            } // end ifelse
-        } // end forj
-    } // end fori
-    energy = 0;
-    energySq = 0;
-    newPositions = oldPositions;
+    // first derivatives
+    if (jastrow || imp) {
+        derOB = Eigen::MatrixXd::Zero(oldPositions.rows(), oldPositions.cols());
+        derJ = Eigen::MatrixXd::Zero(oldPositions.rows(), oldPositions.cols());
+    } // end if
+   
+    // spin down matrices
+    lapD = Eigen::VectorXd::Zero(b->ECut);
+    oldD = Eigen::MatrixXd::Zero(b->ECut, b->ECut);
+    newD = Eigen::MatrixXd::Zero(b->ECut, b->ECut);
+    oldInvD = Eigen::MatrixXd::Zero(b->ECut, b->ECut);
+    newInvD = Eigen::MatrixXd::Zero(b->ECut, b->ECut);
 
-    Eigen::MatrixXd qForceOld, qForceNew;
+    // spin up matrices
+    lapU = Eigen::VectorXd::Zero(b->ECut);
+    oldU = Eigen::MatrixXd::Zero(b->ECut, b->ECut);
+    newU = Eigen::MatrixXd::Zero(b->ECut, b->ECut);
+    oldInvU = Eigen::MatrixXd::Zero(b->ECut, b->ECut);
+    newInvU = Eigen::MatrixXd::Zero(b->ECut, b->ECut);
+   
+    // variational parameters
+    newAlphaBeta = Eigen::VectorXd::Zero(2);
+    oldAlphaBeta = Eigen::VectorXd::Zero(2);
+        
     if (imp) {
         qForceOld = Eigen::MatrixXd::Zero(oldPositions.rows(),
                 oldPositions.cols());
         qForceNew = Eigen::MatrixXd::Zero(oldPositions.rows(),
                 oldPositions.cols());
     } // end if
-   
+} // end function initializeCalculationVariables
+
+void VMC::calculate() {
+    /* function for running Monte Carlo integration */
+
+    // initialize Mersenne Twister random number generator and uniform
+    // distribution engine
     double tmpA, tmpB;
     double A = 0;
     double ELA = 0;
     double B = 0;
     double ELB = 0;
 
-    Eigen::MatrixXd steepb = Eigen::VectorXd::Zero(2);
-    Eigen::MatrixXd prevSteepb = Eigen::VectorXd::Zero(2);
-
-    unsigned int halfSize = oldPositions.rows()/2;
     double testRatio, tmpEnergy, acceptance;
     unsigned int halfIdx;
     double determinantRatioD = 1;
     double determinantRatioU = 1;
     unsigned int cycles = 0;
     unsigned int uIdx;
-    int nkx, nky;
     double *determinantRatio;
-    Eigen::MatrixXd derOB = Eigen::MatrixXd::Zero(oldPositions.rows(),
-            oldPositions.cols());
-    Eigen::MatrixXd derJ = Eigen::MatrixXd::Zero(oldPositions.rows(),
-            oldPositions.cols());
-    Eigen::MatrixXd lapU = Eigen::VectorXd::Zero(b->ECut);
-    Eigen::MatrixXd lapD = Eigen::VectorXd::Zero(b->ECut);
-    Eigen::MatrixXd *oldWave, *newWave, *oldInv, *newInv, *lap;
-    Eigen::MatrixXd oldD = Eigen::MatrixXd::Zero(b->ECut, b->ECut);
-    Eigen::MatrixXd oldU = Eigen::MatrixXd::Zero(b->ECut, b->ECut);
-    Eigen::MatrixXd newD = Eigen::MatrixXd::Zero(b->ECut, b->ECut);
-    Eigen::MatrixXd newU = Eigen::MatrixXd::Zero(b->ECut, b->ECut);
-    Eigen::MatrixXd oldInvD = Eigen::MatrixXd::Zero(b->ECut, b->ECut);
-    Eigen::MatrixXd oldInvU = Eigen::MatrixXd::Zero(b->ECut, b->ECut);
-    Eigen::MatrixXd newInvD = Eigen::MatrixXd::Zero(b->ECut, b->ECut);
-    Eigen::MatrixXd newInvU = Eigen::MatrixXd::Zero(b->ECut, b->ECut);
-    Eigen::MatrixXd HessenMatrix = Eigen::MatrixXd::Zero(2,2);
-    Eigen::MatrixXd rhs = Eigen::VectorXd::Zero(2,1);
-    Eigen::MatrixXd newAlphaBeta = Eigen::VectorXd::Zero(2);
-    Eigen::MatrixXd oldAlphaBeta = Eigen::VectorXd::Zero(2);
-    oldAlphaBeta(0) = alpha;
-    oldAlphaBeta(1) = beta;
-    b->setTrialWaveFunction(oldD, oldU, oldPositions, alpha);
-    oldInvD = oldD.inverse();
-    oldInvU = oldU.inverse();
-    newAlphaBeta = oldAlphaBeta;
-    double steepStep = 0.005;
-    for (unsigned int k = 0; k < oldPositions.rows(); ++k) {
-        /* set first derivatives */
-        if (k<halfSize) {
-            if (jastrow || imp){
-                oneBodyFirstDerivativeRatio(oldD, oldInvD, derOB, oldPositions,
-                        k, k, 0);
+    double steepStep = 0.1;
+
+    // initialize random number generator
+    std::mt19937_64 mt(seed);
+    std::uniform_real_distribution<double> dist(0,1);
+    std::normal_distribution<double> normDist(0,1);
+
+    // set sizes
+    initializeCalculationVariables();
+    unsigned int halfSize = oldPositions.rows()/2;
+
+    // initialize position
+    while (true) {
+        for (unsigned int i = 0; i < oldPositions.rows(); ++i) {
+            for (unsigned int j = 0; j < oldPositions.cols(); ++j) {
+                if (imp) {
+                    oldPositions(i,j) = normDist(mt) * sqrt(step);
+                } else {
+                    oldPositions(i,j) = step * (dist(mt)-0.5);
+                } // end ifelse
+            } // end forj
+        } // end fori
+        energy = 0;
+        energySq = 0;
+        newPositions = oldPositions;
+
+        oldAlphaBeta(0) = alpha;
+        oldAlphaBeta(1) = beta;
+        b->setTrialWaveFunction(oldD, oldU, oldPositions, alpha);
+        oldInvD = oldD.inverse();
+        oldInvU = oldU.inverse();
+        newAlphaBeta = oldAlphaBeta;
+        for (unsigned int k = 0; k < oldPositions.rows(); ++k) {
+            /* set first derivatives */
+            if (k<halfSize) {
+                if (jastrow || imp){
+                    oneBodyFirstDerivativeRatio(oldD, oldInvD, derOB, oldPositions,
+                            k, k, 0);
+                } // end if
+                oneBodySecondDerivativeRatio(oldD, oldInvD, lapD, oldPositions, k,
+                        k, 0);
+            } else {
+                if (jastrow || imp){
+                    oneBodyFirstDerivativeRatio(oldU, oldInvU, derOB, oldPositions,
+                            k, k-halfSize, 1);
+                } // end if
+                oneBodySecondDerivativeRatio(oldU, oldInvU, lapU, oldPositions, k,
+                        k-halfSize, 1);
             } // end if
-            oneBodySecondDerivativeRatio(oldD, oldInvD, lapD, oldPositions, k,
-                    k, 0);
-        } else {
-            if (jastrow || imp){
-                oneBodyFirstDerivativeRatio(oldU, oldInvU, derOB, oldPositions,
-                        k, k-halfSize, 1);
+            if (jastrow || imp) {
+                jastrowFirstDerivativeRatio(derJ, oldPositions, k);
             } // end if
-            oneBodySecondDerivativeRatio(oldU, oldInvU, lapU, oldPositions, k,
-                    k-halfSize, 1);
+        } // end fork
+        if (imp) {
+            /* set quantum force */
+            qForceOld = 2*(derOB + derJ);
         } // end if
-        if (jastrow || imp) {
-            jastrowFirstDerivativeRatio(derJ, oldPositions, k);
-        } // end if
-    } // end fork
-    if (imp) {
-        /* set quantum force */
-        qForceOld = 2*(derOB + derJ);
-    } // end if
-    newD = oldD;
-    newU = oldU;
-    newInvD = oldInvD;
-    newInvU = oldInvU;
-//     while (true) {
+        newD = oldD;
+        newU = oldU;
+        newInvD = oldInvD;
+        newInvU = oldInvU;
         for (cycles = 0; cycles < maxIterations; ++cycles) {
             /* run Monte Carlo cycles */
             for (unsigned int i = 0; i < oldPositions.rows(); ++i) {
@@ -548,6 +559,8 @@ void VMC::calculate() {
         steepb(0) = ELA - energy*A;
         steepb(1) = 2*(ELB - energy*B);
         newAlphaBeta = oldAlphaBeta - steepStep*steepb;
+
+        // update stepsize in steepest descent
         steepStep = (newAlphaBeta.row(0) -
                 oldAlphaBeta.row(0)).transpose().dot(steepb.row(0) -
                 prevSteepb.row(0)) / (steepb - prevSteepb).squaredNorm();

@@ -24,6 +24,14 @@ class VMC {
                 Eigen::MatrixXd&, const unsigned int jstart);
         double Bfunc(const Eigen::MatrixXd&);
 
+        void initializeCalculationVariables();
+
+        Eigen::MatrixXd oldPositions, newPositions, qForceOld, qForceNew,
+            steepb, prevSteepb, derOB, derJ, lapU, lapD, oldD, oldU, newD,
+            newU, oldInvD, oldInvU, newInvD, newInvU, newAlphaBeta,
+            oldAlphaBeta;
+        Eigen::MatrixXd *oldWave, *newWave, *oldInv, *newInv, *lap;
+
     public:
         VMC (Basis*, double, double, unsigned int, double, unsigned int);
         virtual ~VMC ();
@@ -55,8 +63,8 @@ class VMC {
                 const unsigned int, const unsigned int, const unsigned int);
 
         void jastrowFirstDerivativeRatio(Eigen::MatrixXd&, const
-                Eigen::MatrixXd&, const int);
-        double jastrowSecondDerivativeRatio(const Eigen::MatrixXd&, const int);
+                Eigen::MatrixXd&, const unsigned int);
+        double jastrowSecondDerivativeRatio(const Eigen::MatrixXd&, const unsigned int);
 
         void setImportanceSampling(bool);
         void setCoulombInteraction(bool);
