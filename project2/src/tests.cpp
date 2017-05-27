@@ -6,6 +6,7 @@
 //////////////////////////////////////////////////////////////////////////////
 
 #include "tests.h" // header
+#include "hermite.h"
 #include <iostream>
 #include <iomanip>
 
@@ -143,6 +144,11 @@ bool Tests::test_conjugateGradient() {
     return ((fabs(x(0)-1./11)<=eps && fabs(x(1)-7./11)<=eps ? true : false));
 } // end function test_conjugateGradient
 
+bool Tests::test_negativeHermite() {
+    /* check that n<0 gives 0 */
+    return (std::fabs(H(6.5,-1))<eps ? true : false);
+} // end function test_negativeHermite
+
 void Tests::run_tests(int t) {
     /* run all tests and exit */
     if (t) {
@@ -151,13 +157,13 @@ void Tests::run_tests(int t) {
         } else {
             std::cout << "Energies wrong" << std::endl;
         } // end ifelse
-//         if(test_2particle()) {
-//             std::cout << "Energy unperturbed 2 electron good" << std::endl;
-//             std::cout << std::setprecision(10) << "  Energy is: " << v->energy << std::endl;
-//         } else { 
-//             std::cout << "Energy unperturbed 2 electron wrong" << std::endl;
-//             std::cout << std::setprecision(10) << "  Energy is: " << v->energy << std::endl;
-//         } // end ifelse
+        if(test_2particle()) {
+            std::cout << "Energy unperturbed 2 electron good" << std::endl;
+            std::cout << std::setprecision(10) << "  Energy is: " << v->energy << std::endl;
+        } else { 
+            std::cout << "Energy unperturbed 2 electron wrong" << std::endl;
+            std::cout << std::setprecision(10) << "  Energy is: " << v->energy << std::endl;
+        } // end ifelse
         if(test_determinantratio()) {
             std::cout << "Determinant ratio good" << std::endl;
         } else { 
@@ -184,6 +190,11 @@ void Tests::run_tests(int t) {
             std::cout << "Conjugate Gradient good" << std::endl;
         } else {
             std::cout << "Conjugate Gradient wrong" << std::endl;
+        } // end ifelse
+        if(test_negativeHermite()) {
+            std::cout << "Negative Hermite good" << std::endl;
+        } else {
+            std::cout << "Negative Hermite good" << std::endl;
         } // end ifelse
         if (t==2) {
             b->printStates();

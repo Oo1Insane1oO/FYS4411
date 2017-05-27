@@ -21,6 +21,7 @@ class Tests {
         bool test_updateWaveFunction();
         bool test_padejastrow();
         bool test_conjugateGradient();
+        bool test_negativeHermite();
     
     public:
         Tests (Basis*, VMC*, int=3);

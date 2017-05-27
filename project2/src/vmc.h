@@ -13,7 +13,7 @@ class VMC {
         Basis *b;
         Methods *meth;
 
-        unsigned long int seed = 1286754;
+        long int seed = -1;
 
         double aw, awsqr;
 
@@ -39,8 +39,8 @@ class VMC {
         double alpha, beta, energy, energySq, step;
         Eigen::MatrixXd newAlphaBeta, oldAlphaBeta;
 
-        unsigned long int getSeed();
-        void setSeed(unsigned long int);
+        long int getSeed();
+        void setSeed(long int);
 
         void diff(const Eigen::MatrixXd&, Eigen::MatrixXd&);
         void updateDiff(const Eigen::MatrixXd&, Eigen::MatrixXd&, unsigned

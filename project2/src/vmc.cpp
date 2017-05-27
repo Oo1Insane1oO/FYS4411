@@ -144,8 +144,8 @@ double VMC::jastrowSecondDerivativeRatio(const Eigen::MatrixXd &R, const
         if (j != k) {
             rkj = (R.row(k) - R.row(j)).norm();
             denom = 1 + beta*rkj;
-            ratio += b->padejastrow(k,j)/(denom*denom) * (1/rkj -
-                    2*beta/denom);
+            ratio += b->padejastrow(k,j)/(rkj*denom*denom) * (dim - 1 -
+                    2*beta*rkj/denom);
         } // end if
     } // end forj
     return ratio + derJ.row(k).squaredNorm();
@@ -226,12 +226,12 @@ double VMC::diff2(Eigen::MatrixXd &psiD, Eigen::MatrixXd &psiU, const
     return diff;
 } // end function diff2
 
-void VMC::setSeed(unsigned long int s) {
+void VMC::setSeed(long int s) {
     /* set seed */
     seed = s;
 } // end function setSeed
 
-unsigned long int VMC::getSeed() {
+long int VMC::getSeed() {
     /* get seed */
     return seed;
 } // end function setSeed
