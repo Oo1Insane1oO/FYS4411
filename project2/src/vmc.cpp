@@ -345,20 +345,17 @@ void VMC::calculate() {
 
     // initialize Mersenne Twister random number generator and uniform
     // distribution engine
-    double tmpA, tmpB;
+    unsigned int halfIdx, uIdx;
+    double testRatio, tmpEnergy, acceptance, tmpA, tmpB;
     double A = 0;
     double ELA = 0;
     double B = 0;
     double ELB = 0;
 
-    double testRatio, tmpEnergy, acceptance;
-    unsigned int halfIdx;
     double determinantRatioD = 1;
     double determinantRatioU = 1;
     unsigned int cycles = 0;
-    unsigned int uIdx;
     double *determinantRatio;
-    double steepStep = 0.1;
 
     // initialize random number generator
     std::mt19937_64 mt(seed);
@@ -368,6 +365,7 @@ void VMC::calculate() {
     // set sizes
     initializeCalculationVariables();
     unsigned int halfSize = oldPositions.rows()/2;
+    double steepStep = 0.01;
 
     // initialize position
     while (true) {
@@ -561,9 +559,9 @@ void VMC::calculate() {
         newAlphaBeta = oldAlphaBeta - steepStep*steepb;
 
         // update stepsize in steepest descent
-        steepStep = (newAlphaBeta.row(0) -
-                oldAlphaBeta.row(0)).transpose().dot(steepb.row(0) -
-                prevSteepb.row(0)) / (steepb - prevSteepb).squaredNorm();
+//         steepStep = (newAlphaBeta.row(0) -
+//                 oldAlphaBeta.row(0)).transpose().dot(steepb.row(0) -
+//                 prevSteepb.row(0)) / (steepb - prevSteepb).squaredNorm();
 
         // update variational parameters
         alpha = newAlphaBeta(0);

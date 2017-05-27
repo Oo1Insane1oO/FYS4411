@@ -28,8 +28,7 @@ class VMC {
 
         Eigen::MatrixXd oldPositions, newPositions, qForceOld, qForceNew,
             steepb, prevSteepb, derOB, derJ, lapU, lapD, oldD, oldU, newD,
-            newU, oldInvD, oldInvU, newInvD, newInvU, newAlphaBeta,
-            oldAlphaBeta;
+            newU, oldInvD, oldInvU, newInvD, newInvU;
         Eigen::MatrixXd *oldWave, *newWave, *oldInv, *newInv, *lap;
 
     public:
@@ -38,6 +37,7 @@ class VMC {
 
         unsigned int dim, maxIterations;
         double alpha, beta, energy, energySq, step;
+        Eigen::MatrixXd newAlphaBeta, oldAlphaBeta;
 
         unsigned long int getSeed();
         void setSeed(unsigned long int);
