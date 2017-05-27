@@ -58,8 +58,14 @@ int main(int argc, const char** argv) {
     
     // set vmc object for calculations
 //     VMC *vmcObj = new VMC(b,1,0.4,2,step,maxIterations);
-    VMC *vmcObj = new VMC(b,1,0.4,2,step,maxIterations);
-//     VMC *vmcObj = new VMC(b,1.03741,0.472513,2,step,maxIterations,imp);
+//     VMC *vmcObj = new VMC(b,1.10364,0.468861,2,step,maxIterations);
+//     VMC *vmcObj = new VMC(b,0.569619,0,2,step,maxIterations);
+//     VMC *vmcObj = new VMC(b,1,0.4,2,step,maxIterations);
+//     VMC *vmcObj = new VMC(b,0.856981,0.200372,2,step,maxIterations);
+//     VMC *vmcObj = new VMC(b,1.03741,0.472513,2,step,maxIterations);
+//     VMC *vmcObj = new VMC(b,0.831104,0.211443,2,step,maxIterations);
+//     VMC *vmcObj = new VMC(b,0.931202,0.395044,2,step,maxIterations);
+    VMC *vmcObj = new VMC(b,1.06019,0.474467,2,step,maxIterations);
     vmcObj->setImportanceSampling(imp);
     vmcObj->setCoulombInteraction(coul);
     vmcObj->setJastrow(jast);

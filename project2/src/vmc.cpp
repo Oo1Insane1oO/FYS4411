@@ -309,10 +309,9 @@ void VMC::initializeCalculationVariables() {
     prevSteepb = Eigen::VectorXd::Zero(2);
 
     // first derivatives
-    if (jastrow || imp) {
-        derOB = Eigen::MatrixXd::Zero(oldPositions.rows(), oldPositions.cols());
-        derJ = Eigen::MatrixXd::Zero(oldPositions.rows(), oldPositions.cols());
-    } // end if
+    derOB = Eigen::MatrixXd::Zero(oldPositions.rows(),
+            oldPositions.cols());
+    derJ = Eigen::MatrixXd::Zero(oldPositions.rows(), oldPositions.cols());
    
     // spin down matrices
     lapD = Eigen::VectorXd::Zero(b->ECut);
@@ -405,7 +404,7 @@ void VMC::calculate() {
                 oneBodySecondDerivativeRatio(oldU, oldInvU, lapU, oldPositions, k,
                         k-halfSize, 1);
             } // end if
-            if (jastrow || imp) {
+            if (jastrow) {
                 jastrowFirstDerivativeRatio(derJ, oldPositions, k);
             } // end if
         } // end fork
@@ -455,6 +454,15 @@ void VMC::calculate() {
                     } // end ifelse
                 } // end forj
 
+//                 std::cout << oldPositions << std::endl;
+//                 std::cout << std::endl;
+//                 std::cout << newPositions << std::endl;
+//                 std::cout << std::endl;
+//                 std::cout << oldD << std::endl;
+//                 std::cout << std::endl;
+//                 std::cout << newD << std::endl;
+//                 std::cout << std::endl;
+
                 // update Slater, ratio and inverse
                 b->updateTrialWaveFunction(*newWave, newPositions, alpha,
                         halfIdx, uIdx);
@@ -464,12 +472,18 @@ void VMC::calculate() {
                 meth->updateMatrixInverse(*oldWave, *newWave, *oldInv, *newInv,
                         *determinantRatio, halfIdx);
 
+//                 std::cout <<*determinantRatio << std::endl;
+//                 break;
+
                 // update first derivatives
-                if (jastrow || imp) {
+                if (imp) {
                     derOB.row(i).setZero();
-                    derJ.row(i).setZero();
                     oneBodyFirstDerivativeRatio(*newWave, *newInv, derOB,
                             newPositions, i, halfIdx, uIdx);
+                } // end if
+
+                if (jastrow) {
+                    derJ.row(i).setZero();
                     jastrowFirstDerivativeRatio(derJ, newPositions, i);
                 } // end if
 
@@ -512,11 +526,13 @@ void VMC::calculate() {
                         halfIdx);
 
                 // update first derivatives
-                if (jastrow || imp) {
+                if (imp) {
                     derOB.row(i).setZero();
-                    derJ.row(i).setZero();
                     oneBodyFirstDerivativeRatio(*oldWave, *oldInv, derOB,
                             oldPositions, i, halfIdx, uIdx);
+                } // end if
+                if (jastrow) {
+                    derJ.row(i).setZero();
                     jastrowFirstDerivativeRatio(derJ, oldPositions, i);
                 } // end if
             } // end fori
@@ -540,8 +556,10 @@ void VMC::calculate() {
             tmpB = Bfunc(oldPositions);
             B += tmpB;
             ELB += tmpEnergy*tmpB;
+//             break;
 
         } // end for cycles
+//         break;
 
         // calculate final expectation values
         energy /= cycles;
@@ -552,6 +570,7 @@ void VMC::calculate() {
         B /= cycles;
 
         std::cout << "Acceptance: " << acceptance/(cycles*newPositions.rows()) << std::endl;
+        break;
 
         // optimalize with steepest descent method
         steepb(0) = ELA - energy*A;
