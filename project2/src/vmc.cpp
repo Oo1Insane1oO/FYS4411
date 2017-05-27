@@ -100,7 +100,7 @@ void VMC::oneBodyFirstDerivativeRatio(const Eigen::MatrixXd &wave, const
         for (unsigned int d = 0; d < R.cols(); ++d) {
             n = *(b->states[j+jstart][d]);
             der(k,d) += (2*awsqr*n*H(awsqr*R(k,d),n-1)/H(awsqr*R(k,d),n) -
-                    aw*R(k,d)) * wave(kIdx,j/2)*waveInv(j/2,kIdx);
+                    aw*R(k,d)) * wave(kIdx,j/2) * waveInv(j/2,kIdx);
         } // end ford
     } // end forj
 } // end function oneBodyFirstDerivativeRatio
@@ -139,32 +139,16 @@ double VMC::jastrowSecondDerivativeRatio(const Eigen::MatrixXd &R, const
     /* Analytic second derivative ratio of Jastrow part of wave function for
      * particle k */
     double ratio = 0;
-    double rkj, rki, aki, akj, denomi, denomj;
-    for (unsigned int i = 0; i < R.rows(); ++i) {
-        if (i != k) {
-            aki = b->padejastrow(k,i);
-            rki = (R.row(k) - R.row(i)).norm();
-            denomi = 1 + beta*rki;
-            for (unsigned int j = 0; j < R.rows(); ++j) {
-                if (j != k) {
-                    akj = b->padejastrow(k,j);
-                    rkj = (R.row(k) - R.row(j)).norm();
-                    denomj = 1 + beta*rkj;
-                    ratio += (R.row(k)-R.row(i)).dot(R.row(k)-R.row(j)) /
-                        (rki*rkj) * aki*akj/(denomi*denomi*denomj*denomj);
-                } // end if
-            } // end forj
-        } // end if
-    } // end fori
+    double rkj, akj, denom;
     for (unsigned int j = 0; j < R.rows(); ++j) {
         if (j != k) {
             rkj = (R.row(k) - R.row(j)).norm();
-            denomj = 1 + beta*rkj;
-            ratio += b->padejastrow(k,j)/(denomj*denomj) * (1/rkj -
-                    2*beta/denomj);
+            denom = 1 + beta*rkj;
+            ratio += b->padejastrow(k,j)/(denom*denom) * (1/rkj -
+                    2*beta/denom);
         } // end if
     } // end forj
-    return ratio;
+    return ratio + derJ.row(k).squaredNorm();
 } // end function jastrowSecondDerivativeRatio
 
 double coulombFactor(const Eigen::MatrixXd &R) {
@@ -251,21 +235,6 @@ unsigned long int VMC::getSeed() {
     /* get seed */
     return seed;
 } // end function setSeed
-
-double VMC::Afunc(const Eigen::MatrixXd &R) {
-    /* first derivative of wave function with respect to alpha */
-    double A = 0;
-    double n;
-    for (unsigned int i = 0; i < R.rows(); ++i) {
-        for (unsigned int d = 0; d < R.cols(); ++d) {
-            n = *(b->states[i][d]);
-            A += n/(alpha) * (sqrt(alpha) + 2*R(i,d)*(n-1)*sqrt(b->omega) *
-                    H(awsqr*R(i,d),n-2)/H(awsqr*R(i,d),n));
-        } // end ford
-        A -= b->omega*R.row(i).squaredNorm();
-    } // end fori
-    return A;
-} // end function Afunc
 
 double VMC::Afunc(const Eigen::MatrixXd &wave, const Eigen::MatrixXd &waveInv,
         const Eigen::MatrixXd &R, const unsigned int iStart) {
