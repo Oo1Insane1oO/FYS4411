@@ -30,9 +30,10 @@ class Basis {
         double harmonicOscillatorWaveFunction(double, double, double, int,
                 int);
         void setTrialWaveFunction(Eigen::MatrixXd&, Eigen::MatrixXd&, const
-                Eigen::MatrixXd&, double);
+                Eigen::MatrixXd&, const double);
         void updateTrialWaveFunction(Eigen::MatrixXd&, const Eigen::MatrixXd&,
-                double, unsigned int, unsigned int);
+                const double, const unsigned int, const unsigned int, const
+                unsigned int);
         double jastrow(const Eigen::MatrixXd&, double);
         void updateJastrow(double&, const Eigen::MatrixXd&, const
                 Eigen::MatrixXd&, double, unsigned int);

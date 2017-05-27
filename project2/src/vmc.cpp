@@ -12,6 +12,8 @@
 #include <fstream>
 #include <math.h>
 #include <random>
+#include <sstream>
+#include <iterator>
 
 VMC::VMC(Basis *B, double alp, double bet, unsigned int d, double s, unsigned
         int max) {
@@ -326,7 +328,10 @@ void VMC::calculate() {
     double *determinantRatio;
 
     // initialize random number generator
-    std::mt19937_64 mt(seed);
+    std::istringstream stringBuffer("1 2 3 4 5 6 7 8 9 10");
+    std::istream_iterator<int> start(stringBuffer), end;
+    std::seed_seq seedSequence(start, end);
+    std::mt19937_64 mt(seedSequence);
     std::uniform_real_distribution<double> dist(0,1);
     std::normal_distribution<double> normDist(0,1);
 
@@ -335,8 +340,8 @@ void VMC::calculate() {
     unsigned int halfSize = oldPositions.rows()/2;
     double steepStep = 0.01;
 
-    // initialize position
     while (true) {
+        // reinitialize positions
         for (unsigned int i = 0; i < oldPositions.rows(); ++i) {
             for (unsigned int j = 0; j < oldPositions.cols(); ++j) {
                 if (imp) {
@@ -352,21 +357,27 @@ void VMC::calculate() {
 
         oldAlphaBeta(0) = alpha;
         oldAlphaBeta(1) = beta;
+        newAlphaBeta = oldAlphaBeta;
+
         b->setTrialWaveFunction(oldD, oldU, oldPositions, alpha);
         oldInvD = oldD.inverse();
         oldInvU = oldU.inverse();
-        newAlphaBeta = oldAlphaBeta;
+        newD = oldD;
+        newU = oldU;
+        newInvD = oldInvD;
+        newInvU = oldInvU;
+
         for (unsigned int k = 0; k < oldPositions.rows(); ++k) {
             /* set first derivatives */
             if (k<halfSize) {
-                if (jastrow || imp){
+                if (jastrow || imp) {
                     oneBodyFirstDerivativeRatio(oldD, oldInvD, derOB, oldPositions,
                             k, k, 0);
                 } // end if
                 oneBodySecondDerivativeRatio(oldD, oldInvD, lapD, oldPositions, k,
                         k, 0);
             } else {
-                if (jastrow || imp){
+                if (jastrow || imp) {
                     oneBodyFirstDerivativeRatio(oldU, oldInvU, derOB, oldPositions,
                             k, k-halfSize, 1);
                 } // end if
@@ -377,14 +388,12 @@ void VMC::calculate() {
                 jastrowFirstDerivativeRatio(derJ, oldPositions, k);
             } // end if
         } // end fork
+
         if (imp) {
             /* set quantum force */
             qForceOld = 2*(derOB + derJ);
         } // end if
-        newD = oldD;
-        newU = oldU;
-        newInvD = oldInvD;
-        newInvU = oldInvU;
+
         for (cycles = 0; cycles < maxIterations; ++cycles) {
             /* run Monte Carlo cycles */
             for (unsigned int i = 0; i < oldPositions.rows(); ++i) {
@@ -433,7 +442,7 @@ void VMC::calculate() {
 //                 std::cout << std::endl;
 
                 // update Slater, ratio and inverse
-                b->updateTrialWaveFunction(*newWave, newPositions, alpha,
+                b->updateTrialWaveFunction(*newWave, newPositions, alpha, i,
                         halfIdx, uIdx);
                 *determinantRatio = meth->determinantRatio(*newWave, *oldInv,
                         halfIdx);
@@ -486,6 +495,18 @@ void VMC::calculate() {
                         qForceOld.row(i) = qForceNew.row(i);
                     } // end if
                 } // end if
+//                 for (unsigned int g = 0; g < (*oldWave).rows(); ++g) {
+//                     for (unsigned int h = 0; h < (*oldWave).rows(); ++h) {
+//                         if (g==h && std::fabs((*oldWave**oldInv)(g,h)-1)>1e-13) {
+//                             std::cout << std::setprecision(14) << "diag off by " <<
+//                                 (*oldWave**oldInv)(g,h) << std::endl;
+//                         } // end if
+//                         if (g!=h && std::fabs((*oldWave**oldInv)(g,h))>1e-13) {
+//                             std::cout << std::setprecision(14) << g << "," << h
+//                                 << " of by " << (*oldWave**oldInv)(g,h) << std::endl;
+//                         } // end if
+//                     } // end forh
+//                 } // end forg
 
                 // update Laplacian and determinant ratio
                 (*(lap))(halfIdx) = 0;
