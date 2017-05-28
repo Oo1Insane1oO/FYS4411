@@ -14,6 +14,8 @@
 #include <random>
 #include <sstream>
 #include <iterator>
+#include <time.h>
+#include <string.h>
 
 VMC::VMC(Basis *B, double alp, double bet, unsigned int d, double s, unsigned
         int max) {
@@ -280,17 +282,13 @@ void VMC::initializeCalculationVariables() {
     } // end if
 } // end function initializeCalculationVariables
 
-void VMC::calculate() {
+void VMC::calculate(const char *destination) {
     /* function for running Monte Carlo integration */
 
     // initialize Mersenne Twister random number generator and uniform
     // distribution engine
     unsigned int halfIdx, uIdx;
-    double testRatio, tmpEnergy, acceptance, tmpA, tmpB;
-    double A = 0;
-    double ELA = 0;
-    double B = 0;
-    double ELB = 0;
+    double testRatio, tmpEnergy, acceptance, tmpA, tmpB, A, ELA, B, ELB;
 
     double determinantRatioD = 1;
     double determinantRatioU = 1;
@@ -298,11 +296,14 @@ void VMC::calculate() {
     double *determinantRatio;
         
     Eigen::MatrixXd *oldWave, *newWave, *oldInv, *newInv, *lap;
+   
+    std::ofstream openFile;
 
     // initialize random number generator
-    std::istringstream stringBuffer("1 2 3 4 5 6 7 8 9 10");
+    std::istringstream stringBuffer("0 1 2 3 4 5 6 7 8 9 10");
     std::istream_iterator<int> start(stringBuffer), end;
     std::seed_seq seedSequence(start, end);
+//     std::mt19937_64 mt(time(NULL));
     std::mt19937_64 mt(seedSequence);
     std::uniform_real_distribution<double> dist(0,1);
     std::normal_distribution<double> normDist(0,1);
@@ -323,21 +324,16 @@ void VMC::calculate() {
                 } // end ifelse
             } // end forj
         } // end fori
-        energy = 0;
-        energySq = 0;
-        newPositions = oldPositions;
 
+        // set variational parameter vector
         oldAlphaBeta(0) = alpha;
         oldAlphaBeta(1) = beta;
         newAlphaBeta = oldAlphaBeta;
 
+        // initialize Slater matrix and its inverse
         b->setTrialWaveFunction(oldD, oldU, oldPositions, alpha);
         oldInvD = oldD.inverse();
         oldInvU = oldU.inverse();
-        newD = oldD;
-        newU = oldU;
-        newInvD = oldInvD;
-        newInvU = oldInvU;
 
         for (unsigned int k = 0; k < oldPositions.rows(); ++k) {
             /* set first derivatives */
@@ -365,9 +361,19 @@ void VMC::calculate() {
             /* set quantum force */
             qForceOld = 2*(derOB + derJ);
         } // end if
-
-        double locEnergy = 0;
-        double locEnergySq = 0;
+        
+        // reset values used in Monte Carlo cycle
+        energy = 0;
+        energySq = 0;
+        A = 0;
+        ELA = 0;
+        B = 0;
+        ELB = 0;
+        acceptance = 0;
+    
+        if (destination) {
+            openFile.open(destination);
+        } // end ifelseif
 
         for (cycles = 0; cycles < maxIterations; ++cycles) {
             /* run Monte Carlo cycles */
@@ -480,6 +486,7 @@ void VMC::calculate() {
 
             // calculate local energy and local energy squared
             tmpEnergy = localEnergy2(lapD, lapU, derOB, derJ, oldPositions);
+            openFile << tmpEnergy << " " << tmpEnergy*tmpEnergy << "\n";
             energy += tmpEnergy;
             energySq += tmpEnergy*tmpEnergy;
 
@@ -497,7 +504,6 @@ void VMC::calculate() {
             tmpB = Bfunc(oldPositions);
             B += tmpB;
             ELB += tmpEnergy*tmpB;
-
         } // end for cycles
 
         // calculate final expectation values
@@ -508,8 +514,14 @@ void VMC::calculate() {
         ELB /= cycles;
         B /= cycles;
 
+        openFile << " " << "\n";
+        openFile << "Summed total: " << energy << " " << energySq << "\n";
+        openFile << "Acceptance: " << acceptance/(cycles*newPositions.rows()) << "\n";
+        openFile << "Alpha: " << alpha << "\n";
+        openFile << "Beta: " << beta << "\n";
+        openFile.close();
+
         std::cout << "Acceptance: " << acceptance/(cycles*newPositions.rows()) << std::endl;
-        break;
 
         // optimalize with steepest descent method
         steepb(0) = ELA - energy*A;
@@ -533,13 +545,9 @@ void VMC::calculate() {
         aw = alpha*b->omega;
         awsqr = sqrt(aw);
        
-        // reset values used in Monte Carlo cycle
-        energy = 0;
-        energySq = 0;
-        A = 0;
-        ELA = 0;
-        B = 0;
-        ELB = 0;
-        acceptance = 0;
     } // end while true
 } // end function calculate
+
+void writeToFile(const std::string fname) {
+    /* function for writing parameters to file */
+} // end function writeToFile

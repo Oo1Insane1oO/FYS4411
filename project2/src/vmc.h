@@ -7,6 +7,7 @@
 #define VMC_H
 
 #include "basis.h"
+#include <string>
 
 class VMC {
     private:
@@ -70,7 +71,7 @@ class VMC {
         void setJastrow(bool);
         void setAllOn();
 
-        void calculate();
+        void calculate(const char* = NULL);
 };
 
 #endif /* VMC_H */
