@@ -5,6 +5,7 @@
 #include <chrono> // timer
 #include <iomanip> // setprecision
 #include <algorithm> // find
+#include <chrono> // timer
 
 //////////////////////////////////////////////////////////////////////////////
 // Main file for running vmc algorithm                                      //
@@ -40,6 +41,8 @@ int main(int argc, const char** argv) {
     bool imp = atoi(argv[6]);
     bool coul = atoi(argv[7]);
     bool jast = atoi(argv[8]);
+
+    Eigen::initParallel();
     
     // set basis (cartesian)
     Basis *b = new Basis(omega, num/2);
@@ -57,7 +60,8 @@ int main(int argc, const char** argv) {
     std::cout << "Basis made" << std::endl;
     
     // set vmc object for calculations
-    VMC *vmcObj = new VMC(b,1.1,0.48,2,step,maxIterations);
+//     VMC *vmcObj = new VMC(b,1.1,0.48,2,step,maxIterations);
+    VMC *vmcObj = new VMC(b,1.,0.48,2,step,maxIterations);
 //     VMC *vmcObj = new VMC(b,0.952981,0.354743,2,step,maxIterations);
 //     VMC *vmcObj = new VMC(b,1.10364,0.468861,2,step,maxIterations);
 //     VMC *vmcObj = new VMC(b,0.569619,0,2,step,maxIterations);
@@ -79,7 +83,15 @@ int main(int argc, const char** argv) {
     } // end if
 
     // run calculations
+    std::chrono::steady_clock::time_point begin;
+    begin = std::chrono::steady_clock::now();
     vmcObj->calculate();
+    std::chrono::steady_clock::time_point end;
+    end = std::chrono::steady_clock::now();
+    std::cout << "Calculation time: " <<
+        std::chrono::duration_cast<std::chrono::seconds>(end-begin).count()
+        << std::endl;
+
     std::cout << std::setprecision(10) << "<E> = " << vmcObj->energy << ", " <<
         "<E^2> = " << vmcObj->energySq << std::endl;
     std::cout << std::setprecision(10) << "<E^2> - <E>^2 = " <<

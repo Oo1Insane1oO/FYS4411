@@ -59,37 +59,6 @@ void VMC::setAllOn() {
     setCoulombInteraction(true);
     setJastrow(true);
 } // end function setAllOn
-        
-double VMC::localEnergy2(const Eigen::MatrixXd &R, bool coulomb) {
-    /* calculate analytic expression of local energy for 2 electrons */
-    double r12 = (R.row(0) - R.row(1)).norm();
-    double denom = 1 + beta*r12;
-    double denomsq = denom*denom;
-    double jast = 0;
-    for (unsigned int k = 0; k < R.rows(); ++k) {
-        jast += 0.5*jastrowSecondDerivativeRatio(R,k);
-    }
-//     std::cout << 1/denomsq * (1/denomsq +1/r12 - 2*beta/denom) << " " << jast << std::endl;
-    std::cout << 1/denomsq * (1/denomsq + 1/r12 - 2*beta/denom) - jast << std::endl;
-
-    return 0.5 * pow(b->omega,2) * (1 - alpha*alpha) * (R.row(0).squaredNorm()
-            + R.row(1).squaredNorm()) + 2*alpha*b->omega + (coulomb ?
-            -1/denomsq * (1/denomsq - alpha*b->omega*r12 + 1/r12 -
-                    2*beta/denom) + 1/r12 : 0);
-} // end function localEnergy
-// 
-// void VMC::diff(const Eigen::MatrixXd &R, Eigen::MatrixXd &der) {
-//     /* calculate first derivative ratio of single particle wave functions */
-//     double r12 = (R.row(0) - R.row(1)).norm();
-//     double denom = r12 * pow(1+beta*r12, 2);
-//     for (unsigned int i = 0; i < R.rows(); ++i) {
-//         for (unsigned int j = 0; j < R.cols(); ++j) {
-//             der(i,j) = -alpha*b->omega*R(i,j) + (R(i,j)-R(i+((i%2 || i==1) ?
-//                             -1 : 1),j))/denom;
-//         } // end forj
-//     } // end fori
-// } // end function
-// 
 
 void VMC::oneBodyFirstDerivativeRatio(const Eigen::MatrixXd &wave, const
         Eigen::MatrixXd &waveInv, Eigen::MatrixXd &der, const Eigen::MatrixXd
@@ -240,7 +209,7 @@ long int VMC::getSeed() {
 
 double VMC::Afunc(const Eigen::MatrixXd &wave, const Eigen::MatrixXd &waveInv,
         const Eigen::MatrixXd &R, const unsigned int iStart) {
-    /* first derivative of wave function with respect to beta */
+    /* first derivative of wave function with respect to alpha */
     double A = 0;
     double n;
     for (unsigned int d = 0; d < R.cols(); ++d) {
@@ -258,6 +227,7 @@ double VMC::Afunc(const Eigen::MatrixXd &wave, const Eigen::MatrixXd &waveInv,
 } // end function Afunc
 
 double VMC::Bfunc(const Eigen::MatrixXd &R) {
+    /* first derivative of wave function with respect to beta */
     double B = 0;
     for (unsigned int i = 0; i < R.rows(); ++i) {
         for (unsigned int j = 0; j < R.rows(); ++j) {
@@ -326,6 +296,8 @@ void VMC::calculate() {
     double determinantRatioU = 1;
     unsigned int cycles = 0;
     double *determinantRatio;
+        
+    Eigen::MatrixXd *oldWave, *newWave, *oldInv, *newInv, *lap;
 
     // initialize random number generator
     std::istringstream stringBuffer("1 2 3 4 5 6 7 8 9 10");
@@ -338,7 +310,7 @@ void VMC::calculate() {
     // set sizes
     initializeCalculationVariables();
     unsigned int halfSize = oldPositions.rows()/2;
-    double steepStep = 0.1;
+    double steepStep = 0.01;
 
     while (true) {
         // reinitialize positions
@@ -393,6 +365,9 @@ void VMC::calculate() {
             /* set quantum force */
             qForceOld = 2*(derOB + derJ);
         } // end if
+
+        double locEnergy = 0;
+        double locEnergySq = 0;
 
         for (cycles = 0; cycles < maxIterations; ++cycles) {
             /* run Monte Carlo cycles */
@@ -534,6 +509,7 @@ void VMC::calculate() {
         B /= cycles;
 
         std::cout << "Acceptance: " << acceptance/(cycles*newPositions.rows()) << std::endl;
+        break;
 
         // optimalize with steepest descent method
         steepb(0) = ELA - energy*A;
@@ -543,7 +519,8 @@ void VMC::calculate() {
         std::cout << "alpha: " << alpha << " beta: " << beta << " Energy: " <<
             energy << std::endl;
 
-        // update stepsize in steepest descent
+        // update stepsize in steepest descent according to two-step size
+        // gradient
         steepStep = (newAlphaBeta.row(0) -
                 oldAlphaBeta.row(0)).transpose().dot(steepb.row(0) -
                 prevSteepb.row(0)) / (steepb - prevSteepb).squaredNorm();

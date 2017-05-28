@@ -1,6 +1,6 @@
 CC = g++
 LDFLAGS	= -fopenmp -lpthread
-CXXFLAGS = -I eigen/ -O3 -std=c++14
+CXXFLAGS = -I eigen/ -O3 -fopenmp -std=c++14
 
 DEBUG ?= OFF
 ifeq ($(DEBUG),ON)

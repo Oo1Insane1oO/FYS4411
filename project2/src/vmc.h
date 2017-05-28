@@ -29,7 +29,6 @@ class VMC {
         Eigen::MatrixXd oldPositions, newPositions, qForceOld, qForceNew,
             steepb, prevSteepb, derOB, derJ, lapU, lapD, oldD, oldU, newD,
             newU, oldInvD, oldInvU, newInvD, newInvU;
-        Eigen::MatrixXd *oldWave, *newWave, *oldInv, *newInv, *lap;
 
     public:
         VMC (Basis*, double, double, unsigned int, double, unsigned int);
