@@ -38,55 +38,35 @@ Basis::Basis(double w, unsigned int cut) {
     ms[0] = -1;
     ms[1] = 1;
 
+    M.resize(cut/4-1);
+    M[0] = 2;
+    for (unsigned int i = 1; i < M.size(); ++i) {
+        M[i] = M[i-1] + 2*(i+1);
+    } // end fori
+
     // set possible values for nx and ny and energy E
-    n.resize(cut);
-    E.resize(cut);
+    n.resize(M.size());
+    E.resize(M.size());
     for (unsigned int i = 0; i < n.size(); ++i) {
         n[i] = i;
         E[i] = i+1;
     } // end fori
 
     // allocate state arrays as {nx,ny,s,ms,E,M}
-    M.resize(cut,0);
     std::vector<int*> s1 = std::vector<int*>(6,0);
-    for (unsigned int i = 0; i < ECut; ++i) {
+    for (unsigned int i = 0; i < M.size(); ++i) {
         /* loop over values for nx */
         for (unsigned int j = 0; j <= i; ++j) {
-            /* set states not yet pushed */
-//             if (i+j>=cut) {
-//                 /* end when cutoff is reached */
-//                 break;
-//             } // end if
-
-            // increment magic number and set values and push to states
-            M[i+j]++;
             pushState(s1, i, j, 0);
             pushState(s1, i, j, 1);
-            if (states.size() >= 2*cut) {
-                break;
-            } // end if
 
-            // dont set states doubly
-            if (i!=j) {
-//                 M[i+j]++;
+            if (i != j) {
                 pushState(s1, j, i, 0);
                 pushState(s1, j, i, 1);
-                if (states.size() >= 2*cut) {
-                    break;
-                } // end if
             } // end if
         } // end forj
-        if (states.size() >= 2*cut) {
-            break;
-        } // end if
     } // end fori
 
-    // sum magic numbers
-    for (int i = M.size()-1; i >= 0; --i) {
-        for (int j = 0; j <= i; ++j) {
-            M[i] += M[j];
-        } // end forj
-    } // end fori
 } // end constructor
 
 void Basis::pushState(std::vector<int*> &state, int i, int j, int ud) {
