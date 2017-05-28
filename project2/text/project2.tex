@@ -265,7 +265,10 @@
 
 \section{THEORY}
 \label{sec:theory}
-    >>INSERT DESCRIPTION<<
+    This section will explain the various theoretical approaches used in the
+    project. All formulas, analytic expressions and derivations are given here.
+    All the computational optimizations used are also given(see
+    \Autoref{sub:optimization}).
 
 \subsection{HERMITE POLYNOMIALS}
 \label{sub:hermite_polynomials}
@@ -427,29 +430,6 @@
             \label{eq:cgitrk}
         \end{equation}
 
-\subsection{SECOND DERIVATIVE TEST}
-\label{sub:second_derivative_test}
-    Given a real valued function $f(\vec{x}):\mathbb{R}^n\rarr\mathbb{R}$ where
-    $\vec{x}\in\mathbb{R}^n$ and $f$ has second partial derivatives which exist
-    and are continuous over its domain, the so-called Hessen matrix elements
-    for $f$ is defined as follows \cite{linalgDavid}
-        \begin{equation}
-            A_{ij} \equiv \frac{\prtl^2f}{\prtl x_i\prtl x_j}
-            \label{eq:hessendef}
-        \end{equation}
-    The properties of $A$ can be used to determine critical points of $f$. The
-    statements are;
-        \begin{itemize}
-            \item If $A$ is positive definite(all positive eigenvalues) at
-                $\vec{x}$ then $f$ has an isolated  local minimum at $\vec{x}$.
-            \item If $A$ is negative definite(all negative eigenvalues) at
-                $\vec{x}$ then $f$ has an isolated  local maximum at $\vec{x}$.
-            \item If $A$ is indefinite(both positive and negative eigenvalues)
-                then $f$ has a saddle point at $\vec{x}$.
-            \item If $A$ is positive-semi-definite, the test is inconclusive
-                and $\vec{x}$ might be a local extremal or a saddle point.
-        \end{itemize}
-
 \subsection{PORDUCT OF SUMS}
 \label{sub:porduct_of_sums}
     The product of two sums $A$ and $B$ can be written as
@@ -494,8 +474,8 @@
             \label{eq:JacobisDef}
         \end{equation}
     where $\Tr$ is the trace and $\text{adj}$ is the adjugate(transpose of
-    cofactor matrix). This relation is known as Jacobi's formula >>REF HERE<<.
-    \\
+    cofactor matrix). This relation is known as Jacobi's formula
+    \cite{linalgDavid}. \\
     We can specialize Jacobi's formula to
         \begin{equation}
             \prd{t}[A(t)] = \det(A)\Tr(A(t)^{-1}\prd{t}[A(t)])
@@ -512,7 +492,7 @@
             A^{-1} = \frac{1}{\det(A)}\text{adj}\left(A\right)
             \label{eq:aadjainv}
         \end{equation}
-    Here $\I$ is the $n\times n$ identity matrix.
+    (known as Cramers' rule). Here $\I$ is the $n\times n$ identity matrix.
 
 \subsection{METROPOLIS-HASTINGS ALGORITHM}
 \label{sub:metropolis_algorithm}
@@ -534,9 +514,9 @@
     The acceptance $A$ is the probability for the move to be accepted and the
     proposal $T$ is different for each problem. \\
     In order for this transition chain to reach a desired convergence and
-    reversibility we have the well known condition for detailed balance
-    >>INSERT REF<<. This condition gives us that the probability distribution
-    functions satisfy the following condition
+    reversibility we have the well known condition for detailed
+    balance\cite{statmech}. This condition gives us that the probability
+    distribution functions satisfy the following condition
         \begin{equation}
             w_i \ufij{T}{i}{j}\ufij{A}{i}{j} = w_j \ufij{T}{j}{i}\ufij{A}{j}{i}
             \Rarr \frac{w_i}{w_j} =
@@ -596,6 +576,8 @@
 
 \subsubsection{Quantum Force}
 \label{ssub:quantum_force}
+    We will in this section give an outline of the derivation for the quantum
+    force. See \cite{vmc} for more. \\
     Since we are working with a isotropic diffusion characterized by a
     time-dependant probability density our system must obey the summed total
     Fokker-Planck equation
@@ -616,9 +598,8 @@
         \end{equation}
     Now we may use the condition for stationary density meaning the left hand
     side of \Autoref{eq:FokkerPlancStationary} must equal zero giving that
-    $g=1/P$(only possibility the derivatives cancel). Inserting in
-    $P=\psi_T$(see >>INSERT REF<<) we get that the expression for the quantum
-    force is
+    $g=1/P$(only possibility the derivatives cancel). Inserting in $P=\psi_T$
+    we get that the expression for the quantum force is
         \begin{equation}
             F_i = \frac{2}{\Psi_T}\nabla_i\Psi_T
             \label{eq:quantumForce}
@@ -628,7 +609,7 @@
 
 \subsubsection{Solution}
 \label{ssub:Solution}
-    Using Eulers method(Euler-Maruyama method>>INSERT REF<<) on the Langevin
+    Using Eulers method(Euler-Maruyama method\cite{numstoch}) on the Langevin
     equation(\Autoref{eq:Langevin}) one obtains the new positions
         \begin{equation}
             y = x + DF(x)\Delta t + \xi\sqrt{\Delta t}
@@ -679,8 +660,9 @@
 \subsection{VMC}
 \label{sub:vmc}
     This section will explain and derive the equations involved in the
-    Variational Monte Carlo method. The whole section will assume that we have
-    the following trial wave function, $\psi_T$
+    Variational Monte Carlo method\cite{vmc}. \\ 
+    The whole section will assume that we have the following trial wave
+    function, $\psi_T$
         \begin{equation}
             \psi_T(\vec{r}_1,\dots,\vec{r}_N) \equiv
             \det(\phi_1(\vec{r}_1,\alpha),\dots,\phi(\vec{r}_N,\alpha))
@@ -862,7 +844,7 @@
             \frac{a(x_1-x_2)}{r_{12}(1 + \beta r_{12})^2}\right] +
             \left(-\alpha\omega x_1 + \frac{a(x_1-x_2)}{r_{12}(1 + \beta
             r_{12})^2}\right)\prd{x_1}[\psi_T] \nonumber \\ 
-            &= \left[-\alpha\omega + \frac{a}{(1+\beta r_{12})^2} -
+            &= \left[-\alpha\omega + \frac{a}{r_{12}(1+\beta r_{12})^2} -
             \frac{a(x_1-x_2)^2(1+3\beta r_{12})}{r^3_{12}(1 + \beta r_{12})^3}
             + \left(-\alpha\omega x_1 + \frac{a(x_1-x_2)}{r_{12}(1+\beta
             r_{12})^2}\right)^2\right]\psi_T
@@ -871,10 +853,10 @@
     The second derivative with respect to $y_1$ yields with a similar
     derivation
         \begin{equation}
-            \prd{y_1}[\psi_T][2] = \left[-\alpha\omega + \frac{a}{(1+\beta r_{12})^2} -
-            \frac{a(y_1-y_2)^2(1+3\beta r_{12})}{r^3_{12}(1 + \beta r_{12})^3}
-            + \left(-\alpha\omega y_1 + \frac{a(y_1-y_2)}{r_{12}(1+\beta
-            r_{12})^2}\right)^2\right]\psi_T
+            \prd{y_1}[\psi_T][2] = \left[-\alpha\omega +
+            \frac{a}{r_{12}(1+\beta r_{12})^2} - \frac{a(y_1-y_2)^2(1+3\beta
+            r_{12})}{r^3_{12}(1 + \beta r_{12})^3} + \left(-\alpha\omega y_1 +
+            \frac{a(y_1-y_2)}{r_{12}(1+\beta r_{12})^2}\right)^2\right]\psi_T
             \label{eq:dery1}
         \end{equation}
     The second derivatives with respect to $x_2$ and $y_2$, are derived in a
@@ -942,7 +924,8 @@
     one particle at a time. This means we can rewrite the derivative ratio
     given in the local energy by using the formulas from
     \Autoref{sub:optimization}. We see that we need the second derivatives to
-    the single particle wave functions.  The single particle wave function is
+    the single particle wave functions. The single particle wave function
+    is(\Autoref{eq:cartUarmOscWavef})
         \begin{equation}
             \Phi_{kj} = \phi_{n_{x_j}n_{y_j}}(r_k,\alpha) =
             H_{n_{x_j}}\left(\sqrt{\alpha\omega}x_k\right)
@@ -1047,7 +1030,8 @@
             r_{ij}\right)^3}
             \label{eq:gfijder2}
         \end{equation}
-    Giving the first derivative and the Laplacian of the Jastrow-factor
+    Giving the first derivative and the Laplacian of the Jastrow-factor(with
+    \Autoref{eq:jastoptfirstder})
         \begin{equation}
             \begin{aligned}
                 \frac{\nabla g(\vec{r},\beta)}{g(\vec{r},\beta)} &=
@@ -1061,7 +1045,7 @@
             \end{aligned}
             \label{eq:jastfirderrat}
         \end{equation}
-    and the Laplacian is
+    and the Laplacian is (with \Autoref{eq:jastoptsecder})
         \begin{equation}
             \begin{aligned}
                 \frac{\nabla^2 g(\vec{r},\beta)}{g(\vec{r},\beta)} &=
@@ -1100,7 +1084,7 @@
     The Hessen matrix is needed in order to minimize with the conjugate
     gradient method as described in \Autoref{sub:conjugate_gradient_method}.
     The Hessen matrix in the case where we minimize the local energy with
-    respect to $\alpha$ and $\beta$ is(using \Autoref{eq:hessendef})
+    respect to $\alpha$ and $\beta$ is\cite{linalgDavid}
         \begin{equation}
             A =
                 \begin{pmatrix}
@@ -1361,7 +1345,7 @@
     where the $\phi$'s are defined as in \Autoref{sub:vmc}. \\
     In terms of cofactors $C_{ij}$ we have
         \begin{equation}
-            \det(D) = \sum\limits^N_{j=1} D_{ij}C_{ji}
+            \det(D) = \sum\limits^N_{j=1} D_{ij}C_{ij}
             \label{eq:Dcofac}
         \end{equation}
     If we now take into light the mentioned assumption about moving only one
@@ -1374,17 +1358,17 @@
             \label{eq:Rdef}
         \end{equation}
     Using the fact that when moving the particle at position $r_i$ the
-    cofactors remain unchanged and inserting in \Autoref{eq:Dcofac} into
-    \Autoref{eq:Rdef} we have
+    cofactors remain unchanged ($C^{\text{new}}=C^{\text{old}}$) and inserting
+    in \Autoref{eq:Dcofac} into \Autoref{eq:Rdef} we have
         \begin{equation}
-            R = \frac{\sum\limits^{N}_{j=1} D_{ij}(\rnew)C_{ji}(\rold)}
+            R = \frac{\sum\limits^{N}_{j=1} D_{ij}(\rnew)C_{ij}(\rold)}
             {\sum\limits^{N}_{j=1} D_{ij}(\rold)C_{ij}(\rold)}
             \label{eq:R1}
         \end{equation}
-    Since the Slater is square(closed shell), we have the following ratio
-    >>INSERT REF<<
+    Since the Slater is square(closed shell) and invertible(since the
+    determinant is non-zero\cite{linalgDavid}), we have the following ratio
         \begin{equation}
-            \det(D) = \frac{D^{\dagger}}{D}
+            D^{-1}_{ji} = \frac{C_{ij}}{\det(D)}
             \label{eq:Ddagger}
         \end{equation}
     inserting this into \Autoref{eq:R1} we get
@@ -1393,13 +1377,14 @@
             {\suml{j}{N}D_{ij}(\rold)D^{-1}_{ji}(\rold)\abs{D}}
             \label{eq:Rrat}
         \end{equation}
-    Since $D$ is ivertible >>INSERT REF<< we have
+    We also have
         \begin{equation}
             \suml{k}{N}D_{ik}D^{-1}_{kj} = \delta_{ij}
             \label{eq:Dorth}
         \end{equation}
-    meaning the denominator in \Autoref{eq:Rrat} is equal to $1$ and the ratio
-    is finally(with \Autoref{eq:Ddef} inserted)
+    from the definition of the inverse, meaning the denominator in
+    \Autoref{eq:Rrat} is equal to $1$ and the ratio is finally(with
+    \Autoref{eq:Ddef} inserted)
         \begin{equation}
             R = \suml{j}{N}\phi_j(\rnew_i)\phi^{-1}_{ji}(\rold)
             \label{eq:Rfinal}
@@ -1408,15 +1393,17 @@
     \Autoref{eq:quantumForce} for the quantum force. The expression is simply
         \begin{equation}
             \frac{\nabla_i\abs{D(r_i)}}{\abs{D(r_i)}} =
-            \suml{j}{N}\nabla_i\phi_j(\rnew_i)\phi^{-1}_{ji}(\rold)
+            \suml{j}{N}\nabla_i\phi_j(r_i)\phi^{-1}_{ji}(r)
             \label{eq:Rder}
         \end{equation}
     And a similarly for the Laplacian
         \begin{equation}
             \frac{\nabla^2_i\abs{D(r_i)}}{\abs{D(r_i)}} =
-            \suml{j}{N}\nabla^2_i\phi_j(\rnew_i)\phi^{-1}_{ji}(\rold)
+            \suml{j}{N}\nabla^2_i\phi_j(r_i)\phi^{-1}_{ji}(r)
             \label{eq:Rdersec}
         \end{equation}
+    The only difference is that rather then looking at new and old positions we
+    look at the change in the respective row as the derivative.
 
 \subsubsection{Inverse of Matrix}
 \label{ssub:inverse_of_matrix}
@@ -1437,7 +1424,8 @@
                 \end{aligned}\right.
             \label{eq:InvUpdate}
         \end{equation}
-    as described by Sherman and Morris \cite{vmc,shermorInv}. 
+    as described by Sherman and Morris \cite{vmc,shermorInv}. The factor $R$ is
+    just the determinant ratio as described in \Autoref{eq:Rfinal}.
 
 \subsubsection{Derivative Ratios}
 \label{ssub:derivative_ratios}
@@ -1497,7 +1485,8 @@
             \label{eq:jastoptsecder}
         \end{equation}
     The factor $f_{ij}$ is just the function appearing in the exponent of the
-    Jastrow factor.
+    Jastrow factor. \\
+    See \cite{vmc} for full derivation.
 
 \subsection{STATISTICAL ANALYSIS}
 \label{sub:statistical_analysis}
@@ -1640,5 +1629,13 @@
         David C. Lay Chapter 3,
         \textit{Linear Algebra and Its Applications},
         Pearson, 2011, ISBN 978-0321835144.
+    \bibitem{numstoch}
+        Peter E. Kloeden and Eckhard Platen,
+        \textit{Numerical Solution of Stochastic Differential Equations},
+        Springer, 1992, ISBN 978-3-662-12616-5.
+    \bibitem{statmech}
+        J.P. Sethna,
+        \textit{Statistical Mechanics: Entropy, Order Parameters and Complexity},
+        \url{http://pages.physics.cornell.edu/sethna/StatMech/EntropyOrderParametersComplexity.pdf}.
 \end{thebibliography}
 \end{document}
