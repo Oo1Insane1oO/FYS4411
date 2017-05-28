@@ -21,6 +21,7 @@
 #include "hermite.h" // hermite polynomials
 #include <iostream>
 #include <fstream>
+#include <numeric> // accumulate
 
 Basis::Basis(double w, unsigned int cut) {
     /* initialize states */
@@ -38,11 +39,13 @@ Basis::Basis(double w, unsigned int cut) {
     ms[0] = -1;
     ms[1] = 1;
 
-    M.resize(cut/4-1);
-    M[0] = 2;
-    for (unsigned int i = 1; i < M.size(); ++i) {
-        M[i] = M[i-1] + 2*(i+1);
-    } // end fori
+    // find magic numbers (given number of particles)
+    int i = 1;
+    M.insert(M.begin(),2);
+    while (*(M.end()-1)<2*cut) {
+        M.push_back(M[i-1] + 2*(i+1));
+        i++;
+    } // end while
 
     // set possible values for nx and ny and energy E
     n.resize(M.size());
@@ -54,29 +57,40 @@ Basis::Basis(double w, unsigned int cut) {
 
     // allocate state arrays as {nx,ny,s,ms,E,M}
     std::vector<int*> s1 = std::vector<int*>(6,0);
+    std::vector<std::vector<int>> tmpn;
     for (unsigned int i = 0; i < M.size(); ++i) {
-        /* loop over values for nx */
-        for (unsigned int j = 0; j <= i; ++j) {
-            pushState(s1, i, j, 0);
-            pushState(s1, i, j, 1);
-
-            if (i != j) {
-                pushState(s1, j, i, 0);
-                pushState(s1, j, i, 1);
-            } // end if
+        /* loop over states for energy level i */
+        tmpn.clear();
+        findPossiblenxny(i,tmpn);
+        for (unsigned int j = 0; j < tmpn.size(); ++j) {
+            pushState(s1, i, tmpn[j][0], tmpn[j][1], 0);
+            pushState(s1, i, tmpn[j][0], tmpn[j][1], 1);
         } // end forj
     } // end fori
-
 } // end constructor
 
-void Basis::pushState(std::vector<int*> &state, int i, int j, int ud) {
+void Basis::findPossiblenxny(unsigned int i, std::vector<std::vector<int>> &p) {
+    /* find possible values of nx and ny given energy level */
+    std::vector<int> nxny = std::vector<int>(2,0);
+    for (unsigned int j = 0; j < E[i]; ++j) {
+        for (unsigned int k = 0; k < E[i]; ++k) {
+            if (j+k == E[i]-1) {
+                nxny[0] = j;
+                nxny[1] = k;
+                p.push_back(nxny);
+            } // end ifelse
+        } // end fork
+    } // end forj
+} // end function findPossiblenxny
+
+void Basis::pushState(std::vector<int*> &state, int e, int i, int j, int ud) {
     /* set (nx,ny,s,ms,E,M) in s1 and push s1 to states */
     state[0] = &(n[i]);
     state[1] = &(n[j]);
     state[2] = &s;
     state[3] = &(ms[ud]);
-    state[4] = &(E[i+j]);
-    state[5] = &(M[i+j]);
+    state[4] = &(E[e]);
+    state[5] = &(M[e]);
     states.push_back(state);
 } // end function pushState
 

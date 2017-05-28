@@ -141,7 +141,7 @@ double VMC::jastrowSecondDerivativeRatio(const Eigen::MatrixXd &R, const
     /* Analytic second derivative ratio of Jastrow part of wave function for
      * particle k */
     double ratio = 0;
-    double rkj, akj, denom;
+    double rkj, denom;
     for (unsigned int j = 0; j < R.rows(); ++j) {
         if (j != k) {
             rkj = (R.row(k) - R.row(j)).norm();

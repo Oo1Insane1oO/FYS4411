@@ -42,7 +42,7 @@ int main(int argc, const char** argv) {
     bool jast = atoi(argv[8]);
     
     // set basis (cartesian)
-    Basis *b = new Basis(omega, num);
+    Basis *b = new Basis(omega, num/2);
 
     // make sure number of particles is a magic number(closed shell)
 //     std::vector<int> magicNumber = b->getMagicNumbers();
