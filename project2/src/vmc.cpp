@@ -16,6 +16,7 @@
 #include <iterator>
 #include <time.h>
 #include <string.h>
+#include <cstdio>
 
 VMC::VMC(Basis *B, double alp, double bet, unsigned int d, double s, unsigned
         int max) {
@@ -313,7 +314,11 @@ void VMC::calculate(const char *destination) {
     unsigned int halfSize = oldPositions.rows()/2;
     double steepStep = 0.01;
 
-    while (true) {
+    unsigned int runCount = 1;
+
+    char tmpf[80];
+
+    while (runCount <= 500) {
         // reinitialize positions
         for (unsigned int i = 0; i < oldPositions.rows(); ++i) {
             for (unsigned int j = 0; j < oldPositions.cols(); ++j) {
@@ -372,7 +377,8 @@ void VMC::calculate(const char *destination) {
         acceptance = 0;
     
         if (destination) {
-            openFile.open(destination);
+            sprintf(tmpf, "%s_%d.txt", destination, runCount);
+            openFile.open(tmpf);
         } // end ifelseif
 
         for (cycles = 0; cycles < maxIterations; ++cycles) {
@@ -514,11 +520,17 @@ void VMC::calculate(const char *destination) {
         ELB /= cycles;
         B /= cycles;
 
+//         openFile << " " << "\n";
+//         openFile << "Summed total: " << energy << " " << energySq << "\n";
+//         openFile << "Acceptance: " << acceptance/(cycles*newPositions.rows()) << "\n";
+//         openFile << "Alpha: " << alpha << "\n";
+//         openFile << "Beta: " << beta << "\n";
+//         openFile.close();
         openFile << " " << "\n";
-        openFile << "Summed total: " << energy << " " << energySq << "\n";
-        openFile << "Acceptance: " << acceptance/(cycles*newPositions.rows()) << "\n";
-        openFile << "Alpha: " << alpha << "\n";
-        openFile << "Beta: " << beta << "\n";
+        openFile << energy << " " << energySq << "\n";
+        openFile << acceptance/(cycles*newPositions.rows()) << "\n";
+        openFile << alpha << "\n";
+        openFile << beta << "\n";
         openFile.close();
 
         std::cout << "Acceptance: " << acceptance/(cycles*newPositions.rows()) << std::endl;
@@ -544,10 +556,7 @@ void VMC::calculate(const char *destination) {
         oldAlphaBeta = newAlphaBeta;
         aw = alpha*b->omega;
         awsqr = sqrt(aw);
-       
+      
+        runCount++;
     } // end while true
 } // end function calculate
-
-void writeToFile(const std::string fname) {
-    /* function for writing parameters to file */
-} // end function writeToFile

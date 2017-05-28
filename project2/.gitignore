@@ -9,3 +9,6 @@ text/*.out
 # ignore object files
 bin/*
 *.o
+
+# ignore data files
+data/*

@@ -66,7 +66,7 @@ int main(int argc, const char** argv) {
     
     // set vmc object for calculations
 //     VMC *vmcObj = new VMC(b,1.1,0.48,2,step,maxIterations);
-    VMC *vmcObj = new VMC(b,0.9,0.41,2,step,maxIterations);
+    VMC *vmcObj = new VMC(b,1.0,0.4,2,step,maxIterations);
 //     VMC *vmcObj = new VMC(b,0.952981,0.354743,2,step,maxIterations);
 //     VMC *vmcObj = new VMC(b,1.10364,0.468861,2,step,maxIterations);
 //     VMC *vmcObj = new VMC(b,0.569619,0,2,step,maxIterations);
@@ -108,6 +108,9 @@ int main(int argc, const char** argv) {
     // free objects
     delete b;
     delete vmcObj;
+    if (!filename) {
+        delete filename;
+    } // end if
 
     return 0;
 } // end main
