@@ -45,23 +45,23 @@ int main(int argc, const char** argv) {
     Basis *b = new Basis(omega, num/2);
 
     // make sure number of particles is a magic number(closed shell)
-//     std::vector<int> magicNumber = b->getMagicNumbers();
-//     std::vector<int>::iterator it;
-//     it = std::find(magicNumber.begin(), magicNumber.end(), num);
-//     if (it == magicNumber.end()) {
-//         std::cout << "make sure num is a magic number N=2,6,12,20,30,42..." <<
-//             std::endl;
-//         exit(1);
-//     } // end if
+    std::vector<int> magicNumber = b->getMagicNumbers();
+    std::vector<int>::iterator it;
+    it = std::find(magicNumber.begin(), magicNumber.end(), num);
+    if (it == magicNumber.end()) {
+        std::cout << "make sure num is a magic number N=2,6,12,20,30,42..." <<
+            std::endl;
+        exit(1);
+    } // end if
 
     std::cout << "Basis made" << std::endl;
     
     // set vmc object for calculations
-//     VMC *vmcObj = new VMC(b,1,0,2,step,maxIterations);
+    VMC *vmcObj = new VMC(b,1.1,0.48,2,step,maxIterations);
 //     VMC *vmcObj = new VMC(b,0.952981,0.354743,2,step,maxIterations);
 //     VMC *vmcObj = new VMC(b,1.10364,0.468861,2,step,maxIterations);
 //     VMC *vmcObj = new VMC(b,0.569619,0,2,step,maxIterations);
-    VMC *vmcObj = new VMC(b,0.856981,0.200372,2,step,maxIterations);
+//     VMC *vmcObj = new VMC(b,0.856981,0.200372,2,step,maxIterations);
 //     VMC *vmcObj = new VMC(b,1.03741,0.472513,2,step,maxIterations);
 //     VMC *vmcObj = new VMC(b,0.831104,0.211443,2,step,maxIterations);
 //     VMC *vmcObj = new VMC(b,0.931202,0.395044,2,step,maxIterations);

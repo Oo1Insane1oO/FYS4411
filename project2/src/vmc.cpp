@@ -338,7 +338,7 @@ void VMC::calculate() {
     // set sizes
     initializeCalculationVariables();
     unsigned int halfSize = oldPositions.rows()/2;
-    double steepStep = 0.01;
+    double steepStep = 0.1;
 
     while (true) {
         // reinitialize positions
@@ -432,15 +432,6 @@ void VMC::calculate() {
                     } // end ifelse
                 } // end forj
 
-//                 std::cout << oldPositions << std::endl;
-//                 std::cout << std::endl;
-//                 std::cout << newPositions << std::endl;
-//                 std::cout << std::endl;
-//                 std::cout << oldD << std::endl;
-//                 std::cout << std::endl;
-//                 std::cout << newD << std::endl;
-//                 std::cout << std::endl;
-
                 // update Slater, ratio and inverse
                 b->updateTrialWaveFunction(*newWave, newPositions, alpha, i,
                         halfIdx, uIdx);
@@ -449,9 +440,6 @@ void VMC::calculate() {
                 (*(newInv)).setZero();
                 meth->updateMatrixInverse(*oldWave, *newWave, *oldInv, *newInv,
                         *determinantRatio, halfIdx);
-
-//                 std::cout <<*determinantRatio << std::endl;
-//                 break;
 
                 // update first derivatives
                 if (imp) {
@@ -495,18 +483,6 @@ void VMC::calculate() {
                         qForceOld.row(i) = qForceNew.row(i);
                     } // end if
                 } // end if
-//                 for (unsigned int g = 0; g < (*oldWave).rows(); ++g) {
-//                     for (unsigned int h = 0; h < (*oldWave).rows(); ++h) {
-//                         if (g==h && std::fabs((*oldWave**oldInv)(g,h)-1)>1e-13) {
-//                             std::cout << std::setprecision(14) << "diag off by " <<
-//                                 (*oldWave**oldInv)(g,h) << std::endl;
-//                         } // end if
-//                         if (g!=h && std::fabs((*oldWave**oldInv)(g,h))>1e-13) {
-//                             std::cout << std::setprecision(14) << g << "," << h
-//                                 << " of by " << (*oldWave**oldInv)(g,h) << std::endl;
-//                         } // end if
-//                     } // end forh
-//                 } // end forg
 
                 // update Laplacian and determinant ratio
                 (*(lap))(halfIdx) = 0;
@@ -546,10 +522,8 @@ void VMC::calculate() {
             tmpB = Bfunc(oldPositions);
             B += tmpB;
             ELB += tmpEnergy*tmpB;
-//             break;
 
         } // end for cycles
-//         break;
 
         // calculate final expectation values
         energy /= cycles;
@@ -560,17 +534,19 @@ void VMC::calculate() {
         B /= cycles;
 
         std::cout << "Acceptance: " << acceptance/(cycles*newPositions.rows()) << std::endl;
-        break;
 
         // optimalize with steepest descent method
         steepb(0) = ELA - energy*A;
         steepb(1) = 2*(ELB - energy*B);
         newAlphaBeta = oldAlphaBeta - steepStep*steepb;
 
+        std::cout << "alpha: " << alpha << " beta: " << beta << " Energy: " <<
+            energy << std::endl;
+
         // update stepsize in steepest descent
-//         steepStep = (newAlphaBeta.row(0) -
-//                 oldAlphaBeta.row(0)).transpose().dot(steepb.row(0) -
-//                 prevSteepb.row(0)) / (steepb - prevSteepb).squaredNorm();
+        steepStep = (newAlphaBeta.row(0) -
+                oldAlphaBeta.row(0)).transpose().dot(steepb.row(0) -
+                prevSteepb.row(0)) / (steepb - prevSteepb).squaredNorm();
 
         // update variational parameters
         alpha = newAlphaBeta(0);
@@ -579,9 +555,6 @@ void VMC::calculate() {
         oldAlphaBeta = newAlphaBeta;
         aw = alpha*b->omega;
         awsqr = sqrt(aw);
-
-        std::cout << "alpha: " << alpha << " beta: " << beta << " Energy: " <<
-            energy << std::endl;
        
         // reset values used in Monte Carlo cycle
         energy = 0;
