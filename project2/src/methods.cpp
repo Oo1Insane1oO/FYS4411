@@ -36,7 +36,7 @@ int Methods::max(int var1, int var2) {
 
 void Methods::updateMatrixInverse(const Eigen::MatrixXd &Mold, const
         Eigen::MatrixXd &Mnew, const Eigen::MatrixXd &MoldInv, Eigen::MatrixXd
-        &MnewInv, const double &R, unsigned int i) {
+        &MnewInv, const double &ratio, unsigned int i) {
     /* update inverse of matrix when only row i has changed */
     for (unsigned int k = 0; k < MnewInv.rows(); ++k) {
         for (unsigned int j = 0; j < MnewInv.rows(); ++j) {
@@ -47,7 +47,7 @@ void Methods::updateMatrixInverse(const Eigen::MatrixXd &Mold, const
                     MnewInv(k,j) -= Mnew(i,l)*MoldInv(l,j);
                 } // end ifelse
             } // end forl
-            MnewInv(k,j) *= MoldInv(k,i)/R;
+            MnewInv(k,j) *= MoldInv(k,i)/ratio;
             MnewInv(k,j) = ((j!=i) ? MnewInv(k,j)+MoldInv(k,j) : MnewInv(k,j));
         } // end forj
     } // end fork

@@ -30,7 +30,7 @@ def usage():
 
 def turnToCPP(n,H):
     """ turn hermite polynomial H of degree n into C++ template function """
-    return ''' template<typename T> T H%(n)i(T x) {return %(expr)s;}''' % (
+    return ''' template<typename T> T Hder%(n)i(T x) {return %(expr)s;}''' % (
             {'n':n, 'expr':sp.printing.ccode(hermite(x,n))})
 # end functtion turnToCPP
 
@@ -43,14 +43,14 @@ def appendToFile(codes, fname):
             ofile.write(c+"\n")
         # end for c
         ofile.write("#pragma GCC diagnostic pop\n")
-        ofile.write("template<typename T> T H(T x, int n) {\n") 
+        ofile.write("template<typename T> T Hder(T x, int n) {\n") 
         ofile.write("   if (n > %i) {\n" % (len(codes)-1))
         ofile.write("       return -1;\n")
         ofile.write("   }\n")
         ofile.write("   switch(n) {\n")
         for i in range(len(codes)):
             # end if
-            ofile.write("       case %i: return H%i(x);\n" % (i,i))
+            ofile.write("       case %i: return Hder%i(x);\n" % (i,i))
             # end if
         ofile.write("       default: return 0;\n")
         ofile.write("   }\n}")
@@ -67,6 +67,9 @@ if __name__ == "__main__":
     # end try-except
 
     x = sp.symbols('x')
-    codes = [turnToCPP(i,hermite(x,i)) for i in range(n+1)]
-    appendToFile(codes,filename)
+#     codes = [turnToCPP(i,sp.simplify(hermite(x,i))) for i in range(n+1)]
+    codesDer = [turnToCPP(i,sp.simplify(sp.diff(hermite(x,i),x))) for i in range(n+1)]
+
+#     appendToFile(codes,filename)
+    appendToFile(codesDer,filename)
 # end ifmain

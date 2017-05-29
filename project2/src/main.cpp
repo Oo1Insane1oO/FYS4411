@@ -47,7 +47,7 @@ int main(int argc, const char** argv) {
         filename = NULL;
     } // end ifelse
 
-    Eigen::initParallel();
+//     Eigen::initParallel();
     
     // set basis (cartesian)
     Basis *b = new Basis(omega, num/2);
@@ -65,8 +65,8 @@ int main(int argc, const char** argv) {
     std::cout << "Basis made" << std::endl;
     
     // set vmc object for calculations
-//     VMC *vmcObj = new VMC(b,1.1,0.48,2,step,maxIterations);
-    VMC *vmcObj = new VMC(b,1.0,0.4,2,step,maxIterations);
+//     VMC *vmcObj = new VMC(b,1.,0.4,2,step,maxIterations);
+    VMC *vmcObj = new VMC(b,1.,0.4,2,step,maxIterations);
 //     VMC *vmcObj = new VMC(b,0.952981,0.354743,2,step,maxIterations);
 //     VMC *vmcObj = new VMC(b,1.10364,0.468861,2,step,maxIterations);
 //     VMC *vmcObj = new VMC(b,0.569619,0,2,step,maxIterations);
@@ -102,8 +102,8 @@ int main(int argc, const char** argv) {
     std::cout << std::setprecision(10) << "<E^2> - <E>^2 = " <<
         (vmcObj->energySq - pow(vmcObj->energy,2)) << std::endl;
 
-    std::cout << "alpha: " << vmcObj->newAlphaBeta(0) << ", beta: " <<
-        vmcObj->newAlphaBeta(1) << std::endl;
+    std::cout << "alpha: " << vmcObj->alpha << ", beta: " << vmcObj->beta <<
+        std::endl;
 
     // free objects
     delete b;

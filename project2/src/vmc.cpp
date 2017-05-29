@@ -6,8 +6,9 @@
 //////////////////////////////////////////////////////////////////////////////
 
 #include "vmc.h" // header
+#include "hermite.h" // template function for hermite polynomials
+#include "hermite1.h"
 #include <iomanip>
-#include "hermite.h"
 #include <iostream>
 #include <fstream>
 #include <math.h>
@@ -17,6 +18,7 @@
 #include <time.h>
 #include <string.h>
 #include <cstdio>
+#include <cmath>
 
 VMC::VMC(Basis *B, double alp, double bet, unsigned int d, double s, unsigned
         int max) {
@@ -85,12 +87,32 @@ void VMC::oneBodySecondDerivativeRatio(const Eigen::MatrixXd &wave, const
         jstart){
     /* Analytic second derivative of one body part of wave function for
      * particle k */
+//     for (unsigned int j = 0; j < R.rows(); j+=2) {
+//         for (unsigned int d = 0; d < R.cols(); ++d) {
+//             der(kIdx) += aw * (aw*R(k,d)*R(k,d) - 1 -
+//                     2**(b->states[j+jstart][d])) * wave(kIdx,j/2) *
+//                 waveInv(j/2,kIdx);
+//         } // end ford
+//     } // end forj
+    int nx, ny;
     for (unsigned int j = 0; j < R.rows(); j+=2) {
-        for (unsigned int d = 0; d < R.cols(); ++d) {
-            der(kIdx) += aw * (aw*R(k,d)*R(k,d) - 1 -
-                    2**(b->states[j+jstart][d])) * wave(kIdx,j/2)
-                * waveInv(j/2,kIdx);
-        } // end ford
+        nx = *(b->states[j+jstart][0]);
+        ny = *(b->states[j+jstart][1]);
+        der(kIdx) += exp(-aw/2*(R(k,0)*R(k,0) + R(k,1)*R(k,1))) *
+            (HermitePolynomials::evaluate(ny, R(k,1), b->omega, alpha) *
+             HermitePolynomials::evaluateDoubleDerivative(nx, R(k,0), b->omega,
+                 alpha) + HermitePolynomials::evaluate(nx, R(k,0), b->omega,
+                     alpha) * HermitePolynomials::evaluateDoubleDerivative(ny,
+                         R(k,1), b->omega, alpha) + aw *
+             HermitePolynomials::evaluate(nx, R(k,0), b->omega, alpha) *
+             HermitePolynomials::evaluate(ny, R(k,1), b->omega, alpha) *
+             (aw*R.row(k).squaredNorm() - 2) -
+             2*aw*R(k,0)*HermitePolynomials::evaluate(ny, R(k,1), b->omega,
+                 alpha)*HermitePolynomials::evaluateDerivative(nx, R(k,0),
+                     b->omega, alpha) -
+             2*aw*R(k,1)*HermitePolynomials::evaluate(nx, R(k,0), b->omega,
+                 alpha)*HermitePolynomials::evaluateDerivative(ny, R(k,1),
+                     b->omega, alpha)) * waveInv(j/2,kIdx);
     } // end forj
 } // end function oneBodySecondDerivativeRatio
 
@@ -141,12 +163,19 @@ double VMC::localEnergy2(const Eigen::MatrixXd &lapD, const Eigen::MatrixXd
         Eigen::MatrixXd &R) {
     /* calculate analytic expression of local energy */
     double E = 0;
-    double halfSize = R.rows()/2;
-    for (unsigned int k = 0; k < R.rows(); ++k) {
-        E += 0.5*(b->omega*b->omega*R.row(k).squaredNorm() - (k<halfSize ?
-                    lapD(k) : lapU(k-halfSize)) - (jastrow ?
-                    jastrowSecondDerivativeRatio(R,k) +
-                    2*derOB.row(k).dot(derJ.row(k)) : 0));
+    unsigned int halfSize = R.rows()/2;
+//     for (unsigned int k = 0; k < R.rows(); ++k) {
+//         E += 0.5*(b->omega*b->omega*R.row(k).squaredNorm() - (k<halfSize ?
+//                     lapD(k) : lapU(k-halfSize)) - (jastrow ?
+//                     jastrowSecondDerivativeRatio(R,k) +
+//                     2*derOB.row(k).dot(derJ.row(k)) : 0.0));
+//     } // end fork
+    for (unsigned int k = 0; k < R.rows()/2; ++k) {
+        E += 0.5*(b->omega*b->omega*R.row(k).squaredNorm() - lapD(k));
+    } // end fork
+    for (unsigned int k = R.rows()/2; k < R.rows(); ++k) {
+        E += 0.5*(b->omega*b->omega*R.row(k).squaredNorm() -
+                lapU(k-R.rows()/2));
     } // end fork
     return (coulomb ? (E + coulombFactor(R)) : E);
 } // end function localEnergy2
@@ -217,10 +246,10 @@ double VMC::Afunc(const Eigen::MatrixXd &wave, const Eigen::MatrixXd &waveInv,
     double n;
     for (unsigned int d = 0; d < R.cols(); ++d) {
         for (unsigned int i = 0; i < 2*R.rows(); i+=2) {
-                n = *(b->states[i+iStart][d]);
+            n = *(b->states[i+iStart][d]);
             for (unsigned int j = 0; j < R.rows(); ++j) {
-                A += n/(alpha) * (sqrt(alpha) + 2*R(j,d)*(n-1)*sqrt(b->omega) *
-                        H(awsqr*R(j,d),n-2)/H(awsqr*R(j,d),n) -
+                A += n/(alpha) * (sqrt(alpha) + 2*R(j,d)*(n-1)*sqrt(b->omega)
+                        * H(awsqr*R(j,d),n-2)/H(awsqr*R(j,d),n) -
                         b->omega*R.row(j).squaredNorm()) * wave(j,i/2) *
                     waveInv(i/2,j);
              } // end forj
@@ -304,18 +333,18 @@ void VMC::calculate(const char *destination) {
     std::istringstream stringBuffer("0 1 2 3 4 5 6 7 8 9 10");
     std::istream_iterator<int> start(stringBuffer), end;
     std::seed_seq seedSequence(start, end);
-//     std::mt19937_64 mt(time(NULL));
     std::mt19937_64 mt(seedSequence);
+//     std::mt19937_64 mt(time(NULL));
     std::uniform_real_distribution<double> dist(0,1);
     std::normal_distribution<double> normDist(0,1);
 
     // set sizes
     initializeCalculationVariables();
     unsigned int halfSize = oldPositions.rows()/2;
-    double steepStep = 0.01;
+    double steepStep = 0.05;
 
+    // count for filenames and buffer for filename string
     unsigned int runCount = 1;
-
     char tmpf[80];
 
     while (runCount <= 500) {
@@ -329,6 +358,7 @@ void VMC::calculate(const char *destination) {
                 } // end ifelse
             } // end forj
         } // end fori
+        newPositions = oldPositions;
 
         // set variational parameter vector
         oldAlphaBeta(0) = alpha;
@@ -339,6 +369,8 @@ void VMC::calculate(const char *destination) {
         b->setTrialWaveFunction(oldD, oldU, oldPositions, alpha);
         oldInvD = oldD.inverse();
         oldInvU = oldU.inverse();
+        newD = oldD;
+        newU = oldU;
 
         for (unsigned int k = 0; k < oldPositions.rows(); ++k) {
             /* set first derivatives */
@@ -419,7 +451,7 @@ void VMC::calculate(const char *destination) {
                     } // end ifelse
                 } // end forj
 
-                // update Slater, ratio and inverse
+                // update Slater matrix, determinant ratio and Slater inverse
                 b->updateTrialWaveFunction(*newWave, newPositions, alpha, i,
                         halfIdx, uIdx);
                 *determinantRatio = meth->determinantRatio(*newWave, *oldInv,
@@ -428,13 +460,12 @@ void VMC::calculate(const char *destination) {
                 meth->updateMatrixInverse(*oldWave, *newWave, *oldInv, *newInv,
                         *determinantRatio, halfIdx);
 
-                // update first derivatives
-                if (imp) {
+                // update first derivatives (ratios)
+                if (imp || jastrow) {
                     derOB.row(i).setZero();
                     oneBodyFirstDerivativeRatio(*newWave, *newInv, derOB,
                             newPositions, i, halfIdx, uIdx);
                 } // end if
-
                 if (jastrow) {
                     derJ.row(i).setZero();
                     jastrowFirstDerivativeRatio(derJ, newPositions, i);
@@ -448,7 +479,7 @@ void VMC::calculate(const char *destination) {
                 // set Metropolis test
                 testRatio = *determinantRatio * *determinantRatio * (jastrow ?
                         exp(2*b->jastrowRatio(oldPositions, newPositions, beta,
-                                i)) : 1);
+                                i)) : 1.0);
                 if (imp) {
                     /* importance sampling, calculate transition function ratio
                      * for Metropolis test */
@@ -479,7 +510,7 @@ void VMC::calculate(const char *destination) {
                         halfIdx);
 
                 // update first derivatives
-                if (imp) {
+                if (imp || jastrow) {
                     derOB.row(i).setZero();
                     oneBodyFirstDerivativeRatio(*oldWave, *oldInv, derOB,
                             oldPositions, i, halfIdx, uIdx);
@@ -488,13 +519,22 @@ void VMC::calculate(const char *destination) {
                     derJ.row(i).setZero();
                     jastrowFirstDerivativeRatio(derJ, oldPositions, i);
                 } // end if
+            
+                tmpEnergy = localEnergy2(lapD, lapU, derOB, derJ, oldPositions);
+                energy += tmpEnergy;
+                energySq += tmpEnergy*tmpEnergy;
+
+                std::cout << localEnergy2(lapD, lapU, derOB, derJ, oldPositions) << std::endl;
+
             } // end fori
 
             // calculate local energy and local energy squared
-            tmpEnergy = localEnergy2(lapD, lapU, derOB, derJ, oldPositions);
-            openFile << tmpEnergy << " " << tmpEnergy*tmpEnergy << "\n";
-            energy += tmpEnergy;
-            energySq += tmpEnergy*tmpEnergy;
+//             if (cycles) {
+//                 std::cout << tmpEnergy << std::endl;
+//             }
+            if (destination) {
+                openFile << tmpEnergy << " " << tmpEnergy*tmpEnergy << "\n";
+            } // end if
 
             // split spin up/down and calculate expected value(local) of first
             // derivative of wave function with respect to alpha
@@ -520,18 +560,22 @@ void VMC::calculate(const char *destination) {
         ELB /= cycles;
         B /= cycles;
 
+        std::cout << cycles << std::endl;
+
 //         openFile << " " << "\n";
 //         openFile << "Summed total: " << energy << " " << energySq << "\n";
 //         openFile << "Acceptance: " << acceptance/(cycles*newPositions.rows()) << "\n";
 //         openFile << "Alpha: " << alpha << "\n";
 //         openFile << "Beta: " << beta << "\n";
 //         openFile.close();
-        openFile << " " << "\n";
-        openFile << energy << " " << energySq << "\n";
-        openFile << acceptance/(cycles*newPositions.rows()) << "\n";
-        openFile << alpha << "\n";
-        openFile << beta << "\n";
-        openFile.close();
+        if (destination) {
+            openFile << " " << "\n";
+            openFile << energy << " " << energySq << "\n";
+            openFile << acceptance/(cycles*newPositions.rows()) << "\n";
+            openFile << alpha << "\n";
+            openFile << beta << "\n";
+            openFile.close();
+        } // end if
 
         std::cout << "Acceptance: " << acceptance/(cycles*newPositions.rows()) << std::endl;
 
@@ -540,8 +584,42 @@ void VMC::calculate(const char *destination) {
         steepb(1) = 2*(ELB - energy*B);
         newAlphaBeta = oldAlphaBeta - steepStep*steepb;
 
-        std::cout << "alpha: " << alpha << " beta: " << beta << " Energy: " <<
-            energy << std::endl;
+        if (std::isnan(energy)) {
+            std::cout << runCount << std::endl;
+            std::cout << std::endl;
+            std::cout << cycles << std::endl;
+            std::cout << "old" << std::endl;
+            std::cout << oldPositions << std::endl;
+            std::cout << std::endl;
+            std::cout << oldD << std::endl;
+            std::cout << std::endl;
+            std::cout << oldU << std::endl;
+            std::cout << std::endl;
+            std::cout << oldD*oldInvD << std::endl;
+            std::cout << std::endl;
+            std::cout << oldU*oldInvU << std::endl;
+            std::cout << std::endl;
+            std::cout << "new" << std::endl;
+            std::cout << newPositions << std::endl;
+            std::cout << std::endl;
+            std::cout << newD << std::endl;
+            std::cout << std::endl;
+            std::cout << newU << std::endl;
+            std::cout << std::endl;
+            std::cout << newD*newInvD << std::endl;
+            std::cout << std::endl;
+            std::cout << newU*newInvU << std::endl;
+            std::cout << std::endl;
+            std::cout << A << std::endl;
+            std::cout << ELA << std::endl;
+            std::cout << B << std::endl;
+            std::cout << ELB << std::endl;
+            break;
+        } // end if
+        break;
+        std::cout << std::setprecision(10) << "alpha: " << alpha << " beta: "
+            << beta << " Energy: " << energy << std::endl;
+
 
         // update stepsize in steepest descent according to two-step size
         // gradient

@@ -9,6 +9,8 @@
 #include "hermite.h"
 #include <iostream>
 #include <iomanip>
+#include <sstream>
+#include <iterator>
 
 Tests::Tests(Basis *B, VMC *V, int n) {
     b = B;
@@ -17,8 +19,12 @@ Tests::Tests(Basis *B, VMC *V, int n) {
 
     eps = 1e-14;
 
-    std::mt19937_64 mt(123);
-    std::uniform_real_distribution<double> dist(0,1);
+    // initialize random number generator
+    std::istringstream stringBuffer("0 1 2 3 4 5 6 7 8 9 10");
+    std::istream_iterator<int> start(stringBuffer), end;
+    std::seed_seq seedSequence(start, end);
+    std::mt19937_64 mt(seedSequence);
+    std::uniform_real_distribution<double> dist(-1,1);
 
     oldM = Eigen::MatrixXd::Zero(n,n);
     for (int i = 0; i < n; ++i) {

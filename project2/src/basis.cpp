@@ -96,11 +96,11 @@ void Basis::pushState(std::vector<int*> &state, int e, int i, int j, int ud) {
 
 double Basis::padejastrow(const unsigned int &i, const unsigned int &j) {
     /* return 1 for anti-parallel spin and 1/3 for parallel */
-    if ((i%2 && j%2) || (!(i%2) && !(j%2))) {
+    if (std::abs(i-j)>ECut) {
         return 1./3;
     } else {
         return 1;
-    } // end ifelse
+    } // end if
 } // end function padejastrow
 
 double Basis::jastrow(const Eigen::MatrixXd &r, double beta) {
@@ -146,7 +146,7 @@ double Basis::harmonicOscillatorWaveFunction(double alpha, double x, double y,
         int nx, int ny) {
     /* calculate harmonic oscillator wave function in 2D */
     return H(sqrt(omega*alpha)*x,nx) * H(sqrt(omega*alpha)*y,ny) *
-        exp(-alpha*omega*(x*x+y*y)/2);
+        exp(-alpha*omega*(x*x+y*y)/2.0);
 } // end function harmonicOscillatorWaveFunction
 
 void Basis::setTrialWaveFunction(Eigen::MatrixXd &psiD, Eigen::MatrixXd &psiU,
