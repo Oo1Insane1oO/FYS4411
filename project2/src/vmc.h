@@ -71,6 +71,12 @@ class VMC {
         void setJastrow(bool);
         void setAllOn();
 
+        double oneBodySecondDerivativeRatio(const Eigen::MatrixXd&, const unsigned
+                int, const unsigned int);
+        double localEnergy3(const Eigen::MatrixXd&, const Eigen::MatrixXd&,
+                const Eigen::MatrixXd&, const Eigen::MatrixXd&, const
+                Eigen::MatrixXd&); 
+
         void calculate(const char* = NULL);
 };
 

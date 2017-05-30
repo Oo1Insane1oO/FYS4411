@@ -19,6 +19,7 @@
 
 #include "basis.h" // header
 #include "hermite.h" // hermite polynomials
+#include "hermite1.h"
 #include <iostream>
 #include <fstream>
 #include <numeric> // accumulate
