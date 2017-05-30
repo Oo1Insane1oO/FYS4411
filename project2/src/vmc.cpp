@@ -375,7 +375,7 @@ void VMC::calculate(const char *destination) {
                 } // end if
             } // end fork
         } // end if
-        std::cout << "HORE" << std::endl;
+        qForceOld = 2*(derOB + derJ);
 
         if (imp) {
             /* set quantum force */
@@ -580,7 +580,6 @@ void VMC::calculate(const char *destination) {
             std::cout << ELB << std::endl;
             break;
         } // end if
-        break;
         std::cout << std::setprecision(10) << "alpha: " << alpha << " beta: "
             << beta << " Energy: " << energy << std::endl;
 
