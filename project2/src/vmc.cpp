@@ -138,24 +138,25 @@ double VMC::calculateLocalEnergy(const Eigen::MatrixXd &waveD, const
         Eigen::MatrixXd &derOB, const Eigen::MatrixXd &derJ) {
     /* Analytic expression for local energy */
     double E = 0;
+    unsigned int half = R.rows()/2;
     for (unsigned int k = 0; k < R.rows(); ++k) {
         /* Potential part */
         E += 0.5*b->omega*b->omega*R.row(k).squaredNorm();
-    } // end fork
-    for (unsigned int k = 0; k < R.rows()/2; ++k) {
-        /* Ony-body Laplacian for spin down */
         for (unsigned int j = 0; j < R.rows(); j+=2) {
-            E -= 0.5 * oneBodySecondDerivativeRatio(R,k,j) * waveD(k,j/2) *
-                waveInvD(j/2,k);
+            /* Ony-body Laplacian part*/
+            if (k < half) {
+                /* spin down */
+                E -= 0.5 * oneBodySecondDerivativeRatio(R,k,j) * waveD(k,j/2) *
+                    waveInvD(j/2,k);
+            } else {
+                /* spin up */
+                E -= 0.5 * oneBodySecondDerivativeRatio(R,k,j+1) *
+                    waveU(k-half,j/2) * waveInvU(j/2,k-half);
+            } // end ifelse
         } // end forj
-    } // end fork
-    unsigned int half = R.rows()/2;
-    for (unsigned int k = R.rows()/2; k < R.rows(); ++k) {
-        /* Ony-body Laplacian for spin up */
-        for (unsigned int j = 0; j < R.rows(); j+=2) {
-            E -= 0.5 * oneBodySecondDerivativeRatio(R,k,j+1) *
-                waveU(k-half,j/2) * waveInvU(j/2,k-half);
-        } // end forj
+        if (jastrow) {
+            E -= derOB.row(k).dot(derJ.row(k));
+        } // end if
     } // end fork
     return (coulomb ? E + coulombFactor(R) : E);
 } // end if
@@ -294,7 +295,7 @@ void VMC::calculate(const char *destination) {
 
     // initialize Mersenne Twister random number generator and uniform
     // distribution engine
-    unsigned int halfIdx, uIdx;
+    unsigned int halfIdx, uIdx, randomDim;
     double testRatio, tmpEnergy, acceptance, tmpA, tmpB, A, ELA, B, ELB;
 
     double determinantRatioD = 1;
@@ -413,24 +414,17 @@ void VMC::calculate(const char *destination) {
                 halfIdx = i - halfSize;
                 uIdx = 1;
             } // end if
-            for (unsigned int j = 0; j < dim; ++j) {
-                /* propose new position */
-                if (imp) {
-                    newPositions(i,j) = oldPositions(i,j) +
-                        0.5*qForceOld(i,j)*step + normDist(mt)*sqrt(step);
-                } else {
-                        newPositions(i,j) = oldPositions(i,j) +
-                            step*(dist(mt)-0.5);
-                } // end ifelse
-            } // end forj
-//             unsigned int hore = (std::fabs(dist(mt)) < 0.5 ? 0 : 1);
-//             if (hore == 0) {
-//                 newPositions(i,0) = oldPositions(i,0) +
-//                     step*(dist(mt)-0.5);
-//             } else {
-//                 newPositions(i,1) = oldPositions(i,1) +
-//                     step*(dist(mt)-0.5);
-//             }
+            
+            // propose new position
+            randomDim = (std::fabs(dist(mt)) < 0.5 ? 0 : 1);
+            if (imp) {
+                newPositions(i,randomDim) = oldPositions(i,randomDim) +
+                    0.5*qForceOld(i,randomDim)*step +
+                    normDist(mt)*sqrt(step);
+            } else {
+                newPositions(i,randomDim) = oldPositions(i,randomDim) +
+                    step*(dist(mt)-0.5);
+            } // end ifelse
 
 
             // update Slater matrix, determinant ratio and Slater inverse
@@ -501,7 +495,7 @@ void VMC::calculate(const char *destination) {
        
             // Accumulate local energy
             tmpEnergy = calculateLocalEnergy(oldD, oldU, oldInvD, oldInvU,
-                    oldPositions);
+                    oldPositions,derOB,derJ);
             energy += tmpEnergy;
             energySq += tmpEnergy*tmpEnergy;
 

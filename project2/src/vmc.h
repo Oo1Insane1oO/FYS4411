@@ -58,9 +58,12 @@ class VMC {
         void oneBodyFirstDerivativeRatio(const Eigen::MatrixXd&, const
                 Eigen::MatrixXd&, Eigen::MatrixXd&, const Eigen::MatrixXd&,
                 const unsigned int, const unsigned int, const unsigned int);
-        void oneBodySecondDerivativeRatio(const Eigen::MatrixXd&, const
-                Eigen::MatrixXd&, Eigen::MatrixXd&, const Eigen::MatrixXd&,
-                const unsigned int, const unsigned int, const unsigned int);
+        double oneBodySecondDerivativeRatio(const Eigen::MatrixXd&, const unsigned
+                int, const unsigned int);
+        double calculateLocalEnergy(const Eigen::MatrixXd&, const
+                Eigen::MatrixXd&, const Eigen::MatrixXd&, const
+                Eigen::MatrixXd&, const Eigen::MatrixXd&, const
+                Eigen::MatrixXd&, const Eigen::MatrixXd&); 
 
         void jastrowFirstDerivativeRatio(Eigen::MatrixXd&, const
                 Eigen::MatrixXd&, const unsigned int);
@@ -70,12 +73,6 @@ class VMC {
         void setCoulombInteraction(bool);
         void setJastrow(bool);
         void setAllOn();
-
-        double oneBodySecondDerivativeRatio(const Eigen::MatrixXd&, const unsigned
-                int, const unsigned int);
-        double calculateLocalEnergy(const Eigen::MatrixXd&, const
-                Eigen::MatrixXd&, const Eigen::MatrixXd&, const
-                Eigen::MatrixXd&, const Eigen::MatrixXd&); 
 
         void calculate(const char* = NULL);
 };
