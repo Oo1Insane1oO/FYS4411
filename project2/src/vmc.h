@@ -25,12 +25,21 @@ class VMC {
                 Eigen::MatrixXd&, const unsigned int jstart);
         double Bfunc(const Eigen::MatrixXd&);
 
+        void setFirstDerivatives(const Eigen::MatrixXd&, const
+                Eigen::MatrixXd&, const Eigen::MatrixXd&, const unsigned int,
+                const unsigned int, const unsigned int);
+        void initializePositions(Eigen::MatrixXd&);
         void initializeCalculationVariables();
 
         Eigen::MatrixXd oldPositions, newPositions, qForceOld, qForceNew,
             steepb, prevSteepb, derOB, derJ, oldD, oldU, newD, newU, oldInvD,
             oldInvU, newInvD, newInvU;
 
+        Eigen::MatrixXd buf;
+
+        std::mt19937_64 mt;
+        std::uniform_real_distribution<double> dist;
+        std::normal_distribution<double> normDist;
     public:
         VMC (Basis*, double, double, unsigned int, double, unsigned int);
         virtual ~VMC ();
@@ -55,9 +64,8 @@ class VMC {
         double localEnergyDiff(Eigen::MatrixXd&, Eigen::MatrixXd&, const
                 Eigen::MatrixXd&, bool=true);
 
-        void oneBodyFirstDerivativeRatio(const Eigen::MatrixXd&, const
-                Eigen::MatrixXd&, Eigen::MatrixXd&, const Eigen::MatrixXd&,
-                const unsigned int, const unsigned int, const unsigned int);
+        void oneBodyFirstDerivativeRatio(Eigen::MatrixXd&, const
+                Eigen::MatrixXd&, const unsigned int, const unsigned int);
         double oneBodySecondDerivativeRatio(const Eigen::MatrixXd&, const unsigned
                 int, const unsigned int);
         double calculateLocalEnergy(const Eigen::MatrixXd&, const

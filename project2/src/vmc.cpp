@@ -37,6 +37,14 @@ VMC::VMC(Basis *B, double alp, double bet, unsigned int d, double s, unsigned
     jastrow = false;
 
     meth = new Methods(); 
+    
+    std::istringstream stringBuffer("0 1 2 3 4 5 6 7 8 9 10");
+    std::istream_iterator<int> start(stringBuffer), end;
+    std::seed_seq seedSequence(start, end);
+    mt.seed(seedSequence);
+//     std::mt19937_64 mt(time(NULL));
+    dist = std::uniform_real_distribution<double>(0,1);
+    normDist = std::normal_distribution<double>(0,1);
 } // end constructor
 
 VMC::~VMC() {
@@ -65,20 +73,15 @@ void VMC::setAllOn() {
     setJastrow(true);
 } // end function setAllOn
 
-void VMC::oneBodyFirstDerivativeRatio(const Eigen::MatrixXd &wave, const
-        Eigen::MatrixXd &waveInv, Eigen::MatrixXd &der, const Eigen::MatrixXd
-        &R, const unsigned int k, const unsigned int kIdx, const unsigned
-        jstart) {
+void VMC::oneBodyFirstDerivativeRatio(Eigen::MatrixXd &buf, const
+        Eigen::MatrixXd &R, const unsigned int k, const unsigned int j) {
     /* Analytic first derivative ratio of one body part of wave function  for
      * particle k */
     int n;
-    for (unsigned int j = 0; j < R.rows(); j+=2) {
-        for (unsigned int d = 0; d < R.cols(); ++d) {
-            n = *(b->states[j+jstart][d]);
-            der(k,d) += (2*awsqr*n*H(awsqr*R(k,d),n-1)/H(awsqr*R(k,d),n) -
-                    aw*R(k,d)) * wave(kIdx,j/2) * waveInv(j/2,kIdx);
-        } // end ford
-    } // end forj
+    for (unsigned int d = 0; d < R.cols(); ++d) {
+        n = *(b->states[j][d]);
+        buf(d) = (2*awsqr*n*H(awsqr*R(k,d),n-1)/H(awsqr*R(k,d),n) - aw*R(k,d));
+    } // end ford
 } // end function oneBodyFirstDerivativeRatio
 
 double VMC::oneBodySecondDerivativeRatio(const Eigen::MatrixXd &R, const
@@ -288,13 +291,40 @@ void VMC::initializeCalculationVariables() {
         qForceNew = Eigen::MatrixXd::Zero(oldPositions.rows(),
                 oldPositions.cols());
     } // end if
+    
+    buf = Eigen::MatrixXd(1,dim);
 } // end function initializeCalculationVariables
+
+void VMC::setFirstDerivatives(const Eigen::MatrixXd &wave, const
+        Eigen::MatrixXd &waveInv, const Eigen::MatrixXd &R, const unsigned int
+        k, const unsigned int kIdx, const unsigned int jstart) {
+    /* Calculate and set first derivatives for particle k */
+    derOB.row(k).setZero();
+    for (unsigned int j = 0; j < R.rows(); j+=2) {
+        oneBodyFirstDerivativeRatio(buf, R, k, j+jstart);
+        derOB.row(k) += buf * wave(kIdx,j/2) * waveInv(j/2,kIdx);
+    } // end forj
+    if (jastrow) {
+        derJ.row(k).setZero();
+        jastrowFirstDerivativeRatio(derJ,R,k);
+    } // end if
+} // end function setFirstDerivatives 
+        
+void VMC::initializePositions(Eigen::MatrixXd &R) {
+    /* Set initial positions */
+    for (unsigned int i = 0; i < R.rows(); ++i) {
+        for (unsigned int j = 0; j < R.cols(); ++j) {
+            if (imp) {
+                R(i,j) = normDist(mt) * sqrt(step);
+            } else {
+                R(i,j) = step * (dist(mt)-0.5);
+            } // end ifelse
+        } // end forj
+    } // end fori
+} // end function initializePositions
 
 void VMC::calculate(const char *destination) {
     /* function for running Monte Carlo integration */
-
-    // initialize Mersenne Twister random number generator and uniform
-    // distribution engine
     unsigned int halfIdx, uIdx, randomDim;
     double testRatio, tmpEnergy, acceptance, tmpA, tmpB, A, ELA, B, ELB;
 
@@ -306,20 +336,12 @@ void VMC::calculate(const char *destination) {
     Eigen::MatrixXd *oldWave, *newWave, *oldInv, *newInv;
    
     std::ofstream openFile;
-
-    // initialize random number generator
-    std::istringstream stringBuffer("0 1 2 3 4 5 6 7 8 9 10");
-    std::istream_iterator<int> start(stringBuffer), end;
-    std::seed_seq seedSequence(start, end);
-    std::mt19937_64 mt(seedSequence);
-//     std::mt19937_64 mt(time(NULL));
-    std::uniform_real_distribution<double> dist(0,1);
-    std::normal_distribution<double> normDist(0,1);
-
+    
     // set sizes
     initializeCalculationVariables();
     unsigned int halfSize = oldPositions.rows()/2;
     double steepStep = 0.05;
+
 
     // count for filenames and buffer for filename string
     unsigned int runCount = 1;
@@ -327,15 +349,7 @@ void VMC::calculate(const char *destination) {
 
     while (runCount <= 500) {
         // reinitialize positions
-        for (unsigned int i = 0; i < oldPositions.rows(); ++i) {
-            for (unsigned int j = 0; j < oldPositions.cols(); ++j) {
-                if (imp) {
-                    oldPositions(i,j) = normDist(mt) * sqrt(step);
-                } else {
-                    oldPositions(i,j) = step * (dist(mt)-0.5);
-                } // end ifelse
-            } // end forj
-        } // end fori
+        initializePositions(oldPositions);
         newPositions = oldPositions;
 
         // set variational parameter vector
@@ -350,23 +364,17 @@ void VMC::calculate(const char *destination) {
         newD = oldD;
         newU = oldU;
 
-        for (unsigned int k = 0; k < oldPositions.rows(); ++k) {
-            /* set first derivatives */
-            if (k<halfSize) {
-                if (jastrow || imp) {
-                    oneBodyFirstDerivativeRatio(oldD, oldInvD, derOB, oldPositions,
-                            k, k, 0);
+        if (imp || jastrow) {
+            for (unsigned int k = 0; k < oldPositions.rows(); ++k) {
+                if (k<halfSize) {
+                    setFirstDerivatives(oldD, oldD, oldPositions, k, k, 0);
+                } else {
+                    setFirstDerivatives(oldU, oldU, oldPositions, k,
+                            k-halfSize, 1);
                 } // end if
-            } else {
-                if (jastrow || imp) {
-                    oneBodyFirstDerivativeRatio(oldU, oldInvU, derOB, oldPositions,
-                            k, k-halfSize, 1);
-                } // end if
-            } // end if
-            if (jastrow) {
-                jastrowFirstDerivativeRatio(derJ, oldPositions, k);
-            } // end if
-        } // end fork
+            } // end fork
+        } // end if
+        std::cout << "HORE" << std::endl;
 
         if (imp) {
             /* set quantum force */
@@ -426,7 +434,6 @@ void VMC::calculate(const char *destination) {
                     step*(dist(mt)-0.5);
             } // end ifelse
 
-
             // update Slater matrix, determinant ratio and Slater inverse
             b->updateTrialWaveFunction(*newWave, newPositions, alpha, i,
                     halfIdx, uIdx);
@@ -438,13 +445,8 @@ void VMC::calculate(const char *destination) {
 
             // update first derivatives (ratios)
             if (imp || jastrow) {
-                derOB.row(i).setZero();
-                oneBodyFirstDerivativeRatio(*newWave, *newInv, derOB,
-                        newPositions, i, halfIdx, uIdx);
-            } // end if
-            if (jastrow) {
-                derJ.row(i).setZero();
-                jastrowFirstDerivativeRatio(derJ, newPositions, i);
+                setFirstDerivatives(*newWave, *newInv, newPositions, i,
+                        halfIdx, uIdx);
             } // end if
 
             if (imp) {
@@ -483,14 +485,10 @@ void VMC::calculate(const char *destination) {
                     halfIdx);
 
             // update first derivatives
+            
             if (imp || jastrow) {
-                derOB.row(i).setZero();
-                oneBodyFirstDerivativeRatio(*oldWave, *oldInv, derOB,
-                        oldPositions, i, halfIdx, uIdx);
-            } // end if
-            if (jastrow) {
-                derJ.row(i).setZero();
-                jastrowFirstDerivativeRatio(derJ, oldPositions, i);
+                setFirstDerivatives(*oldWave, *oldInv, oldPositions, i,
+                        halfIdx, uIdx);
             } // end if
        
             // Accumulate local energy
@@ -498,7 +496,6 @@ void VMC::calculate(const char *destination) {
                     oldPositions,derOB,derJ);
             energy += tmpEnergy;
             energySq += tmpEnergy*tmpEnergy;
-
 
             if (destination) {
                 openFile << tmpEnergy << " " << tmpEnergy*tmpEnergy << "\n";
