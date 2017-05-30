@@ -80,7 +80,7 @@ void VMC::oneBodyFirstDerivativeRatio(Eigen::MatrixXd &buf, const
     int n;
     for (unsigned int d = 0; d < R.cols(); ++d) {
         n = *(b->states[j][d]);
-        buf(d) = (2*awsqr*n*H(awsqr*R(k,d),n-1)/H(awsqr*R(k,d),n) - aw*R(k,d));
+        buf(0,d) = (2*awsqr*n*H(awsqr*R(k,d),n-1)/H(awsqr*R(k,d),n) - aw*R(k,d));
     } // end ford
 } // end function oneBodyFirstDerivativeRatio
 
@@ -158,7 +158,8 @@ double VMC::calculateLocalEnergy(const Eigen::MatrixXd &waveD, const
             } // end ifelse
         } // end forj
         if (jastrow) {
-            E -= derOB.row(k).dot(derJ.row(k));
+            E -= 0.5*jastrowSecondDerivativeRatio(R,k) +
+                derOB.row(k).dot(derJ.row(k));
         } // end if
     } // end fork
     return (coulomb ? E + coulombFactor(R) : E);
