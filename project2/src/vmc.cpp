@@ -128,20 +128,18 @@ double VMC::jastrowSecondDerivativeRatio(const Eigen::MatrixXd &R, const
 //     return ratio + derJ.row(k).squaredNorm();
 //     double rki, denomi, aki, akj;
 //     for (unsigned int i = 0; i < R.rows(); ++i) {
-//         if (i!=k) {
-//             aki = b->padejastrow(k,i);
-//             rki = (R.row(k) - R.row(i)).norm();
-//             denomi = 1 + beta*rki;
-//             for (unsigned int j = 0; j < R.rows(); ++j) {
-//                 if (j != k) {
-//                     akj = b->padejastrow(k,j);
-//                     rkj = (R.row(k) - R.row(j)).norm();
-//                     denom = 1 + beta*rkj;
-//                     ratio += (R.row(k) - R.row(i)).dot(R.row(k) - R.row(j)) /
-//                         (rki*rkj) * aki*akj / (denomi*denomi*denom*denom);
-//                 } // end if
-//             } // end forj
-//         } // end if
+//         for (unsigned int j = 0; j < R.rows(); ++j) {
+//             if (j != k && i!=k) {
+//                 aki = b->padejastrow(k,i);
+//                 rki = (R.row(k) - R.row(i)).norm();
+//                 denomi = 1 + beta*rki;
+//                 akj = b->padejastrow(k,j);
+//                 rkj = (R.row(k) - R.row(j)).norm();
+//                 denom = 1 + beta*rkj;
+//                 ratio += aki*akj * (R.row(k) - R.row(i)).dot(R.row(k) -
+//                         R.row(j)) / (rki*rkj * denomi*denomi*denom*denom);
+//             } // end if
+//         } // end forj
 //     } // end fori
 //     for (unsigned int j = 0; j < R.rows(); ++j) {
 //         if (j!=k) {
@@ -149,6 +147,7 @@ double VMC::jastrowSecondDerivativeRatio(const Eigen::MatrixXd &R, const
 //             rkj = (R.row(k) - R.row(j)).norm();
 //             denom = 1 + beta*rkj;
 //             ratio += akj/(rkj*denom*denom) * (1/rkj - 2*beta/denom);
+//             ratio += 2*akj/(rkj*denom*denom*denom);
 //         } // end if
 //     } // end forj
 //     return ratio;
@@ -195,21 +194,22 @@ double VMC::calculateLocalEnergy(const Eigen::MatrixXd &waveD, const
 //             E -= 0.5*jastrowSecondDerivativeRatio(R,k) +
 //                 derOB.row(k).dot(derJ.row(k));
 //         } // end fork
+        Eigen::MatrixXd tmp = Eigen::MatrixXd::Zero(1,dim);
         for (unsigned int k = 0; k < R.rows(); ++k) {
             E -= 0.5*jastrowSecondDerivativeRatio(R,k);
+            tmp.setZero();
+            jbuf.setZero();
+            jastrowFirstDerivativeRatio(jbuf, R, k);
             for (unsigned int j = 0; j < R.rows(); j+=2) {
-                jbuf.setZero();
-                jastrowFirstDerivativeRatio(jbuf, R, k);
                 if (k<half) {
                     oneBodyFirstDerivativeRatio(buf,R,k,j);
-                    E -= (buf.row(0)).dot(jbuf.row(k)) * waveD(k,j/2) *
-                        waveInvD(j/2,k);
+                    tmp += buf * waveD(k,j/2) * waveInvD(j/2,k);
                 } else {
                     oneBodyFirstDerivativeRatio(buf,R,k,j+1);
-                    E -= (buf.row(0)).dot(jbuf.row(k)) * waveU(k-half,j/2) *
-                        waveInvU(j/2,k-half);
+                    tmp += buf * waveU(k-half,j/2) * waveInvU(j/2,k-half);
                 } // end if
             } // end forj
+            E -= tmp.row(0).dot(jbuf.row(k));
         } // end fork
     } // end if
     return (coulomb ? E + coulombFactor(R) : E);
