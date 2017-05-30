@@ -122,7 +122,36 @@ double VMC::jastrowSecondDerivativeRatio(const Eigen::MatrixXd &R, const
                     2*beta*rkj/denom);
         } // end if
     } // end forj
-    return ratio + derJ.row(k).squaredNorm();
+    Eigen::MatrixXd jfirst = Eigen::MatrixXd::Zero(R.rows(),dim);
+    jastrowFirstDerivativeRatio(jfirst,R,k);
+    return ratio + jfirst.row(k).squaredNorm();
+//     return ratio + derJ.row(k).squaredNorm();
+//     double rki, denomi, aki, akj;
+//     for (unsigned int i = 0; i < R.rows(); ++i) {
+//         if (i!=k) {
+//             aki = b->padejastrow(k,i);
+//             rki = (R.row(k) - R.row(i)).norm();
+//             denomi = 1 + beta*rki;
+//             for (unsigned int j = 0; j < R.rows(); ++j) {
+//                 if (j != k) {
+//                     akj = b->padejastrow(k,j);
+//                     rkj = (R.row(k) - R.row(j)).norm();
+//                     denom = 1 + beta*rkj;
+//                     ratio += (R.row(k) - R.row(i)).dot(R.row(k) - R.row(j)) /
+//                         (rki*rkj) * aki*akj / (denomi*denomi*denom*denom);
+//                 } // end if
+//             } // end forj
+//         } // end if
+//     } // end fori
+//     for (unsigned int j = 0; j < R.rows(); ++j) {
+//         if (j!=k) {
+//             akj = b->padejastrow(k,j);
+//             rkj = (R.row(k) - R.row(j)).norm();
+//             denom = 1 + beta*rkj;
+//             ratio += akj/(rkj*denom*denom) * (1/rkj - 2*beta/denom);
+//         } // end if
+//     } // end forj
+//     return ratio;
 } // end function jastrowSecondDerivativeRatio
 
 double coulombFactor(const Eigen::MatrixXd &R) {
@@ -142,13 +171,13 @@ double VMC::calculateLocalEnergy(const Eigen::MatrixXd &waveD, const
         Eigen::MatrixXd &derOB, const Eigen::MatrixXd &derJ) {
     /* Analytic expression for local energy */
     double E = 0;
-    double tmpFirst;
     unsigned int half = R.rows()/2;
+    Eigen::MatrixXd jbuf = Eigen::MatrixXd::Zero(R.rows(),dim);
     for (unsigned int k = 0; k < R.rows(); ++k) {
         /* Potential part */
         E += 0.5*b->omega*b->omega*R.row(k).squaredNorm();
         for (unsigned int j = 0; j < R.rows(); j+=2) {
-            /* Ony-body Laplacian part*/
+            /* One-body Laplacian part*/
             if (k < half) {
                 /* spin down */
                 E -= 0.5 * oneBodySecondDerivativeRatio(R,k,j) * waveD(k,j/2) *
@@ -159,24 +188,30 @@ double VMC::calculateLocalEnergy(const Eigen::MatrixXd &waveD, const
                     waveU(k-half,j/2) * waveInvU(j/2,k-half);
             } // end ifelse
         } // end forj
-        if (jastrow) {
-            E -= 0.5*jastrowSecondDerivativeRatio(R,k);
-            E -= derOB.row(k).dot(derJ.row(k));
-//             tmpFirst = 0;
-//             for (unsigned int j = 0; j < R.rows(); j+=2) {
-//                 if (k<half) {
-//                     oneBodyFirstDerivativeRatio(buf,R,k,j);
-//                     tmpFirst += buf.row(0).dot(derJ.row(k)) * waveD(k,j/2) *
-//                         waveInvD(j/2,k);
-//                 } else {
-//                     oneBodyFirstDerivativeRatio(buf,R,k,j+1);
-//                     tmpFirst += buf.row(0).dot(derJ.row(k)) * waveU(k-half,j/2)
-//                         * waveInvU(j/2,k-half);
-//                 } // end if
-//             } // end forj
-//             E -= tmpFirst;
-        } // end if
     } // end fork
+    if (jastrow) {
+        /* set Jastrow part */
+//         for (unsigned int k = 0; k < R.rows(); ++k) {
+//             E -= 0.5*jastrowSecondDerivativeRatio(R,k) +
+//                 derOB.row(k).dot(derJ.row(k));
+//         } // end fork
+        for (unsigned int k = 0; k < R.rows(); ++k) {
+            E -= 0.5*jastrowSecondDerivativeRatio(R,k);
+            for (unsigned int j = 0; j < R.rows(); j+=2) {
+                jbuf.setZero();
+                jastrowFirstDerivativeRatio(jbuf, R, k);
+                if (k<half) {
+                    oneBodyFirstDerivativeRatio(buf,R,k,j);
+                    E -= (buf.row(0)).dot(jbuf.row(k)) * waveD(k,j/2) *
+                        waveInvD(j/2,k);
+                } else {
+                    oneBodyFirstDerivativeRatio(buf,R,k,j+1);
+                    E -= (buf.row(0)).dot(jbuf.row(k)) * waveU(k-half,j/2) *
+                        waveInvU(j/2,k-half);
+                } // end if
+            } // end forj
+        } // end fork
+    } // end if
     return (coulomb ? E + coulombFactor(R) : E);
 } // end if
 
@@ -248,7 +283,7 @@ double VMC::Afunc(const Eigen::MatrixXd &wave, const Eigen::MatrixXd &waveInv,
         for (unsigned int i = 0; i < 2*R.rows(); i+=2) {
             n = *(b->states[i+iStart][d]);
             for (unsigned int j = 0; j < R.rows(); ++j) {
-                A += n/(alpha) * (sqrt(alpha) + 2*R(j,d)*(n-1)*sqrt(b->omega)
+                A += n/(2*alpha) * (sqrt(alpha) + 2*R(j,d)*(n-1)*sqrt(b->omega)
                         * H(awsqr*R(j,d),n-2)/H(awsqr*R(j,d),n) -
                         b->omega*R.row(j).squaredNorm()) * wave(j,i/2) *
                     waveInv(i/2,j);
@@ -357,7 +392,6 @@ void VMC::calculate(const char *destination) {
     initializeCalculationVariables();
     unsigned int halfSize = oldPositions.rows()/2;
     double steepStep = 0.05;
-
 
     // count for filenames and buffer for filename string
     unsigned int runCount = 1;
@@ -480,7 +514,7 @@ void VMC::calculate(const char *destination) {
                             (qForceNew(i,1)+qForceOld(i,1))));
             } //end if
 
-            if (testRatio >= dist(mt) || testRatio > 1) {
+            if (testRatio >= dist(mt)) {
                 /* update state according to Metropolis test */
                 acceptance++;
                 *oldInv = *newInv;
@@ -496,7 +530,6 @@ void VMC::calculate(const char *destination) {
                     halfIdx);
 
             // update first derivatives
-            
             if (imp || jastrow) {
                 setFirstDerivatives(*oldWave, *oldInv, oldPositions, i,
                         halfIdx, uIdx);
@@ -505,6 +538,10 @@ void VMC::calculate(const char *destination) {
             // Accumulate local energy
             tmpEnergy = calculateLocalEnergy(oldD, oldU, oldInvD, oldInvU,
                     oldPositions,derOB,derJ);
+//             std::cout << tmpEnergy << std::endl;
+//             if (cycles == 10) {
+//                 break;
+//             }
             energy += tmpEnergy;
             energySq += tmpEnergy*tmpEnergy;
 
@@ -536,12 +573,6 @@ void VMC::calculate(const char *destination) {
         ELB /= cycles;
         B /= cycles;
 
-//         openFile << " " << "\n";
-//         openFile << "Summed total: " << energy << " " << energySq << "\n";
-//         openFile << "Acceptance: " << acceptance/(cycles*newPositions.rows()) << "\n";
-//         openFile << "Alpha: " << alpha << "\n";
-//         openFile << "Beta: " << beta << "\n";
-//         openFile.close();
         if (destination) {
             openFile << " " << "\n";
             openFile << energy << " " << energySq << "\n";
@@ -593,7 +624,6 @@ void VMC::calculate(const char *destination) {
         break;
         std::cout << std::setprecision(10) << "alpha: " << alpha << " beta: "
             << beta << " Energy: " << energy << std::endl;
-
 
         // update stepsize in steepest descent according to two-step size
         // gradient
