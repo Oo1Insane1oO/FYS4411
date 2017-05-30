@@ -80,7 +80,8 @@ void VMC::oneBodyFirstDerivativeRatio(Eigen::MatrixXd &buf, const
     int n;
     for (unsigned int d = 0; d < R.cols(); ++d) {
         n = *(b->states[j][d]);
-        buf(0,d) = (2*awsqr*n*H(awsqr*R(k,d),n-1)/H(awsqr*R(k,d),n) - aw*R(k,d));
+        buf(0,d) = (2*awsqr*n*H(awsqr*R(k,d),n-1)/H(awsqr*R(k,d),n) -
+                aw*R(k,d));
     } // end ford
 } // end function oneBodyFirstDerivativeRatio
 
@@ -141,6 +142,7 @@ double VMC::calculateLocalEnergy(const Eigen::MatrixXd &waveD, const
         Eigen::MatrixXd &derOB, const Eigen::MatrixXd &derJ) {
     /* Analytic expression for local energy */
     double E = 0;
+    double tmpFirst;
     unsigned int half = R.rows()/2;
     for (unsigned int k = 0; k < R.rows(); ++k) {
         /* Potential part */
@@ -158,8 +160,21 @@ double VMC::calculateLocalEnergy(const Eigen::MatrixXd &waveD, const
             } // end ifelse
         } // end forj
         if (jastrow) {
-            E -= 0.5*jastrowSecondDerivativeRatio(R,k) +
-                derOB.row(k).dot(derJ.row(k));
+            E -= 0.5*jastrowSecondDerivativeRatio(R,k);
+            E -= derOB.row(k).dot(derJ.row(k));
+//             tmpFirst = 0;
+//             for (unsigned int j = 0; j < R.rows(); j+=2) {
+//                 if (k<half) {
+//                     oneBodyFirstDerivativeRatio(buf,R,k,j);
+//                     tmpFirst += buf.row(0).dot(derJ.row(k)) * waveD(k,j/2) *
+//                         waveInvD(j/2,k);
+//                 } else {
+//                     oneBodyFirstDerivativeRatio(buf,R,k,j+1);
+//                     tmpFirst += buf.row(0).dot(derJ.row(k)) * waveU(k-half,j/2)
+//                         * waveInvU(j/2,k-half);
+//                 } // end if
+//             } // end forj
+//             E -= tmpFirst;
         } // end if
     } // end fork
     return (coulomb ? E + coulombFactor(R) : E);
@@ -374,11 +389,6 @@ void VMC::calculate(const char *destination) {
                             k-halfSize, 1);
                 } // end if
             } // end fork
-        } // end if
-        qForceOld = 2*(derOB + derJ);
-
-        if (imp) {
-            /* set quantum force */
             qForceOld = 2*(derOB + derJ);
         } // end if
         
@@ -580,15 +590,16 @@ void VMC::calculate(const char *destination) {
             std::cout << ELB << std::endl;
             break;
         } // end if
+        break;
         std::cout << std::setprecision(10) << "alpha: " << alpha << " beta: "
             << beta << " Energy: " << energy << std::endl;
 
 
         // update stepsize in steepest descent according to two-step size
         // gradient
-        steepStep = (newAlphaBeta.row(0) -
-                oldAlphaBeta.row(0)).transpose().dot(steepb.row(0) -
-                prevSteepb.row(0)) / (steepb - prevSteepb).squaredNorm();
+//         steepStep = (newAlphaBeta.row(0) -
+//                 oldAlphaBeta.row(0)).transpose().dot(steepb.row(0) -
+//                 prevSteepb.row(0)) / (steepb - prevSteepb).squaredNorm();
 
         // update variational parameters
         alpha = newAlphaBeta(0);
