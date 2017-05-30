@@ -28,8 +28,8 @@ class VMC {
         void initializeCalculationVariables();
 
         Eigen::MatrixXd oldPositions, newPositions, qForceOld, qForceNew,
-            steepb, prevSteepb, derOB, derJ, lapU, lapD, oldD, oldU, newD,
-            newU, oldInvD, oldInvU, newInvD, newInvU;
+            steepb, prevSteepb, derOB, derJ, oldD, oldU, newD, newU, oldInvD,
+            oldInvU, newInvD, newInvU;
 
     public:
         VMC (Basis*, double, double, unsigned int, double, unsigned int);
@@ -73,9 +73,9 @@ class VMC {
 
         double oneBodySecondDerivativeRatio(const Eigen::MatrixXd&, const unsigned
                 int, const unsigned int);
-        double localEnergy3(const Eigen::MatrixXd&, const Eigen::MatrixXd&,
-                const Eigen::MatrixXd&, const Eigen::MatrixXd&, const
-                Eigen::MatrixXd&); 
+        double calculateLocalEnergy(const Eigen::MatrixXd&, const
+                Eigen::MatrixXd&, const Eigen::MatrixXd&, const
+                Eigen::MatrixXd&, const Eigen::MatrixXd&); 
 
         void calculate(const char* = NULL);
 };
