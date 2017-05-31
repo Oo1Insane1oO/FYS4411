@@ -5,18 +5,26 @@
 #include <iomanip> // setprecision
 #include <algorithm> // find
 #include <chrono> // timer
+#include <mpi.h>
 
 //////////////////////////////////////////////////////////////////////////////
 // Main file for running vmc algorithm                                      //
 //////////////////////////////////////////////////////////////////////////////
 
-int main(int argc, const char** argv) {
+int main(int argc, char** argv) {
     /* main */
 
-    if (argc < 5) {
+    int myRank, numProcs;
+
+    MPI_Init(&argc, &argv);
+    MPI_Comm_rank(MPI_COMM_WORLD, &myRank);
+    MPI_Comm_size(MPI_COMM_WORLD, &numProcs);
+    MPI_Request req;
+
+    if (argc < 9) {
         /* Print usage if number of command line arguments are to few */
         std::cout << 
-            "USAGE: ./main 'omega' 'particles' 'iterations' 'tests' 'importance' 'Coulomb' 'Jastrow'" 
+            "USAGE: mpirun -np <number of processes> ./main 'omega' 'particles' 'iterations' 'tests' 'importance' 'Coulomb' 'Jastrow' 'num procs" 
             << std::endl;
         std::cout <<
             "    " << "omega: (float) HO frequency\n" <<
@@ -25,9 +33,14 @@ int main(int argc, const char** argv) {
             "    " << "step: (float) step size in VMC \n" <<
             "    " << "tests: (1/0) indicating to run tests or not\n" <<
             "    " << "importance sampling: (1/0) indicating to run with importance sampling or not\n" <<
-            "    " << "Coulomb: (1/0) indicating to run with Coulomb interaction or not\n" <<
-            "    " << "Jastrow: (1/0) indicating to run with Jastrow factor or not" <<
+            "    " << "Coulomb: (1/0) Indicating to run with Coulomb interaction or not\n" <<
+            "    " << "Jastrow: (1/0) Indicating to run with Jastrow factor or not" <<
+            "    " << "Destinaiton: (string) Destination folder for saving files (can be ignored)" <<
             std::endl;
+        exit(1);
+    } else if (numProcs < 1) {
+        std::cout << "Number of processes needs to be at least 1" << std::endl;
+        MPI_Finalize();
         exit(1);
     } // end if
 
@@ -47,7 +60,27 @@ int main(int argc, const char** argv) {
         filename = NULL;
     } // end ifelse
 
-//     Eigen::initParallel();
+    // let Eigen use openmp
+    Eigen::initParallel();
+
+    // divide number of variational runs between the processes evenly
+    unsigned int myMaxCount;
+    unsigned int maxCount = 1000;
+    float tmpNum = maxCount;
+    tmpNum /= numProcs;
+    if (myRank <= maxCount % numProcs) {
+        if (myRank != 0) {
+            myMaxCount = ceil(tmpNum) + 2;
+        } else {
+            myMaxCount = ceil(tmpNum) + 1;
+        } // end ifelse
+    } else {
+        if (myRank != (numProcs-1)) {
+            myMaxCount = floor(tmpNum) + 2;
+        } else {
+            myMaxCount = floor(tmpNum) + 1;
+        } // end ifelse
+    } // end ifelse
     
     // set basis (cartesian)
     Basis *b = new Basis(omega, num/2);
@@ -80,7 +113,11 @@ int main(int argc, const char** argv) {
     // run calculations
     std::chrono::steady_clock::time_point begin;
     begin = std::chrono::steady_clock::now();
-    vmcObj->calculate(filename);
+
+    char myFileName[80];
+    sprintf(myFileName, "%s_P%d", filename, myRank);
+    vmcObj->calculate(myMaxCount, myFileName);
+
     std::chrono::steady_clock::time_point end;
     end = std::chrono::steady_clock::now();
     std::cout << "Calculation time: " <<
@@ -101,6 +138,8 @@ int main(int argc, const char** argv) {
     if (!filename) {
         delete filename;
     } // end if
+
+    MPI_Finalize();
 
     return 0;
 } // end main

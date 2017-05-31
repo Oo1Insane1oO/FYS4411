@@ -79,7 +79,7 @@ class VMC {
         void setJastrow(bool);
         void setAllOn();
 
-        void calculate(const char* = NULL);
+        void calculate(const unsigned int, const char* = NULL);
 };
 
 #endif /* VMC_H */

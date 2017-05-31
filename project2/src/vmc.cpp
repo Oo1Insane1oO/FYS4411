@@ -332,7 +332,7 @@ void VMC::initializePositions(Eigen::MatrixXd &R) {
     } // end fori
 } // end function initializePositions
 
-void VMC::calculate(const char *destination) {
+void VMC::calculate(const unsigned int maxCount, const char *destination) {
     /* function for running Monte Carlo integration */
     unsigned int halfIdx, uIdx, randomDim;
     double testRatio, tmpEnergy, acceptance, tmpA, tmpB, A, ELA, B, ELB;
@@ -355,7 +355,7 @@ void VMC::calculate(const char *destination) {
     unsigned int runCount = 1;
     char tmpf[80];
 
-    while (runCount <= 1000) {
+    while (runCount <= maxCount) {
         // reinitialize positions
         initializePositions(oldPositions);
         newPositions = oldPositions;

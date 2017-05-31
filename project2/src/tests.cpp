@@ -68,7 +68,7 @@ bool Tests::test_energy() {
         E += *(b->states[i][4]);
     } // end fori
     v->setCoulombInteraction(false);
-    v->calculate();
+    v->calculate(1);
     return ((fabs(v->energy-E)<=eps &&
                 fabs(m->variance(v->energy,v->energySq))<=eps) ? true : false);
 } // end function test_2particle
