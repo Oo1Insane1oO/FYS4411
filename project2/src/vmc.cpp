@@ -114,12 +114,20 @@ double VMC::jastrowSecondDerivativeRatio(const Eigen::MatrixXd &R, const
      * particle k */
     double ratio = 0;
     double rkj, denom;
+    double tmp;
     for (unsigned int j = 0; j < R.rows(); ++j) {
         if (j != k) {
             rkj = (R.row(k) - R.row(j)).norm();
             denom = 1 + beta*rkj;
             ratio += b->padejastrow(k,j)/(rkj*denom*denom) * (dim - 1 -
                     2*beta*rkj/denom);
+//             tmp = 0;
+//             for (unsigned int d = 0; d < R.cols(); ++d) {
+//                 tmp += b->padejastrow(k,j)/(rkj*denom*denom) * (dim - 1 -
+//                         pow((R(k,d)-R(j,d)),2)/(rkj*rkj) * (1 +
+//                             2*beta*rkj/denom));
+//             } // end ford
+//             ratio += tmp;
         } // end if
     } // end forj
     Eigen::MatrixXd jfirst = Eigen::MatrixXd::Zero(R.rows(),dim);
@@ -200,18 +208,25 @@ double VMC::calculateLocalEnergy(const Eigen::MatrixXd &waveD, const
             tmp.setZero();
             jbuf.setZero();
             jastrowFirstDerivativeRatio(jbuf, R, k);
+//             std::cout << jbuf.row(k) << std::endl;
             for (unsigned int j = 0; j < R.rows(); j+=2) {
                 if (k<half) {
                     oneBodyFirstDerivativeRatio(buf,R,k,j);
                     tmp += buf * waveD(k,j/2) * waveInvD(j/2,k);
+//                     tmp += buf * waveD(k,j/2)/waveD.determinant();
+//                     std::cout << waveD(k,j/2) * waveInvD(k,j/2) << std::endl;
                 } else {
                     oneBodyFirstDerivativeRatio(buf,R,k,j+1);
                     tmp += buf * waveU(k-half,j/2) * waveInvU(j/2,k-half);
+//                     tmp += buf * waveU(k-half,j/2)/waveU.determinant();
                 } // end if
             } // end forj
+//             std::cout << tmp << std::endl;
+//             std::cout <<  tmp.row(0).dot(jbuf.row(k)) << std::endl; 
             E -= tmp.row(0).dot(jbuf.row(k));
         } // end fork
     } // end if
+//     std::cout << E; 
     return (coulomb ? E + coulombFactor(R) : E);
 } // end if
 
@@ -472,8 +487,7 @@ void VMC::calculate(const char *destination) {
             randomDim = (std::fabs(dist(mt)) < 0.5 ? 0 : 1);
             if (imp) {
                 newPositions(i,randomDim) = oldPositions(i,randomDim) +
-                    0.5*qForceOld(i,randomDim)*step +
-                    normDist(mt)*sqrt(step);
+                    0.5*qForceOld(i,randomDim)*step + normDist(mt)*sqrt(step);
             } else {
                 newPositions(i,randomDim) = oldPositions(i,randomDim) +
                     step*(dist(mt)-0.5);
@@ -484,7 +498,7 @@ void VMC::calculate(const char *destination) {
                     halfIdx, uIdx);
             *determinantRatio = meth->determinantRatio(*newWave, *oldInv,
                     halfIdx);
-            (*(newInv)).setZero();
+            newInv->setZero();
             meth->updateMatrixInverse(*oldWave, *newWave, *oldInv, *newInv,
                     *determinantRatio, halfIdx);
 
@@ -514,7 +528,7 @@ void VMC::calculate(const char *destination) {
                             (qForceNew(i,1)+qForceOld(i,1))));
             } //end if
 
-            if (testRatio >= dist(mt)) {
+            if (testRatio >= dist(mt) || testRatio > 1) {
                 /* update state according to Metropolis test */
                 acceptance++;
                 *oldInv = *newInv;
@@ -525,9 +539,13 @@ void VMC::calculate(const char *destination) {
                 } // end if
             } // end if
 
-            // update Laplacian and determinant ratio
+            // update determinant ratio
             *determinantRatio = meth->determinantRatio(*oldWave, *oldInv,
                     halfIdx);
+//             *oldInv = oldWave->inverse();
+//             (*(oldInv)).setZero();
+//             meth->updateMatrixInverse(*oldWave, *newWave, *oldInv, *newInv,
+//                     *determinantRatio, halfIdx);
 
             // update first derivatives
             if (imp || jastrow) {
@@ -538,13 +556,16 @@ void VMC::calculate(const char *destination) {
             // Accumulate local energy
             tmpEnergy = calculateLocalEnergy(oldD, oldU, oldInvD, oldInvU,
                     oldPositions,derOB,derJ);
+//             std::cout << " " << cycles << std::endl;
+//             if (cycles == 200) {
+//                 exit(1);
+//             }
 //             std::cout << tmpEnergy << std::endl;
 //             if (cycles == 10) {
 //                 break;
 //             }
             energy += tmpEnergy;
             energySq += tmpEnergy*tmpEnergy;
-
             if (destination) {
                 openFile << tmpEnergy << " " << tmpEnergy*tmpEnergy << "\n";
             } // end if

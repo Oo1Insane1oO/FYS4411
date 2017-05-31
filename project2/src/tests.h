@@ -14,7 +14,7 @@ class Tests {
         double eps;
 
         bool test_energies();
-        bool test_2particle();
+        bool test_energy();
         bool test_determinantratio();
         bool test_updateinverse();
         bool test_wavefunction2();
@@ -22,6 +22,7 @@ class Tests {
         bool test_padejastrow();
         bool test_conjugateGradient();
         bool test_negativeHermite();
+        bool test_hermite();
     
     public:
         Tests (Basis*, VMC*, int=3);

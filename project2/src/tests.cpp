@@ -61,12 +61,15 @@ bool Tests::test_energies() {
     return t;
 } // end function test_energies
 
-bool Tests::test_2particle() {
-    /* check that energy in case of unperturbed harmonic oscillator system with
-     * 2 electrons is correct */
+bool Tests::test_energy() {
+    /* check that energy in case of unperturbed harmonic oscillator system */
+    double E = 0;
+    for (unsigned int i = 0; i < b->states.size(); ++i) {
+        E += *(b->states[i][4]);
+    } // end fori
     v->setCoulombInteraction(false);
     v->calculate();
-    return ((fabs(v->energy-2)<=eps &&
+    return ((fabs(v->energy-E)<=eps &&
                 fabs(m->variance(v->energy,v->energySq))<=eps) ? true : false);
 } // end function test_2particle
 
@@ -155,6 +158,14 @@ bool Tests::test_negativeHermite() {
     return (std::fabs(H(6.5,-1))<eps ? true : false);
 } // end function test_negativeHermite
 
+bool Tests::test_hermite() {
+    /* Test the first 4 Hermite polynomials */
+    double r = oldM(0,0);
+    return ((std::fabs(H(r,0)-1)<=eps && std::fabs(H(r,1)-2*r)<=eps &&
+                std::fabs(H(r,2)-4*r*r+2)<=eps &&
+                std::fabs(H(r,3)-8*r*r*r+12*r)<=eps) ? true : false);
+} // end function test_hermite
+
 void Tests::run_tests(int t) {
     /* run all tests and exit */
     if (t) {
@@ -163,11 +174,11 @@ void Tests::run_tests(int t) {
         } else {
             std::cout << "Energies wrong" << std::endl;
         } // end ifelse
-        if(test_2particle()) {
-            std::cout << "Energy unperturbed 2 electron good" << std::endl;
+        if(test_energy()) {
+            std::cout << "Energy unperturbed good" << std::endl;
             std::cout << std::setprecision(10) << "  Energy is: " << v->energy << std::endl;
         } else { 
-            std::cout << "Energy unperturbed 2 electron wrong" << std::endl;
+            std::cout << "Energy unperturbed wrong" << std::endl;
             std::cout << std::setprecision(10) << "  Energy is: " << v->energy << std::endl;
         } // end ifelse
         if(test_determinantratio()) {
@@ -200,7 +211,12 @@ void Tests::run_tests(int t) {
         if(test_negativeHermite()) {
             std::cout << "Negative Hermite good" << std::endl;
         } else {
-            std::cout << "Negative Hermite good" << std::endl;
+            std::cout << "Negative Hermite wrong" << std::endl;
+        } // end ifelse
+        if(test_hermite()) {
+            std::cout << "Hermite 0,1,2,3 good" << std::endl;
+        } else {
+            std::cout << "Hermite 0,1,2,3 wrong" << std::endl;
         } // end ifelse
         if (t==2) {
             b->printStates();
