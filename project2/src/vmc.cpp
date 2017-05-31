@@ -537,15 +537,18 @@ void VMC::calculate(const char *destination) {
                 if (imp) {
                     qForceOld.row(i) = qForceNew.row(i);
                 } // end if
+            } else {
+                *newInv = *oldInv;
+                newPositions.row(i) = oldPositions.row(i);
+                newWave->row(halfIdx) = oldWave->row(halfIdx);
+                if (imp) {
+                    qForceOld.row(i) = qForceNew.row(i);
+                } // end if
             } // end if
 
             // update determinant ratio
             *determinantRatio = meth->determinantRatio(*oldWave, *oldInv,
                     halfIdx);
-//             *oldInv = oldWave->inverse();
-//             (*(oldInv)).setZero();
-//             meth->updateMatrixInverse(*oldWave, *newWave, *oldInv, *newInv,
-//                     *determinantRatio, halfIdx);
 
             // update first derivatives
             if (imp || jastrow) {
