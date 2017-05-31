@@ -35,7 +35,7 @@ class VMC {
             steepb, prevSteepb, derOB, derJ, oldD, oldU, newD, newU, oldInvD,
             oldInvU, newInvD, newInvU;
 
-        Eigen::MatrixXd buf;
+        Eigen::MatrixXd buf, jbuf;
 
         std::mt19937_64 mt;
         std::uniform_real_distribution<double> dist;
@@ -47,9 +47,6 @@ class VMC {
         unsigned int dim, maxIterations;
         double alpha, beta, energy, energySq, step;
         Eigen::MatrixXd newAlphaBeta, oldAlphaBeta;
-
-        long int getSeed();
-        void setSeed(long int);
 
         void diff(const Eigen::MatrixXd&, Eigen::MatrixXd&);
         void updateDiff(const Eigen::MatrixXd&, Eigen::MatrixXd&, unsigned

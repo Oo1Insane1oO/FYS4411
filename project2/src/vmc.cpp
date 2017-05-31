@@ -38,11 +38,11 @@ VMC::VMC(Basis *B, double alp, double bet, unsigned int d, double s, unsigned
 
     meth = new Methods(); 
     
-    std::istringstream stringBuffer("0 1 2 3 4 5 6 7 8 9 10");
-    std::istream_iterator<int> start(stringBuffer), end;
-    std::seed_seq seedSequence(start, end);
-    mt.seed(seedSequence);
-//     std::mt19937_64 mt(time(NULL));
+//     std::istringstream stringBuffer("0 1 2 3 4 5 6 7 8 9 10");
+//     std::istream_iterator<int> start(stringBuffer), end;
+//     std::seed_seq seedSequence(start, end);
+//     mt.seed(seedSequence);
+    std::mt19937_64 mt(time(NULL));
     dist = std::uniform_real_distribution<double>(0,1);
     normDist = std::normal_distribution<double>(0,1);
 } // end constructor
@@ -122,10 +122,9 @@ double VMC::jastrowSecondDerivativeRatio(const Eigen::MatrixXd &R, const
                     2*beta*rkj/denom);
         } // end if
     } // end forj
-    Eigen::MatrixXd jfirst = Eigen::MatrixXd::Zero(R.rows(),dim);
-    jastrowFirstDerivativeRatio(jfirst,R,k);
-    return ratio + jfirst.row(k).squaredNorm();
-//     return ratio + derJ.row(k).squaredNorm();
+    jbuf.setZero();
+    jastrowFirstDerivativeRatio(jbuf,R,k);
+    return ratio + jbuf.row(k).squaredNorm();
 } // end function jastrowSecondDerivativeRatio
 
 double coulombFactor(const Eigen::MatrixXd &R) {
@@ -146,7 +145,6 @@ double VMC::calculateLocalEnergy(const Eigen::MatrixXd &waveD, const
     /* Analytic expression for local energy */
     double E = 0;
     unsigned int half = R.rows()/2;
-    Eigen::MatrixXd jbuf = Eigen::MatrixXd::Zero(R.rows(),dim);
     Eigen::MatrixXd tmp = Eigen::MatrixXd::Zero(1,dim);
     for (unsigned int k = 0; k < R.rows(); ++k) {
         /* Potential part */
@@ -166,15 +164,9 @@ double VMC::calculateLocalEnergy(const Eigen::MatrixXd &waveD, const
     } // end fork
     if (jastrow) {
         /* set Jastrow part */
-//         for (unsigned int k = 0; k < R.rows(); ++k) {
-//             E -= 0.5*jastrowSecondDerivativeRatio(R,k) +
-//                 derOB.row(k).dot(derJ.row(k));
-//         } // end fork
         for (unsigned int k = 0; k < R.rows(); ++k) {
             E -= 0.5*jastrowSecondDerivativeRatio(R,k);
             tmp.setZero();
-            jbuf.setZero();
-            jastrowFirstDerivativeRatio(jbuf, R, k);
             for (unsigned int j = 0; j < R.rows(); j+=2) {
                 if (k<half) {
                     oneBodyFirstDerivativeRatio(buf,R,k,j);
@@ -239,32 +231,22 @@ double VMC::diff2(Eigen::MatrixXd &psiD, Eigen::MatrixXd &psiU, const
     return diff;
 } // end function diff2
 
-void VMC::setSeed(long int s) {
-    /* set seed */
-    seed = s;
-} // end function setSeed
-
-long int VMC::getSeed() {
-    /* get seed */
-    return seed;
-} // end function setSeed
-
 double VMC::Afunc(const Eigen::MatrixXd &wave, const Eigen::MatrixXd &waveInv,
         const Eigen::MatrixXd &R, const unsigned int iStart) {
     /* first derivative of wave function with respect to alpha */
     double A = 0;
     double n;
-    for (unsigned int d = 0; d < R.cols(); ++d) {
-        for (unsigned int i = 0; i < 2*R.rows(); i+=2) {
-            n = *(b->states[i+iStart][d]);
-            for (unsigned int j = 0; j < R.rows(); ++j) {
-                A += n/(2*alpha) * (sqrt(alpha) + 2*R(j,d)*(n-1)*sqrt(b->omega)
-                        * H(awsqr*R(j,d),n-2)/H(awsqr*R(j,d),n) -
-                        b->omega*R.row(j).squaredNorm()) * wave(j,i/2) *
-                    waveInv(i/2,j);
-             } // end forj
-        } // end fori
-    } // end ford
+    for (unsigned int i = 0; i < 2*R.rows(); i+=2) {
+        for (unsigned int j = 0; j < R.rows(); ++j) {
+            A -= 0.5*b->omega*R.row(j).squaredNorm();
+            for (unsigned int d = 0; d < R.cols(); ++d) {
+                n = *(b->states[i+iStart][d]);
+                A += 1/(2*alpha*sqrt(alpha)) * n*(1+R(j,d)*(n-1) *
+                        sqrt(b->omega/alpha) *
+                        H(awsqr*R(j,d),n-2)/H(awsqr*R(j,d),n));
+            } // end ford
+        } // end forj
+    } // end fori
     return A;
 } // end function Afunc
 
@@ -274,8 +256,8 @@ double VMC::Bfunc(const Eigen::MatrixXd &R) {
     for (unsigned int i = 0; i < R.rows(); ++i) {
         for (unsigned int j = 0; j < R.rows(); ++j) {
             if (i != j)  {
-                B -= b->padejastrow(i,j) / pow((beta +
-                            1/(R.row(i)-R.row(j)).norm()),2);
+                B -= b->padejastrow(i,j) / pow(beta +
+                        1/(R.row(i)-R.row(j)).norm(),2);
             } // end if
         } // end forj
     } // end fori
@@ -319,6 +301,7 @@ void VMC::initializeCalculationVariables() {
     } // end if
     
     buf = Eigen::MatrixXd(1,dim);
+    jbuf = Eigen::MatrixXd(oldPositions.rows(),dim);
 } // end function initializeCalculationVariables
 
 void VMC::setFirstDerivatives(const Eigen::MatrixXd &wave, const
@@ -366,13 +349,13 @@ void VMC::calculate(const char *destination) {
     // set sizes
     initializeCalculationVariables();
     unsigned int halfSize = oldPositions.rows()/2;
-    double steepStep = 0.05;
+    double steepStep = 0.01;
 
     // count for filenames and buffer for filename string
     unsigned int runCount = 1;
     char tmpf[80];
 
-    while (runCount <= 500) {
+    while (runCount <= 1000) {
         // reinitialize positions
         initializePositions(oldPositions);
         newPositions = oldPositions;
@@ -564,51 +547,18 @@ void VMC::calculate(const char *destination) {
         std::cout << "Acceptance: " << acceptance/cycles << std::endl;
 
         // optimalize with steepest descent method
-        steepb(0) = ELA - energy*A;
+        steepb(0) = 2*(ELA - energy*A);
         steepb(1) = 2*(ELB - energy*B);
         newAlphaBeta = oldAlphaBeta - steepStep*steepb;
 
-        if (std::isnan(energy)) {
-            std::cout << runCount << std::endl;
-            std::cout << std::endl;
-            std::cout << cycles << std::endl;
-            std::cout << "old" << std::endl;
-            std::cout << oldPositions << std::endl;
-            std::cout << std::endl;
-            std::cout << oldD << std::endl;
-            std::cout << std::endl;
-            std::cout << oldU << std::endl;
-            std::cout << std::endl;
-            std::cout << oldD*oldInvD << std::endl;
-            std::cout << std::endl;
-            std::cout << oldU*oldInvU << std::endl;
-            std::cout << std::endl;
-            std::cout << "new" << std::endl;
-            std::cout << newPositions << std::endl;
-            std::cout << std::endl;
-            std::cout << newD << std::endl;
-            std::cout << std::endl;
-            std::cout << newU << std::endl;
-            std::cout << std::endl;
-            std::cout << newD*newInvD << std::endl;
-            std::cout << std::endl;
-            std::cout << newU*newInvU << std::endl;
-            std::cout << std::endl;
-            std::cout << A << std::endl;
-            std::cout << ELA << std::endl;
-            std::cout << B << std::endl;
-            std::cout << ELB << std::endl;
-            break;
-        } // end if
-        break;
         std::cout << std::setprecision(10) << "alpha: " << alpha << " beta: "
             << beta << " Energy: " << energy << std::endl;
 
         // update stepsize in steepest descent according to two-step size
         // gradient
-//         steepStep = (newAlphaBeta.row(0) -
-//                 oldAlphaBeta.row(0)).transpose().dot(steepb.row(0) -
-//                 prevSteepb.row(0)) / (steepb - prevSteepb).squaredNorm();
+        steepStep = (newAlphaBeta.row(0) -
+                oldAlphaBeta.row(0)).transpose().dot(steepb.row(0) -
+                prevSteepb.row(0)) / (steepb - prevSteepb).squaredNorm();
 
         // update variational parameters
         alpha = newAlphaBeta(0);

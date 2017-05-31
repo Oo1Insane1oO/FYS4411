@@ -81,7 +81,6 @@ Eigen::MatrixXd Methods::conjugateGradient(const Eigen::MatrixXd &A, const
     double rInner;
     rnew << 1, 1;
     unsigned int iter = 0;
-//     while (rnew.norm() > 1e-14 && iter < maxIterations) {
     while (rnew.norm() > 1e-14) {
         rInner = res.squaredNorm();
         C = rInner / (p.transpose()*A*p).sum();
