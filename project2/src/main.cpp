@@ -64,23 +64,10 @@ int main(int argc, char** argv) {
     Eigen::initParallel();
 
     // divide number of variational runs between the processes evenly
-    unsigned int myMaxCount;
     unsigned int maxCount = 1000;
-    float tmpNum = maxCount;
-    tmpNum /= numProcs;
-    if (myRank <= maxCount % numProcs) {
-        if (myRank != 0) {
-            myMaxCount = ceil(tmpNum) + 2;
-        } else {
-            myMaxCount = ceil(tmpNum) + 1;
-        } // end ifelse
-    } else {
-        if (myRank != (numProcs-1)) {
-            myMaxCount = floor(tmpNum) + 2;
-        } else {
-            myMaxCount = floor(tmpNum) + 1;
-        } // end ifelse
-    } // end ifelse
+    float tmpNum = (float)maxCount / numProcs;
+    unsigned int myMaxCount = (myRank < maxCount % numProcs ? ceil(tmpNum) :
+            floor(tmpNum));
     
     // set basis (cartesian)
     Basis *b = new Basis(omega, num/2);
@@ -94,11 +81,12 @@ int main(int argc, char** argv) {
             std::endl;
         exit(1);
     } // end if
-
-    std::cout << "Basis made" << std::endl;
     
-    // set vmc object for calculations
-    VMC *vmcObj = new VMC(b,1.04,0.47,2,step,maxIterations);
+    // set vmc object for calculations (with different seed for each process)
+    auto mySeed = std::chrono::high_resolution_clock::now() .
+        time_since_epoch().count();
+    VMC *vmcObj = new VMC(b, 1.04, 0.47, 2, step, maxIterations,
+            mySeed/(myRank+1));
     vmcObj->setImportanceSampling(imp);
     vmcObj->setCoulombInteraction(coul);
     vmcObj->setJastrow(jast);
@@ -111,26 +99,27 @@ int main(int argc, char** argv) {
     } // end if
 
     // run calculations
-    std::chrono::steady_clock::time_point begin;
-    begin = std::chrono::steady_clock::now();
+//     std::chrono::steady_clock::time_point begin;
+//     begin = std::chrono::steady_clock::now();
 
+    // create filename for each process and run
     char myFileName[80];
-    sprintf(myFileName, "%s_P%d", filename, myRank);
+    sprintf(myFileName, "%s/P%d", filename, myRank);
     vmcObj->calculate(myMaxCount, myFileName);
 
-    std::chrono::steady_clock::time_point end;
-    end = std::chrono::steady_clock::now();
-    std::cout << "Calculation time: " <<
-        std::chrono::duration_cast<std::chrono::seconds>(end-begin).count()
-        << std::endl;
+//     std::chrono::steady_clock::time_point end;
+//     end = std::chrono::steady_clock::now();
+//     std::cout << "Calculation time: " <<
+//         std::chrono::duration_cast<std::chrono::seconds>(end-begin).count()
+//         << std::endl;
 
-    std::cout << std::setprecision(10) << "<E> = " << vmcObj->energy << ", " <<
-        "<E^2> = " << vmcObj->energySq << std::endl;
-    std::cout << std::setprecision(10) << "<E^2> - <E>^2 = " <<
-        (vmcObj->energySq - pow(vmcObj->energy,2))/maxIterations << std::endl;
-
-    std::cout << "alpha: " << vmcObj->alpha << ", beta: " << vmcObj->beta <<
-        std::endl;
+//     std::cout << std::setprecision(10) << "<E> = " << vmcObj->energy << ", " <<
+//         "<E^2> = " << vmcObj->energySq << std::endl;
+//     std::cout << std::setprecision(10) << "<E^2> - <E>^2 = " <<
+//         (vmcObj->energySq - pow(vmcObj->energy,2))/maxIterations << std::endl;
+// 
+//     std::cout << "alpha: " << vmcObj->alpha << ", beta: " << vmcObj->beta <<
+//         std::endl;
 
     // free objects
     delete b;

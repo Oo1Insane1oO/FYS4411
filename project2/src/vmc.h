@@ -41,7 +41,8 @@ class VMC {
         std::uniform_real_distribution<double> dist;
         std::normal_distribution<double> normDist;
     public:
-        VMC (Basis*, double, double, unsigned int, double, unsigned int);
+        VMC (Basis*, double, double, unsigned int, double, unsigned int, long
+                long int);
         virtual ~VMC ();
 
         unsigned int dim, maxIterations;

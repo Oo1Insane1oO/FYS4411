@@ -1,4 +1,4 @@
-CC = g++
+CC = mpic++
 LDFLAGS	= -fopenmp -lpthread
 CXXFLAGS = -I eigen/ -O3 -fopenmp -std=c++14
 

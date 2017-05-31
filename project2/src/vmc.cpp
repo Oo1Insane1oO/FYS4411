@@ -14,14 +14,13 @@
 #include <random>
 #include <sstream>
 #include <iterator>
-#include <time.h>
 #include <string.h>
 #include <cstdio>
 #include <cmath>
 #include <cstdlib>
 
 VMC::VMC(Basis *B, double alp, double bet, unsigned int d, double s, unsigned
-        int max) {
+        int max, long long int seed) {
     alpha = alp;
     beta = bet;
     b = B;
@@ -42,7 +41,7 @@ VMC::VMC(Basis *B, double alp, double bet, unsigned int d, double s, unsigned
 //     std::istream_iterator<int> start(stringBuffer), end;
 //     std::seed_seq seedSequence(start, end);
 //     mt.seed(seedSequence);
-    std::mt19937_64 mt(time(NULL));
+    std::mt19937_64 mt(seed);
     dist = std::uniform_real_distribution<double>(0,1);
     normDist = std::normal_distribution<double>(0,1);
 } // end constructor
