@@ -65,8 +65,8 @@ int main(int argc, const char** argv) {
     std::cout << "Basis made" << std::endl;
     
     // set vmc object for calculations
-//     VMC *vmcObj = new VMC(b,1.,0.4,2,step,maxIterations);
-    VMC *vmcObj = new VMC(b,1.04,0.47,2,step,maxIterations);
+    VMC *vmcObj = new VMC(b,1.0,0.4,2,step,maxIterations);
+//     VMC *vmcObj = new VMC(b,1.04,0.47,2,step,maxIterations);
 //     VMC *vmcObj = new VMC(b,1.0,10000000,2,step,maxIterations);
 //     VMC *vmcObj = new VMC(b,0.51,10000000,2,step,maxIterations);
 //     VMC *vmcObj = new VMC(b,1.0,0.47,2,step,maxIterations);
@@ -106,7 +106,7 @@ int main(int argc, const char** argv) {
     std::cout << std::setprecision(10) << "<E> = " << vmcObj->energy << ", " <<
         "<E^2> = " << vmcObj->energySq << std::endl;
     std::cout << std::setprecision(10) << "<E^2> - <E>^2 = " <<
-        (vmcObj->energySq - pow(vmcObj->energy,2))/1000000 << std::endl;
+        (vmcObj->energySq - pow(vmcObj->energy,2))/maxIterations << std::endl;
 
     std::cout << "alpha: " << vmcObj->alpha << ", beta: " << vmcObj->beta <<
         std::endl;

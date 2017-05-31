@@ -114,51 +114,18 @@ double VMC::jastrowSecondDerivativeRatio(const Eigen::MatrixXd &R, const
      * particle k */
     double ratio = 0;
     double rkj, denom;
-    double tmp;
     for (unsigned int j = 0; j < R.rows(); ++j) {
         if (j != k) {
             rkj = (R.row(k) - R.row(j)).norm();
             denom = 1 + beta*rkj;
             ratio += b->padejastrow(k,j)/(rkj*denom*denom) * (dim - 1 -
                     2*beta*rkj/denom);
-//             tmp = 0;
-//             for (unsigned int d = 0; d < R.cols(); ++d) {
-//                 tmp += b->padejastrow(k,j)/(rkj*denom*denom) * (dim - 1 -
-//                         pow((R(k,d)-R(j,d)),2)/(rkj*rkj) * (1 +
-//                             2*beta*rkj/denom));
-//             } // end ford
-//             ratio += tmp;
         } // end if
     } // end forj
     Eigen::MatrixXd jfirst = Eigen::MatrixXd::Zero(R.rows(),dim);
     jastrowFirstDerivativeRatio(jfirst,R,k);
     return ratio + jfirst.row(k).squaredNorm();
 //     return ratio + derJ.row(k).squaredNorm();
-//     double rki, denomi, aki, akj;
-//     for (unsigned int i = 0; i < R.rows(); ++i) {
-//         for (unsigned int j = 0; j < R.rows(); ++j) {
-//             if (j != k && i!=k) {
-//                 aki = b->padejastrow(k,i);
-//                 rki = (R.row(k) - R.row(i)).norm();
-//                 denomi = 1 + beta*rki;
-//                 akj = b->padejastrow(k,j);
-//                 rkj = (R.row(k) - R.row(j)).norm();
-//                 denom = 1 + beta*rkj;
-//                 ratio += aki*akj * (R.row(k) - R.row(i)).dot(R.row(k) -
-//                         R.row(j)) / (rki*rkj * denomi*denomi*denom*denom);
-//             } // end if
-//         } // end forj
-//     } // end fori
-//     for (unsigned int j = 0; j < R.rows(); ++j) {
-//         if (j!=k) {
-//             akj = b->padejastrow(k,j);
-//             rkj = (R.row(k) - R.row(j)).norm();
-//             denom = 1 + beta*rkj;
-//             ratio += akj/(rkj*denom*denom) * (1/rkj - 2*beta/denom);
-//             ratio += 2*akj/(rkj*denom*denom*denom);
-//         } // end if
-//     } // end forj
-//     return ratio;
 } // end function jastrowSecondDerivativeRatio
 
 double coulombFactor(const Eigen::MatrixXd &R) {
@@ -180,6 +147,7 @@ double VMC::calculateLocalEnergy(const Eigen::MatrixXd &waveD, const
     double E = 0;
     unsigned int half = R.rows()/2;
     Eigen::MatrixXd jbuf = Eigen::MatrixXd::Zero(R.rows(),dim);
+    Eigen::MatrixXd tmp = Eigen::MatrixXd::Zero(1,dim);
     for (unsigned int k = 0; k < R.rows(); ++k) {
         /* Potential part */
         E += 0.5*b->omega*b->omega*R.row(k).squaredNorm();
@@ -202,31 +170,23 @@ double VMC::calculateLocalEnergy(const Eigen::MatrixXd &waveD, const
 //             E -= 0.5*jastrowSecondDerivativeRatio(R,k) +
 //                 derOB.row(k).dot(derJ.row(k));
 //         } // end fork
-        Eigen::MatrixXd tmp = Eigen::MatrixXd::Zero(1,dim);
         for (unsigned int k = 0; k < R.rows(); ++k) {
             E -= 0.5*jastrowSecondDerivativeRatio(R,k);
             tmp.setZero();
             jbuf.setZero();
             jastrowFirstDerivativeRatio(jbuf, R, k);
-//             std::cout << jbuf.row(k) << std::endl;
             for (unsigned int j = 0; j < R.rows(); j+=2) {
                 if (k<half) {
                     oneBodyFirstDerivativeRatio(buf,R,k,j);
                     tmp += buf * waveD(k,j/2) * waveInvD(j/2,k);
-//                     tmp += buf * waveD(k,j/2)/waveD.determinant();
-//                     std::cout << waveD(k,j/2) * waveInvD(k,j/2) << std::endl;
                 } else {
                     oneBodyFirstDerivativeRatio(buf,R,k,j+1);
                     tmp += buf * waveU(k-half,j/2) * waveInvU(j/2,k-half);
-//                     tmp += buf * waveU(k-half,j/2)/waveU.determinant();
                 } // end if
             } // end forj
-//             std::cout << tmp << std::endl;
-//             std::cout <<  tmp.row(0).dot(jbuf.row(k)) << std::endl; 
             E -= tmp.row(0).dot(jbuf.row(k));
         } // end fork
     } // end if
-//     std::cout << E; 
     return (coulomb ? E + coulombFactor(R) : E);
 } // end if
 
@@ -483,7 +443,7 @@ void VMC::calculate(const char *destination) {
                 uIdx = 1;
             } // end if
             
-            // propose new position
+            // propose new position and move only in one dimension
             randomDim = (std::fabs(dist(mt)) < 0.5 ? 0 : 1);
             if (imp) {
                 newPositions(i,randomDim) = oldPositions(i,randomDim) +
@@ -538,6 +498,7 @@ void VMC::calculate(const char *destination) {
                     qForceOld.row(i) = qForceNew.row(i);
                 } // end if
             } else {
+                /* reset(discard) proposed state */
                 *newInv = *oldInv;
                 newPositions.row(i) = oldPositions.row(i);
                 newWave->row(halfIdx) = oldWave->row(halfIdx);
@@ -556,19 +517,13 @@ void VMC::calculate(const char *destination) {
                         halfIdx, uIdx);
             } // end if
        
-            // Accumulate local energy
+            // Accumulate local energy and local energy squared
             tmpEnergy = calculateLocalEnergy(oldD, oldU, oldInvD, oldInvU,
-                    oldPositions,derOB,derJ);
-//             std::cout << " " << cycles << std::endl;
-//             if (cycles == 200) {
-//                 exit(1);
-//             }
-//             std::cout << tmpEnergy << std::endl;
-//             if (cycles == 10) {
-//                 break;
-//             }
+                    oldPositions, derOB, derJ);
             energy += tmpEnergy;
             energySq += tmpEnergy*tmpEnergy;
+
+            // write to file
             if (destination) {
                 openFile << tmpEnergy << " " << tmpEnergy*tmpEnergy << "\n";
             } // end if
