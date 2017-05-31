@@ -5,6 +5,9 @@
 #include <iomanip> // setprecision
 #include <algorithm> // find
 #include <chrono> // timer
+#include <sstream>
+#include <iterator>
+#include <string.h>
 #include <mpi.h>
 
 //////////////////////////////////////////////////////////////////////////////
@@ -83,10 +86,44 @@ int main(int argc, char** argv) {
     } // end if
     
     // set vmc object for calculations (with different seed for each process)
-    auto mySeed = std::chrono::high_resolution_clock::now() .
-        time_since_epoch().count();
-    VMC *vmcObj = new VMC(b, 1.04, 0.47, 2, step, maxIterations,
-            mySeed/(myRank+1));
+    double myAlpha;
+    double myBeta;
+    long long int mySeed;
+    long long int seedbuf;
+    double alphaBuf;
+    double betaBuf; 
+    if (myRank == 0) {
+        /* let master distribute seeds and initial variational parameters(and
+         * make his own) */
+        std::istringstream stringBuffer("0 1 2 3 4 5 6 7 8 9 10");
+        std::istream_iterator<int> start(stringBuffer), end;
+        std::seed_seq seedSequence(start, end);
+        std::mt19937_64 generator(seedSequence);
+        std::uniform_real_distribution<double> dist(0.1,1.3);
+        mySeed = std::chrono::high_resolution_clock::now() .
+            time_since_epoch().count();
+        myAlpha = dist(generator);
+        myBeta = dist(generator);
+        for (int p = 1; p < numProcs; ++p) {
+            seedbuf = std::chrono::high_resolution_clock::now() .
+                time_since_epoch().count();
+            alphaBuf = dist(generator);
+            betaBuf = dist(generator);
+            MPI_Send(&seedbuf, 1, MPI_LONG_LONG, p, 0, MPI_COMM_WORLD);
+            MPI_Send(&alphaBuf, 1, MPI_DOUBLE, p, 1, MPI_COMM_WORLD);
+            MPI_Send(&betaBuf, 1, MPI_DOUBLE, p, 2, MPI_COMM_WORLD);
+        } // end forp
+    } else {
+        /* Slaves receive seed */
+        MPI_Recv(&mySeed, 1, MPI_LONG_LONG, 0, 0, MPI_COMM_WORLD,
+                MPI_STATUS_IGNORE);
+        MPI_Recv(&myAlpha, 1, MPI_DOUBLE, 0, 1, MPI_COMM_WORLD,
+                MPI_STATUS_IGNORE);
+        MPI_Recv(&myBeta, 1, MPI_DOUBLE, 0, 2, MPI_COMM_WORLD,
+                MPI_STATUS_IGNORE);
+    } // end ifelse
+
+    VMC *vmcObj = new VMC(b, myAlpha, myBeta, 2, step, maxIterations, mySeed);
     vmcObj->setImportanceSampling(imp);
     vmcObj->setCoulombInteraction(coul);
     vmcObj->setJastrow(jast);
@@ -102,6 +139,8 @@ int main(int argc, char** argv) {
 //     std::chrono::steady_clock::time_point begin;
 //     begin = std::chrono::steady_clock::now();
 
+    std::cout << "Starting :" << myRank << " " << myAlpha << " " << myBeta <<
+        std::endl;
     // create filename for each process and run
     char myFileName[80];
     sprintf(myFileName, "%s/P%d", filename, myRank);

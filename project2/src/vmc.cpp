@@ -543,15 +543,15 @@ void VMC::calculate(const unsigned int maxCount, const char *destination) {
             openFile.close();
         } // end if
 
-        std::cout << "Acceptance: " << acceptance/cycles << std::endl;
+//         std::cout << "Acceptance: " << acceptance/cycles << std::endl;
 
         // optimalize with steepest descent method
         steepb(0) = 2*(ELA - energy*A);
         steepb(1) = 2*(ELB - energy*B);
         newAlphaBeta = oldAlphaBeta - steepStep*steepb;
 
-        std::cout << std::setprecision(10) << "alpha: " << alpha << " beta: "
-            << beta << " Energy: " << energy << std::endl;
+//         std::cout << std::setprecision(10) << "alpha: " << alpha << " beta: "
+//             << beta << " Energy: " << energy << std::endl;
 
         // update stepsize in steepest descent according to two-step size
         // gradient
