@@ -65,7 +65,7 @@ int main(int argc, char** argv) {
     Eigen::initParallel();
 
     // divide number of variational runs between the processes evenly
-    int maxCount = 1000;
+    int maxCount = 10000;
     float tmpNum = (float)maxCount / numProcs;
     unsigned int myMaxCount = (myRank < maxCount % numProcs ? ceil(tmpNum) :
             floor(tmpNum));
@@ -122,8 +122,7 @@ int main(int argc, char** argv) {
                 MPI_STATUS_IGNORE);
     } // end ifelse
 
-//     VMC *vmcObj = new VMC(b, myAlpha, myBeta, 2, step, maxIterations, mySeed);
-    VMC *vmcObj = new VMC(b, 1, 0.40, 2, step, maxIterations, mySeed);
+    VMC *vmcObj = new VMC(b, myAlpha, myBeta, 2, step, maxIterations, mySeed);
     vmcObj->setImportanceSampling(imp);
     vmcObj->setCoulombInteraction(coul);
     vmcObj->setJastrow(jast);
@@ -150,8 +149,7 @@ int main(int argc, char** argv) {
     } // end fi 
 
     // Run Monte Carlo simulation
-//     vmcObj->calculate(myMaxCount, myFileName);
-    vmcObj->calculate(1, myFileName);
+    vmcObj->calculate(myMaxCount, myFileName);
 
 //     std::chrono::steady_clock::time_point end;
 //     end = std::chrono::steady_clock::now();

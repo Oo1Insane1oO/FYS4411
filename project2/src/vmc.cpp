@@ -311,6 +311,7 @@ void VMC::calculate(const unsigned int maxCount, const char *destination) {
     double determinantRatioU = 1;
     unsigned int cycles = 0;
     double *determinantRatio;
+    double stepNorm;
         
     Eigen::MatrixXd *oldWave, *newWave, *oldInv, *newInv;
     
@@ -525,6 +526,17 @@ void VMC::calculate(const unsigned int maxCount, const char *destination) {
 
         std::cout << std::setprecision(10) << "alpha: " << alpha << " beta: "
             << beta << " Energy: " << energy << std::endl;
+
+        // update stepsize in steepest descent according to two-step size
+        // gradient
+        stepNorm = (steepb - prevSteepb).squaredNorm();
+        if (stepNorm > 1e-10) {
+            steepStep = (newAlphaBeta.row(0) -
+                    oldAlphaBeta.row(0)).transpose().dot(steepb.row(0) -
+                    prevSteepb.row(0)) / stepNorm;
+        } else {
+            steepStep = 0.01;
+        } // end if
 
         // update variational parameters
         setAlpha(newAlphaBeta(0));
