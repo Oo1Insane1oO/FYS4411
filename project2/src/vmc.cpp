@@ -350,7 +350,6 @@ void VMC::calculate(const unsigned int maxCount, const char *destination) {
 
     // File, runcount and buffer(for filename)
     FILE *filePointer;
-    unsigned int runCount = 1;
     char tmpf[80];
 
     if (destination) {
@@ -358,7 +357,7 @@ void VMC::calculate(const unsigned int maxCount, const char *destination) {
         filePointer = std::fopen(tmpf, "ab+");
     } // end ifelseif
 
-    while (runCount <= maxCount) {
+    for (unsigned int runCount = 0; runCount < maxCount; ++runCount) {
         // reinitialize positions
         initializePositions(oldPositions);
         newPositions = oldPositions;
@@ -559,9 +558,8 @@ void VMC::calculate(const unsigned int maxCount, const char *destination) {
         oldAlphaBeta = newAlphaBeta;
         aw = alpha*b->omega;
         awsqr = sqrt(aw);
-      
-        runCount++;
-    } // end while true
+    } // end for runCount
 
+    // close file for good measures
     std::fclose(filePointer);
 } // end function calculate
