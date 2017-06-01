@@ -141,9 +141,13 @@ int main(int argc, char** argv) {
 
     std::cout << "Starting :" << myRank << " " << myAlpha << " " << myBeta <<
         std::endl;
-    // create filename for each process and run
+    // create filename for each process
     char myFileName[80];
-    sprintf(myFileName, "%sP%d", filename, myRank);
+    if (filename) {
+        sprintf(myFileName, "%sP%d", filename, myRank);
+    } // end fi 
+
+    // Run Monte Carlo simulation
     vmcObj->calculate(myMaxCount, myFileName);
 
 //     std::chrono::steady_clock::time_point end;
