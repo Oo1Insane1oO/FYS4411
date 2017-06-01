@@ -143,7 +143,7 @@ int main(int argc, char** argv) {
         std::endl;
     // create filename for each process and run
     char myFileName[80];
-    sprintf(myFileName, "%sP%d_", filename, myRank);
+    sprintf(myFileName, "%sP%d", filename, myRank);
     vmcObj->calculate(myMaxCount, myFileName);
 
 //     std::chrono::steady_clock::time_point end;
@@ -163,10 +163,8 @@ int main(int argc, char** argv) {
     // free objects
     delete b;
     delete vmcObj;
-    if (!filename) {
-        delete filename;
-    } // end if
 
+    // clean up MPI
     MPI_Finalize();
 
     return 0;

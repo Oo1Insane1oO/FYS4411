@@ -8,6 +8,7 @@
 
 #include "basis.h"
 #include <string>
+#include <mpi.h>
 
 class VMC {
     private:
@@ -69,7 +70,7 @@ class VMC {
         double calculateLocalEnergy(const Eigen::MatrixXd&, const
                 Eigen::MatrixXd&, const Eigen::MatrixXd&, const
                 Eigen::MatrixXd&, const Eigen::MatrixXd&, const
-                Eigen::MatrixXd&, const Eigen::MatrixXd&); 
+                Eigen::MatrixXd&, const Eigen::MatrixXd&);
 
         void jastrowFirstDerivativeRatio(Eigen::MatrixXd&, const
                 Eigen::MatrixXd&, const unsigned int);

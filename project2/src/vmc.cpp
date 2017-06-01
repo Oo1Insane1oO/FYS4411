@@ -342,17 +342,21 @@ void VMC::calculate(const unsigned int maxCount, const char *destination) {
     double *determinantRatio;
         
     Eigen::MatrixXd *oldWave, *newWave, *oldInv, *newInv;
-   
-    std::ofstream openFile;
     
     // set sizes
     initializeCalculationVariables();
     unsigned int halfSize = oldPositions.rows()/2;
     double steepStep = 0.01;
 
-    // count for filenames and buffer for filename string
+    // File, runcount and buffer(for filename)
+    FILE *filePointer;
     unsigned int runCount = 1;
     char tmpf[80];
+
+    if (destination) {
+        sprintf(tmpf, "%s.bin", destination);
+        filePointer = std::fopen(tmpf, "ab+");
+    } // end ifelseif
 
     while (runCount <= maxCount) {
         // reinitialize positions
@@ -391,11 +395,6 @@ void VMC::calculate(const unsigned int maxCount, const char *destination) {
         B = 0;
         ELB = 0;
         acceptance = 0;
-    
-        if (destination) {
-            sprintf(tmpf, "%s_%d.txt", destination, runCount);
-            openFile.open(tmpf);
-        } // end ifelseif
 
         unsigned int i;
         for (cycles = 0; cycles < maxIterations; ++cycles) {
@@ -503,12 +502,7 @@ void VMC::calculate(const unsigned int maxCount, const char *destination) {
             tmpEnergy = calculateLocalEnergy(oldD, oldU, oldInvD, oldInvU,
                     oldPositions, derOB, derJ);
             energy += tmpEnergy;
-            energySq += tmpEnergy*tmpEnergy;
-
-            // write to file
-            if (destination) {
-                openFile << tmpEnergy << " " << tmpEnergy*tmpEnergy << "\n";
-            } // end if
+            energySq = tmpEnergy*tmpEnergy;
 
             // split spin up/down and calculate expected value(local) of first
             // derivative of wave function with respect to alpha
@@ -534,13 +528,12 @@ void VMC::calculate(const unsigned int maxCount, const char *destination) {
         ELB /= cycles;
         B /= cycles;
 
+        // write to file
         if (destination) {
-            openFile << " " << "\n";
-            openFile << energy << " " << energySq << "\n";
-            openFile << acceptance/(cycles*newPositions.rows()) << "\n";
-            openFile << alpha << "\n";
-            openFile << beta << "\n";
-            openFile.close();
+            std::fwrite(&energy, sizeof(double), 1, filePointer);
+            std::fwrite(&energySq, sizeof(double), 1, filePointer);
+            std::fwrite(&alpha, sizeof(double), 1, filePointer);
+            std::fwrite(&beta, sizeof(double), 1, filePointer);
         } // end if
 
 //         std::cout << "Acceptance: " << acceptance/cycles << std::endl;
@@ -569,4 +562,6 @@ void VMC::calculate(const unsigned int maxCount, const char *destination) {
       
         runCount++;
     } // end while true
+
+    std::fclose(filePointer);
 } // end function calculate
