@@ -348,6 +348,45 @@
             \label{eq:invFourier}
         \end{equation}
 
+\subsection{GRADIENT DESCENT}
+\label{sub:gradient_descent}
+    The method of gradient descent aims to minimize a function $f$ with respect
+    to its $n$ parameters $\alpha_1,\dots,\alpha_n$. The idea is to blindly
+    follow a portion of the gradient of the function giving the following
+    estimate for the minimum
+        \begin{equation}
+            \begin{pmatrix}
+                \alpha^{\text{new}}_1 \\
+                \vdots \\
+                \alpha^{\text{new}}_n \\
+            \end{pmatrix} = 
+            \begin{pmatrix}
+                \alpha^{\text{old}}_1 \\
+                \vdots \\
+                \alpha^{\text{old}}_n \\
+            \end{pmatrix} - \gamma
+            \begin{pmatrix}
+                \prd{x^{\text{old}}_1}[f] \\
+                \vdots \\
+                \prd{x^{\text{old}}_n}[f]
+            \end{pmatrix}
+            \label{eq:stepepestupdate}
+        \end{equation}
+    with $\gamma$ being the step-size determining the how much(portion) of the
+    gradient to follow. \\
+    One may have constant step-size or use for instance the Barzilai-Borwein
+    method which updates the step-size by
+        \begin{equation}
+            \gamma_j = \frac{\left(\vec{\alpha}_j -
+            \vec{\alpha}_{j-1}\right)^T\left(\nabla_nf(\vec{\alpha}_j) -
+            \nabla_nf(\vec{\alpha}_{j-1})\right)}{\abs{\nabla_nf(\vec{\alpha}_j)
+            - \nabla_nf(\vec{\alpha}_{j-1})}^2}
+            \label{eq:barzilaiborwein}
+        \end{equation}
+    where $j$ indicates the step (new for $j$ and old for $j-1$). \\
+    So we need either just one initial guess for the minimum, or two in case of
+    \Autoref{eq:barzilaiborwein}.
+
 \subsection{CONJUGATE GRADIENT METHOD}
 \label{sub:conjugate_gradient_method}
     Suppose we have a linear system defined as

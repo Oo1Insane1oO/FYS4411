@@ -47,21 +47,9 @@ class VMC {
         virtual ~VMC ();
 
         unsigned int dim, maxIterations;
-        double alpha, beta, energy, energySq, step;
+        double alpha, beta, energy, energySq, step, kineticEnergy,
+               potentialEnergy;
         Eigen::MatrixXd newAlphaBeta, oldAlphaBeta;
-
-        void diff(const Eigen::MatrixXd&, Eigen::MatrixXd&);
-        void updateDiff(const Eigen::MatrixXd&, Eigen::MatrixXd&, unsigned
-                int);
-        double diff2(Eigen::MatrixXd&, Eigen::MatrixXd&, const
-                Eigen::MatrixXd&, double);
-
-        double localEnergy2(const Eigen::MatrixXd&, const Eigen::MatrixXd&,
-                const Eigen::MatrixXd&, const Eigen::MatrixXd&, const
-                Eigen::MatrixXd&);
-        double localEnergy2(const Eigen::MatrixXd &R, bool=true);
-        double localEnergyDiff(Eigen::MatrixXd&, Eigen::MatrixXd&, const
-                Eigen::MatrixXd&, bool=true);
 
         void oneBodyFirstDerivativeRatio(Eigen::MatrixXd&, const
                 Eigen::MatrixXd&, const unsigned int, const unsigned int);
@@ -69,8 +57,11 @@ class VMC {
                 int, const unsigned int);
         double calculateLocalEnergy(const Eigen::MatrixXd&, const
                 Eigen::MatrixXd&, const Eigen::MatrixXd&, const
+                Eigen::MatrixXd&, const Eigen::MatrixXd&);
+        double calculateKineticEnergy(const Eigen::MatrixXd&, const
                 Eigen::MatrixXd&, const Eigen::MatrixXd&, const
                 Eigen::MatrixXd&, const Eigen::MatrixXd&);
+        double calculatePotentialEnergy(const Eigen::MatrixXd&);
 
         void jastrowFirstDerivativeRatio(Eigen::MatrixXd&, const
                 Eigen::MatrixXd&, const unsigned int);

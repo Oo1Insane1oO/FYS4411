@@ -99,7 +99,7 @@ int main(int argc, char** argv) {
         std::istream_iterator<int> start(stringBuffer), end;
         std::seed_seq seedSequence(start, end);
         std::mt19937_64 generator(seedSequence);
-        std::uniform_real_distribution<double> dist(0.1,1.3);
+        std::uniform_real_distribution<double> dist(0.8,1.1);
         mySeed = std::chrono::high_resolution_clock::now() .
             time_since_epoch().count();
         myAlpha = dist(generator);
@@ -156,13 +156,13 @@ int main(int argc, char** argv) {
 //         std::chrono::duration_cast<std::chrono::seconds>(end-begin).count()
 //         << std::endl;
 
-//     std::cout << std::setprecision(10) << "<E> = " << vmcObj->energy << ", " <<
-//         "<E^2> = " << vmcObj->energySq << std::endl;
-//     std::cout << std::setprecision(10) << "<E^2> - <E>^2 = " <<
-//         (vmcObj->energySq - pow(vmcObj->energy,2))/maxIterations << std::endl;
+    std::cout << std::setprecision(10) << "<E> = " << vmcObj->energy << ", " <<
+        "<E^2> = " << vmcObj->energySq << std::endl;
+    std::cout << std::setprecision(10) << "<E^2> - <E>^2 = " <<
+        (vmcObj->energySq - pow(vmcObj->energy,2))/maxIterations << std::endl;
 // 
-//     std::cout << "alpha: " << vmcObj->alpha << ", beta: " << vmcObj->beta <<
-//         std::endl;
+    std::cout << "alpha: " << vmcObj->alpha << ", beta: " << vmcObj->beta <<
+        std::endl;
 
     // free objects
     delete b;

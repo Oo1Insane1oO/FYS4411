@@ -137,26 +137,23 @@ double coulombFactor(const Eigen::MatrixXd &R) {
     return C;
 } // end function coulombFactor
 
-double VMC::calculateLocalEnergy(const Eigen::MatrixXd &waveD, const
+double VMC::calculateKineticEnergy(const Eigen::MatrixXd &waveD, const
         Eigen::MatrixXd &waveU, const Eigen::MatrixXd &waveInvD, const
-        Eigen::MatrixXd &waveInvU, const Eigen::MatrixXd &R, const
-        Eigen::MatrixXd &derOB, const Eigen::MatrixXd &derJ) {
-    /* Analytic expression for local energy */
+        Eigen::MatrixXd &waveInvU, const Eigen::MatrixXd &R) {
+    /* Analytic expression for kinetic part of local energy */
     double E = 0;
     unsigned int half = R.rows()/2;
     Eigen::MatrixXd tmp = Eigen::MatrixXd::Zero(1,dim);
     for (unsigned int k = 0; k < R.rows(); ++k) {
-        /* Potential part */
-        E += 0.5*b->omega*b->omega*R.row(k).squaredNorm();
+        /* One-body Laplacian part*/
         for (unsigned int j = 0; j < R.rows(); j+=2) {
-            /* One-body Laplacian part*/
             if (k < half) {
                 /* spin down */
-                E -= 0.5 * oneBodySecondDerivativeRatio(R,k,j) * waveD(k,j/2) *
+                E += 0.5 * oneBodySecondDerivativeRatio(R,k,j) * waveD(k,j/2) *
                     waveInvD(j/2,k);
             } else {
                 /* spin up */
-                E -= 0.5 * oneBodySecondDerivativeRatio(R,k,j+1) *
+                E += 0.5 * oneBodySecondDerivativeRatio(R,k,j+1) *
                     waveU(k-half,j/2) * waveInvU(j/2,k-half);
             } // end ifelse
         } // end forj
@@ -164,7 +161,7 @@ double VMC::calculateLocalEnergy(const Eigen::MatrixXd &waveD, const
     if (jastrow) {
         /* set Jastrow part */
         for (unsigned int k = 0; k < R.rows(); ++k) {
-            E -= 0.5*jastrowSecondDerivativeRatio(R,k);
+            E += 0.5*jastrowSecondDerivativeRatio(R,k);
             tmp.setZero();
             for (unsigned int j = 0; j < R.rows(); j+=2) {
                 if (k<half) {
@@ -175,60 +172,21 @@ double VMC::calculateLocalEnergy(const Eigen::MatrixXd &waveD, const
                     tmp += buf * waveU(k-half,j/2) * waveInvU(j/2,k-half);
                 } // end if
             } // end forj
-            E -= tmp.row(0).dot(jbuf.row(k));
+            E += tmp.row(0).dot(jbuf.row(k));
         } // end fork
     } // end if
+    return E;
+} // end function calculateKineticEnergy
+
+double VMC::calculatePotentialEnergy(const Eigen::MatrixXd &R) {
+    /* Analytic expression for potential part of local energy */
+    double E;
+    for (unsigned int k = 0; k < R.rows(); ++k) {
+        /* Potential part */
+        E += 0.5*b->omega*b->omega*R.row(k).squaredNorm();
+    } // end fork
     return (coulomb ? E + coulombFactor(R) : E);
-} // end if
-
-double VMC::localEnergyDiff(Eigen::MatrixXd &psiD, Eigen::MatrixXd &psiU, const
-        Eigen::MatrixXd &R, bool coulomb) {
-    /* calculate local energy electrons */
-    double dx = 1e-5;
-    
-    // set kinetic part and calculate potential
-    double diff = -diff2(psiD, psiU, R, dx) /
-        (psiD.determinant()*psiU.determinant());
-    for (unsigned int i = 0; i < R.rows(); ++i) {
-        /* calculate potential part */
-        diff += pow(b->omega,2) * R.row(i).squaredNorm();
-    } // end fori
-    diff *= 0.5;
-
-    // calculate coulomb part
-    if (coulomb) {
-        for (unsigned int i = 0; i < R.rows(); ++i) {
-            for (unsigned int j = i+1; j < R.rows(); ++j) {
-                diff += 1/(R.row(i) - R.row(j)).norm();
-            } // end forj
-        } // end fori
-    } // end if
-    return diff;
-} // end function localEnergyDiff
-
-double VMC::diff2(Eigen::MatrixXd &psiD, Eigen::MatrixXd &psiU, const
-        Eigen::MatrixXd &R, double dx) {
-    /* calculate second derivative for all positions in R using central
-     * difference scheme */
-    double diff = 0;
-    double tmpDiff;
-    Eigen::MatrixXd Rpm = R;
-    b->setTrialWaveFunction(psiD,psiU,R,alpha);
-    double mid = 2*psiD.determinant()*psiU.determinant();
-    for (unsigned int i = 0; i < R.rows(); ++i) {
-        for (unsigned int j = 0; j < R.cols(); ++j) {
-            Rpm(i,j) += dx;
-            b->setTrialWaveFunction(psiD,psiU,Rpm,alpha);
-            tmpDiff = psiD.determinant() * psiU.determinant() - mid;
-            Rpm(i,j) -= 2*dx;
-            b->setTrialWaveFunction(psiD,psiU,Rpm,alpha);
-            tmpDiff += psiD.determinant() * psiU.determinant();
-            diff += tmpDiff / (dx*dx);
-            Rpm(i,j) += dx;
-        } // end forj
-    } // end fori
-    return diff;
-} // end function diff2
+} // end function calculatePotentialEnergy
 
 double VMC::Afunc(const Eigen::MatrixXd &wave, const Eigen::MatrixXd &waveInv,
         const Eigen::MatrixXd &R, const unsigned int iStart) {
@@ -334,7 +292,8 @@ void VMC::initializePositions(Eigen::MatrixXd &R) {
 void VMC::calculate(const unsigned int maxCount, const char *destination) {
     /* function for running Monte Carlo integration */
     unsigned int halfIdx, uIdx, randomDim;
-    double testRatio, tmpEnergy, acceptance, tmpA, tmpB, A, ELA, B, ELB;
+    double testRatio, tmpEnergy, tmpPotentialEnergy, tmpKineticEnergy,
+           acceptance, tmpA, tmpB, A, ELA, B, ELB;
 
     double determinantRatioD = 1;
     double determinantRatioU = 1;
@@ -389,6 +348,8 @@ void VMC::calculate(const unsigned int maxCount, const char *destination) {
         // reset values used in Monte Carlo cycle
         energy = 0;
         energySq = 0;
+        potentialEnergy = 0;
+        kineticEnergy = 0;
         A = 0;
         ELA = 0;
         B = 0;
@@ -498,10 +459,14 @@ void VMC::calculate(const unsigned int maxCount, const char *destination) {
             } // end if
        
             // Accumulate local energy and local energy squared
-            tmpEnergy = calculateLocalEnergy(oldD, oldU, oldInvD, oldInvU,
-                    oldPositions, derOB, derJ);
+            tmpPotentialEnergy = calculatePotentialEnergy(oldPositions);
+            tmpKineticEnergy = calculateKineticEnergy(oldD, oldU, oldInvD,
+                    oldInvU, oldPositions);
+            tmpEnergy = tmpPotentialEnergy - tmpKineticEnergy;
             energy += tmpEnergy;
-            energySq = tmpEnergy*tmpEnergy;
+            energySq += tmpEnergy*tmpEnergy;
+            potentialEnergy += tmpPotentialEnergy;
+            kineticEnergy += tmpKineticEnergy;
 
             // split spin up/down and calculate expected value(local) of first
             // derivative of wave function with respect to alpha
@@ -522,6 +487,8 @@ void VMC::calculate(const unsigned int maxCount, const char *destination) {
         // calculate final expectation values
         energy /= cycles;
         energySq /= cycles;
+        potentialEnergy /= cycles;
+        kineticEnergy /= cycles;
         A /= cycles;
         ELA /= cycles;
         ELB /= cycles;
@@ -531,19 +498,21 @@ void VMC::calculate(const unsigned int maxCount, const char *destination) {
         if (destination) {
             std::fwrite(&energy, sizeof(double), 1, filePointer);
             std::fwrite(&energySq, sizeof(double), 1, filePointer);
+            std::fwrite(&potentialEnergy, sizeof(double), 1, filePointer);
+            std::fwrite(&kineticEnergy, sizeof(double), 1, filePointer);
             std::fwrite(&alpha, sizeof(double), 1, filePointer);
             std::fwrite(&beta, sizeof(double), 1, filePointer);
         } // end if
 
-//         std::cout << "Acceptance: " << acceptance/cycles << std::endl;
+        std::cout << "Acceptance: " << acceptance/cycles << std::endl;
 
         // optimalize with steepest descent method
         steepb(0) = 2*(ELA - energy*A);
         steepb(1) = 2*(ELB - energy*B);
         newAlphaBeta = oldAlphaBeta - steepStep*steepb;
 
-//         std::cout << std::setprecision(10) << "alpha: " << alpha << " beta: "
-//             << beta << " Energy: " << energy << std::endl;
+        std::cout << std::setprecision(10) << "alpha: " << alpha << " beta: "
+            << beta << " Energy: " << energy << std::endl;
 
         // update stepsize in steepest descent according to two-step size
         // gradient
