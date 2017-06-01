@@ -506,6 +506,7 @@ void VMC::calculate(const unsigned int maxCount, const char *destination) {
         ELA /= cycles;
         ELB /= cycles;
         B /= cycles;
+        acceptance /= cycles;
 
         // write to file
         if (destination) {
@@ -513,19 +514,20 @@ void VMC::calculate(const unsigned int maxCount, const char *destination) {
             std::fwrite(&energySq, sizeof(double), 1, filePointer);
             std::fwrite(&potentialEnergy, sizeof(double), 1, filePointer);
             std::fwrite(&kineticEnergy, sizeof(double), 1, filePointer);
+            std::fwrite(&acceptance, sizeof(double), 1, filePointer);
             std::fwrite(&alpha, sizeof(double), 1, filePointer);
             std::fwrite(&beta, sizeof(double), 1, filePointer);
         } // end if
 
-        std::cout << "Acceptance: " << acceptance/cycles << std::endl;
+//         std::cout << "Acceptance: " << acceptance/cycles << std::endl;
 
         // optimalize with steepest descent method
         steepb(0) = 2*(ELA - energy*A);
         steepb(1) = 2*(ELB - energy*B);
         newAlphaBeta = oldAlphaBeta - steepStep*steepb;
 
-        std::cout << std::setprecision(10) << "alpha: " << alpha << " beta: "
-            << beta << " Energy: " << energy << std::endl;
+//         std::cout << std::setprecision(10) << "alpha: " << alpha << " beta: "
+//             << beta << " Energy: " << energy << std::endl;
 
         // update stepsize in steepest descent according to two-step size
         // gradient
