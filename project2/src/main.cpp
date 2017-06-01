@@ -16,13 +16,11 @@
 
 int main(int argc, char** argv) {
     /* main */
-
     int myRank, numProcs;
 
     MPI_Init(&argc, &argv);
     MPI_Comm_rank(MPI_COMM_WORLD, &myRank);
     MPI_Comm_size(MPI_COMM_WORLD, &numProcs);
-    MPI_Request req;
 
     if (argc < 9) {
         /* Print usage if number of command line arguments are to few */
@@ -37,8 +35,8 @@ int main(int argc, char** argv) {
             "    " << "tests: (1/0) indicating to run tests or not\n" <<
             "    " << "importance sampling: (1/0) indicating to run with importance sampling or not\n" <<
             "    " << "Coulomb: (1/0) Indicating to run with Coulomb interaction or not\n" <<
-            "    " << "Jastrow: (1/0) Indicating to run with Jastrow factor or not" <<
-            "    " << "Destinaiton: (string) Destination folder for saving files (can be ignored)" <<
+            "    " << "Jastrow: (1/0) Indicating to run with Jastrow factor or not\n" <<
+            "    " << "Destination: (string) Destination folder for saving files (can be ignored)" <<
             std::endl;
         exit(1);
     } else if (numProcs < 1) {
@@ -67,7 +65,7 @@ int main(int argc, char** argv) {
     Eigen::initParallel();
 
     // divide number of variational runs between the processes evenly
-    unsigned int maxCount = 1000;
+    int maxCount = 1000;
     float tmpNum = (float)maxCount / numProcs;
     unsigned int myMaxCount = (myRank < maxCount % numProcs ? ceil(tmpNum) :
             floor(tmpNum));
@@ -99,16 +97,17 @@ int main(int argc, char** argv) {
         std::istream_iterator<int> start(stringBuffer), end;
         std::seed_seq seedSequence(start, end);
         std::mt19937_64 generator(seedSequence);
-        std::uniform_real_distribution<double> dist(0.8,1.1);
+        std::uniform_real_distribution<double> dista(0.8,1.0);
+        std::uniform_real_distribution<double> distb(0.3,0.5);
         mySeed = std::chrono::high_resolution_clock::now() .
             time_since_epoch().count();
-        myAlpha = dist(generator);
-        myBeta = dist(generator);
+        myAlpha = dista(generator);
+        myBeta = distb(generator);
         for (int p = 1; p < numProcs; ++p) {
             seedbuf = std::chrono::high_resolution_clock::now() .
                 time_since_epoch().count();
-            alphaBuf = dist(generator);
-            betaBuf = dist(generator);
+            alphaBuf = dista(generator);
+            betaBuf = distb(generator);
             MPI_Send(&seedbuf, 1, MPI_LONG_LONG, p, 0, MPI_COMM_WORLD);
             MPI_Send(&alphaBuf, 1, MPI_DOUBLE, p, 1, MPI_COMM_WORLD);
             MPI_Send(&betaBuf, 1, MPI_DOUBLE, p, 2, MPI_COMM_WORLD);
@@ -123,7 +122,8 @@ int main(int argc, char** argv) {
                 MPI_STATUS_IGNORE);
     } // end ifelse
 
-    VMC *vmcObj = new VMC(b, myAlpha, myBeta, 2, step, maxIterations, mySeed);
+//     VMC *vmcObj = new VMC(b, myAlpha, myBeta, 2, step, maxIterations, mySeed);
+    VMC *vmcObj = new VMC(b, 1, 0.40, 2, step, maxIterations, mySeed);
     vmcObj->setImportanceSampling(imp);
     vmcObj->setCoulombInteraction(coul);
     vmcObj->setJastrow(jast);
@@ -132,6 +132,8 @@ int main(int argc, char** argv) {
         /* run tests */
         Tests testObj = Tests(b,vmcObj,num);
         testObj.run_tests(t);
+
+        MPI_Finalize();
         exit(1);
     } // end if
 
@@ -148,7 +150,8 @@ int main(int argc, char** argv) {
     } // end fi 
 
     // Run Monte Carlo simulation
-    vmcObj->calculate(myMaxCount, myFileName);
+//     vmcObj->calculate(myMaxCount, myFileName);
+    vmcObj->calculate(1, myFileName);
 
 //     std::chrono::steady_clock::time_point end;
 //     end = std::chrono::steady_clock::now();

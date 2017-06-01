@@ -21,15 +21,13 @@
 
 VMC::VMC(Basis *B, double alp, double bet, unsigned int d, double s, unsigned
         int max, long long int seed) {
-    alpha = alp;
-    beta = bet;
     b = B;
     dim = d;
     step = s;
     maxIterations = max;
 
-    aw = alpha*b->omega;
-    awsqr = sqrt(aw);
+    setAlpha(alp);
+    setBeta(bet);
 
     imp = false;
     coulomb = false;
@@ -49,6 +47,18 @@ VMC::VMC(Basis *B, double alp, double bet, unsigned int d, double s, unsigned
 VMC::~VMC() {
     delete meth;
 } // end deconstructor
+
+void VMC::setAlpha(double a) {
+    /* set alpha parameter */
+    alpha = a;
+    aw = alpha*b->omega;
+    awsqr = sqrt(aw);
+} // end function setAlpha
+
+void VMC::setBeta(double b) {
+    /* set beta parameter */
+    beta = b;
+} // end function setBeta
 
 void VMC::setImportanceSampling(bool a) {
     /* switch importance sampling on */
@@ -180,7 +190,7 @@ double VMC::calculateKineticEnergy(const Eigen::MatrixXd &waveD, const
 
 double VMC::calculatePotentialEnergy(const Eigen::MatrixXd &R) {
     /* Analytic expression for potential part of local energy */
-    double E;
+    double E = 0;
     for (unsigned int k = 0; k < R.rows(); ++k) {
         /* Potential part */
         E += 0.5*b->omega*b->omega*R.row(k).squaredNorm();
@@ -192,16 +202,18 @@ double VMC::Afunc(const Eigen::MatrixXd &wave, const Eigen::MatrixXd &waveInv,
         const Eigen::MatrixXd &R, const unsigned int iStart) {
     /* first derivative of wave function with respect to alpha */
     double A = 0;
-    double n;
+    int n;
+    double tmp;
     for (unsigned int i = 0; i < 2*R.rows(); i+=2) {
         for (unsigned int j = 0; j < R.rows(); ++j) {
-            A -= 0.5*b->omega*R.row(j).squaredNorm();
+            tmp = -0.5*b->omega*R.row(j).squaredNorm();
             for (unsigned int d = 0; d < R.cols(); ++d) {
                 n = *(b->states[i+iStart][d]);
-                A += 1/(2*alpha*sqrt(alpha)) * n*(1+R(j,d)*(n-1) *
-                        sqrt(b->omega/alpha) *
+                tmp += 1/(2*alpha*sqrt(alpha)) * n*(1 +
+                        R(j,d)*(n-1)*sqrt(b->omega/alpha) *
                         H(awsqr*R(j,d),n-2)/H(awsqr*R(j,d),n));
             } // end ford
+            A += tmp * wave(j,i/2) * waveInv(i/2,j);
         } // end forj
     } // end fori
     return A;
@@ -514,21 +526,15 @@ void VMC::calculate(const unsigned int maxCount, const char *destination) {
         std::cout << std::setprecision(10) << "alpha: " << alpha << " beta: "
             << beta << " Energy: " << energy << std::endl;
 
-        // update stepsize in steepest descent according to two-step size
-        // gradient
-        steepStep = (newAlphaBeta.row(0) -
-                oldAlphaBeta.row(0)).transpose().dot(steepb.row(0) -
-                prevSteepb.row(0)) / (steepb - prevSteepb).squaredNorm();
-
         // update variational parameters
-        alpha = newAlphaBeta(0);
-        beta = newAlphaBeta(1);
+        setAlpha(newAlphaBeta(0));
+        setBeta(newAlphaBeta(1));
         prevSteepb = steepb;
         oldAlphaBeta = newAlphaBeta;
-        aw = alpha*b->omega;
-        awsqr = sqrt(aw);
     } // end for runCount
 
     // close file for good measures
-    std::fclose(filePointer);
+    if (destination) {
+        std::fclose(filePointer);
+    } // end if
 } // end function calculate

@@ -55,9 +55,6 @@ class VMC {
                 Eigen::MatrixXd&, const unsigned int, const unsigned int);
         double oneBodySecondDerivativeRatio(const Eigen::MatrixXd&, const unsigned
                 int, const unsigned int);
-        double calculateLocalEnergy(const Eigen::MatrixXd&, const
-                Eigen::MatrixXd&, const Eigen::MatrixXd&, const
-                Eigen::MatrixXd&, const Eigen::MatrixXd&);
         double calculateKineticEnergy(const Eigen::MatrixXd&, const
                 Eigen::MatrixXd&, const Eigen::MatrixXd&, const
                 Eigen::MatrixXd&, const Eigen::MatrixXd&);
@@ -73,6 +70,9 @@ class VMC {
         void setAllOn();
 
         void calculate(const unsigned int, const char* = NULL);
+
+        void setAlpha(double);
+        void setBeta(double);
 };
 
 #endif /* VMC_H */

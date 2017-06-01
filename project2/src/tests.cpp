@@ -68,6 +68,9 @@ bool Tests::test_energy() {
         E += *(b->states[i][4]);
     } // end fori
     v->setCoulombInteraction(false);
+    v->setJastrow(false);
+    v->setAlpha(1);
+    v->setBeta(1000000);
     v->calculate(1);
     return ((fabs(v->energy-E)<=eps &&
                 fabs(m->variance(v->energy,v->energySq))<=eps) ? true : false);
@@ -176,10 +179,12 @@ void Tests::run_tests(int t) {
         } // end ifelse
         if(test_energy()) {
             std::cout << "Energy unperturbed good" << std::endl;
-            std::cout << std::setprecision(10) << "  Energy is: " << v->energy << std::endl;
+            std::cout << std::setprecision(10) << "  Energy is: " << v->energy
+                << std::endl;
         } else { 
             std::cout << "Energy unperturbed wrong" << std::endl;
-            std::cout << std::setprecision(10) << "  Energy is: " << v->energy << std::endl;
+            std::cout << std::setprecision(10) << "  Energy is: " << v->energy
+                << std::endl;
         } // end ifelse
         if(test_determinantratio()) {
             std::cout << "Determinant ratio good" << std::endl;
@@ -221,6 +226,5 @@ void Tests::run_tests(int t) {
         if (t==2) {
             b->printStates();
         } // end ift
-        exit(1);
     } // end if t
 } // end function run_tests
