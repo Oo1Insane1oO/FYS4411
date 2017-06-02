@@ -320,13 +320,16 @@ void VMC::calculate(const unsigned int maxCount, const char *destination) {
     unsigned int halfSize = oldPositions.rows()/2;
     double steepStep = 0.01;
 
-    // File, runcount and buffer(for filename)
-    FILE *filePointer;
+    // File, runcountm, buffer(for filename) and struct as write buffer
+    std::ofstream outFile;
     char tmpf[100];
+    struct writeArray {
+        double a0, a1, a2, a3, a4, a5, a6;
+    } wa;
 
     if (destination) {
         sprintf(tmpf, "%s.bin", destination);
-        filePointer = std::fopen(tmpf, "ab+");
+        outFile.open(tmpf, std::ios::out | std::ios::binary);
     } // end ifelseif
 
     for (unsigned int runCount = 0; runCount < maxCount; ++runCount) {
@@ -509,14 +512,15 @@ void VMC::calculate(const unsigned int maxCount, const char *destination) {
         acceptance /= cycles;
 
         // write to file
-        if (destination) {
-            std::fwrite(&energy, sizeof(double), 1, filePointer);
-            std::fwrite(&energySq, sizeof(double), 1, filePointer);
-            std::fwrite(&potentialEnergy, sizeof(double), 1, filePointer);
-            std::fwrite(&kineticEnergy, sizeof(double), 1, filePointer);
-            std::fwrite(&acceptance, sizeof(double), 1, filePointer);
-            std::fwrite(&alpha, sizeof(double), 1, filePointer);
-            std::fwrite(&beta, sizeof(double), 1, filePointer);
+        if (outFile.is_open()) {
+            wa.a0 = energy;
+            wa.a1 = energySq;
+            wa.a2 = potentialEnergy;
+            wa.a3 = kineticEnergy;
+            wa.a4 = acceptance;
+            wa.a5 = alpha;
+            wa.a6 = beta;
+            outFile.write(reinterpret_cast<char*>(&wa), sizeof(wa));
         } // end if
 
 //         std::cout << "Acceptance: " << acceptance/cycles << std::endl;
@@ -549,6 +553,6 @@ void VMC::calculate(const unsigned int maxCount, const char *destination) {
 
     // close file for good measures
     if (destination) {
-        std::fclose(filePointer);
+        outFile.close();
     } // end if
 } // end function calculate

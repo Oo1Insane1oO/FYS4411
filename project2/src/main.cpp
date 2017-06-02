@@ -150,7 +150,8 @@ int main(int argc, char** argv) {
     } // end fi 
 
     // Run Monte Carlo simulation
-    vmcObj->calculate(myMaxCount, myFileName);
+//     vmcObj->calculate(myMaxCount, myFileName);
+    vmcObj->calculate(1, myFileName);
 
 //     std::chrono::steady_clock::time_point end;
 //     end = std::chrono::steady_clock::now();
