@@ -318,7 +318,7 @@ void VMC::calculate(const unsigned int maxCount, const char *destination) {
     // set sizes
     initializeCalculationVariables();
     unsigned int halfSize = oldPositions.rows()/2;
-    double steepStep = 0.01;
+    double steepStep = 0.001;
 
     // File, runcountm, buffer(for filename) and struct as write buffer
     std::ofstream outFile;
@@ -541,7 +541,7 @@ void VMC::calculate(const unsigned int maxCount, const char *destination) {
                     oldAlphaBeta.row(0)).transpose().dot(steepb.row(0) -
                     prevSteepb.row(0)) / stepNorm;
         } else {
-            steepStep = 0.01;
+            steepStep = 0.001;
         } // end if
 
         // update variational parameters
