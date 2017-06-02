@@ -11,4 +11,4 @@ bin/*
 *.o
 
 # ignore data files
-data/*
+# data/*
