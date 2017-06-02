@@ -22,6 +22,32 @@ clean:
 	rm -rf $(OBJ_DIR)
 	rm $(EXEC)
 
+cleanData:
+	rm data/w1/N2/*
+	rm data/w1/N6/*
+	rm data/w1/N12/*
+	rm data/w1/N20/*
+	rm data/w01/N2/*
+	rm data/w01/N6/*
+	rm data/w01/N12/*
+	rm data/w01/N20/*
+	rm data/w02/N2/*
+	rm data/w02/N6/*
+	rm data/w02/N12/*
+	rm data/w02/N20/*
+	rm data/w03/N2/*
+	rm data/w03/N6/*
+	rm data/w03/N12/*
+	rm data/w03/N20/*
+	rm data/w04/N2/*
+	rm data/w04/N6/*
+	rm data/w04/N12/*
+	rm data/w04/N20/*
+	rm data/w05/N2/*
+	rm data/w05/N6/*
+	rm data/w05/N12/*
+	rm data/w05/N20/*
+
 .PHONY: clean build
 
 $(EXEC): $(OBJECTS)

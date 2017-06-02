@@ -329,7 +329,7 @@ void VMC::calculate(const unsigned int maxCount, const char *destination) {
 
     if (destination) {
         sprintf(tmpf, "%s.bin", destination);
-        outFile.open(tmpf, std::ios::out | std::ios::binary);
+        outFile.open(tmpf, std::ios::out | std::ios::binary | std::ios::app);
     } // end ifelseif
 
     for (unsigned int runCount = 0; runCount < maxCount; ++runCount) {
