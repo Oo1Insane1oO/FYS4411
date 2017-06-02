@@ -460,7 +460,7 @@ void VMC::calculate(const unsigned int maxCount, const char *destination) {
                 newPositions.row(i) = oldPositions.row(i);
                 newWave->row(halfIdx) = oldWave->row(halfIdx);
                 if (imp) {
-                    qForceOld.row(i) = qForceNew.row(i);
+                    qForceNew.row(i) = qForceOld.row(i);
                 } // end if
             } // end if
 

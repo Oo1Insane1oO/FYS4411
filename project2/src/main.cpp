@@ -141,8 +141,8 @@ int main(int argc, char** argv) {
 //     std::chrono::steady_clock::time_point begin;
 //     begin = std::chrono::steady_clock::now();
 
-    std::cout << "Starting :" << myRank << " " << myAlpha << " " << myBeta <<
-        std::endl;
+//     std::cout << "Starting :" << myRank << " " << myAlpha << " " << myBeta <<
+//         std::endl;
     // create filename for each process
     char myFileName[100];
     if (filename) {
@@ -150,8 +150,7 @@ int main(int argc, char** argv) {
     } // end fi 
 
     // Run Monte Carlo simulation
-//     vmcObj->calculate(myMaxCount, myFileName);
-    vmcObj->calculate(1, myFileName);
+    vmcObj->calculate(myMaxCount, myFileName);
 
 //     std::chrono::steady_clock::time_point end;
 //     end = std::chrono::steady_clock::now();
