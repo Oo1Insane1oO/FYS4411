@@ -36,7 +36,7 @@ int main(int argc, char** argv) {
             "    " << "importance sampling: (1/0) indicating to run with importance sampling or not\n" <<
             "    " << "Coulomb: (1/0) Indicating to run with Coulomb interaction or not\n" <<
             "    " << "Jastrow: (1/0) Indicating to run with Jastrow factor or not\n" <<
-            "    " << "Destination: (string) Destination folder for saving files (can be ignored)" <<
+            "    " << "Destination: (string) Destination folder and filename for saving files (will not write to file if ignored)" <<
             std::endl;
         exit(1);
     } else if (numProcs < 1) {
@@ -80,6 +80,7 @@ int main(int argc, char** argv) {
     if (it == magicNumber.end()) {
         std::cout << "make sure num is a magic number N=2,6,12,20,30,42..." <<
             std::endl;
+        MPI_Finalize();
         exit(1);
     } // end if
     
@@ -143,13 +144,13 @@ int main(int argc, char** argv) {
     std::cout << "Starting :" << myRank << " " << myAlpha << " " << myBeta <<
         std::endl;
     // create filename for each process
-    char myFileName[80];
+    char myFileName[100];
     if (filename) {
         sprintf(myFileName, "%sP%d", filename, myRank);
     } // end fi 
 
     // Run Monte Carlo simulation
-    vmcObj->calculate(1, myFileName);
+    vmcObj->calculate(myMaxCount, myFileName);
 
 //     std::chrono::steady_clock::time_point end;
 //     end = std::chrono::steady_clock::now();

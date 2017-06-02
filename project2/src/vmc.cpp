@@ -322,7 +322,7 @@ void VMC::calculate(const unsigned int maxCount, const char *destination) {
 
     // File, runcount and buffer(for filename)
     FILE *filePointer;
-    char tmpf[80];
+    char tmpf[100];
 
     if (destination) {
         sprintf(tmpf, "%s.bin", destination);
