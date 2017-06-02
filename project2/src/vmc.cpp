@@ -324,7 +324,7 @@ void VMC::calculate(const unsigned int maxCount, const char *destination) {
     std::ofstream outFile;
     char tmpf[100];
     struct writeArray {
-        double a0, a1, a2, a3, a4, a5, a6;
+        double a0, a1, a2;
     } wa;
 
     if (destination) {
@@ -484,6 +484,14 @@ void VMC::calculate(const unsigned int maxCount, const char *destination) {
             potentialEnergy += tmpPotentialEnergy;
             kineticEnergy += tmpKineticEnergy;
 
+            // write to file
+            if (outFile.is_open()) {
+                wa.a0 = tmpEnergy;
+                wa.a1 = tmpPotentialEnergy;
+                wa.a2 = tmpKineticEnergy;
+                outFile.write(reinterpret_cast<char*>(&wa), sizeof(wa));
+            } // end if
+
             // split spin up/down and calculate expected value(local) of first
             // derivative of wave function with respect to alpha
             tmpA = Afunc(oldD, oldInvD, oldPositions.block(0, 0, halfSize,
@@ -511,18 +519,6 @@ void VMC::calculate(const unsigned int maxCount, const char *destination) {
         B /= cycles;
         acceptance /= cycles;
 
-        // write to file
-        if (outFile.is_open()) {
-            wa.a0 = energy;
-            wa.a1 = energySq;
-            wa.a2 = potentialEnergy;
-            wa.a3 = kineticEnergy;
-            wa.a4 = acceptance;
-            wa.a5 = alpha;
-            wa.a6 = beta;
-            outFile.write(reinterpret_cast<char*>(&wa), sizeof(wa));
-        } // end if
-
 //         std::cout << "Acceptance: " << acceptance/cycles << std::endl;
 
         // optimalize with steepest descent method
@@ -541,7 +537,7 @@ void VMC::calculate(const unsigned int maxCount, const char *destination) {
                     oldAlphaBeta.row(0)).transpose().dot(steepb.row(0) -
                     prevSteepb.row(0)) / stepNorm;
         } else {
-            steepStep = 0.001;
+            steepStep = 1e-5;
         } // end if
 
         // update variational parameters
@@ -551,8 +547,10 @@ void VMC::calculate(const unsigned int maxCount, const char *destination) {
         oldAlphaBeta = newAlphaBeta;
     } // end for runCount
 
-    // close file for good measures
+    // write parameters and close file for good measures
     if (destination) {
+        outFile.write(reinterpret_cast<char*>(&alpha), sizeof(double));
+        outFile.write(reinterpret_cast<char*>(&beta), sizeof(double));
         outFile.close();
     } // end if
 } // end function calculate
