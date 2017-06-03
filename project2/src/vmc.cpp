@@ -542,7 +542,7 @@ void VMC::calculate(const unsigned int maxCount, const char *destination) {
 
 //         std::cout << std::setprecision(16) << "alpha: " << alpha << " beta: "
 //             << beta << " Energy: " << energy << " " << meth->variance(energy,
-//                     energySq, maxIterations) << std::endl;
+//                     energySq, maxIterations) << " " << runCount << std::endl;
 
         // update variational parameters
         setAlpha(newAlphaBeta(0));

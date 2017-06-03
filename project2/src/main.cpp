@@ -65,7 +65,7 @@ int main(int argc, char** argv) {
     Eigen::initParallel();
 
     // divide number of variational runs between the processes evenly
-    int maxCount = 700;
+    int maxCount = 400;
     float tmpNum = (float)maxCount / numProcs;
     unsigned int myMaxCount = (myRank < maxCount % numProcs ? ceil(tmpNum) :
             floor(tmpNum));
