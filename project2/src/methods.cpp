@@ -63,10 +63,10 @@ double Methods::determinantRatio(const Eigen::MatrixXd &newElement, const
     return R;
 } // end function determinantRatio
 
-double Methods::variance(double p,double psq) {
+double Methods::variance(double p,double psq, int N) {
     /* calculate variance given <p> and <p^2>, that is expectation value and
      * expectation value squared */
-    return psq - p*p;
+    return 1./N * (psq - p*p);
 } // end function variance
 
 Eigen::MatrixXd Methods::conjugateGradient(const Eigen::MatrixXd &A, const

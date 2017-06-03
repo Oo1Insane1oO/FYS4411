@@ -73,6 +73,9 @@ void VMC::setCoulombInteraction(bool a) {
 void VMC::setJastrow(bool a) {
     /* switch Jastrow factor on */
     jastrow = a;
+    if (!a) {
+        beta = 1e6;
+    } // end if
 } // end function setCoulombInteraction
 
 void VMC::setAllOn() {
@@ -131,12 +134,12 @@ double VMC::jastrowSecondDerivativeRatio(const Eigen::MatrixXd &R, const
                     2*beta*rkj/denom);
         } // end if
     } // end forj
-    jbuf.setZero();
+    jbuf.row(k).setZero();
     jastrowFirstDerivativeRatio(jbuf,R,k);
     return ratio + jbuf.row(k).squaredNorm();
 } // end function jastrowSecondDerivativeRatio
 
-double coulombFactor(const Eigen::MatrixXd &R) {
+double VMC::coulombFactor(const Eigen::MatrixXd &R) {
     // Calculate coulomb interaction */
     double C = 0;
     for (unsigned int i = 0; i < R.rows(); ++i) {
@@ -182,6 +185,8 @@ double VMC::calculateKineticEnergy(const Eigen::MatrixXd &waveD, const
                     tmp += buf * waveU(k-half,j/2) * waveInvU(j/2,k-half);
                 } // end if
             } // end forj
+
+            // jbuf is set in jastrowSecondDerivativeRatio
             E += tmp.row(0).dot(jbuf.row(k));
         } // end fork
     } // end if
@@ -209,9 +214,8 @@ double VMC::Afunc(const Eigen::MatrixXd &wave, const Eigen::MatrixXd &waveInv,
             tmp = -0.5*b->omega*R.row(j).squaredNorm();
             for (unsigned int d = 0; d < R.cols(); ++d) {
                 n = *(b->states[i+iStart][d]);
-                tmp += 1/(2*alpha*sqrt(alpha)) * n*(1 +
-                        R(j,d)*(n-1)*sqrt(b->omega/alpha) *
-                        H(awsqr*R(j,d),n-2)/H(awsqr*R(j,d),n));
+                tmp += n/(2*alpha) * (1 + R(j,d) * (n-1) * sqrt(b->omega/alpha)
+                        * H(awsqr*R(j,d),n-2)/H(awsqr*R(j,d),n));
             } // end ford
             A += tmp * wave(j,i/2) * waveInv(i/2,j);
         } // end forj
@@ -261,16 +265,27 @@ void VMC::initializeCalculationVariables() {
     // variational parameters
     newAlphaBeta = Eigen::VectorXd::Zero(2);
     oldAlphaBeta = Eigen::VectorXd::Zero(2);
-        
+
+    // quantum force
     if (imp) {
         qForceOld = Eigen::MatrixXd::Zero(oldPositions.rows(),
                 oldPositions.cols());
         qForceNew = Eigen::MatrixXd::Zero(oldPositions.rows(),
                 oldPositions.cols());
     } // end if
-    
-    buf = Eigen::MatrixXd(1,dim);
-    jbuf = Eigen::MatrixXd(oldPositions.rows(),dim);
+
+    // first derivative one-body part
+    if (imp || jastrow) {
+        derOB = Eigen::MatrixXd::Zero(oldPositions.rows(),
+                oldPositions.cols());
+        buf = Eigen::MatrixXd::Zero(1, dim);
+    } // end if
+ 
+    // first derivative jastrow part
+    if (jastrow) {
+        derJ = Eigen::MatrixXd::Zero(oldPositions.rows(), dim);
+        jbuf = Eigen::MatrixXd::Zero(oldPositions.rows(), dim);
+    } // end if
 } // end function initializeCalculationVariables
 
 void VMC::setFirstDerivatives(const Eigen::MatrixXd &wave, const
@@ -318,7 +333,7 @@ void VMC::calculate(const unsigned int maxCount, const char *destination) {
     // set sizes
     initializeCalculationVariables();
     unsigned int halfSize = oldPositions.rows()/2;
-    double steepStep = 0.001;
+    double steepStep = 0.01;
 
     // File, runcountm, buffer(for filename) and struct as write buffer
     std::ofstream outFile;
@@ -338,9 +353,8 @@ void VMC::calculate(const unsigned int maxCount, const char *destination) {
         newPositions = oldPositions;
 
         // set variational parameter vector
-        oldAlphaBeta(0) = alpha;
-        oldAlphaBeta(1) = beta;
-        newAlphaBeta = oldAlphaBeta;
+        newAlphaBeta(0) = alpha;
+        newAlphaBeta(1) = beta;
 
         // initialize Slater matrix and its inverse
         b->setTrialWaveFunction(oldD, oldU, oldPositions, alpha);
@@ -359,6 +373,7 @@ void VMC::calculate(const unsigned int maxCount, const char *destination) {
                 } // end if
             } // end fork
             qForceOld = 2*(derOB + derJ);
+            qForceNew = qForceOld;
         } // end if
         
         // reset values used in Monte Carlo cycle
@@ -437,12 +452,11 @@ void VMC::calculate(const unsigned int maxCount, const char *destination) {
             if (imp) {
                 /* importance sampling, calculate transition function ratio
                  * for Metropolis test */
-                testRatio *= exp(0.125*step*(qForceOld.row(i).norm() -
-                            qForceNew.row(i).norm()) +
-                        0.25*step*((oldPositions(i,0)-newPositions(i,0)) *
-                            (qForceNew(i,0)+qForceOld(i,0)) +
-                            (oldPositions(i,1)-newPositions(i,1)) *
-                            (qForceNew(i,1)+qForceOld(i,1))));
+                testRatio *= exp(-0.5*step * ((newPositions.row(i) -
+                                oldPositions.row(i) -
+                                0.5*step*qForceOld.row(i)).squaredNorm() -
+                            (oldPositions.row(i) - newPositions.row(i) -
+                             0.5*step*qForceNew.row(i)).squaredNorm()));
             } //end if
 
             if (testRatio >= dist(mt) || testRatio > 1) {
@@ -485,7 +499,7 @@ void VMC::calculate(const unsigned int maxCount, const char *destination) {
             kineticEnergy += tmpKineticEnergy;
 
             // write to file
-            if (outFile.is_open()) {
+            if (outFile.is_open() && cycles%1000==0) {
                 wa.a0 = tmpEnergy;
                 wa.a1 = tmpPotentialEnergy;
                 wa.a2 = tmpKineticEnergy;
@@ -519,32 +533,20 @@ void VMC::calculate(const unsigned int maxCount, const char *destination) {
         B /= cycles;
         acceptance /= cycles;
 
-//         std::cout << "Acceptance: " << acceptance/cycles << std::endl;
+//         std::cout << "Acceptance: " << acceptance << std::endl;
 
         // optimalize with steepest descent method
         steepb(0) = 2*(ELA - energy*A);
         steepb(1) = 2*(ELB - energy*B);
-        newAlphaBeta = oldAlphaBeta - steepStep*steepb;
+        newAlphaBeta -= steepStep*steepb;
 
-//         std::cout << std::setprecision(10) << "alpha: " << alpha << " beta: "
-//             << beta << " Energy: " << energy << std::endl;
-
-        // update stepsize in steepest descent according to two-step size
-        // gradient
-        stepNorm = (steepb - prevSteepb).squaredNorm();
-        if (stepNorm > 1e-10) {
-            steepStep = (newAlphaBeta.row(0) -
-                    oldAlphaBeta.row(0)).transpose().dot(steepb.row(0) -
-                    prevSteepb.row(0)) / stepNorm;
-        } else {
-            steepStep = 1e-5;
-        } // end if
+//         std::cout << std::setprecision(16) << "alpha: " << alpha << " beta: "
+//             << beta << " Energy: " << energy << " " << meth->variance(energy,
+//                     energySq, maxIterations) << std::endl;
 
         // update variational parameters
         setAlpha(newAlphaBeta(0));
         setBeta(newAlphaBeta(1));
-        prevSteepb = steepb;
-        oldAlphaBeta = newAlphaBeta;
     } // end for runCount
 
     // write parameters and close file for good measures

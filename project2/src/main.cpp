@@ -65,7 +65,7 @@ int main(int argc, char** argv) {
     Eigen::initParallel();
 
     // divide number of variational runs between the processes evenly
-    int maxCount = 1000;
+    int maxCount = 700;
     float tmpNum = (float)maxCount / numProcs;
     unsigned int myMaxCount = (myRank < maxCount % numProcs ? ceil(tmpNum) :
             floor(tmpNum));
@@ -99,7 +99,7 @@ int main(int argc, char** argv) {
         std::seed_seq seedSequence(start, end);
         std::mt19937_64 generator(seedSequence);
         std::uniform_real_distribution<double> dista(0.8,1.0);
-        std::uniform_real_distribution<double> distb(0.3,0.5);
+        std::uniform_real_distribution<double> distb(0.2,0.5);
         mySeed = std::chrono::high_resolution_clock::now() .
             time_since_epoch().count();
         myAlpha = dista(generator);
@@ -124,6 +124,7 @@ int main(int argc, char** argv) {
     } // end ifelse
 
     VMC *vmcObj = new VMC(b, myAlpha, myBeta, 2, step, maxIterations, mySeed);
+//     VMC *vmcObj = new VMC(b, 0.68, 0.2237, 2, step, maxIterations, mySeed);
     vmcObj->setImportanceSampling(imp);
     vmcObj->setCoulombInteraction(coul);
     vmcObj->setJastrow(jast);
@@ -141,8 +142,8 @@ int main(int argc, char** argv) {
 //     std::chrono::steady_clock::time_point begin;
 //     begin = std::chrono::steady_clock::now();
 
-//     std::cout << "Starting :" << myRank << " " << myAlpha << " " << myBeta <<
-//         std::endl;
+    std::cout << "Starting :" << myRank << " " << myAlpha << " " << myBeta <<
+        std::endl;
     // create filename for each process
     char myFileName[100];
     if (filename) {
@@ -151,6 +152,7 @@ int main(int argc, char** argv) {
 
     // Run Monte Carlo simulation
     vmcObj->calculate(myMaxCount, myFileName);
+//     vmcObj->calculate(1, myFileName);
 
 //     std::chrono::steady_clock::time_point end;
 //     end = std::chrono::steady_clock::now();

@@ -114,19 +114,6 @@ double Basis::jastrow(const Eigen::MatrixXd &r, double beta) {
     return factor;
 } // end function jastrow
 
-void Basis::updateJastrow(double &factor, const Eigen::MatrixXd &rold, const
-        Eigen::MatrixXd &rnew, double beta, unsigned int k) {
-    /* update Jastrow factor for row k */
-    for (unsigned int j = 0; j < rold.rows(); ++j) {
-        if (j != k) {
-            factor -= padejastrow(k,j)/(beta +
-                    1/(rold.row(k)-rold.row(j)).norm());
-            factor += padejastrow(k,j)/(beta +
-                    1/(rnew.row(k)-rnew.row(j)).norm());
-        } // end if
-    } // end forj
-} // end function updateJastrow
-
 double Basis::jastrowRatio(const Eigen::MatrixXd &rold, const Eigen::MatrixXd
         &rnew, double beta, unsigned int k) {
     /* calculate ratio of jastrow factors (when only one row in Slater

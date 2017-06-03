@@ -72,8 +72,8 @@ bool Tests::test_energy() {
     v->setAlpha(1);
     v->setBeta(1000000);
     v->calculate(1);
-    return ((fabs(v->energy-E)<=eps &&
-                fabs(m->variance(v->energy,v->energySq))<=eps) ? true : false);
+    return ((std::fabs(v->energy-E)<=eps && std::fabs(m->variance(v->energy,
+                        v->energySq, v->maxIterations))<=eps) ? true : false);
 } // end function test_2particle
 
 bool Tests::test_determinantratio() {
@@ -179,11 +179,11 @@ void Tests::run_tests(int t) {
         } // end ifelse
         if(test_energy()) {
             std::cout << "Energy unperturbed good" << std::endl;
-            std::cout << std::setprecision(10) << "  Energy is: " << v->energy
+            std::cout << std::setprecision(16) << "  Energy is: " << v->energy
                 << std::endl;
         } else { 
             std::cout << "Energy unperturbed wrong" << std::endl;
-            std::cout << std::setprecision(10) << "  Energy is: " << v->energy
+            std::cout << std::setprecision(16) << "  Energy is: " << v->energy
                 << std::endl;
         } // end ifelse
         if(test_determinantratio()) {

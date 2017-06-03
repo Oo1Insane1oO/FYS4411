@@ -23,10 +23,10 @@ clean:
 	rm $(EXEC)
 
 cleanData:
-	rm -f data/w1/N2/*
-	rm -f data/w1/N6/*
-	rm -f data/w1/N12/*
-	rm -f data/w1/N20/*
+	rm -f data/w010/N2/*
+	rm -f data/w010/N6/*
+	rm -f data/w010/N12/*
+	rm -f data/w010/N20/*
 	rm -f data/w01/N2/*
 	rm -f data/w01/N6/*
 	rm -f data/w01/N12/*
