@@ -7,7 +7,7 @@ ifeq ($(DEBUG),ON)
 	CXXFLAGS := -I eigen/ -g -std=c++14 -Wall -Wextra
 endif
 
-EXEC = vmc_main
+EXEC = vmc_main2
 SRC = src
 OBJ_DIR = bin
 SOURCES = $(wildcard $(SRC)/*.cpp)

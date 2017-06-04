@@ -18,7 +18,6 @@ class Basis {
 
         void pushState(std::vector<int*>&, int, int, int, int);
         void findPossiblenxny(unsigned int, std::vector<std::vector<int>>& p);
-        void setSpinMatrix();
 
     public:
         Basis(double, unsigned int);

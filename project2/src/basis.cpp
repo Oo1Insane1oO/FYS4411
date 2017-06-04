@@ -3,6 +3,21 @@
 // variatonal monte Carlo energies.                                         //
 //                                                                          //
 // Main Functions:                                                          //
+//      - findPossiblenxny: find quantum numbers nx and ny for given energy //
+//      level.                                                              //
+//      - pushState: set state values and add to back of states vector.     //
+//      - padejastrow: calculate Pade-Jastrow factor defined as             //
+//              /1/3 if ms of state i and j is equal.                       //
+//          a =                                                             //
+//              \ 1  if ms of state i and j is not equal.                   //
+//      - jastrowRatio: Calculate ratio between jastrow factors for old and //
+//      new positions. Only returns factor without evaluating exponential.  //
+//      - harmonicOscillatorWaveFunction: Calculate and return              //
+//      single-particle wave function.                                      //
+//      - setTrialWaveFunction: Set spin-up and spin-down Slater matrices.  //
+//      - updateTrialWaveFunction: Update given row of Slater matrix.       //
+//      - printStates: Selv explained.                                      //
+//      - getMagicNumbers: Return vector of magic numbers.                  //
 // See the individual functions for specific behavior.                      //
 //                                                                          //
 // Constructor sets up the states in the basis as a vector states. Each     //
@@ -103,8 +118,13 @@ double Basis::padejastrow(const unsigned int &i, const unsigned int &j) {
     } // end if
 } // end function padejastrow
 
+std::vector<int> Basis::getMagicNumbers() {
+    /* return vector containing magic numbers in acending order */
+    return M;
+} // end function getMagicNumbers
+
 double Basis::jastrow(const Eigen::MatrixXd &r, double beta) {
-    /* calculate Jastrow factor */
+    /* Calculate Jastrow factor */
     double factor = 0;
     for (unsigned int i = 0; i < r.rows(); ++i) {
         for (unsigned int j = i+1; j < r.rows(); ++j) {
@@ -116,7 +136,7 @@ double Basis::jastrow(const Eigen::MatrixXd &r, double beta) {
 
 double Basis::jastrowRatio(const Eigen::MatrixXd &rold, const Eigen::MatrixXd
         &rnew, double beta, unsigned int k) {
-    /* calculate ratio of jastrow factors (when only one row in Slater
+    /* Calculate ratio of jastrow factors (when only one row in Slater
      * determinant has changed) */
     double ratio = 0;
     for (unsigned int j = 0; j < rold.rows(); ++j) {
@@ -131,14 +151,15 @@ double Basis::jastrowRatio(const Eigen::MatrixXd &rold, const Eigen::MatrixXd
 
 double Basis::harmonicOscillatorWaveFunction(double alpha, double x, double y,
         int nx, int ny) {
-    /* calculate harmonic oscillator wave function in 2D */
+    /* Calculate harmonic oscillator wave function in 2D */
     return H(sqrt(omega*alpha)*x,nx) * H(sqrt(omega*alpha)*y,ny) *
         exp(-alpha*omega*(x*x+y*y)/2.0);
 } // end function harmonicOscillatorWaveFunction
 
 void Basis::setTrialWaveFunction(Eigen::MatrixXd &psiD, Eigen::MatrixXd &psiU,
         const Eigen::MatrixXd &r, const double alpha) {
-    /* given a vector of coordinates, return trial wave function */
+    /* Given a vector of coordinates, split in spin-up and spin-down Slater
+     * matrices and set values. */
     for (unsigned int i = 0; i < r.rows()/2; ++i) {
         for (unsigned int j = 0; j < r.rows(); j+=2) {
             psiD(i,j/2) = harmonicOscillatorWaveFunction(alpha, r(i,0), r(i,1),
@@ -177,11 +198,6 @@ void Basis::printStates() {
     std::cout << "(nx,ny,s,ms,E,N)" << std::endl;
     std::cout << "Number of states: " << states.size() << std::endl;
 } // end function print state
-
-std::vector<int> Basis::getMagicNumbers() {
-    /* return vector containing magic numbers in acending order */
-    return M;
-} // end function getMagicNumbers
 
 Basis::~Basis() {
     delete meth;
