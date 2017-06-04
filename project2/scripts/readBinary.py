@@ -46,11 +46,11 @@ def blocking(data, numBlocks):
     for i in range(numBlocks):
         blockSize = int(minBlockSize + i*blockStep)
         tmpBlockNum = len(data)/blockSize
-#         tmpMean = np.zeros(tmpBlockNum)
-#         for j in range(len(data)/blockSize):
-#             tmpMean[j] = np.mean(data[j:(j+1)*blockSize])
-#         blockMeans[i] = np.sqrt(np.var(tmpMean)) / tmpBlockNum
-        blockMeans[i] = np.sqrt(np.var(data[i:(i+1)*blockSize])) / tmpBlockNum
+        tmpMean = np.zeros(tmpBlockNum)
+        for j in range(len(data)/blockSize):
+            tmpMean[j] = np.mean(data[j:(j+1)*blockSize])
+        blockMeans[i] = np.sqrt(np.var(tmpMean)) / tmpBlockNum
+#         blockMeans[i] = np.sqrt(np.var(data[i:(i+1)*blockSize])) / tmpBlockNum
     # end fori
     return blockMeans
 # end function blocking

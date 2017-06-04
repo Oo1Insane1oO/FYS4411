@@ -100,7 +100,7 @@ void VMC::setCoulombInteraction(bool a) {
 } // end function setCoulombInteraction
 
 void VMC::setJastrow(bool a) {
-    /* switch Jastrow factor on */
+    /* switch Jastrow factor */
     jastrow = a;
     if (!a) {
         beta = 1e6;
@@ -255,11 +255,14 @@ double VMC::Afunc(const Eigen::MatrixXd &wave, const Eigen::MatrixXd &waveInv,
 double VMC::Bfunc(const Eigen::MatrixXd &R) {
     /* first derivative of wave function with respect to beta */
     double B = 0;
+    double rij;
     for (unsigned int i = 0; i < R.rows(); ++i) {
         for (unsigned int j = 0; j < R.rows(); ++j) {
             if (i != j)  {
                 B -= b->padejastrow(i,j) / pow(beta +
                         1/(R.row(i)-R.row(j)).norm(),2);
+//                 rij = (R.row(i)-R.row(j)).norm();
+//                 B -= b->padejastrow(i,j)*rij*rij / pow(1+beta*rij,2);
             } // end if
         } // end forj
     } // end fori
@@ -362,7 +365,7 @@ void VMC::calculate(const unsigned int maxCount, const char *destination) {
     // set sizes
     initializeCalculationVariables();
     unsigned int halfSize = oldPositions.rows()/2;
-    double steepStep = 0.0001;
+    double steepStep = 0.00005;
 
     // File, runcountm, buffer(for filename) and struct as write buffer
     std::ofstream outFile;
@@ -507,20 +510,16 @@ void VMC::calculate(const unsigned int maxCount, const char *destination) {
                 } // end if
             } // end if
 
-            // update determinant ratio
-            *determinantRatio = meth->determinantRatio(*oldWave, *oldInv,
-                    halfIdx);
-
             // update first derivatives
             if (imp || jastrow) {
-                setFirstDerivatives(*oldWave, *oldInv, oldPositions, i,
+                setFirstDerivatives(*newWave, *newInv, newPositions, i,
                         halfIdx, uIdx);
             } // end if
        
             // Accumulate local energy and local energy squared
-            tmpPotentialEnergy = calculatePotentialEnergy(oldPositions);
-            tmpKineticEnergy = calculateKineticEnergy(oldD, oldU, oldInvD,
-                    oldInvU, oldPositions);
+            tmpPotentialEnergy = calculatePotentialEnergy(newPositions);
+            tmpKineticEnergy = calculateKineticEnergy(newD, newU, newInvD,
+                    newInvU, newPositions);
             tmpEnergy = tmpPotentialEnergy - tmpKineticEnergy;
             energy += tmpEnergy;
             energySq += tmpEnergy*tmpEnergy;
@@ -528,7 +527,7 @@ void VMC::calculate(const unsigned int maxCount, const char *destination) {
             kineticEnergy += tmpKineticEnergy;
 
             // write to file
-            if (outFile.is_open() && cycles%1000==0) {
+            if (outFile.is_open()) {
                 wa.a0 = tmpEnergy;
                 wa.a1 = tmpPotentialEnergy;
                 wa.a2 = tmpKineticEnergy;
@@ -537,16 +536,16 @@ void VMC::calculate(const unsigned int maxCount, const char *destination) {
 
             // split spin up/down and calculate expected value(local) of first
             // derivative of wave function with respect to alpha
-            tmpA = Afunc(oldD, oldInvD, oldPositions.block(0, 0, halfSize,
-                        oldPositions.cols()), 0) + Afunc(oldU, oldInvU,
-                    oldPositions.block(halfSize, 0, halfSize,
-                        oldPositions.cols()),1);
+            tmpA = Afunc(newD, newInvD, newPositions.block(0, 0, halfSize,
+                        newPositions.cols()), 0) + Afunc(newU, newInvU,
+                    newPositions.block(halfSize, 0, halfSize,
+                        newPositions.cols()),1);
             A += tmpA;
             ELA += tmpEnergy*tmpA;
 
             // No need for splitting when finding first derivative with respect
             // to beta(only Jastrow factor gives constribution)
-            tmpB = Bfunc(oldPositions);
+            tmpB = Bfunc(newPositions);
             B += tmpB;
             ELB += tmpEnergy*tmpB;
         } // end for cycles
@@ -557,22 +556,20 @@ void VMC::calculate(const unsigned int maxCount, const char *destination) {
         potentialEnergy /= cycles;
         kineticEnergy /= cycles;
         A /= cycles;
-        std::cout << A << std::endl;
         ELA /= cycles;
         ELB /= cycles;
         B /= cycles;
         acceptance /= cycles;
-
-//         std::cout << "Acceptance: " << acceptance << std::endl;
 
         // optimalize with steepest descent method
         steepb(0) = 2*(ELA - energy*A);
         steepb(1) = 2*(ELB - energy*B);
         newAlphaBeta -= steepStep*steepb;
 
-        std::cout << std::setprecision(16) << "alpha: " << alpha << " beta: "
-            << beta << " Energy: " << energy << " " << meth->variance(energy,
-                    energySq, maxIterations) << " " << runCount << std::endl;
+//         std::cout << "Acceptance: " << acceptance << std::endl;
+//         std::cout << std::setprecision(16) << "alpha: " << alpha << " beta: "
+//             << beta << " Energy: " << energy << " " << meth->variance(energy,
+//                     energySq, maxIterations) << " " << runCount << std::endl;
 
         // update variational parameters
         setAlpha(newAlphaBeta(0));
