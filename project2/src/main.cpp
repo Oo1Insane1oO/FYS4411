@@ -1,17 +1,22 @@
-#include "tests.h" // test functions#include "vmc.h" // class basis
+#include "tests.h" // test functions
+#include "basis.h" // class Basis
+#include "vmc.h" // class VMC
 #include <stdlib.h> // atoi
 #include <iostream> // cout
 #include <chrono> // timer
 #include <iomanip> // setprecision
 #include <algorithm> // find
 #include <chrono> // timer
-#include <sstream>
-#include <iterator>
-#include <string.h>
-#include <mpi.h>
+#include <sstream> // for seeding
+#include <iterator> // for seeding
+#include <string.h> // for filename
+#include <mpi.h> // header for MPI
 
 //////////////////////////////////////////////////////////////////////////////
 // Main file for running vmc algorithm                                      //
+//                                                                          //
+// Also sets up MPI and divides number of VMC cycles evenly between the     //
+// processes and distributes a random seed to each process.                 //
 //////////////////////////////////////////////////////////////////////////////
 
 int main(int argc, char** argv) {

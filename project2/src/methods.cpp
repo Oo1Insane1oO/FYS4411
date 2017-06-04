@@ -1,10 +1,19 @@
-//////////////////////////////////////////////////////////////////////////////
-// Class containing functions for different methods.                        //
-//                                                                          //
-// Functions:                                                               //
-//      - factorial: recursive function for positive integer factorial.     //
-// See the individual functions for specific behavior.                      //
-//////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+// Class containing functions for different methods.                         //
+//                                                                           //
+// Functions:                                                                //
+//      - factorial: recursive function for positive integer factorial.      //
+//      - min: minimum value of given arguments.                             //
+//      - max: maximum value of given arguments.                             //
+//      - updateMatrixInverse: Update inverse of matrix with Shermin-Morrison//
+//      formula.                                                             //
+//      - determinantRatio: Calculate determinant ratio when only one row    //
+//      differs.                                                             //
+//      - variance: calculate and return variance of given arguments.        //
+//      - conjugateGradient: Find x for equation Ax=b using the conjugate    //
+//      gradient method.                                                     //
+// See the individual functions for specific behavior.                       //
+///////////////////////////////////////////////////////////////////////////////
 
 #include "methods.h"
 #include <math.h>
@@ -19,18 +28,22 @@ int Methods::factorial(int x) {
 } // end function factorial
 
 double Methods::min(double var1, double var2) {
+    /* find and return minimum value */
     return (var1<var2 ? var1 : var2);
 } // end function min
 
 int Methods::min(int var1, int var2) {
+    /* find and return minimum value */
     return (var1<var2 ? var1 : var2);
 } // end template function min
 
 double Methods::max(double var1, double var2) {
+    /* find and return maximum value */
     return (var1>var2 ? var1 : var2);
 } // end function max
 
 int Methods::max(int var1, int var2) {
+    /* find and return maximum value */
     return (var1>var2 ? var1 : var2);
 } // end template function max
 
@@ -55,7 +68,7 @@ void Methods::updateMatrixInverse(const Eigen::MatrixXd &Mold, const
 
 double Methods::determinantRatio(const Eigen::MatrixXd &newElement, const
         Eigen::MatrixXd &oldInverse, unsigned int i) {
-    /* Calculate determinant ratio of Slater determinants */
+    /* Calculate determinant ratio of determinants */
     double R = 0;
     for (unsigned int j = 0; j < oldInverse.rows(); ++j) {
         R += newElement(i,j) * oldInverse(j,i);
