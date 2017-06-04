@@ -128,8 +128,9 @@ int main(int argc, char** argv) {
                 MPI_STATUS_IGNORE);
     } // end ifelse
 
-    VMC *vmcObj = new VMC(b, myAlpha, myBeta, 2, step, maxIterations, mySeed);
-//     VMC *vmcObj = new VMC(b, 0.68, 0.2237, 2, step, maxIterations, mySeed);
+//     VMC *vmcObj = new VMC(b, myAlpha, myBeta, 2, step, maxIterations, mySeed);
+//     VMC *vmcObj = new VMC(b, 1.1, 0.47, 2, step, maxIterations, mySeed);
+    VMC *vmcObj = new VMC(b, 0.69, 1.32, 2, step, maxIterations, mySeed);
     vmcObj->setImportanceSampling(imp);
     vmcObj->setCoulombInteraction(coul);
     vmcObj->setJastrow(jast);
@@ -165,13 +166,13 @@ int main(int argc, char** argv) {
 //         std::chrono::duration_cast<std::chrono::seconds>(end-begin).count()
 //         << std::endl;
 
-//     std::cout << std::setprecision(10) << "<E> = " << vmcObj->energy << ", " <<
-//         "<E^2> = " << vmcObj->energySq << std::endl;
-//     std::cout << std::setprecision(10) << "<E^2> - <E>^2 = " <<
-//         (vmcObj->energySq - pow(vmcObj->energy,2))/maxIterations << std::endl;
-// 
-//     std::cout << "alpha: " << vmcObj->alpha << ", beta: " << vmcObj->beta <<
-//         std::endl;
+    std::cout << std::setprecision(10) << "<E> = " << vmcObj->energy << ", " <<
+        "<E^2> = " << vmcObj->energySq << std::endl;
+    std::cout << std::setprecision(10) << "<E^2> - <E>^2 = " <<
+        (vmcObj->energySq - pow(vmcObj->energy,2))/maxIterations << std::endl;
+
+    std::cout << "alpha: " << vmcObj->alpha << ", beta: " << vmcObj->beta <<
+        std::endl;
 
     // free objects
     delete b;

@@ -362,7 +362,7 @@ void VMC::calculate(const unsigned int maxCount, const char *destination) {
     // set sizes
     initializeCalculationVariables();
     unsigned int halfSize = oldPositions.rows()/2;
-    double steepStep = 0.01;
+    double steepStep = 0.0001;
 
     // File, runcountm, buffer(for filename) and struct as write buffer
     std::ofstream outFile;
@@ -557,6 +557,7 @@ void VMC::calculate(const unsigned int maxCount, const char *destination) {
         potentialEnergy /= cycles;
         kineticEnergy /= cycles;
         A /= cycles;
+        std::cout << A << std::endl;
         ELA /= cycles;
         ELB /= cycles;
         B /= cycles;
@@ -569,9 +570,9 @@ void VMC::calculate(const unsigned int maxCount, const char *destination) {
         steepb(1) = 2*(ELB - energy*B);
         newAlphaBeta -= steepStep*steepb;
 
-//         std::cout << std::setprecision(16) << "alpha: " << alpha << " beta: "
-//             << beta << " Energy: " << energy << " " << meth->variance(energy,
-//                     energySq, maxIterations) << " " << runCount << std::endl;
+        std::cout << std::setprecision(16) << "alpha: " << alpha << " beta: "
+            << beta << " Energy: " << energy << " " << meth->variance(energy,
+                    energySq, maxIterations) << " " << runCount << std::endl;
 
         // update variational parameters
         setAlpha(newAlphaBeta(0));
