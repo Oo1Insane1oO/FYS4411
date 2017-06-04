@@ -25,13 +25,14 @@
 \BOOKMARK [3][-]{subsubsection.2.13.2}{Central Limit Theorem}{subsection.2.13}% 25
 \BOOKMARK [3][-]{subsubsection.2.13.3}{Statistical Error}{subsection.2.13}% 26
 \BOOKMARK [3][-]{subsubsection.2.13.4}{Autocorrelation Function}{subsection.2.13}% 27
-\BOOKMARK [1][-]{section.3}{SETUP}{}% 28
-\BOOKMARK [1][-]{section.4}{RESULTS}{}% 29
-\BOOKMARK [1][-]{section.5}{DISCUSSION}{}% 30
-\BOOKMARK [1][-]{section.6}{CONCLUSION}{}% 31
-\BOOKMARK [1][-]{section.7}{Appendix}{}% 32
-\BOOKMARK [2][-]{subsection.7.1}{Analytic Expression for Local Energy}{section.7}% 33
-\BOOKMARK [3][-]{subsubsection.7.1.1}{Two Electron Case}{subsection.7.1}% 34
-\BOOKMARK [3][-]{subsubsection.7.1.2}{General Case}{subsection.7.1}% 35
-\BOOKMARK [2][-]{subsection.7.2}{Analytic Expression for Hessen Matrix}{section.7}% 36
-\BOOKMARK [1][-]{section.8}{References}{}% 37
+\BOOKMARK [3][-]{subsubsection.2.13.5}{Blocking}{subsection.2.13}% 28
+\BOOKMARK [1][-]{section.3}{SETUP}{}% 29
+\BOOKMARK [1][-]{section.4}{RESULTS}{}% 30
+\BOOKMARK [1][-]{section.5}{DISCUSSION}{}% 31
+\BOOKMARK [1][-]{section.6}{CONCLUSION}{}% 32
+\BOOKMARK [1][-]{section.7}{Appendix}{}% 33
+\BOOKMARK [2][-]{subsection.7.1}{ANALYTIC EXPRESSION FOR LOCAL ENERGY}{section.7}% 34
+\BOOKMARK [3][-]{subsubsection.7.1.1}{Two Electron Case}{subsection.7.1}% 35
+\BOOKMARK [3][-]{subsubsection.7.1.2}{General Case}{subsection.7.1}% 36
+\BOOKMARK [2][-]{subsection.7.2}{ANALYTIC EXPRESSION FOR DERIVATIVES OF VARIATIONAL PARAMETERS}{section.7}% 37
+\BOOKMARK [1][-]{section.8}{References}{}% 38

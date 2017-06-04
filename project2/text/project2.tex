@@ -1045,8 +1045,35 @@
             \tau \equiv 1 + 2\suml{d}{n-1}k_d
             \label{eq:autocorrtime}
         \end{equation}
-
-    The method of blocking estimates the standard deviation given in
+\subsubsection{Blocking}
+\label{ssub:Blocking}
+    The method of blocking estimates the standard deviation. We start by first
+    defining a sample quantity $\chi$ of $n$ samples and assume that the
+    standard deviation of the mean of $\chi$ is given by
+        \begin{equation}
+            \sigma_{\chi} = \sqrt{\frac{1}{n}\left(\ecp{\chi^2} -
+            \ecp{\chi}^2\right)}
+            \label{eq:sigmachidef}
+        \end{equation}
+    Obviously this is wrong if $\chi$ is a set of correlated samples. However,
+    we can rewrite \Autoref{eq:sigmachidef} with \Autoref{eq:autocorrtime}
+    giving
+        \begin{equation}
+            \sigma_{\chi} = \sqrt{\frac{1+\frac{2\tau}{\Delta
+            t}}{n}\left(\ecp{\chi^2} - \ecp{\chi}^2\right)}
+            \label{eq:sigmachicorrdef}
+        \end{equation}
+    where $\Delta t$ is the time between each sample. \\
+    If we have that $\Delta t \gg\tau$ then the assumption for non-correlation
+    still hold, if this is not the case we may use the method of blocking. The
+    method is to basically divide the sample sequence into blocks of size
+    $\tau$(meaning sample $j$ of block $i$ is uncorrelated to sample $j$ of
+    block $i+1$). The total mean and variance is then obtained by calculating
+    the mean of blocks $\chi_i,\dots,\chi_n_{\text{blocks}}$. \\
+    The second problem is to find $\tau$. This is solved by making a plot of
+    the standard deviation and divide the blocks accordingly. The standard
+    deviation will increase and reach a convergence as the block size
+    increases.
 
 \section{SETUP}
 \label{sec:setup}
@@ -1059,7 +1086,7 @@
 
 \section{Appendix}
 \label{sec:appendix}
-\subsection{Analytic Expression for Local Energy}
+\subsection{ANALYTIC EXPRESSION FOR LOCAL ENERGY}
 \label{sub:analytic_expression_for_local_energy}
 \subsubsection{Two Electron Case}
 \label{ssub:Two Electron Case}
@@ -1326,8 +1353,8 @@
                 r_{ik}\right)^2} - \sum\limits_{i=k+1}^N
                 \frac{a\left(\vec{r}_k-\vec{r}_i\right)}{r_{ki}\left(1+\beta
                 r_{ki}\right)^2} \\
-                &= \sum\limits_{i\neq k} \frac{2a\left(\vec{r_i} -
-                \vec{r_k}\right)}{r_{ik}\left(1+\beta r_{ik}\right)^2}
+                &= \sum\limits_{i\neq k} \frac{a\left(\vec{r_k} -
+                \vec{r_i}\right)}{r_{ki}\left(1+\beta r_{ki}\right)^2}
             \end{aligned}
             \label{eq:jastfirderrat}
         \end{equation}
@@ -1358,8 +1385,8 @@
             \label{eq:ELNfin}
         \end{align}
 
-\subsection{Analytic Expression for Hessen Matrix}
-\label{ssub:analytic_expression_for_hessen_matrix}
+\subsection{ANALYTIC EXPRESSION FOR DERIVATIVES OF VARIATIONAL PARAMETERS}
+\label{ssub:analytic_expression_for_derivatives_of_variational_parameters}
 \newcommand{\psinorm}{\int\psi_T^2\md\tau}
 \newcommand{\psigender}[1]{\prd{c_{#1}}[\psi_T]}
 \newcommand{\psialphder}{\prd{\alpha}[\psi_T]}
@@ -1367,22 +1394,10 @@
 \newcommand{\psibetder}{\prd{\beta}[\psi_T]}
 \newcommand{\psibetsecder}{\prd{\beta}[\psi_T][2]}
 \newcommand{\gsum}{\sum\limits_{i\neq j} \frac{a}{\left(\beta + \frac{1}{r_{ij}}\right)}}
-    The Hessen matrix is needed in order to minimize with the conjugate
-    gradient method as described in \Autoref{sub:conjugate_gradient_method}.
-    The Hessen matrix in the case where we minimize the local energy with
-    respect to $\alpha$ and $\beta$ is\cite{linalgDavid}
-        \begin{equation}
-            A =
-                \begin{pmatrix}
-                    \prd{\alpha}[\ecp{E_L}][2] &
-                    \frac{\prtl^2\ecp{E_L}}{\prtl\alpha\prtl\beta} \\
-                    \frac{\prtl^2\ecp{E_L}}{\prtl\beta\prtl\alpha} &
-                    \prd{\beta}[\ecp{E_L}][2]\\
-                \end{pmatrix}
-            \label{eq:analytichessen}
-        \end{equation}
-    We solve the derivatives generally for a variatonal parameters $c_n$. The
-    first derivative is thus
+    The first derivatives of the wave function with respect to the variational
+    parameters is needed in order to minimize with gradient descent method as
+    described in \Autoref{sub:gradient_descent}.  We solve the derivatives
+    generally for a variational parameters $c_n$. The first derivative is thus
         \begin{align}
             \prd{c_n}[\ecp{E_L}] &=
             \prd{c_n}\left(\int\frac{\psi_T^2E_L}{\psinorm}\right) \nonumber \\
@@ -1396,52 +1411,6 @@
         \end{align}
     In the last step the hermiticity of the Hamiltonian was used. We have also
     used the fact that the trial wave function $\psi_T$ is a real function. \\
-    The second derivative elements is then
-        \begin{align}
-            \mixprd{\ecp{E_L}}[c_n][c_m] &= 2\left(\prd{c_m}
-            \left(\ecp{\frac{E_L}{\psi_T}\psigender{n}}\right) -
-            \ecp{E_L}\prd{c_m} \left(\ecp{\frac{1}{\psi_T}\psigender{n}}\right)
-            - \ecp{\frac{1}{\psi_T}\psigender{n}} \prd{c_m}[\ecp{E_L}]\right)
-            \nonumber \\
-            &\begin{aligned}
-                \hspace{0.04cm}=&\hspace{0.07cm} 2\left(\prd{c_m}
-                \ecp{\frac{E_L}{\psi_T}\psigender{n}}\right) -
-                \ecp{E_L}\prd{c_m}
-                \left(\ecp{\frac{1}{\psi_T}\psigender{n}}\right) \\
-                &- 4\ecp{\frac{1}{\psi_T}\psigender{n}}
-                \left(\ecp{\frac{E_L}{\psi_T}\psigender{m}} -
-                \ecp{E_L}\ecp{\frac{1}{\psi_T}\psigender{m}}\right)
-            \end{aligned} \nonumber \\
-            &\begin{aligned}
-                \hspace{0.04cm}=&\hspace{0.07cm}
-                2\left(\ecp{\frac{E_L}{\psi^2_T} \psigender{n} \psigender{m}} +
-                \ecp{\frac{1}{\psi_T} \prd{c_m}[E_L] \psigender{n}}  +
-                \ecp{\frac{E_L}{\psi_T} \mixprd{\psi_T}[c_n][c_m]} -
-                2\ecp{\frac{E_L}{\psi_T} \psigender{n}} \ecp{\frac{1}{\psi_T}
-                \psigender{m}} \right) \\
-                &- 2\ecp{E_L} \left(\ecp{\frac{1}{\psi^2_T} \psigender{n}
-                \psigender{m}} + \ecp{\frac{1}{\psi_T}
-                \mixprd{\psi_T}[c_n][c_m]} - 2\ecp{\frac{1}{\psi_T}
-                \psigender{n}} \ecp{\frac{1}{\psi_T} \psigender{m}}\right) \\
-                &- 4\left(\ecp{\frac{1}{\psi_T} \psigender{n}} \ecp{\frac{E_L}{\psi_T}
-                \psigender{m}} - \ecp{E_L} \ecp{\frac{1}{\psi_T}
-                \psigender{n}} \ecp{\frac{1}{\psi_T} \psigender{m}}\right)
-            \end{aligned} \nonumber \\
-            &\begin{aligned}
-                \hspace{0.04cm}=&\hspace{0.07cm} 2\left(\ecp{\frac{E_L}{\psi_T}
-                \mixprd{\psi_T}[c_n][c_m]} - \ecp{E_L}\ecp{\frac{1}{\psi_T}
-                \mixprd{\psi_T}[c_n][c_m]} + \ecp{\frac{E_L}{\psi^2_T}
-                \psigender{n} \psigender{m}} - \ecp{E_L}\ecp{\frac{1}{\psi^2_T}
-                \psigender{n} \psigender{m}}\right) \\
-                &+ \ecp{E_L} \ecp{\frac{1}{\psi_T}\psigender{n}}
-                \ecp{\frac{1}{\psi}\psigender{m}} - 2\left(
-                \ecp{\frac{E_L}{\psi_T}\psigender{n}}
-                \ecp{\frac{1}{\psi_T}\psigender{m}} + \ecp{\frac{E_L}{\psi_T}
-                \psigender{m}} \ecp{\frac{1}{\psi_T} \psigender{n}}\right) \\
-                &+ 2\ecp{\frac{1}{\psi_T} \psigender{n} \prd{c_m}[E_L]}
-            \end{aligned}
-            \label{eq:der2alpahecpElfir}
-        \end{align}
 \newcommand{\Hij}[3]{H_{{#2}_{{#1}_j}#3}\left(\sqrt{\alpha\omega}{#1}_i\right)}
 \newcommand{\eri}{\exp(-\frac{\alpha\omega}{2}r^2_i)}
     For the derivative of the wavefunction, we find the elements individually
@@ -1456,8 +1425,8 @@
             \nonumber \\
             &= n_{x_j}x_i\sqrt{\frac{\omega}{\alpha}}\Hij{x}{n}{-1} \nonumber
             \\
-            &= \frac{n_{x_j}}{2\alpha}\left(\sqrt{\alpha} +
-            2x_i\sqrt{\omega}\left(n_{x_j}-1\right)
+            &= \frac{n_{x_j}}{2\alpha}\left(1 +
+            x_i\sqrt{\frac{\omega}{\alpha}}\left(n_{x_j}-1\right)
             \frac{\Hij{x}{n}{-2}}{\Hij{x}{n}{}}\right)\Hij{x}{n}{}
             \label{eq:phideralph1x}
         \end{align}
@@ -1476,9 +1445,8 @@
         \end{align}
     with
         \begin{equation}
-            \Theta_{ij}(\alpha,x) \equiv
-            \frac{n_{x_j}}{\alpha}\left(\sqrt{\alpha} +
-            2x_i\sqrt{\omega}\left(n_{x_j}-1\right)
+            \Theta_{ij}(\alpha,x) \equiv \frac{n_{x_j}}{\alpha}\left(1 +
+            x_i\sqrt{\frac{\omega}{\alpha}}\left(n_{x_j}-1\right)
             \frac{\Hij{x}{n}{-2}}{\Hij{x}{n}{}}\right)
             \label{eq:Thetadef}
         \end{equation}
@@ -1493,46 +1461,12 @@
             g\left(\vec{r},\beta\right)
             \det(\Phi)\suml{i,j}{N} \Phi^{-1}_{ij}\prd{\alpha}[\Phi_{ji}]
             \nonumber \\
-            &= \psi_T \suml{i,j}{N} \Phi^{-1}_{ij}
-            \Phi_{ji}\left(\left(\Theta_{ji}(\alpha,x) + \Theta_{ji}(\alpha,y)\right) -
-            \omega r^2_j\right)
+            &= \frac{\psi_T}{2} \suml{i,j}{N} \Phi^{-1}_{ij}
+            \Phi_{ji}\left(\left(\Theta_{ji}(\alpha,x) +
+            \Theta_{ji}(\alpha,y)\right) - \omega r^2_j\right)
             \label{eq:psideralpha}
         \end{align}
-    where we have used \Autoref{eq:aadja} and defined $\Theta$ to be the vector
-    of element as defined in \Autoref{eq:Thetadef} \\
-    The second derivative of $\psi_T$ with respect to $\alpha$ we need the
-    second derivative of the Hermite polynomials. These are
-        \begin{align}
-            \prd{\alpha}[][2]\Hij{x}{n}{} &= \prd{\alpha} \left(n_{x_j}x_i
-            \sqrt{\frac{\omega}{\alpha}}\Hij{x}{n}{-1}\right)
-            \nonumber \\
-            &= n_{x_j}\left(n_{x_j}-1\right)x^2_i
-            \frac{\omega}{\alpha}\Hij{x}{n}{-2} -\frac{n_{x_j}x_i}{2}
-            \sqrt{\frac{\omega}{\alpha^3}}\Hij{x}{n}{-1} \nonumber \\
-            &= \frac{n_{x_j}}{\alpha} \left(\left(n_{x_j}-1\right)x_i
-            \left(\omega - \frac{1}{4}\sqrt{\frac{\omega}{\alpha}}\right)
-            \frac{\Hij{x}{n}{-2}}{\Hij{x}{n}{}} -
-            \frac{n_{x_j}}{4\alpha^2}\right)\Hij{x}{n}{}
-            \label{eq:Hderalphasec}
-        \end{align}
-    The derivation is the same for $H_{n_{y_j}}$. The second derivative of
-    $\Phi_{ij}$ is thus
-        \begin{align}
-            \prd{\alpha}[\phi_{ij}][2] &= \prd{\alpha}\left[
-                \left(\Hij{y}{n}{}\prd{\alpha}\Hij{x}{n}{} +
-                \Hij{x}{n}{}\prd{\alpha}\Hij{y}{n}{} - \frac{\omega
-                r^2_i}{2}\right)\eri\right] \nonumber \\
-            &\hspace{-0.04cm}\begin{aligned}
-                &= \left(2\prd{\alpha}[\Hij{x}{n}{}]\prd{\alpha}[\Hij{y}{n}{}]
-                \Hij{y}{n}{}\prd{\alpha}[\Hij{x}{n}{}][2] \right.\\ 
-                &\hspace{0.6cm} + \left.
-                \Hij{x}{n}{}\prd{\alpha}[\Hij{y}{n}{}][2] -
-                \prd{\alpha}[\Phi_{ij}] \frac{\omega r^2_i}{2}\right)
-                \exp(-\frac{\alpha\omega}{2}r^2_i)
-            \end{aligned}
-            &=
-            \label{eq:phideralphasec}
-        \end{align}
+    where we have used \Autoref{eq:aadja,eq:Thetadef}. \\
     The derivative with respect to $\beta$ follows a similar approach as in
     \Autoref{ssub:general_case} giving
         \begin{align}
@@ -1546,72 +1480,6 @@
             \frac{1}{r_{ij}}\right)^2}
             \label{eq:psiderbeta}
         \end{align}
-    The second derivative is thus
-        \begin{align}
-            \prd{\beta}[\psi_T][2] &= \prd{\beta}\left(-\psi_T \sum_{i\neq j}
-            \frac{a}{\left(\beta + \frac{1}{r_{ij}}\right)^2}\right) \nonumber
-            \\
-            &= \left(\left(\sum\limits_{i\neq j}\frac{a}{\left(\beta +
-            \frac{1}{r_{ij}}\right)^2}\right)^2 + \sum_{i\neq
-            j}\frac{2a}{\left(\beta + \frac{1}{r_{ij}}\right)^3} \right)\psi_T
-            \label{eq:psiderbetasec}
-        \end{align}
-    where we simply used the product rule for differentiation. \\
-    The mixed second derivative is found with
-    \Autoref{eq:psideralpha,eq:psiderbeta} giving
-        \begin{align}
-            \frac{\prtl^2\psi_T}{\prtl\alpha\beta} &=
-            \prd{\beta}\left(-\psi_T\frac{\omega}{2}\suml{i}{N}r^2_i\right)
-            \nonumber \\
-            &= \psi_T\frac{\omega}{2}\suml{i}{N}r^2_i\sum_{i\neq
-            j}\frac{1}{\left(\beta + \frac{1}{r_{ij}}\right)^2}
-            \label{eq:psideralpbetsec}
-        \end{align}
-    The final expression for the elements in the Hessen matrix is thus
-        \begin{equation}
-            \begin{aligned}
-                \prd{\alpha}[\ecp{E_L}][2] &= \omega^2 \left(\ecp{E_LR^2} -
-                \ecp{E_L}\ecp{R^2} + \ecp{E_L}\ecp{R}^2 -
-                \ecp{E_LR}\ecp{R}\right) - \omega\ecp{R\prd{\alpha}[E_L]} \\
-                \prd{\beta}[\ecp{E_L}][2] &= 4\left(\ecp{E_LB^2_2} -
-                \ecp{E_L}\ecp{B^2_2}\right) + \ecp{E_L}\ecp{B_2}^2 -
-                \ecp{E_LB_2}\ecp{B_2} - 2\ecp{B_2\prd{\beta}[E_L]} \\
-                \mixprd{\ecp{E_L}}[\alpha][\beta] &=
-                \omega\left(2\left(\ecp{E_LRB_2} - \ecp{E_L}\ecp{RB_2}\right) +
-                \frac{1}{2}\ecp{E_L}\ecp{R}\ecp{B_2} - \ecp{E_LR}\ecp{B_2} -
-                \ecp{E_LB_2}\ecp{R} - \ecp{R\prd{\beta}[E_L]}\right)
-            \end{aligned}
-            \label{eq:HessenElemFin}
-        \end{equation}
-    where 
-        \begin{equation}
-            \begin{aligned}
-                R &\equiv \suml{i}{N}r^2_i \\ 
-                B_n &\equiv \sum\limits_{i\neq j} \frac{a}{\left(\beta +
-                \frac{1}{r_{ij}}\right)^n} 
-            \end{aligned}
-            \hspace{0.5cm}
-            \begin{aligned}
-                \prd{\alpha}[\psi_T] &= -\frac{\omega}{2}R\psi_T  \\
-                \prd{\beta}[\psi_T] &= -B_2\psi_T 
-            \end{aligned}
-            \hspace{0.5cm}
-            \begin{aligned}
-                \prd{\alpha}[\psi_T][2] &= \frac{\omega^2}{4}R^2\psi_T \\
-                \prd{\beta}[\psi_T][2] &= \left(B^2_2 + 2B_3\right)\psi_T
-            \end{aligned}
-            \hspace{0.5cm}
-            \begin{aligned}
-                \frac{\prtl^2\psi_T}{\prtl\alpha\prtl\beta} =
-                \frac{\omega}{2}RB_2\psi_T
-            \end{aligned}
-            \label{eq:RBdef}
-        \end{equation}
-
-
-
-
-
 
 \begin{thebibliography}{}
     \bibitem{GriffQuan}
