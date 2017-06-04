@@ -1,9 +1,38 @@
-//////////////////////////////////////////////////////////////////////////////
-// Class for calculating variational Monte Carlo energies.                  //
-//                                                                          //
-// Main Functions:                                                          //
-// See the individual functions for specific behavior.                      //
-//////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+// Class for calculating variational Monte Carlo energies                    //
+//                                                                           //
+// Main Functions:                                                           //
+//      - setAlpha: Set value of variational parameter alpha, also calculates//
+//      alpha*omega and sqrt(alpha*omega) with the new given alpha.          //
+//      - setBeta: Sets value of variatonal parameter beta.                  //
+//      - setImportanceSampling: Switch importance samlong on/off.           //
+//      - setCoulomb: Switch Coulomb interaction on/off.                     //
+//      - setJastrow: Switch Jastrow factor on/off.                          //
+//      - setAllOn: Switch all the above on.                                 //
+//      - Derivative ratios: Calculate and set ratio of derivative of        //
+//      wavefunction and wavefunction (der(psi)/psi). Functions:             //
+//          - oneBodyFirstDerivativeRatio                                    //
+//          - oneBodySecondDerivativeRatio                                   //
+//          - jastrowFirstDerivativeRatio                                    //
+//          - jastrowSecondDerivativeRatio                                   //
+//      - Functions for local energy:                                        //
+//          - coulombFactor                                                  //
+//          - calculateKineticEnergy                                         //
+//          - calculatePotentialEnergy                                       //
+//      - Functions for minimalization:                                      //
+//          - Afunc: factor for derivative with respect to alpha             //
+//          - Bfunc: factor for derivative with respect to beta              //
+//      - initializeCalculationVariables: Set sizes for matrices used in     //
+//      function calculate.                                                  //
+//      - setFirstDerivatives: calculates and set first derivaties for one   //
+//      particle.                                                            //
+//      - initializePositions: Set initial positions for Metropolis sampling.//
+//      - calculate: Run variational Monte Carlo cycles and find estimates   //
+//      for ground state energies.                                           //
+//                                                                           //
+// Constructor assigns given basis and other parameters. Also sets up random //
+// number generator with given seed.                                         //
+///////////////////////////////////////////////////////////////////////////////
 
 #include "vmc.h" // header
 #include "hermite.h" // template function for hermite polynomials
@@ -61,12 +90,12 @@ void VMC::setBeta(double b) {
 } // end function setBeta
 
 void VMC::setImportanceSampling(bool a) {
-    /* switch importance sampling on */
+    /* switch importance sampling */
     imp = a;
 } //send function setImportanceSampling
 
 void VMC::setCoulombInteraction(bool a) {
-    /* switch Coloumb interaction on */
+    /* switch Coloumb interaction */
     coulomb = a;
 } // end function setCoulombInteraction
 
