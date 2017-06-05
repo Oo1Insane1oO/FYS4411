@@ -1,7 +1,7 @@
 import numpy as np
 import sys
 import os
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 
 def reader(directory):
     alpha = 0
@@ -58,7 +58,7 @@ def blocking(data, numBlocks):
 directory = sys.argv[1];
 blockSize = int(sys.argv[2]);
 alpha, beta, total, potential, kinetic, totalData = reader(directory)
-means = blocking(totalData, blockSize)
+# means = blocking(totalData, blockSize)
 
 print total
 print potential
@@ -67,5 +67,5 @@ print potential - kinetic
 print alpha
 print beta
 
-plt.plot(np.linspace(0,len(means)/blockSize,len(means)),means)
-plt.show()
+# plt.plot(np.linspace(0,len(means)/blockSize,len(means)),means)
+# plt.show()

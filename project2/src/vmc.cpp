@@ -371,9 +371,9 @@ void VMC::calculate(const unsigned int maxCount, const char *destination) {
     std::ofstream outFile;
     char tmpf[100];
     unsigned int chunksize = 3*10000;
-    char *writeArray;
+    double *writeArray;
     if (destination) {
-        writeArray = new char[chunksize];
+        writeArray = new double[chunksize];
     } // end if
 
     if (destination) {
@@ -535,7 +535,7 @@ void VMC::calculate(const unsigned int maxCount, const char *destination) {
                 writeArray[c+1] = tmpPotentialEnergy;
                 writeArray[c+2] = tmpKineticEnergy;
                 if (cycles%(chunksize/3)==0) {
-                    outFile.write(reinterpret_cast<char*>(&writeArray),
+                    outFile.write(reinterpret_cast<const char*>(&writeArray),
                             sizeof(writeArray));
                     c = 0;
                 } else {
@@ -575,10 +575,10 @@ void VMC::calculate(const unsigned int maxCount, const char *destination) {
         steepb(1) = 2*(ELB - energy*B);
         newAlphaBeta -= steepStep*steepb;
 
-        std::cout << "Acceptance: " << acceptance << std::endl;
-        std::cout << std::setprecision(16) << "alpha: " << alpha << " beta: "
-            << beta << " Energy: " << energy << " " << meth->variance(energy,
-                    energySq, maxIterations) << " " << runCount << std::endl;
+//         std::cout << "Acceptance: " << acceptance << std::endl;
+//         std::cout << std::setprecision(16) << "alpha: " << alpha << " beta: "
+//             << beta << " Energy: " << energy << " " << meth->variance(energy,
+//                     energySq, maxIterations) << " " << runCount << std::endl;
 
         // update variational parameters
         setAlpha(newAlphaBeta(0));
