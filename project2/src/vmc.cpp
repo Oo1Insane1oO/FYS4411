@@ -535,8 +535,8 @@ void VMC::calculate(const unsigned int maxCount, const char *destination) {
                 writeArray[c+1] = tmpPotentialEnergy;
                 writeArray[c+2] = tmpKineticEnergy;
                 if (cycles%(chunksize/3)==0) {
-                    outFile.write(reinterpret_cast<const char*>(&writeArray),
-                            sizeof(writeArray));
+                    outFile.write(reinterpret_cast<const char*>(writeArray),
+                            sizeof(writeArray[0])*chunksize);
                     c = 0;
                 } else {
                     c += 3;
