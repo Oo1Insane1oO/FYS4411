@@ -367,12 +367,14 @@ void VMC::calculate(const unsigned int maxCount, const char *destination) {
     unsigned int halfSize = oldPositions.rows()/2;
     double steepStep = 0.00005;
 
-    // File, runcountm, buffer(for filename) and struct as write buffer
+    // File, runcountm, buffer(for filename) and write buffer
     std::ofstream outFile;
     char tmpf[100];
-    struct writeArray {
-        double a0, a1, a2;
-    } wa;
+    unsigned int chunksize = 3*10000;
+    char *writeArray;
+    if (destination) {
+        writeArray = new char[chunksize];
+    } // end if
 
     if (destination) {
         sprintf(tmpf, "%s.bin", destination);
@@ -420,6 +422,7 @@ void VMC::calculate(const unsigned int maxCount, const char *destination) {
         acceptance = 0;
 
         unsigned int i;
+        unsigned int c = 0;
         for (cycles = 0; cycles < maxIterations; ++cycles) {
             /* run Monte Carlo cycles */
             /* loop over number of particles(move only 1 particle) */
@@ -526,12 +529,18 @@ void VMC::calculate(const unsigned int maxCount, const char *destination) {
             potentialEnergy += tmpPotentialEnergy;
             kineticEnergy += tmpKineticEnergy;
 
-            // write to file
+            // write to file every chunksize iterations
             if (outFile.is_open()) {
-                wa.a0 = tmpEnergy;
-                wa.a1 = tmpPotentialEnergy;
-                wa.a2 = tmpKineticEnergy;
-                outFile.write(reinterpret_cast<char*>(&wa), sizeof(wa));
+                writeArray[c] = tmpEnergy;
+                writeArray[c+1] = tmpPotentialEnergy;
+                writeArray[c+2] = tmpKineticEnergy;
+                if (cycles%(chunksize/3)==0) {
+                    outFile.write(reinterpret_cast<char*>(&writeArray),
+                            sizeof(writeArray));
+                    c = 0;
+                } else {
+                    c += 3;
+                } // end if
             } // end if
 
             // split spin up/down and calculate expected value(local) of first
@@ -566,10 +575,10 @@ void VMC::calculate(const unsigned int maxCount, const char *destination) {
         steepb(1) = 2*(ELB - energy*B);
         newAlphaBeta -= steepStep*steepb;
 
-//         std::cout << "Acceptance: " << acceptance << std::endl;
-//         std::cout << std::setprecision(16) << "alpha: " << alpha << " beta: "
-//             << beta << " Energy: " << energy << " " << meth->variance(energy,
-//                     energySq, maxIterations) << " " << runCount << std::endl;
+        std::cout << "Acceptance: " << acceptance << std::endl;
+        std::cout << std::setprecision(16) << "alpha: " << alpha << " beta: "
+            << beta << " Energy: " << energy << " " << meth->variance(energy,
+                    energySq, maxIterations) << " " << runCount << std::endl;
 
         // update variational parameters
         setAlpha(newAlphaBeta(0));
@@ -581,5 +590,6 @@ void VMC::calculate(const unsigned int maxCount, const char *destination) {
         outFile.write(reinterpret_cast<char*>(&alpha), sizeof(double));
         outFile.write(reinterpret_cast<char*>(&beta), sizeof(double));
         outFile.close();
+        delete writeArray;
     } // end if
 } // end function calculate

@@ -104,7 +104,7 @@ int main(int argc, char** argv) {
         std::seed_seq seedSequence(start, end);
         std::mt19937_64 generator(seedSequence);
         std::uniform_real_distribution<double> dista(0.8,1.0);
-        std::uniform_real_distribution<double> distb(0.2,0.5);
+        std::uniform_real_distribution<double> distb(0.25,0.45);
         mySeed = std::chrono::high_resolution_clock::now() .
             time_since_epoch().count();
         myAlpha = dista(generator);
@@ -119,7 +119,7 @@ int main(int argc, char** argv) {
             MPI_Send(&betaBuf, 1, MPI_DOUBLE, p, 2, MPI_COMM_WORLD);
         } // end forp
     } else {
-        /* Slaves receive seed */
+        /* Slaves receive */
         MPI_Recv(&mySeed, 1, MPI_LONG_LONG, 0, 0, MPI_COMM_WORLD,
                 MPI_STATUS_IGNORE);
         MPI_Recv(&myAlpha, 1, MPI_DOUBLE, 0, 1, MPI_COMM_WORLD,
@@ -128,8 +128,8 @@ int main(int argc, char** argv) {
                 MPI_STATUS_IGNORE);
     } // end ifelse
 
-//     VMC *vmcObj = new VMC(b, myAlpha, myBeta, 2, step, maxIterations, mySeed);
-    VMC *vmcObj = new VMC(b, 1.04, 0.47, 2, step, maxIterations, -1);
+    VMC *vmcObj = new VMC(b, myAlpha, myBeta, 2, step, maxIterations, mySeed);
+//     VMC *vmcObj = new VMC(b, 1.04, 0.47, 2, step, maxIterations, -1);
 //     VMC *vmcObj = new VMC(b, 0.69, 1.32, 2, step, maxIterations, mySeed);
     vmcObj->setImportanceSampling(imp);
     vmcObj->setCoulombInteraction(coul);
