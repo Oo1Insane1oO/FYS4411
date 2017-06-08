@@ -32,7 +32,7 @@ def reader(directory):
         # end while
         c += 1
     # and for filename
-    
+   
     return alpha/c, beta/c, total/j, potential/j, kinetic/j, np.array(totalData)
 # end function reader
 
@@ -66,6 +66,8 @@ print kinetic
 print potential - kinetic
 print alpha
 print beta
+print
+print len(totalData)
 
 # plt.plot(np.linspace(0,len(means)/blockSize,len(means)),means)
 # plt.show()

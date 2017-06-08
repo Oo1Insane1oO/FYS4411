@@ -150,15 +150,54 @@ int main(int argc, char** argv) {
 
     std::cout << "Starting :" << myRank << " " << myAlpha << " " << myBeta <<
         std::endl;
+
+    // Run Monte Carlo simulations and find optimal parameters
+//     vmcObj->calculate(myMaxCount);
+    vmcObj->calculate(1);
+
+    double *recvAlpha;
+    double *recvBeta;
+    if (myRank == 0) {
+        recvAlpha = new double[numProcs];
+        recvBeta = new double[numProcs];
+    } // end if
+    MPI_Gather(&(vmcObj->alpha), 1, MPI_DOUBLE, recvAlpha, 1, MPI_DOUBLE, 0,
+            MPI_COMM_WORLD);
+    MPI_Gather(&(vmcObj->beta), 1, MPI_DOUBLE, recvBeta, 1, MPI_DOUBLE, 0,
+            MPI_COMM_WORLD);
+
+    // root sends new parameters to all
+    double newAlpha = 0;
+    double newBeta = 0;
+    if (myRank == 0) {
+        for (unsigned int i = 0; i < numProcs; ++i) {
+            newAlpha += recvAlpha[i];
+            newBeta += recvBeta[i];
+        } // end fori
+        newAlpha /= numProcs;
+        newBeta /= numProcs;
+        delete recvAlpha;
+        delete recvBeta;
+    } // end if
+    MPI_Bcast(&newAlpha, 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+    MPI_Bcast(&newBeta, 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+
+    // run last simulation and write to file
+    vmcObj->setAlpha(newAlpha);
+    vmcObj->setBeta(newBeta);
+    maxIterations *= 10;
+    double tmpMaxNum = (double)maxIterations / numProcs;
+    unsigned int myMaxIteration = (myRank < maxIterations % numProcs ?
+            ceil(tmpMaxNum) : floor(tmpMaxNum));
+    vmcObj->maxIterations = myMaxIteration;
+    
     // create filename for each process
     char myFileName[100];
     if (filename) {
         sprintf(myFileName, "%sP%d", filename, myRank);
     } // end fi 
-
-    // Run Monte Carlo simulation
-    vmcObj->calculate(myMaxCount, myFileName);
 //     vmcObj->calculate(1, myFileName);
+    vmcObj->calculate(1);
 
 //     std::chrono::steady_clock::time_point end;
 //     end = std::chrono::steady_clock::now();
