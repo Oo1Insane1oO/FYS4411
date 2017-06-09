@@ -152,8 +152,7 @@ int main(int argc, char** argv) {
         std::endl;
 
     // Run Monte Carlo simulations and find optimal parameters
-//     vmcObj->calculate(myMaxCount);
-    vmcObj->calculate(1);
+    vmcObj->calculate(myMaxCount);
 
     double *recvAlpha;
     double *recvBeta;
@@ -196,8 +195,7 @@ int main(int argc, char** argv) {
     if (filename) {
         sprintf(myFileName, "%sP%d", filename, myRank);
     } // end fi 
-//     vmcObj->calculate(1, myFileName);
-    vmcObj->calculate(1);
+    vmcObj->calculate(1, myFileName);
 
 //     std::chrono::steady_clock::time_point end;
 //     end = std::chrono::steady_clock::now();

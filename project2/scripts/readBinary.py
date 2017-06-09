@@ -1,7 +1,7 @@
 import numpy as np
 import sys
 import os
-# import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt
 
 def reader(directory):
     alpha = 0
@@ -23,8 +23,9 @@ def reader(directory):
         while i<len(data[:-2]):
             if str(data[i])=="nan" or str(data[i+1])=="nan" or str(data[i+2])=="nan":
                 continue;
+            if i%1000==0:
+                totalData.append(data[i])
             total += data[i]
-            totalData.append(data[i])
             potential += data[i+1]
             kinetic += data[i+2]
             j += 1
@@ -56,9 +57,11 @@ def blocking(data, numBlocks):
 # end function blocking
 
 directory = sys.argv[1];
+print 
+sys.exit(1)
 blockSize = int(sys.argv[2]);
 alpha, beta, total, potential, kinetic, totalData = reader(directory)
-# means = blocking(totalData, blockSize)
+means = blocking(totalData, blockSize)
 
 print total
 print potential
@@ -69,5 +72,7 @@ print beta
 print
 print len(totalData)
 
-# plt.plot(np.linspace(0,len(means)/blockSize,len(means)),means)
-# plt.show()
+plt.plot(np.linspace(0,len(means)/blockSize,len(means)),means)
+plt.xlabel("Blocksize")
+plt.ylabel("std. dev.")
+plt.savefig("Blocksize_"+directory[-9:-5]+".pdf")
