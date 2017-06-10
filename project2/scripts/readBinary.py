@@ -15,16 +15,15 @@ def reader(directory):
     for filename in os.listdir(directory):
         data = np.fromfile(directory+filename, dtype=np.float64, count=-1, sep="")
 
-        if str(data[-2])=="nan" or str(data[-1])=="nan":
-            continue;
+#         if str(data[-2])=="nan" or str(data[-1])=="nan":
+#             continue;
         alpha += data[-2]
         beta += data[-1]
         i = 0
         while i<len(data[:-2]):
-            if str(data[i])=="nan" or str(data[i+1])=="nan" or str(data[i+2])=="nan":
-                continue;
-            if i%100==0:
-                totalData.append(data[i])
+#             if str(data[i])=="nan" or str(data[i+1])=="nan" or str(data[i+2])=="nan":
+#                 continue;
+            totalData.append(data[i])
             total += data[i]
             potential += data[i+1]
             kinetic += data[i+2]
@@ -38,17 +37,16 @@ def reader(directory):
 # end function reader
 
 def blocking(data, numBlocks):
-#     numBlocks = numBlocks if (len(data)/numBlocks)%2==0 else
-#     int(np.floor(numBlocks))
+    numBlocks = numBlocks if (len(data)/numBlocks)%2==0 else int(np.floor(numBlocks))
     minBlockSize = numBlocks/2
     maxBlockSize = len(data)/minBlockSize
     blockStep = int((maxBlockSize-minBlockSize+1)/numBlocks)
     blockMeans = np.zeros(numBlocks)
-    for i in range(numBlocks):
-        blockSize = int(minBlockSize + i*blockStep)
+    for i in xrange(numBlocks):
+        blockSize = minBlockSize + i*blockStep
         tmpBlockNum = len(data)/blockSize
         tmpMean = np.zeros(tmpBlockNum)
-        for j in range(len(data)/blockSize):
+        for j in xrange(tmpBlockNum):
             tmpMean[j] = np.mean(data[j:(j+1)*blockSize])
         blockMeans[i] = np.sqrt(np.var(tmpMean)) / tmpBlockNum
 #         blockMeans[i] = np.sqrt(np.var(data[i:(i+1)*blockSize])) / tmpBlockNum
@@ -57,7 +55,6 @@ def blocking(data, numBlocks):
 # end function blocking
 
 directory = sys.argv[1];
-sys.exit(1)
 blockSize = int(sys.argv[2]);
 alpha, beta, total, potential, kinetic, totalData = reader(directory)
 means = blocking(totalData, blockSize)
@@ -74,4 +71,4 @@ print len(totalData)
 plt.plot(np.linspace(0,len(means)/blockSize,len(means)),means)
 plt.xlabel("Blocksize")
 plt.ylabel("std. dev.")
-plt.savefig("Blocksize_" + directory[-9:-5] + "_" + directory[-4:-1] + ".pdf")
+plt.savefig("Blocksize_" + directory[-8:-4] + "_" + directory[-3:-1] + ".pdf")
