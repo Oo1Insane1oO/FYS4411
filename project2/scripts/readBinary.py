@@ -1,7 +1,23 @@
+import matplotlib
+matplotlib.use("Qt5Agg")
+
 import numpy as np
 import sys
 import os
 import matplotlib.pyplot as plt
+
+def addDecimal(x):
+    return x + np.modf(x-int(x))[0]
+# end function addDecimal
+
+def averageFlatArea(A, eps=1e-10):
+    idx = np.where(np.abs(np.gradient(A, eps))<eps)
+    if not np.size(idx):
+        return averageFlatArea(A, addDecimal(eps))
+    else:
+        return idx
+    # end ifelse
+# end function averateFlatArea
 
 def reader(directory):
     alpha = 0
@@ -56,9 +72,14 @@ def blocking(data, numBlocks):
 
 directory = sys.argv[1];
 blockSize = int(sys.argv[2]);
-alpha, beta, total, potential, kinetic, totalData = reader(directory)
-means = blocking(totalData, blockSize)
 
+# x = np.linspace(0,5,1000)
+# f = np.exp(-x)
+# flatIdx = averageFlatArea(f)
+# plt.plot(x,f, 'b-')
+# plt.plot(x[flatIdx],f[flatIdx], 'ro')
+# plt.show()
+alpha, beta, total, potential, kinetic, totalData = reader(directory)
 print total
 print potential
 print kinetic
@@ -67,8 +88,14 @@ print alpha
 print beta
 print
 print len(totalData)
+means = blocking(totalData, blockSize)
 
-plt.plot(np.linspace(0,len(means)/blockSize,len(means)),means)
+flatidx = averageFlatArea(means)
+meansx = np.linspace(0,len(means)/blockSize,len(means))
+print "St. Dev.: ", np.mean(means[flatidx])
+
+plt.plot(meansx,means, 'b-')
+plt.plot(meansx[flatidx], means[flatidx], 'r--')
 plt.xlabel("Blocksize")
 plt.ylabel("std. dev.")
 plt.savefig("Blocksize_" + directory[-8:-4] + "_" + directory[-3:-1] + ".pdf")

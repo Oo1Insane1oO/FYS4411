@@ -373,19 +373,7 @@
             \label{eq:stepepestupdate}
         \end{equation}
     with $\gamma$ being the step-size determining the how much(portion) of the
-    gradient to follow. \\
-    One may have constant step-size or use for instance the Barzilai-Borwein
-    method which updates the step-size by
-        \begin{equation}
-            \gamma_j = \frac{\left(\vec{\alpha}_j -
-            \vec{\alpha}_{j-1}\right)^T\left(\nabla_nf(\vec{\alpha}_j) -
-            \nabla_nf(\vec{\alpha}_{j-1})\right)}{\abs{\nabla_nf(\vec{\alpha}_j)
-            - \nabla_nf(\vec{\alpha}_{j-1})}^2}
-            \label{eq:barzilaiborwein}
-        \end{equation}
-    where $j$ indicates the step (new for $j$ and old for $j-1$). \\
-    So we need either just one initial guess for the minimum, or two in case of
-    \Autoref{eq:barzilaiborwein}.
+    gradient to follow.
 
 \subsection{CONJUGATE GRADIENT METHOD}
 \label{sub:conjugate_gradient_method}
@@ -1069,7 +1057,7 @@
     method is to basically divide the sample sequence into blocks of size
     $\tau$(meaning sample $j$ of block $i$ is uncorrelated to sample $j$ of
     block $i+1$). The total mean and variance is then obtained by calculating
-    the mean of blocks $\chi_i,\dots,\chi_n_{\text{blocks}}$. \\
+    the mean of blocks $\chi_i,\dots,\chi_{n_{\text{blocks}}}$. \\
     The second problem is to find $\tau$. This is solved by making a plot of
     the standard deviation and divide the blocks accordingly. The standard
     deviation will increase and reach a convergence as the block size

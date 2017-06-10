@@ -148,8 +148,8 @@ int main(int argc, char** argv) {
 //     std::chrono::steady_clock::time_point begin;
 //     begin = std::chrono::steady_clock::now();
 
-    std::cout << "Starting :" << myRank << " " << myAlpha << " " << myBeta <<
-        std::endl;
+//     std::cout << "Starting :" << myRank << " " << myAlpha << " " << myBeta <<
+//         std::endl;
 
     // Run Monte Carlo simulations and find optimal parameters
     vmcObj->calculate(myMaxCount);
@@ -203,13 +203,13 @@ int main(int argc, char** argv) {
 //         std::chrono::duration_cast<std::chrono::seconds>(end-begin).count()
 //         << std::endl;
 
-//     std::cout << std::setprecision(10) << "<E> = " << vmcObj->energy << ", " <<
-//         "<E^2> = " << vmcObj->energySq << std::endl;
-//     std::cout << std::setprecision(10) << "<E^2> - <E>^2 = " <<
-//         (vmcObj->energySq - pow(vmcObj->energy,2))/maxIterations << std::endl;
-// 
-//     std::cout << "alpha: " << vmcObj->alpha << ", beta: " << vmcObj->beta <<
-//         std::endl;
+    std::cout << std::setprecision(10) << "<E> = " << vmcObj->energy << ", " <<
+        "<E^2> = " << vmcObj->energySq << std::endl;
+    std::cout << std::setprecision(10) << "<E^2> - <E>^2 = " <<
+        (vmcObj->energySq - pow(vmcObj->energy,2))/maxIterations << std::endl;
+
+    std::cout << "alpha: " << vmcObj->alpha << ", beta: " << vmcObj->beta <<
+        std::endl;
 
     // free objects
     delete b;
