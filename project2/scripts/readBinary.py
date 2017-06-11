@@ -1,6 +1,3 @@
-import matplotlib
-matplotlib.use("Qt5Agg")
-
 import numpy as np
 import sys
 import os
@@ -12,11 +9,13 @@ def addDecimal(x):
 
 def averageFlatArea(A, eps=1e-10):
     idx = np.where(np.abs(np.gradient(A, eps))<eps)
-    if not np.size(idx):
+    if not np.size(idx) and eps<=1:
         return averageFlatArea(A, addDecimal(eps))
+    elif np.size(idx)==0 and eps>1:
+        return np.array([-2,-1])
     else:
         return idx
-    # end ifelse
+    # end ifeifelse
 # end function averateFlatArea
 
 def reader(directory):
@@ -53,49 +52,79 @@ def reader(directory):
 # end function reader
 
 def blocking(data, numBlocks):
-    numBlocks = numBlocks if (len(data)/numBlocks)%2==0 else int(np.floor(numBlocks))
-    minBlockSize = numBlocks/2
-    maxBlockSize = len(data)/minBlockSize
-    blockStep = int((maxBlockSize-minBlockSize+1)/numBlocks)
+    numBlocks = numBlocks if (len(data)/numBlocks)%2==0 else int(np.int(numBlocks))
+    minBlockSize = numBlocks / 2
+    maxBlockSize = len(data) / minBlockSize
+    blockStep = int((maxBlockSize - minBlockSize)/numBlocks)
     blockMeans = np.zeros(numBlocks)
+    blockSizes = np.zeros(numBlocks, np.int64)
     for i in xrange(numBlocks):
-        blockSize = minBlockSize + i*blockStep
-        tmpBlockNum = len(data)/blockSize
+        blockSizes[i] = maxBlockSize - i*blockStep
+#         blockSizes[i] = minBlockSize + i*blockStep
+        tmpBlockNum = int(np.ceil(len(data)/float(blockSizes[i])))
         tmpMean = np.zeros(tmpBlockNum)
         for j in xrange(tmpBlockNum):
-            tmpMean[j] = np.mean(data[j:(j+1)*blockSize])
-        blockMeans[i] = np.sqrt(np.var(tmpMean)) / tmpBlockNum
-#         blockMeans[i] = np.sqrt(np.var(data[i:(i+1)*blockSize])) / tmpBlockNum
+            tmpMean[j] = np.mean(data[j*blockSizes[i]:(j+1)*blockSizes[i]]) / numBlocks
+        blockMeans[i] = np.var(tmpMean) / tmpBlockNum
     # end fori
-    return blockMeans
+    return blockMeans, blockSizes
 # end function blocking
+
+def findDivNum(N, D):
+    num = 0
+    while N>=D:
+        N /= D
+        num += 1
+    # end while
+    return num
+# end function findDivNum
+
+def findFileName(string):
+    oStart = 0
+    oEnd = -1
+    NE = ""
+    for i,s in enumerate(string):
+        if s=="w":
+            oStart = i
+            for j in xrange(len(string[i:])):
+                if string[i+j]=="/":
+                    oEnd = i+j
+                    NE = string[i+j+1:-1]
+                    break
+                # end if
+            # end forj
+            break
+        # end if
+    # end foris
+    return string[oStart:oEnd], NE
+# end function findFileName
 
 directory = sys.argv[1];
 blockSize = int(sys.argv[2]);
+oname, Nname = findFileName(directory)
+fname = oname + "_" + Nname
+if oname[-1] == "0":
+    omega = float(oname[2])
+else:
+    omega = float(oname[1]+"."+oname[2:])
+NE = float(Nname[1:])
 
-# x = np.linspace(0,5,1000)
-# f = np.exp(-x)
-# flatIdx = averageFlatArea(f)
-# plt.plot(x,f, 'b-')
-# plt.plot(x[flatIdx],f[flatIdx], 'ro')
-# plt.show()
 alpha, beta, total, potential, kinetic, totalData = reader(directory)
-print total
-print potential
-print kinetic
-print potential - kinetic
-print alpha
-print beta
-print
-print len(totalData)
-means = blocking(totalData, blockSize)
+means, meansx = blocking(totalData, blockSize)
 
 flatidx = averageFlatArea(means)
-meansx = np.linspace(0,len(means)/blockSize,len(means))
-print "St. Dev.: ", np.mean(means[flatidx])
+meanMean = np.mean(means[flatidx])
+print NE, omega, total, meanMean, potential, kinetic, alpha, beta
 
+# maskOff = np.arange(0,np.size(means),int(np.floor(np.size(means)/10)))
 plt.plot(meansx,means, 'b-')
-plt.plot(meansx[flatidx], means[flatidx], 'r--')
+# plt.fill_between(meansx, means-meanMean, means+meanMean, facecolor='r',
+#         alpha=0.2)
+# plt.errorbar(meansx[maskOff], means[maskOff], xerr=0, yerr=meanMean, fmt='o',
+#         capthick=0.5, markersize=2.)
 plt.xlabel("Blocksize")
 plt.ylabel("std. dev.")
-plt.savefig("Blocksize_" + directory[-8:-4] + "_" + directory[-3:-1] + ".pdf")
+# plt.xscale("log", nonposx='clip')
+plt.yscale("log", nonposy='clip')
+plt.savefig("text/figures/Blocksize_" + fname + "_WOJ.pdf")
+# plt.show()

@@ -1065,12 +1065,80 @@
 
 \section{SETUP}
 \label{sec:setup}
+    See \url{https://www.github.com/Oo1Insane1oO/FYS4411} for C++ program for
+    the VMC calculations. \\
+    The program sets up the basis in Cartesian coordinates(class Basis in
+    basis.cpp) and sets up the wave function before running the calculations. \\
+    All stand alone methods are given in class Methods(methods.cpp) and the VMC
+    part is done in class VMC. \\
+    The main file sets up the class objects and takes care of dividing the
+    problem for MPI(and runs with MPI). The variational parameters are gathered
+    to root process in the end and averaged. All the processes write to their
+    own respective files. \\
+    The repository also contains a python script file for the blocking
+    analysis(readBinary.py). \\
+    The function which runs the VMC calculations splits the wave function in
+    two, one for spin up states and one for spin down and uses the different
+    optimizations mentioned in \Autoref{sub:optimization}(functions themselves
+    are given in methods.cpp). After the Metropolis sampling is done, we use
+    the Steepest descent method for minimization. \\
+    The whole sampling is run one last time with the optimal parameters and
+    results are dumped to binary files(one for each process).
+
 \section{RESULTS}
 \label{sec:results}
+    \begin{table}[H]
+        \centering
+        \textbf{Table of Results} \\
+        \vspace{0.3cm} 
+        \begin{tabular}{cccccccc} \hline\hline
+            $N$ & $\omega$ & $\ecp{E}$ & $\sigma^2$ & $\ecp{V}$ & $\ecp{K}$ &
+            $\alpha$ & $\beta$ \\ \hline
+            \input{dataTexTable.txt} \hline
+        \end{tabular}
+    \end{table}
 \section{DISCUSSION}
 \label{sec:discussion}
+\subsection{With Jastrow}
+\label{sub:with_jastrow}
+\subsubsection{Energies}
+\label{ssub:Energies}
+    As we can see from \Autoref{sec:results} the energies are rather strange
+    compared to the Hartree-Fock energies. Some of the energies obtained by the
+    VMC calculations are higher, which they should not be. There may be several
+    reasons for this, we might not have found the optimal parameters, or(much
+    more likely) there is an error in the code.
+
+\subsubsection{Error}
+\label{ssub:Error}
+    With that said, the standard deviation is fairly good, however it increases
+    with the number of particles suggesting there might be an error in how the
+    derivatives are calculated in the VMC loop. \\
+    For the blocking part we have plots which have the expected form, but are a
+    bit jagged. The optimal standard deviation was found by smoothing out the
+    graph and taking an average over the most stationary area(the area with
+    lowest gradient).
+
+\subsection{Without Jastrow}
+\label{sub:without_jastrow}
+    As for the calculations without the Jastrow factor the energies look good.
+    We have no ground to compare with the energies with Jastrow factor, however
+    we expect the energies to be lower when the Jastrow factor is included. \\
+
+\subsection{Speed-up}
+\label{sub:speed_up}
+    We see that with MPI the speed-up almost follows by a factor number of
+    processes, suggesting we have an almost perfect speed-up ratio per number
+    of processes.
+
 \section{CONCLUSION}
 \label{sec:conclusion}
+    We have in this project set up a program for calculating the ground-state
+    energy of an electron system trapped in a quantum-dot with the harmonic
+    oscillator functions as basis functions. \\
+    The resulting energies do not look promising as they are higher than the
+    ones obtained from Hartree-Fock calculations. \\
+    We conclude with that the poor results are due to an error in the code.
 
 \section{Appendix}
 \label{sec:appendix}
