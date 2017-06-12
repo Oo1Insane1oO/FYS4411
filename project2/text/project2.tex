@@ -117,13 +117,13 @@
 \newcommand{\twofigure}[7]{
     \begin{figure}[H]
         \centering
-        \begin{subfigure}[b!]{0.49\textwidth}
+        \begin{subfigure}[b!]{0.45\textwidth}
             \centering
             \includegraphics[width=\textwidth]{{#1}}
             \caption{{#2}}
             \label{subfig:#3}
         \end{subfigure}
-        \begin{subfigure}[b!]{0.49\textwidth}
+        \begin{subfigure}[b!]{0.45\textwidth}
             \centering
             \includegraphics[width=\textwidth]{{#4}}
             \caption{{#5}}
@@ -242,6 +242,9 @@
 
 \begin{center}
     \textbf{Abstract} \\
+    We have used the VMC method for calculating the ground-state energies for a
+    quantum-dot system. The results do not look correct and we conclude with an
+    error in the code.
 \end{center}
 
 \section{INTRODUCTION}
@@ -374,94 +377,6 @@
         \end{equation}
     with $\gamma$ being the step-size determining the how much(portion) of the
     gradient to follow.
-
-\subsection{CONJUGATE GRADIENT METHOD}
-\label{sub:conjugate_gradient_method}
-    Suppose we have a linear system defined as
-        \begin{equation}
-            A\vec{x} = \vec{b}
-            \label{eq:cglinsys}
-        \end{equation}
-    where $A$ is a $nxn$ real, symmetric and positive definite matrix while
-    $\vec{x}$ and $\vec{b}$ are a non-zero real vectors. \\
-    Define now the conjugate directions of two vectors
-    $\vec{x}_i,\vec{x}_j:\mathbb{R}\rarr\mathbb{R}$ giving the constraint
-        \begin{equation}
-            \vec{x}_i^{T}A\vec{x}_j = \vec{0}
-            \label{eq:cgconstr}
-        \end{equation}
-    This means that in the iterative process of finding $\vec{x}$ we perform
-    searches within the conjugate directions of $\vec{x}$. \\
-    Since the conjugate constraint(\Autoref{eq:cgconstr}) is defined by an
-    inner product within the space $A$ is defined, the two vectors $\vec{x}_i$
-    and $\vec{x}_j$ are orthogonal. If we now define a span $P$
-        \begin{equation}
-            P = \left\{\vec{p}_1,\dots,\vec{p}_n\right\}
-            \label{eq:cgSpan}
-        \end{equation}
-    consisting of $n$ mutually orthogonal conjugate directions $\vec{p}_i$, we
-    have a basis for $\mathbb{R}^n$. Expanding the solution $x_{i+1}$ to
-    \Autoref{eq:cglinsys} in the mentioned basis
-        \begin{equation}
-            \vec{x} = \suml{i}{n} C_i\vec{p}_i
-            \label{eq:cgnewstepbasisexpan}
-        \end{equation}
-    the linear system can be rewritten as
-        \begin{equation}
-            A\vec{x} = \suml{i}{n} C_iA\vec{p}_i = \vec{b}
-            \label{eq:cgnewsystem}
-        \end{equation}
-    Giving the inner product
-        \begin{equation}
-            \vec{p}^T_k A\vec{x} = \suml{i}{n} C_i\vec{p}^T_kA\vec{p}_i
-            \label{eq:cgnewinner}
-        \end{equation}
-    and we can define the coefficients $C_k$ as
-        \begin{equation}
-            C_k = \frac{\vec{p}^T_k\vec{b}}{\vec{p}^T_kA\vec{p}_k}
-            \label{eq:cgNewCoeff}
-        \end{equation}
-    The problem at hand is then to choose a sequence of $n$ conjugate
-    directions $P$ and compute the coefficients $C_k$.
-
-\subsubsection{Iterative Method}
-\label{ssub:iterative_method}
-    The conjugate gradient method can in a similar manner be used on an
-    iterative basis. We start with an initial guess $\vec{x}_0$ for the
-    solutions and consider the linear system
-        \begin{equation}
-            A\vec{x} = \vec{b} - \vec{r}
-            \label{eq:cgitlinsys}
-        \end{equation}
-    where $A,\vec{x}$ and $\vec{b}$ are defined as before and $\vec{r}$ is a
-    so-called residual. \\
-    Let $\vec{r}_k$ be the residual at the $k$-th step with a negative
-    gradient. Using a similar approach as before we get that the conjugate
-    direction $\vec{p}_{i+1}$ is
-        \begin{equation}
-            \vec{p}_{i+1} = \vec{r}_k -
-            \frac{\vec{p}^T_kA\vec{r}_k}{\vec{p}^T_kA\vec{p}_k}\vec{p}_k
-            \label{eq:cgitdirk}
-        \end{equation}
-    The iterative process is then to compute the directions and then solve the
-    arising linear system by computing the coefficients as given in
-    \Autoref{eq:cgNewCoeff}. \\
-    The iterative process is then to compute
-        \begin{equation}
-            \vec{x}_{k+1} = \vec{x}_k + C_k\vec{p}_{k+1}
-            \label{eq:cgitproc}
-        \end{equation}
-    with
-        \begin{equation}
-            C_k = \frac{\vec{p}^T_k\vec{r}_k}{\vec{p}^T_kA\vec{p}_k}
-            \label{eq:cgitcoeff}
-        \end{equation}
-    The residual $\vec{r}_k$ at the $k$-th step is defined from
-    \Autoref{eq:cgitlinsys} as
-        \begin{equation}
-            \vec{r}_k = \vec{b} - A\vec{x}_k
-            \label{eq:cgitrk}
-        \end{equation}
 
 \subsection{LAPLACE EXPANSION}
 \label{sub:laplace_expansion}
@@ -1083,7 +998,9 @@
     are given in methods.cpp). After the Metropolis sampling is done, we use
     the Steepest descent method for minimization. \\
     The whole sampling is run one last time with the optimal parameters and
-    results are dumped to binary files(one for each process).
+    results are dumped to binary files(one for each process). \\
+    There is also a class Tests(tests.cpp) which just a collection of different
+    tests for the different classes mentioned.
 
 \section{RESULTS}
 \label{sec:results}
@@ -1097,6 +1014,40 @@
             \input{dataTexTable.txt} \hline
         \end{tabular}
     \end{table}
+    
+    \begin{table}[H]
+        \centering
+        \textbf{Table of Results(Without Jastrow)} \\
+        \vspace{0.3cm} 
+        \begin{tabular}{cccccccc} \hline\hline
+            $N$ & $\omega$ & $\ecp{E}$ & $\sigma^2$ & $\ecp{V}$ & $\ecp{K}$ &
+            $\alpha$ & $\beta$ \\ \hline
+            \input{dataWOJTexTable.txt} \hline
+        \end{tabular}
+    \end{table}
+
+\twofigure{text/figures/Blocksize_w01_N2.pdf}{Blocking for $N=2$ and
+$\omega=1$}{blockN2w1}{text/figures/Blocksize_w01_N6.pdf}{Blocking for $N=6$
+and $\omega=1$}{blockN6w1}{Plots for $\omega=1$}
+\twofigure{text/figures/Blocksize_w01_N12.pdf}{Blocking for $N=12$ and
+$\omega=1$}{blockN12w1}{text/figures/Blocksize_w01_N20.pdf}{Blocking for $N=20$
+and $\omega=1$}{blockN20w1}{Plots for $\omega=1$}
+
+The rest of the figures are given in the mentioned github repository.\\
+
+    \begin{table}[H]
+        \centering
+        \textbf{Table of Runtime} \\
+        \vspace{0.3cm} 
+        \begin{tabular}{ccc|cc} \hline\hline
+            & \multicolumn{2}{c}{Parallelized} & \multicolumn{2}{c}{Serial} \\
+            Num Proc & Vectorized & Not Vectorization & Vectorized & Not Vectorized \\
+            \input{runtimeVec.txt} \\ \hline
+        \end{tabular}
+    \end{table}
+    The times are given with an average over 1000 runs and 1000000 Monte Carlo
+    cycles.
+
 \section{DISCUSSION}
 \label{sec:discussion}
 \subsection{With Jastrow}
@@ -1121,15 +1072,15 @@
 
 \subsection{Without Jastrow}
 \label{sub:without_jastrow}
-    As for the calculations without the Jastrow factor the energies look good.
-    We have no ground to compare with the energies with Jastrow factor, however
-    we expect the energies to be lower when the Jastrow factor is included. \\
+    As for the calculations without the Jastrow factor the energies are poor as
+    well.
 
 \subsection{Speed-up}
 \label{sub:speed_up}
     We see that with MPI the speed-up almost follows by a factor number of
     processes, suggesting we have an almost perfect speed-up ratio per number
-    of processes.
+    of processes. \\
+    As for the vectorization we see that we have more then a doubling in speed.
 
 \section{CONCLUSION}
 \label{sec:conclusion}

@@ -144,14 +144,9 @@ int main(int argc, char** argv) {
         exit(1);
     } // end if
 
-    // run calculations
-//     std::chrono::steady_clock::time_point begin;
-//     begin = std::chrono::steady_clock::now();
-
-//     std::cout << "Starting :" << myRank << " " << myAlpha << " " << myBeta <<
-//         std::endl;
-
     // Run Monte Carlo simulations and find optimal parameters
+    std::chrono::steady_clock::time_point begin;
+    begin = std::chrono::steady_clock::now();
     vmcObj->calculate(myMaxCount);
 
     double *recvAlpha;
@@ -197,11 +192,11 @@ int main(int argc, char** argv) {
     } // end fi 
     vmcObj->calculate(1, myFileName);
 
-//     std::chrono::steady_clock::time_point end;
-//     end = std::chrono::steady_clock::now();
-//     std::cout << "Calculation time: " <<
-//         std::chrono::duration_cast<std::chrono::seconds>(end-begin).count()
-//         << std::endl;
+    std::chrono::steady_clock::time_point end;
+    end = std::chrono::steady_clock::now();
+    std::cout << "Calculation time: " <<
+        std::chrono::duration_cast<std::chrono::milliseconds>(end-begin).count()
+        << std::endl;
 
     std::cout << std::setprecision(10) << "<E> = " << vmcObj->energy << ", " <<
         "<E^2> = " << vmcObj->energySq << std::endl;
