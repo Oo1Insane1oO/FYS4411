@@ -147,7 +147,7 @@ int main(int argc, char** argv) {
     // Run Monte Carlo simulations and find optimal parameters
     std::chrono::steady_clock::time_point begin;
     begin = std::chrono::steady_clock::now();
-    vmcObj->calculate(myMaxCount);
+//     vmcObj->calculate(myMaxCount);
 
     double *recvAlpha;
     double *recvBeta;
@@ -177,6 +177,7 @@ int main(int argc, char** argv) {
     MPI_Bcast(&newBeta, 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 
     // run last simulation and write to file
+    newAlpha = 1;
     vmcObj->setAlpha(newAlpha);
     vmcObj->setBeta(newBeta);
     maxIterations *= 10;

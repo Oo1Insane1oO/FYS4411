@@ -515,14 +515,14 @@ void VMC::calculate(const unsigned int maxCount, const char *destination) {
 
             // update first derivatives
             if (imp || jastrow) {
-                setFirstDerivatives(*newWave, *newInv, newPositions, i,
+                setFirstDerivatives(*oldWave, *oldInv, oldPositions, i,
                         halfIdx, uIdx);
             } // end if
        
             // Accumulate local energy and local energy squared
-            tmpPotentialEnergy = calculatePotentialEnergy(newPositions);
-            tmpKineticEnergy = calculateKineticEnergy(newD, newU, newInvD,
-                    newInvU, newPositions);
+            tmpPotentialEnergy = calculatePotentialEnergy(oldPositions);
+            tmpKineticEnergy = calculateKineticEnergy(oldD, oldU, oldInvD,
+                    oldInvU, oldPositions);
             tmpEnergy = tmpPotentialEnergy - tmpKineticEnergy;
             energy += tmpEnergy;
             energySq += tmpEnergy*tmpEnergy;
@@ -545,16 +545,16 @@ void VMC::calculate(const unsigned int maxCount, const char *destination) {
 
             // split spin up/down and calculate expected value(local) of first
             // derivative of wave function with respect to alpha
-            tmpA = Afunc(newD, newInvD, newPositions.block(0, 0, halfSize,
-                        newPositions.cols()), 0) + Afunc(newU, newInvU,
-                    newPositions.block(halfSize, 0, halfSize,
-                        newPositions.cols()),1);
+            tmpA = Afunc(oldD, oldInvD, oldPositions.block(0, 0, halfSize,
+                        oldPositions.cols()), 0) + Afunc(oldU, oldInvU,
+                    oldPositions.block(halfSize, 0, halfSize,
+                        oldPositions.cols()),1);
             A += tmpA;
             ELA += tmpEnergy*tmpA;
 
             // No need for splitting when finding first derivative with respect
             // to beta(only Jastrow factor gives constribution)
-            tmpB = Bfunc(newPositions);
+            tmpB = Bfunc(oldPositions);
             B += tmpB;
             ELB += tmpEnergy*tmpB;
         } // end for cycles
