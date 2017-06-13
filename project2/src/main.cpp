@@ -177,7 +177,14 @@ int main(int argc, char** argv) {
     MPI_Bcast(&newBeta, 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 
     // run last simulation and write to file
-    newAlpha = 1;
+    newAlpha = 0.992067;
+    newBeta = 0.400016;
+//     newAlpha = 1.104;
+//     newBeta = 0.473;
+//     newAlpha = 0.931;
+//     newBeta = 0.395;
+//     newAlpha = 1.060;
+//     newBeta = 0.474;
     vmcObj->setAlpha(newAlpha);
     vmcObj->setBeta(newBeta);
     maxIterations *= 10;
@@ -199,13 +206,13 @@ int main(int argc, char** argv) {
         std::chrono::duration_cast<std::chrono::milliseconds>(end-begin).count()
         << std::endl;
 
-    std::cout << std::setprecision(10) << "<E> = " << vmcObj->energy << ", " <<
-        "<E^2> = " << vmcObj->energySq << std::endl;
-    std::cout << std::setprecision(10) << "<E^2> - <E>^2 = " <<
-        (vmcObj->energySq - pow(vmcObj->energy,2))/maxIterations << std::endl;
-
-    std::cout << "alpha: " << vmcObj->alpha << ", beta: " << vmcObj->beta <<
-        std::endl;
+//     std::cout << std::setprecision(10) << "<E> = " << vmcObj->energy << ", " <<
+//         "<E^2> = " << vmcObj->energySq << std::endl;
+//     std::cout << std::setprecision(10) << "<E^2> - <E>^2 = " <<
+//         (vmcObj->energySq - pow(vmcObj->energy,2))/maxIterations << std::endl;
+// 
+//     std::cout << "alpha: " << vmcObj->alpha << ", beta: " << vmcObj->beta <<
+//         std::endl;
 
     // free objects
     delete b;

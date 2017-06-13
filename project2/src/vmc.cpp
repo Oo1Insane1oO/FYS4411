@@ -163,9 +163,7 @@ double VMC::jastrowSecondDerivativeRatio(const Eigen::MatrixXd &R, const
                     2*beta*rkj/denom);
         } // end if
     } // end forj
-    jbuf.row(k).setZero();
-    jastrowFirstDerivativeRatio(jbuf,R,k);
-    return ratio + jbuf.row(k).squaredNorm();
+    return ratio + derJ.row(k).squaredNorm();
 } // end function jastrowSecondDerivativeRatio
 
 double VMC::coulombFactor(const Eigen::MatrixXd &R) {
@@ -201,23 +199,10 @@ double VMC::calculateKineticEnergy(const Eigen::MatrixXd &waveD, const
         } // end forj
     } // end fork
     if (jastrow) {
-        /* set Jastrow part */
         for (unsigned int k = 0; k < R.rows(); ++k) {
-            E += 0.5*jastrowSecondDerivativeRatio(R,k);
-            tmp.setZero();
-            for (unsigned int j = 0; j < R.rows(); j+=2) {
-                if (k<half) {
-                    oneBodyFirstDerivativeRatio(buf,R,k,j);
-                    tmp += buf * waveD(k,j/2) * waveInvD(j/2,k);
-                } else {
-                    oneBodyFirstDerivativeRatio(buf,R,k,j+1);
-                    tmp += buf * waveU(k-half,j/2) * waveInvU(j/2,k-half);
-                } // end if
-            } // end forj
-
-            // jbuf is set in jastrowSecondDerivativeRatio
-            E += tmp.row(0).dot(jbuf.row(k));
-        } // end fork
+            E += 0.5*jastrowSecondDerivativeRatio(R,k) +
+                (derOB.row(k)).dot(derJ.row(k));
+        }  // end fork
     } // end if
     return E;
 } // end function calculateKineticEnergy
@@ -575,10 +560,11 @@ void VMC::calculate(const unsigned int maxCount, const char *destination) {
         steepb(1) = 2*(ELB - energy*B);
         newAlphaBeta -= steepStep*steepb;
 
-//         std::cout << "Acceptance: " << acceptance << std::endl;
-//         std::cout << std::setprecision(16) << "alpha: " << alpha << " beta: "
-//             << beta << " Energy: " << energy << " " << meth->variance(energy,
-//                     energySq, maxIterations) << " " << runCount << std::endl;
+        std::cout << "Acceptance: " << acceptance << std::endl;
+        std::cout << std::setprecision(16) << "alpha: " << alpha << " beta: "
+            << beta << " Energy: " << energy << " " << meth->variance(energy,
+                    energySq, maxIterations) << " Pot: " << potentialEnergy <<
+            " Kin: " << kineticEnergy <<  std::endl;
 
         // update variational parameters
         setAlpha(newAlphaBeta(0));
