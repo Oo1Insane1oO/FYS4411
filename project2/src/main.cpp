@@ -103,8 +103,10 @@ int main(int argc, char** argv) {
         std::istream_iterator<int> start(stringBuffer), end;
         std::seed_seq seedSequence(start, end);
         std::mt19937_64 generator(seedSequence);
-        std::uniform_real_distribution<double> dista(0.8,1.0);
-        std::uniform_real_distribution<double> distb(0.25,0.45);
+//         std::uniform_real_distribution<double> dista(0.8,1.0);
+//         std::uniform_real_distribution<double> distb(0.25,0.45);
+        std::uniform_real_distribution<double> dista(1.01,1.07);
+        std::uniform_real_distribution<double> distb(0.46,0.47);
         mySeed = std::chrono::high_resolution_clock::now() .
             time_since_epoch().count();
         myAlpha = dista(generator);
@@ -129,8 +131,6 @@ int main(int argc, char** argv) {
     } // end ifelse
 
     VMC *vmcObj = new VMC(b, myAlpha, myBeta, 2, step, maxIterations, mySeed);
-//     VMC *vmcObj = new VMC(b, 1.04, 0.47, 2, step, maxIterations, -1);
-//     VMC *vmcObj = new VMC(b, 0.69, 1.32, 2, step, maxIterations, mySeed);
     vmcObj->setImportanceSampling(imp);
     vmcObj->setCoulombInteraction(coul);
     vmcObj->setJastrow(jast);
@@ -140,6 +140,7 @@ int main(int argc, char** argv) {
         Tests testObj = Tests(b,vmcObj,num);
         testObj.run_tests(t);
 
+        MPI_Barrier(MPI_COMM_WORLD);
         MPI_Finalize();
         exit(1);
     } // end if
@@ -147,7 +148,6 @@ int main(int argc, char** argv) {
     // Run Monte Carlo simulations and find optimal parameters
     std::chrono::steady_clock::time_point begin;
     begin = std::chrono::steady_clock::now();
-//     vmcObj->calculate(myMaxCount);
 
     double *recvAlpha;
     double *recvBeta;
@@ -177,14 +177,6 @@ int main(int argc, char** argv) {
     MPI_Bcast(&newBeta, 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 
     // run last simulation and write to file
-    newAlpha = 0.992067;
-    newBeta = 0.400016;
-//     newAlpha = 1.104;
-//     newBeta = 0.473;
-//     newAlpha = 0.931;
-//     newBeta = 0.395;
-//     newAlpha = 1.060;
-//     newBeta = 0.474;
     vmcObj->setAlpha(newAlpha);
     vmcObj->setBeta(newBeta);
     maxIterations *= 10;
@@ -206,13 +198,13 @@ int main(int argc, char** argv) {
         std::chrono::duration_cast<std::chrono::milliseconds>(end-begin).count()
         << std::endl;
 
-//     std::cout << std::setprecision(10) << "<E> = " << vmcObj->energy << ", " <<
-//         "<E^2> = " << vmcObj->energySq << std::endl;
-//     std::cout << std::setprecision(10) << "<E^2> - <E>^2 = " <<
-//         (vmcObj->energySq - pow(vmcObj->energy,2))/maxIterations << std::endl;
-// 
-//     std::cout << "alpha: " << vmcObj->alpha << ", beta: " << vmcObj->beta <<
-//         std::endl;
+    std::cout << std::setprecision(10) << "<E> = " << vmcObj->energy << ", " <<
+        "<E^2> = " << vmcObj->energySq << std::endl;
+    std::cout << std::setprecision(10) << "<E^2> - <E>^2 = " <<
+        (vmcObj->energySq - pow(vmcObj->energy,2))/maxIterations << std::endl;
+
+    std::cout << "alpha: " << vmcObj->alpha << ", beta: " << vmcObj->beta <<
+        std::endl;
 
     // free objects
     delete b;
