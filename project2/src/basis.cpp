@@ -160,10 +160,14 @@ void Basis::setTrialWaveFunction(Eigen::MatrixXd &psiD, Eigen::MatrixXd &psiU,
         const Eigen::MatrixXd &r, const double alpha) {
     /* Given a vector of coordinates, split in spin-up and spin-down Slater
      * matrices and set values. */
+//     std::cout << "Di Dj Dnx Dny Ui Uj Unx Uny" << std::endl;
     for (unsigned int i = 0; i < r.rows()/2; ++i) {
         for (unsigned int j = 0; j < r.rows(); j+=2) {
             psiD(i,j/2) = harmonicOscillatorWaveFunction(alpha, r(i,0), r(i,1),
                     *states[j][0], *states[j][1]);
+//             std::cout << i << " " << j/2 << " " << *(states[j][0]) << " " <<
+//                 *(states[j][1]) << " " << i+r.rows()/2 << " " << j/2 << " "  <<
+//                 *(states[j+1][0]) << " " << *(states[j+1][1]) << std::endl;
             psiU(i,j/2) = harmonicOscillatorWaveFunction(alpha,
                     r(i+r.rows()/2,0), r(i+r.rows()/2,1), *states[j+1][0],
                     *states[j+1][1]);

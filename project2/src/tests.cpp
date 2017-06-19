@@ -17,7 +17,7 @@ Tests::Tests(Basis *B, VMC *V, int n) {
     v = V;
     m = new Methods();
 
-    eps = 1e-14;
+    eps = 5e-14;
 
     // initialize random number generator
     std::istringstream stringBuffer("0 1 2 3 4 5 6 7 8 9 10");
@@ -80,7 +80,7 @@ bool Tests::test_determinantratio() {
     /* check that ratio between determinants are correct in member function
      * determinantRatio of class methods */
     return (std::fabs(m->determinantRatio(newM,oldM.inverse(),rowi) -
-                newM.determinant()/oldM.determinant())<=1e-13 ? true : false);
+                newM.determinant()/oldM.determinant())<=eps ? true : false);
 } // end function test_determinantratio
 
 bool Tests::test_updateinverse() {
@@ -92,9 +92,10 @@ bool Tests::test_updateinverse() {
     bool t = false;
     for (int i = 0; i < oldM.rows(); ++i) {
         for (int j = 0; j < oldM.rows(); ++j) {
-            if (std::fabs(newInv(i,j) - inv(i,j))<=1e-13) {
+            if (std::fabs(newInv(i,j) - inv(i,j))<=eps) {
                 t = true;
             } else {
+                std::cout << std::fabs(newInv(i,j) - inv(i,j)) << std::endl;
                 t = false;
                 break;
             } // end if
@@ -170,7 +171,7 @@ bool Tests::test_hermite() {
 } // end function test_hermite
 
 void Tests::run_tests(int t) {
-    /* run all tests and exit */
+    /* run all tests */
     if (t) {
         if(test_energies()) {
             std::cout << "Energies good" << std::endl;

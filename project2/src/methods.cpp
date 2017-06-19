@@ -51,6 +51,7 @@ void Methods::updateMatrixInverse(const Eigen::MatrixXd &Mold, const
         Eigen::MatrixXd &Mnew, const Eigen::MatrixXd &MoldInv, Eigen::MatrixXd
         &MnewInv, const double &ratio, unsigned int i) {
     /* update inverse of matrix when only row i has changed */
+    MnewInv.setZero();
     for (unsigned int k = 0; k < MnewInv.rows(); ++k) {
         for (unsigned int j = 0; j < MnewInv.rows(); ++j) {
             for (unsigned int l = 0; l < MnewInv.rows(); ++l) {

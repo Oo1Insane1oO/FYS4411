@@ -198,6 +198,8 @@ double VMC::calculateKineticEnergy(const Eigen::MatrixXd &waveD, const
             } // end ifelse
         } // end forj
     } // end fork
+//     std::cout << "D\n" << waveD*waveInvD << std::endl;
+//     std::cout << "U\n" << waveU*waveInvU << std::endl;
     if (jastrow) {
         for (unsigned int k = 0; k < R.rows(); ++k) {
             E += 0.5*jastrowSecondDerivativeRatio(R,k) +
@@ -301,7 +303,7 @@ void VMC::initializeCalculationVariables() {
     // first derivative jastrow part
     if (jastrow) {
         derJ = Eigen::MatrixXd::Zero(oldPositions.rows(), dim);
-        jbuf = Eigen::MatrixXd::Zero(oldPositions.rows(), dim);
+//         jbuf = Eigen::MatrixXd::Zero(oldPositions.rows(), dim);
     } // end if
 } // end function initializeCalculationVariables
 
@@ -382,6 +384,7 @@ void VMC::calculate(const unsigned int maxCount, const char *destination) {
         newD = oldD;
         newU = oldU;
 
+        // set initial quantum force
         if (imp || jastrow) {
             for (unsigned int k = 0; k < oldPositions.rows(); ++k) {
                 if (k<halfSize) {
@@ -391,8 +394,10 @@ void VMC::calculate(const unsigned int maxCount, const char *destination) {
                             k-halfSize, 1);
                 } // end if
             } // end fork
-            qForceOld = 2*(derOB + derJ);
-            qForceNew = qForceOld;
+            if (imp) {
+                qForceOld = 2*(derOB + derJ);
+                qForceNew = qForceOld;
+            } // end if
         } // end if
         
         // reset values used in Monte Carlo cycle
@@ -450,7 +455,6 @@ void VMC::calculate(const unsigned int maxCount, const char *destination) {
                     halfIdx, uIdx);
             *determinantRatio = meth->determinantRatio(*newWave, *oldInv,
                     halfIdx);
-            newInv->setZero();
             meth->updateMatrixInverse(*oldWave, *newWave, *oldInv, *newInv,
                     *determinantRatio, halfIdx);
 
@@ -560,11 +564,11 @@ void VMC::calculate(const unsigned int maxCount, const char *destination) {
         steepb(1) = 2*(ELB - energy*B);
         newAlphaBeta -= steepStep*steepb;
 
-        std::cout << "Acceptance: " << acceptance << std::endl;
-        std::cout << std::setprecision(16) << "alpha: " << alpha << " beta: "
-            << beta << " Energy: " << energy << " " << meth->variance(energy,
-                    energySq, maxIterations) << " Pot: " << potentialEnergy <<
-            " Kin: " << kineticEnergy <<  std::endl;
+//         std::cout << "Acceptance: " << acceptance << std::endl;
+//         std::cout << std::setprecision(16) << "alpha: " << alpha << " beta: "
+//             << beta << " Energy: " << energy << " " << meth->variance(energy,
+//                     energySq, maxIterations) << " Pot: " << potentialEnergy <<
+//             " Kin: " << kineticEnergy <<  std::endl;
 
         // update variational parameters
         setAlpha(newAlphaBeta(0));
