@@ -183,10 +183,11 @@ double VMC::calculateKineticEnergy(const Eigen::MatrixXd &waveD, const
     /* Analytic expression for kinetic part of local energy */
     double E = 0;
     unsigned int half = R.rows()/2;
-    Eigen::MatrixXd tmp = Eigen::MatrixXd::Zero(1,dim);
+    double shit;
     for (unsigned int k = 0; k < R.rows(); ++k) {
         /* One-body Laplacian part*/
         for (unsigned int j = 0; j < R.rows(); j+=2) {
+            shit = 0;
             if (k < half) {
                 /* spin down */
                 E += 0.5 * oneBodySecondDerivativeRatio(R,k,j) * waveD(k,j/2) *
@@ -242,7 +243,7 @@ double VMC::Afunc(const Eigen::MatrixXd &wave, const Eigen::MatrixXd &waveInv,
 double VMC::Bfunc(const Eigen::MatrixXd &R) {
     /* first derivative of wave function with respect to beta */
     double B = 0;
-    double rij;
+//     double rij;
     for (unsigned int i = 0; i < R.rows(); ++i) {
         for (unsigned int j = 0; j < R.rows(); ++j) {
             if (i != j)  {
@@ -345,7 +346,6 @@ void VMC::calculate(const unsigned int maxCount, const char *destination) {
     double determinantRatioU = 1;
     unsigned int cycles = 0;
     double *determinantRatio;
-    double stepNorm;
         
     Eigen::MatrixXd *oldWave, *newWave, *oldInv, *newInv;
     
@@ -455,6 +455,7 @@ void VMC::calculate(const unsigned int maxCount, const char *destination) {
                     halfIdx, uIdx);
             *determinantRatio = meth->determinantRatio(*newWave, *oldInv,
                     halfIdx);
+            newInv->setZero();
             meth->updateMatrixInverse(*oldWave, *newWave, *oldInv, *newInv,
                     *determinantRatio, halfIdx);
 
@@ -482,6 +483,39 @@ void VMC::calculate(const unsigned int maxCount, const char *destination) {
                             (oldPositions.row(i) - newPositions.row(i) -
                              0.5*step*qForceNew.row(i)).squaredNorm()));
             } //end if
+       
+            for (unsigned int l = 0; l < oldPositions.rows(); ++l) {
+                if (l != i) {
+                    Eigen::ArrayXd tttmp =
+                        (oldPositions.row(l)-newPositions.row(l)).array().abs();
+                    if (!(tttmp(0)<1e-15 && tttmp(1)<1e-15)) {
+                        std::cout << "HORE " << oldPositions.row(l) << " " <<
+                            newPositions.row(l) << std::endl;
+                    }
+                } 
+            }
+
+            for (unsigned int l = 0; l < oldPositions.rows()/2; ++l) {
+                if (l != halfIdx) {
+                    Eigen::ArrayXd tttmp =
+                        (oldWave->row(l)-newWave->row(l)).array().abs();
+                    if (!(tttmp(0)<1e-15 && tttmp(1)<1e-15)) {
+                        std::cout << "BALLE " << oldWave->row(l) << " " <<
+                            newWave->row(l) << std::endl;
+                    }
+                }
+            }
+            
+            for (unsigned int l = 0; l < oldPositions.rows(); ++l) {
+                if (l != i) {
+                    Eigen::ArrayXd tttmp =
+                        (qForceOld.row(l)-qForceNew.row(l)).array().abs();
+                    if (!(tttmp(0)<1e-15 && tttmp(1)<1e-15)) {
+                        std::cout << "FAEN " << qForceOld.row(l) << " " <<
+                            qForceNew.row(l) << std::endl;
+                    }
+                } 
+            }
 
             if (testRatio >= dist(mt) || testRatio > 1) {
                 /* update state according to Metropolis test */
@@ -494,7 +528,7 @@ void VMC::calculate(const unsigned int maxCount, const char *destination) {
                 } // end if
             } else {
                 /* reset(discard) proposed state */
-                *newInv = *oldInv;
+//                 *newInv = *oldInv;
                 newPositions.row(i) = oldPositions.row(i);
                 newWave->row(halfIdx) = oldWave->row(halfIdx);
                 if (imp) {
@@ -507,7 +541,7 @@ void VMC::calculate(const unsigned int maxCount, const char *destination) {
                 setFirstDerivatives(*oldWave, *oldInv, oldPositions, i,
                         halfIdx, uIdx);
             } // end if
-       
+
             // Accumulate local energy and local energy squared
             tmpPotentialEnergy = calculatePotentialEnergy(oldPositions);
             tmpKineticEnergy = calculateKineticEnergy(oldD, oldU, oldInvD,

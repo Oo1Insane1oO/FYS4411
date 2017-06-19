@@ -148,6 +148,7 @@ int main(int argc, char** argv) {
     // Run Monte Carlo simulations and find optimal parameters
     std::chrono::steady_clock::time_point begin;
     begin = std::chrono::steady_clock::now();
+    vmcObj->calculate(myMaxCount);
 
     double *recvAlpha;
     double *recvBeta;

@@ -180,12 +180,14 @@ void Tests::run_tests(int t) {
         } // end ifelse
         if(test_energy()) {
             std::cout << "Energy unperturbed good" << std::endl;
-            std::cout << std::setprecision(16) << "  Energy is: " << v->energy
-                << std::endl;
+            std::cout << std::setprecision(16) << "  E=" << v->energy
+                << " E^2=" << v->energySq << " var: " << m->variance(v->energy,
+                        v->energySq, v->maxIterations) << std::endl;
         } else { 
             std::cout << "Energy unperturbed wrong" << std::endl;
-            std::cout << std::setprecision(16) << "  Energy is: " << v->energy
-                << std::endl;
+            std::cout << std::setprecision(16) << "  E=" << v->energy
+                << " E^2=" << v->energySq << " var: " << m->variance(v->energy,
+                        v->energySq, v->maxIterations) << std::endl;
         } // end ifelse
         if(test_determinantratio()) {
             std::cout << "Determinant ratio good" << std::endl;
