@@ -28,7 +28,7 @@ class VMC {
 
         void setFirstDerivatives(const Eigen::MatrixXd&, const
                 Eigen::MatrixXd&, const Eigen::MatrixXd&, const unsigned int,
-                const unsigned int, const unsigned int);
+                const unsigned int, const unsigned int, const double);
         void initializePositions(Eigen::MatrixXd&);
         void initializeCalculationVariables();
 
@@ -57,7 +57,8 @@ class VMC {
                 unsigned int, const unsigned int);
         double calculateKineticEnergy(const Eigen::MatrixXd&, const
                 Eigen::MatrixXd&, const Eigen::MatrixXd&, const
-                Eigen::MatrixXd&, const Eigen::MatrixXd&);
+                Eigen::MatrixXd&, const Eigen::MatrixXd&, const double, const
+                double);
         double calculatePotentialEnergy(const Eigen::MatrixXd&);
 
         void jastrowFirstDerivativeRatio(Eigen::MatrixXd&, const

@@ -148,7 +148,7 @@ int main(int argc, char** argv) {
     // Run Monte Carlo simulations and find optimal parameters
     std::chrono::steady_clock::time_point begin;
     begin = std::chrono::steady_clock::now();
-    vmcObj->calculate(myMaxCount);
+//     vmcObj->calculate(myMaxCount);
 
     double *recvAlpha;
     double *recvBeta;
@@ -178,6 +178,8 @@ int main(int argc, char** argv) {
     MPI_Bcast(&newBeta, 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 
     // run last simulation and write to file
+    newAlpha = 1.04;
+    newBeta = 0.473;
     vmcObj->setAlpha(newAlpha);
     vmcObj->setBeta(newBeta);
     maxIterations *= 10;
@@ -195,7 +197,7 @@ int main(int argc, char** argv) {
     std::chrono::steady_clock::time_point end;
     end = std::chrono::steady_clock::now();
     double myTime = std::chrono::duration_cast<std::chrono::milliseconds>(end -
-            begin).count();
+            begin).count() / numProcs;
 
     double energy, energySq;
     MPI_Reduce(&(vmcObj->energy), &energy, 1, MPI_DOUBLE, MPI_SUM, 0,
@@ -211,13 +213,13 @@ int main(int argc, char** argv) {
         energySq /= numProcs;
 
         if (totalTime >= 100) {
-            std::cout << "Calculation time: " << totalTime/1e3 << "s" <<
+            std::cout << "Calculation time: " << totalTime*0.001 << "s" <<
                 std::endl;
         } else if (totalTime >= 6e4) {
-            std::cout << "Calculation time: " << totalTime/6e4 << "min" <<
+            std::cout << "Calculation time: " << totalTime*0.001/60 << "min" <<
                 std::endl;
         } else if (totalTime >= 3.6e6) {
-            std::cout << "Calculation time: " << totalTime/3.6e6 << "h" <<
+            std::cout << "Calculation time: " << totalTime*0.001/3600 << "h" <<
                 std::endl;
         } else {
             std::cout << "Calculation time: " << totalTime << "ms" <<
