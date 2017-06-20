@@ -192,20 +192,46 @@ int main(int argc, char** argv) {
         sprintf(myFileName, "%sP%d", filename, myRank);
     } // end fi 
     vmcObj->calculate(1, myFileName);
-
     std::chrono::steady_clock::time_point end;
     end = std::chrono::steady_clock::now();
-    std::cout << "Calculation time: " <<
-        std::chrono::duration_cast<std::chrono::milliseconds>(end-begin).count()
-        << std::endl;
+    double myTime = std::chrono::duration_cast<std::chrono::milliseconds>(end -
+            begin).count();
 
-    std::cout << std::setprecision(10) << "<E> = " << vmcObj->energy << ", " <<
-        "<E^2> = " << vmcObj->energySq << std::endl;
-    std::cout << std::setprecision(10) << "<E^2> - <E>^2 = " <<
-        (vmcObj->energySq - pow(vmcObj->energy,2))/maxIterations << std::endl;
+    double energy, energySq;
+    MPI_Reduce(&(vmcObj->energy), &energy, 1, MPI_DOUBLE, MPI_SUM, 0,
+            MPI_COMM_WORLD);
+    MPI_Reduce(&(vmcObj->energySq), &energySq, 1, MPI_DOUBLE, MPI_SUM, 0,
+            MPI_COMM_WORLD);
 
-    std::cout << "alpha: " << vmcObj->alpha << ", beta: " << vmcObj->beta <<
-        std::endl;
+    double totalTime;
+    MPI_Reduce(&(myTime), &totalTime, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
+
+    if (myRank == 0) {
+        energy /= numProcs;
+        energySq /= numProcs;
+
+        if (totalTime >= 100) {
+            std::cout << "Calculation time: " << totalTime/1e3 << "s" <<
+                std::endl;
+        } else if (totalTime >= 6e4) {
+            std::cout << "Calculation time: " << totalTime/6e4 << "min" <<
+                std::endl;
+        } else if (totalTime >= 3.6e6) {
+            std::cout << "Calculation time: " << totalTime/3.6e6 << "h" <<
+                std::endl;
+        } else {
+            std::cout << "Calculation time: " << totalTime << "ms" <<
+                std::endl;
+        } // end ifeifeifelse
+
+        std::cout << std::setprecision(16) << "<E> = " << energy << ", " <<
+            "<E^2> = " << energySq << std::endl;
+        std::cout << std::setprecision(16) << "var(E) = " << (energySq -
+                pow(energy,2))/maxIterations << std::endl;
+
+        std::cout << std::setprecision(16) << "alpha: " << vmcObj->alpha << ",\
+            beta: " << vmcObj->beta << std::endl;
+    } // end if
 
     // free objects
     delete b;
