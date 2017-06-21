@@ -26,6 +26,8 @@ class Methods {
         double determinantRatio(const Eigen::MatrixXd&, const Eigen::MatrixXd&,
                 unsigned int);
         double variance(double, double, int);
+        void outerProduct(Eigen::MatrixXd&, const Eigen::MatrixXd&, const
+                Eigen::MatrixXd&);
 
         Eigen::MatrixXd conjugateGradient(const Eigen::MatrixXd&, const
                 Eigen::MatrixXd&, const Eigen::MatrixXd&);

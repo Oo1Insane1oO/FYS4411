@@ -159,9 +159,8 @@ double VMC::jastrowSecondDerivativeRatio(const Eigen::MatrixXd &R, const
         if (j != k) {
             rkj = (R.row(k) - R.row(j)).norm();
             denom = 1 + beta*rkj;
-            ratio += (b->padejastrow(k,j)/(rkj*denom*denom)) * (dim - 1 - 2*beta*rkj/denom);
-//             ratio += b->padejastrow(k,j)/(denom*denom) * ((dim-1)/rkj -
-//                     2*beta/denom);
+            ratio += (b->padejastrow(k,j)/(rkj*denom*denom)) * (dim - 1 -
+                    2*beta*rkj/denom);
         } // end if
     } // end forj
     return ratio + derJ.row(k).squaredNorm();
@@ -192,21 +191,15 @@ double VMC::calculateKineticEnergy(const Eigen::MatrixXd &waveD, const
             shit = 0;
             if (k < half) {
                 /* spin down */
-//                 E += 0.5 * oneBodySecondDerivativeRatio(R,k,j) * waveD(k,j/2) *
-//                     waveInvD(j/2,k) / ratioD;
                 E += 0.5 * oneBodySecondDerivativeRatio(R,k,j) * waveD(k,j/2) *
                     waveInvD(j/2,k);
             } else {
                 /* spin up */
-//                 E += 0.5 * oneBodySecondDerivativeRatio(R,k,j+1) *
-//                     waveU(k-half,j/2) * waveInvU(j/2,k-half) / ratioU;
                 E += 0.5 * oneBodySecondDerivativeRatio(R,k,j+1) *
                     waveU(k-half,j/2) * waveInvU(j/2,k-half);
             } // end ifelse
         } // end forj
     } // end fork
-//     std::cout << "D\n" << waveD*waveInvD << std::endl;
-//     std::cout << "U\n" << waveU*waveInvU << std::endl;
     if (jastrow) {
         for (unsigned int k = 0; k < R.rows(); ++k) {
             E += 0.5*jastrowSecondDerivativeRatio(R,k) +
@@ -249,14 +242,11 @@ double VMC::Afunc(const Eigen::MatrixXd &wave, const Eigen::MatrixXd &waveInv,
 double VMC::Bfunc(const Eigen::MatrixXd &R) {
     /* first derivative of wave function with respect to beta */
     double B = 0;
-//     double rij;
     for (unsigned int i = 0; i < R.rows(); ++i) {
         for (unsigned int j = 0; j < R.rows(); ++j) {
             if (i != j)  {
                 B -= b->padejastrow(i,j) / pow(beta +
                         1/(R.row(i)-R.row(j)).norm(),2);
-//                 rij = (R.row(i)-R.row(j)).norm();
-//                 B -= b->padejastrow(i,j)*rij*rij / pow(1+beta*rij,2);
             } // end if
         } // end forj
     } // end fori
@@ -291,6 +281,8 @@ void VMC::initializeCalculationVariables() {
     // variational parameters
     newAlphaBeta = Eigen::VectorXd::Zero(2);
     oldAlphaBeta = Eigen::VectorXd::Zero(2);
+    newAlphaBeta(0) = alpha;
+    newAlphaBeta(1) = beta;
 
     // quantum force
     if (imp) {
@@ -322,7 +314,7 @@ void VMC::setFirstDerivatives(const Eigen::MatrixXd &wave, const
     derOB.row(k).setZero();
     for (unsigned int j = 0; j < R.rows(); j+=2) {
         oneBodyFirstDerivativeRatio(buf, R, k, j+jstart);
-        derOB.row(k) += buf * wave(kIdx,j/2) * waveInv(j/2,kIdx) / ratio;
+        derOB.row(k) += buf * wave(kIdx,j/2) * waveInv(j/2,kIdx);
     } // end forj
     if (jastrow) {
         derJ.row(k).setZero();
@@ -343,6 +335,23 @@ void VMC::initializePositions(Eigen::MatrixXd &R) {
     } // end fori
 } // end function initializePositions
 
+void VMC::updateHessian(Eigen::MatrixXd &Hessian, const Eigen::MatrixXd &xnew,
+        const Eigen::MatrixXd &xprev, const Eigen::MatrixXd &xderNew, const
+        Eigen::MatrixXd &xderPrev) {
+    /* Update inverse matrix using BDFP method */
+    Eigen::MatrixXd xDiff = xnew - xprev;
+    Eigen::MatrixXd xDerDiff = xderNew - xderPrev;
+    Eigen::MatrixXd xOuter = xDiff * xDiff.transpose();
+    double xDder = xDiff.row(0).dot(xDerDiff.row(0));
+    Eigen::MatrixXd HxDerDiff = Hessian * xDerDiff;
+    Eigen::MatrixXd xHDerOuter = (HxDerDiff * HxDerDiff.transpose());
+    double derHder = xDerDiff.row(0).dot(HxDerDiff.row(0));
+    Eigen::MatrixXd u = xDiff/xDder - HxDerDiff/derHder;
+    Hessian += xOuter/xDder - xHDerOuter/derHder + derHder *
+        (u*u.transpose()); 
+//     std::cout << xnew(0) << " " << xnew(1) << " " << xprev(0) << " " << xprev(1)  << std::endl;
+} // end if
+
 void VMC::calculate(const unsigned int maxCount, const char *destination) {
     /* function for running Monte Carlo integration */
     unsigned int halfIdx, uIdx, randomDim;
@@ -356,12 +365,13 @@ void VMC::calculate(const unsigned int maxCount, const char *destination) {
         
     Eigen::MatrixXd *oldWave, *newWave, *oldInv, *newInv;
     Eigen::MatrixXd steepDiff = Eigen::VectorXd::Zero(2);
-    double steepDiffAbs;
+    Eigen::MatrixXd Hessian = Eigen::MatrixXd::Zero(2,2);
+    Hessian.diagonal().fill(1);
     
     // set sizes
     initializeCalculationVariables();
     unsigned int halfSize = oldPositions.rows()/2;
-    double steepStep = 0.01;
+    double steepStep = 0.8;
 
     // File, runcountm, buffer(for filename) and write buffer
     std::ofstream outFile;
@@ -381,10 +391,6 @@ void VMC::calculate(const unsigned int maxCount, const char *destination) {
         // reinitialize positions
         initializePositions(oldPositions);
         newPositions = oldPositions;
-
-        // set variational parameter vector
-        newAlphaBeta(0) = alpha;
-        newAlphaBeta(1) = beta;
 
         // initialize Slater matrix and its inverse
         b->setTrialWaveFunction(oldD, oldU, oldPositions, alpha);
@@ -407,7 +413,7 @@ void VMC::calculate(const unsigned int maxCount, const char *destination) {
                 } // end if
             } // end fork
             if (imp) {
-                qForceOld = 2*(derOB + derJ) / (determinantRatioD*determinantRatioU);
+                qForceOld = 2*(derOB + derJ);
                 qForceNew = qForceOld;
             } // end if
         } // end if
@@ -480,8 +486,7 @@ void VMC::calculate(const unsigned int maxCount, const char *destination) {
 
             if (imp) {
                 /* set new quantum force */
-                qForceNew.row(i) = 2*(derOB.row(i) + derJ.row(i)) /
-                    *determinantRatio;
+                qForceNew.row(i) = 2*(derOB.row(i) + derJ.row(i));
             } // end if
 
             // set Metropolis test
@@ -557,6 +562,7 @@ void VMC::calculate(const unsigned int maxCount, const char *destination) {
                         oldPositions.cols()),1);
             A += tmpA;
             ELA += tmpEnergy*tmpA;
+//             std::cout << tmpA << std::endl;
 
             // No need for splitting when finding first derivative with respect
             // to beta(only Jastrow factor gives constribution)
@@ -581,20 +587,17 @@ void VMC::calculate(const unsigned int maxCount, const char *destination) {
         steepb(1) = 2*(ELB - energy*B);
         newAlphaBeta -= steepStep*steepb;
 
-        if (runCount!=0) {
-            steepDiff = steepb - prevSteepb;
-            steepDiffAbs = steepDiff.squaredNorm();
-            if (steepDiffAbs >= 1e-4) {
-                steepStep = (newAlphaBeta -
-                        oldAlphaBeta).row(0).transpose().dot(steepDiff.row(0))
-                    / steepDiffAbs;
-            } else {
-                steepStep = 0.09;
-            } // end if
-        } // end if
+        /* Conjugate gradient using metric method (updating with BDFP */
+        updateHessian(Hessian, newAlphaBeta, oldAlphaBeta, steepb,
+                prevSteepb);
+        newAlphaBeta += Hessian.inverse() * (steepb - prevSteepb);
 
         prevSteepb = steepb;
         oldAlphaBeta = newAlphaBeta;
+
+//         std::cout << Hessian << std::endl;
+
+//         std::cout << steepStep << std::endl;
 
 //         std::cout << "Acceptance: " << acceptance << std::endl;
 //         std::cout << std::setprecision(16) << "alpha: " << alpha << " beta: "

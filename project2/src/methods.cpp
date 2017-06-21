@@ -71,7 +71,7 @@ double Methods::determinantRatio(const Eigen::MatrixXd &newElement, const
         Eigen::MatrixXd &oldInverse, unsigned int i) {
     /* Calculate determinant ratio of determinants */
     double R = 0;
-    for (unsigned int j = 0; j < oldInverse.rows(); ++j) {
+    for (unsigned int j = 0; j < newElement.rows(); ++j) {
         R += newElement(i,j) * oldInverse(j,i);
     } // end fori
     return R;
@@ -95,7 +95,8 @@ Eigen::MatrixXd Methods::conjugateGradient(const Eigen::MatrixXd &A, const
     double rInner;
     rnew << 1, 1;
     unsigned int iter = 0;
-    while (rnew.norm() > 1e-14) {
+//     while (rnew.norm() > 1e-14) {
+    while (rnew.norm() > 100) {
         rInner = res.squaredNorm();
         C = rInner / (p.transpose()*A*p).sum();
         xnew = xold + C*p;

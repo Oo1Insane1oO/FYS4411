@@ -81,7 +81,7 @@ int main(int argc, char** argv) {
     Eigen::initParallel();
 
     // divide number of variational runs between the processes evenly
-    int maxCount = 500;
+    int maxCount = 150;
     float tmpNum = (float)maxCount / numProcs;
     unsigned int myMaxCount = (myRank < maxCount % numProcs ? ceil(tmpNum) :
             floor(tmpNum));
@@ -114,10 +114,10 @@ int main(int argc, char** argv) {
         std::istream_iterator<int> start(stringBuffer), end;
         std::seed_seq seedSequence(start, end);
         std::mt19937_64 generator(seedSequence);
-//         std::uniform_real_distribution<double> dista(0.8,1.0);
-//         std::uniform_real_distribution<double> distb(0.25,0.45);
-        std::uniform_real_distribution<double> dista(1.01,1.07);
-        std::uniform_real_distribution<double> distb(0.46,0.47);
+        std::uniform_real_distribution<double> dista(0.8,1.0);
+        std::uniform_real_distribution<double> distb(0.25,0.45);
+//         std::uniform_real_distribution<double> dista(1.0,1.07);
+//         std::uniform_real_distribution<double> distb(0.469,0.475);
         mySeed = std::chrono::high_resolution_clock::now() .
             time_since_epoch().count();
         myAlpha = dista(generator);
@@ -189,6 +189,10 @@ int main(int argc, char** argv) {
     } // end if
     MPI_Bcast(&newAlpha, 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
     MPI_Bcast(&newBeta, 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+
+    if (myRank == 0) {
+        std::cout << "Alpha: " << newAlpha << " Beta: "<< newBeta << std::endl;
+    } // end if
 
     // run last simulation and write to file
     if (argc == 12) {

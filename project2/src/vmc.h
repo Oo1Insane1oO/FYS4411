@@ -32,6 +32,10 @@ class VMC {
         void initializePositions(Eigen::MatrixXd&);
         void initializeCalculationVariables();
 
+        void updateHessian(Eigen::MatrixXd&, const Eigen::MatrixXd&, const
+                Eigen::MatrixXd&, const Eigen::MatrixXd&, const
+                Eigen::MatrixXd&);
+
         Eigen::MatrixXd oldPositions, newPositions, qForceOld, qForceNew,
             steepb, prevSteepb, derOB, derJ, oldD, oldU, newD, newU, oldInvD,
             oldInvU, newInvD, newInvU;
