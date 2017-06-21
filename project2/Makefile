@@ -22,6 +22,35 @@ clean:
 	rm -rf $(OBJ_DIR)
 	rm $(EXEC)
 
+createDataDir:
+	mkdir data
+	mkdir data/w010
+	mkdir data/w01
+	mkdir data/w05
+	mkdir data/w005
+	mkdir data/w001
+	mkdir data/w010/N2
+	mkdir data/w010/N6
+	mkdir data/w010/N12
+	mkdir data/w010/N20
+	mkdir data/w01/N2
+	mkdir data/w01/N6
+	mkdir data/w01/N12
+	mkdir data/w01/N20
+	mkdir data/w05/N2
+	mkdir data/w05/N6
+	mkdir data/w05/N12
+	mkdir data/w05/N20
+	mkdir data/w005/N2
+	mkdir data/w005/N6
+	mkdir data/w005/N12
+	mkdir data/w005/N20
+	mkdir data/w001/N2
+	mkdir data/w001/N6
+	mkdir data/w001/N12
+	mkdir data/w001/N20
+
+
 cleanData:
 	rm -f data/w010/N2/*
 	rm -f data/w010/N6/*

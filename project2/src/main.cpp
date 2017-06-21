@@ -66,11 +66,22 @@ int main(int argc, char** argv) {
         filename = NULL;
     } // end ifelse
 
+    if (filename == " ") {
+        filename = NULL;
+    } // end if
+
+    double alph;
+    double bet;
+    if(argc == 12) {
+        alph = atof(argv[10]);
+        bet = atof(argv[11]);
+    } // end if
+
     // let Eigen use openmp
     Eigen::initParallel();
 
     // divide number of variational runs between the processes evenly
-    int maxCount = 100;
+    int maxCount = 500;
     float tmpNum = (float)maxCount / numProcs;
     unsigned int myMaxCount = (myRank < maxCount % numProcs ? ceil(tmpNum) :
             floor(tmpNum));
@@ -148,7 +159,9 @@ int main(int argc, char** argv) {
     // Run Monte Carlo simulations and find optimal parameters
     std::chrono::steady_clock::time_point begin;
     begin = std::chrono::steady_clock::now();
-//     vmcObj->calculate(myMaxCount);
+    if (argc < 11) {
+        vmcObj->calculate(myMaxCount);
+    } // end if
 
     double *recvAlpha;
     double *recvBeta;
@@ -178,8 +191,10 @@ int main(int argc, char** argv) {
     MPI_Bcast(&newBeta, 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 
     // run last simulation and write to file
-    newAlpha = 1.04;
-    newBeta = 0.473;
+    if (argc == 12) {
+        newAlpha = alph;
+        newBeta = bet;
+    } // end if
     vmcObj->setAlpha(newAlpha);
     vmcObj->setBeta(newBeta);
     maxIterations *= 10;
@@ -192,7 +207,7 @@ int main(int argc, char** argv) {
     char myFileName[100];
     if (filename) {
         sprintf(myFileName, "%sP%d", filename, myRank);
-    } // end fi 
+    } // end fi
     vmcObj->calculate(1, myFileName);
     std::chrono::steady_clock::time_point end;
     end = std::chrono::steady_clock::now();

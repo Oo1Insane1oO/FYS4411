@@ -322,7 +322,7 @@ void VMC::setFirstDerivatives(const Eigen::MatrixXd &wave, const
     derOB.row(k).setZero();
     for (unsigned int j = 0; j < R.rows(); j+=2) {
         oneBodyFirstDerivativeRatio(buf, R, k, j+jstart);
-        derOB.row(k) += buf * wave(kIdx,j/2) * waveInv(j/2,kIdx);
+        derOB.row(k) += buf * wave(kIdx,j/2) * waveInv(j/2,kIdx) / ratio;
     } // end forj
     if (jastrow) {
         derJ.row(k).setZero();
@@ -355,6 +355,8 @@ void VMC::calculate(const unsigned int maxCount, const char *destination) {
     double *determinantRatio;
         
     Eigen::MatrixXd *oldWave, *newWave, *oldInv, *newInv;
+    Eigen::MatrixXd steepDiff = Eigen::VectorXd::Zero(2);
+    double steepDiffAbs;
     
     // set sizes
     initializeCalculationVariables();
@@ -405,7 +407,7 @@ void VMC::calculate(const unsigned int maxCount, const char *destination) {
                 } // end if
             } // end fork
             if (imp) {
-                qForceOld = 2*(derOB + derJ);
+                qForceOld = 2*(derOB + derJ) / (determinantRatioD*determinantRatioU);
                 qForceNew = qForceOld;
             } // end if
         } // end if
@@ -465,6 +467,7 @@ void VMC::calculate(const unsigned int maxCount, const char *destination) {
                     halfIdx, uIdx);
             *determinantRatio = meth->determinantRatio(*newWave, *oldInv,
                     halfIdx);
+            
             newInv->setZero();
             meth->updateMatrixInverse(*oldWave, *newWave, *oldInv, *newInv,
                     *determinantRatio, halfIdx);
@@ -477,7 +480,8 @@ void VMC::calculate(const unsigned int maxCount, const char *destination) {
 
             if (imp) {
                 /* set new quantum force */
-                qForceNew.row(i) = 2*(derOB.row(i) + derJ.row(i));
+                qForceNew.row(i) = 2*(derOB.row(i) + derJ.row(i)) /
+                    *determinantRatio;
             } // end if
 
             // set Metropolis test
@@ -577,6 +581,21 @@ void VMC::calculate(const unsigned int maxCount, const char *destination) {
         steepb(1) = 2*(ELB - energy*B);
         newAlphaBeta -= steepStep*steepb;
 
+        if (runCount!=0) {
+            steepDiff = steepb - prevSteepb;
+            steepDiffAbs = steepDiff.squaredNorm();
+            if (steepDiffAbs >= 1e-4) {
+                steepStep = (newAlphaBeta -
+                        oldAlphaBeta).row(0).transpose().dot(steepDiff.row(0))
+                    / steepDiffAbs;
+            } else {
+                steepStep = 0.09;
+            } // end if
+        } // end if
+
+        prevSteepb = steepb;
+        oldAlphaBeta = newAlphaBeta;
+
 //         std::cout << "Acceptance: " << acceptance << std::endl;
 //         std::cout << std::setprecision(16) << "alpha: " << alpha << " beta: "
 //             << beta << " Energy: " << energy << " " << meth->variance(energy,
@@ -584,8 +603,10 @@ void VMC::calculate(const unsigned int maxCount, const char *destination) {
 //             " Kin: " << kineticEnergy <<  std::endl;
 
         // update variational parameters
-        setAlpha(newAlphaBeta(0));
-        setBeta(newAlphaBeta(1));
+        if (maxCount > 1) {
+            setAlpha(newAlphaBeta(0));
+            setBeta(newAlphaBeta(1));
+        } // end if
     } // end for runCount
 
     // write parameters and close file for good measures
