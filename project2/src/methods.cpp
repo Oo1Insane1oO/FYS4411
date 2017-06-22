@@ -84,27 +84,34 @@ double Methods::variance(double p,double psq, int N) {
 } // end function variance
 
 Eigen::MatrixXd Methods::conjugateGradient(const Eigen::MatrixXd &A, const
-        Eigen::MatrixXd &rhs, const Eigen::MatrixXd &x0) {
+        Eigen::MatrixXd &rhs, const Eigen::MatrixXd &x0, const unsigned int
+        MAX) {
     /* solve a linear system, Ax=b with Conjugate Gradient method */
     Eigen::MatrixXd res = rhs - A*x0;
-    Eigen::MatrixXd p = res;
-    Eigen::MatrixXd xold = x0;
-    Eigen::MatrixXd xnew;
-    Eigen::MatrixXd rnew = Eigen::MatrixXd::Zero(x0.rows(),x0.cols());
-    double C = res.squaredNorm();
-    double rInner;
-    rnew << 1, 1;
-    unsigned int iter = 0;
-//     while (rnew.norm() > 1e-14) {
-    while (rnew.norm() > 100) {
-        rInner = res.squaredNorm();
-        C = rInner / (p.transpose()*A*p).sum();
-        xnew = xold + C*p;
-        rnew = res - C*A*p;
-        p = rnew + rnew.squaredNorm()/rInner * p;
-        res = rnew;
-        xold = xnew;
-        iter++;
-    } // end while
-    return xnew;
+    if (MAX == 1) {
+        return x0 + res.squaredNorm() / (res.transpose()*A*res).sum() * res;
+    } else if (MAX > 1) {
+        Eigen::MatrixXd p = res;
+        Eigen::MatrixXd xold = x0;
+        Eigen::MatrixXd xnew;
+        Eigen::MatrixXd rnew = Eigen::MatrixXd::Zero(x0.rows(),x0.cols());
+        double C = res.squaredNorm();
+        double rInner;
+        rnew << 1, 1;
+        unsigned int iter = 0;
+        while (iter < MAX) {
+            rInner = res.squaredNorm();
+            C = rInner / (p.transpose()*A*p).sum();
+            xnew = xold + C*p;
+            rnew = res - C*A*p;
+            if (rnew.norm() > 1e-14) {
+                break;
+            } // end if
+            p = rnew + rnew.squaredNorm()/rInner * p;
+            res = rnew;
+            xold = xnew;
+            iter++;
+        } // end while
+        return xnew;
+    } // end ifeif
 } // end function conjugateGradient

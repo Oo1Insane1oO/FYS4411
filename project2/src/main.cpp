@@ -114,10 +114,10 @@ int main(int argc, char** argv) {
         std::istream_iterator<int> start(stringBuffer), end;
         std::seed_seq seedSequence(start, end);
         std::mt19937_64 generator(seedSequence);
-        std::uniform_real_distribution<double> dista(0.8,1.0);
-        std::uniform_real_distribution<double> distb(0.25,0.45);
-//         std::uniform_real_distribution<double> dista(1.0,1.07);
-//         std::uniform_real_distribution<double> distb(0.469,0.475);
+//         std::uniform_real_distribution<double> dista(0.8,1.0);
+//         std::uniform_real_distribution<double> distb(0.25,0.45);
+        std::uniform_real_distribution<double> dista(1.0,1.07);
+        std::uniform_real_distribution<double> distb(0.469,0.475);
         mySeed = std::chrono::high_resolution_clock::now() .
             time_since_epoch().count();
         myAlpha = dista(generator);

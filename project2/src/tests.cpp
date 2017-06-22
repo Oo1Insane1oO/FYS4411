@@ -153,6 +153,7 @@ bool Tests::test_conjugateGradient() {
          1, 3;
     startx << 2, 1;
     b << 1, 2;
+    eps = 1e-10;
     Eigen::MatrixXd x = m->conjugateGradient(A, b, startx);
     return ((fabs(x(0)-1./11)<=eps && fabs(x(1)-7./11)<=eps ? true : false));
 } // end function test_conjugateGradient

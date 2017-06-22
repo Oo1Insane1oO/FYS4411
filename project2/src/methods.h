@@ -30,7 +30,8 @@ class Methods {
                 Eigen::MatrixXd&);
 
         Eigen::MatrixXd conjugateGradient(const Eigen::MatrixXd&, const
-                Eigen::MatrixXd&, const Eigen::MatrixXd&);
+                Eigen::MatrixXd&, const Eigen::MatrixXd&, const unsigned
+                int=100);
 };
 
 #endif /* METHODS_H */

@@ -70,7 +70,7 @@ VMC::VMC(Basis *B, double alp, double bet, unsigned int d, double s, unsigned
 //     mt.seed(seedSequence);
     std::mt19937_64 mt(seed);
     dist = std::uniform_real_distribution<double>(0,1);
-    normDist = std::normal_distribution<double>(0,1);
+    normDist = std::normal_distribution<double>(0,sqrt(step));
 } // end constructor
 
 VMC::~VMC() {
@@ -314,7 +314,7 @@ void VMC::setFirstDerivatives(const Eigen::MatrixXd &wave, const
     derOB.row(k).setZero();
     for (unsigned int j = 0; j < R.rows(); j+=2) {
         oneBodyFirstDerivativeRatio(buf, R, k, j+jstart);
-        derOB.row(k) += buf * wave(kIdx,j/2) * waveInv(j/2,kIdx);
+        derOB.row(k) += buf * wave(kIdx,j/2) * waveInv(j/2,kIdx) / ratio;
     } // end forj
     if (jastrow) {
         derJ.row(k).setZero();
@@ -343,13 +343,15 @@ void VMC::updateHessian(Eigen::MatrixXd &Hessian, const Eigen::MatrixXd &xnew,
     Eigen::MatrixXd xDerDiff = xderNew - xderPrev;
     Eigen::MatrixXd xOuter = xDiff * xDiff.transpose();
     double xDder = xDiff.row(0).dot(xDerDiff.row(0));
+
     Eigen::MatrixXd HxDerDiff = Hessian * xDerDiff;
-    Eigen::MatrixXd xHDerOuter = (HxDerDiff * HxDerDiff.transpose());
+    Eigen::MatrixXd xHDerOuter = HxDerDiff * HxDerDiff.transpose();
+
     double derHder = xDerDiff.row(0).dot(HxDerDiff.row(0));
     Eigen::MatrixXd u = xDiff/xDder - HxDerDiff/derHder;
+
     Hessian += xOuter/xDder - xHDerOuter/derHder + derHder *
-        (u*u.transpose()); 
-//     std::cout << xnew(0) << " " << xnew(1) << " " << xprev(0) << " " << xprev(1)  << std::endl;
+        (u*u.transpose());
 } // end if
 
 void VMC::calculate(const unsigned int maxCount, const char *destination) {
@@ -371,7 +373,7 @@ void VMC::calculate(const unsigned int maxCount, const char *destination) {
     // set sizes
     initializeCalculationVariables();
     unsigned int halfSize = oldPositions.rows()/2;
-    double steepStep = 0.8;
+    double steepStep = 0.03;
 
     // File, runcountm, buffer(for filename) and write buffer
     std::ofstream outFile;
@@ -462,7 +464,7 @@ void VMC::calculate(const unsigned int maxCount, const char *destination) {
             randomDim = (std::fabs(dist(mt)) < 0.5 ? 0 : 1);
             if (imp) {
                 newPositions(i,randomDim) = oldPositions(i,randomDim) +
-                    0.5*qForceOld(i,randomDim)*step + normDist(mt)*sqrt(step);
+                    0.5*qForceOld(i,randomDim)*step + normDist(mt);
             } else {
                 newPositions(i,randomDim) = oldPositions(i,randomDim) +
                     step*(dist(mt)-0.5);
@@ -582,31 +584,37 @@ void VMC::calculate(const unsigned int maxCount, const char *destination) {
         B /= cycles;
         acceptance /= cycles;
 
-        // optimalize with steepest descent method
-        steepb(0) = 2*(ELA - energy*A);
-        steepb(1) = 2*(ELB - energy*B);
-        newAlphaBeta -= steepStep*steepb;
-
-        /* Conjugate gradient using metric method (updating with BDFP */
-        updateHessian(Hessian, newAlphaBeta, oldAlphaBeta, steepb,
-                prevSteepb);
-        newAlphaBeta += Hessian.inverse() * (steepb - prevSteepb);
-
-        prevSteepb = steepb;
-        oldAlphaBeta = newAlphaBeta;
-
-//         std::cout << Hessian << std::endl;
-
-//         std::cout << steepStep << std::endl;
-
-//         std::cout << "Acceptance: " << acceptance << std::endl;
-//         std::cout << std::setprecision(16) << "alpha: " << alpha << " beta: "
-//             << beta << " Energy: " << energy << " " << meth->variance(energy,
-//                     energySq, maxIterations) << " Pot: " << potentialEnergy <<
-//             " Kin: " << kineticEnergy <<  std::endl;
-
-        // update variational parameters
         if (maxCount > 1) {
+            // optimalize with steepest descent method
+            steepb(0) = 2*(ELA - energy*A);
+            steepb(1) = 2*(ELB - energy*B);
+//             newAlphaBeta -= steepStep*steepb;
+            newAlphaBeta =
+                steepStep*Hessian.inverse().colPivHouseholderQr().solve(-steepb);
+//             newAlphaBeta = meth->conjugateGradient(Hessian.inverse(), steepb,
+//                     oldAlphaBeta, 1);
+
+            // Conjugate gradient using metric method (updating with BFGS)
+            updateHessian(Hessian, newAlphaBeta, oldAlphaBeta, steepb,
+                    prevSteepb);
+//             newAlphaBeta = oldAlphaBeta + Hessian.inverse() * (steepb -
+//                     prevSteepb);
+            std::cout << newAlphaBeta << std::endl;
+
+            prevSteepb = steepb;
+            oldAlphaBeta = newAlphaBeta;
+
+    //         std::cout << Hessian << std::endl;
+
+    //         std::cout << steepStep << std::endl;
+
+    //         std::cout << "Acceptance: " << acceptance << std::endl;
+    //         std::cout << std::setprecision(16) << "alpha: " << alpha << " beta: "
+    //             << beta << " Energy: " << energy << " " << meth->variance(energy,
+    //                     energySq, maxIterations) << " Pot: " << potentialEnergy <<
+    //             " Kin: " << kineticEnergy <<  std::endl;
+
+            // update variational parameters
             setAlpha(newAlphaBeta(0));
             setBeta(newAlphaBeta(1));
         } // end if
