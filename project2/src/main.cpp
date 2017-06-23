@@ -60,21 +60,19 @@ int main(int argc, char** argv) {
     bool coul = atoi(argv[7]);
     bool jast = atoi(argv[8]);
     const char *filename;
-    if (argc == 10) {
+    if (argc >= 10) {
         filename = argv[9];
     } else {
         filename = NULL;
     } // end ifelse
 
-    if (filename == " ") {
-        filename = NULL;
-    } // end if
-
-    double alph;
-    double bet;
-    if(argc == 12) {
-        alph = atof(argv[10]);
-        bet = atof(argv[11]);
+    // set filename to NULL if empty
+    if (filename) {
+        std::string tmpf;
+        tmpf = filename;
+        if (!tmpf.compare(" ")) {
+            filename = NULL;
+        } // end if
     } // end if
 
     // let Eigen use openmp
@@ -190,21 +188,24 @@ int main(int argc, char** argv) {
     MPI_Bcast(&newAlpha, 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
     MPI_Bcast(&newBeta, 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
 
-    if (myRank == 0) {
-        std::cout << "Alpha: " << newAlpha << " Beta: "<< newBeta << std::endl;
+    // dont minimize, take parameters as input
+    if(argc == 12) {
+        newAlpha = atof(argv[10]);
+        newBeta = atof(argv[11]);
     } // end if
 
     // run last simulation and write to file
-    if (argc == 12) {
-        newAlpha = alph;
-        newBeta = bet;
+    if (myRank == 0) {
+        std::cout << "Alpha: " << newAlpha << " Beta: "<< newBeta << std::endl;
     } // end if
     vmcObj->setAlpha(newAlpha);
     vmcObj->setBeta(newBeta);
-    maxIterations *= 10;
+
+    // divide number of samples evenly among processes
+    maxIterations *= 100;
     double tmpMaxNum = (double)maxIterations / numProcs;
-    unsigned int myMaxIteration = (myRank < maxIterations % numProcs ?
-            ceil(tmpMaxNum) : floor(tmpMaxNum));
+    unsigned int myMaxIteration = ((myRank < (maxIterations%numProcs)) ?
+            std::ceil(tmpMaxNum) : std::floor(tmpMaxNum));
     vmcObj->maxIterations = myMaxIteration;
     
     // create filename for each process
@@ -212,12 +213,15 @@ int main(int argc, char** argv) {
     if (filename) {
         sprintf(myFileName, "%sP%d", filename, myRank);
     } // end fi
+
     vmcObj->calculate(1, myFileName);
+
     std::chrono::steady_clock::time_point end;
     end = std::chrono::steady_clock::now();
     double myTime = std::chrono::duration_cast<std::chrono::milliseconds>(end -
-            begin).count() / numProcs;
+            begin).count();
 
+    // gather and average energies from all processes
     double energy, energySq;
     MPI_Reduce(&(vmcObj->energy), &energy, 1, MPI_DOUBLE, MPI_SUM, 0,
             MPI_COMM_WORLD);
@@ -230,6 +234,7 @@ int main(int argc, char** argv) {
     if (myRank == 0) {
         energy /= numProcs;
         energySq /= numProcs;
+        totalTime /= numProcs;
 
         if (totalTime >= 100) {
             std::cout << "Calculation time: " << totalTime*0.001 << "s" <<

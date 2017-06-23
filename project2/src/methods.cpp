@@ -104,7 +104,7 @@ Eigen::MatrixXd Methods::conjugateGradient(const Eigen::MatrixXd &A, const
             C = rInner / (p.transpose()*A*p).sum();
             xnew = xold + C*p;
             rnew = res - C*A*p;
-            if (rnew.norm() > 1e-14) {
+            if (rnew.norm() < 1e-14) {
                 break;
             } // end if
             p = rnew + rnew.squaredNorm()/rInner * p;

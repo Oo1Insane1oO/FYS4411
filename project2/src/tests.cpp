@@ -72,6 +72,7 @@ bool Tests::test_energy() {
     v->setAlpha(1);
     v->setBeta(1000000);
     v->calculate(1);
+    eps = 1e-10;
     return ((std::fabs(v->energy-E)<=eps && std::fabs(m->variance(v->energy,
                         v->energySq, v->maxIterations))<=eps) ? true : false);
 } // end function test_2particle
@@ -153,8 +154,7 @@ bool Tests::test_conjugateGradient() {
          1, 3;
     startx << 2, 1;
     b << 1, 2;
-    eps = 1e-10;
-    Eigen::MatrixXd x = m->conjugateGradient(A, b, startx);
+    Eigen::MatrixXd x = m->conjugateGradient(A, b, startx, 1000);
     return ((fabs(x(0)-1./11)<=eps && fabs(x(1)-7./11)<=eps ? true : false));
 } // end function test_conjugateGradient
 

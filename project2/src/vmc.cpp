@@ -191,10 +191,14 @@ double VMC::calculateKineticEnergy(const Eigen::MatrixXd &waveD, const
             shit = 0;
             if (k < half) {
                 /* spin down */
+//                 E += 0.5 * oneBodySecondDerivativeRatio(R,k,j) * waveD(k,j/2) *
+//                     waveInvD(j/2,k) / ratioD;
                 E += 0.5 * oneBodySecondDerivativeRatio(R,k,j) * waveD(k,j/2) *
                     waveInvD(j/2,k);
             } else {
                 /* spin up */
+//                 E += 0.5 * oneBodySecondDerivativeRatio(R,k,j+1) *
+//                     waveU(k-half,j/2) * waveInvU(j/2,k-half) / ratioU;
                 E += 0.5 * oneBodySecondDerivativeRatio(R,k,j+1) *
                     waveU(k-half,j/2) * waveInvU(j/2,k-half);
             } // end ifelse
@@ -314,7 +318,8 @@ void VMC::setFirstDerivatives(const Eigen::MatrixXd &wave, const
     derOB.row(k).setZero();
     for (unsigned int j = 0; j < R.rows(); j+=2) {
         oneBodyFirstDerivativeRatio(buf, R, k, j+jstart);
-        derOB.row(k) += buf * wave(kIdx,j/2) * waveInv(j/2,kIdx) / ratio;
+//         derOB.row(k) += buf * wave(kIdx,j/2) * waveInv(j/2,kIdx) / ratio;
+        derOB.row(k) += buf * wave(kIdx,j/2) * waveInv(j/2,kIdx);
     } // end forj
     if (jastrow) {
         derJ.row(k).setZero();
@@ -327,9 +332,9 @@ void VMC::initializePositions(Eigen::MatrixXd &R) {
     for (unsigned int i = 0; i < R.rows(); ++i) {
         for (unsigned int j = 0; j < R.cols(); ++j) {
             if (imp) {
-                R(i,j) = normDist(mt) * sqrt(step);
+                R(i,j) = normDist(mt);
             } else {
-                R(i,j) = step * (dist(mt)-0.5);
+                R(i,j) = 2*step*(dist(mt) - 0.5);
             } // end ifelse
         } // end forj
     } // end fori
@@ -467,7 +472,7 @@ void VMC::calculate(const unsigned int maxCount, const char *destination) {
                     0.5*qForceOld(i,randomDim)*step + normDist(mt);
             } else {
                 newPositions(i,randomDim) = oldPositions(i,randomDim) +
-                    step*(dist(mt)-0.5);
+                    2*step*(dist(mt)-0.5);
             } // end ifelse
 
             // update Slater matrix, determinant ratio and Slater inverse
