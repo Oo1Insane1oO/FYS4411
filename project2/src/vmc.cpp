@@ -70,7 +70,8 @@ VMC::VMC(Basis *B, double alp, double bet, unsigned int d, double s, unsigned
 //     mt.seed(seedSequence);
     std::mt19937_64 mt(seed);
     dist = std::uniform_real_distribution<double>(0,1);
-    normDist = std::normal_distribution<double>(0,sqrt(step));
+//     normDist = std::normal_distribution<double>(0,sqrt(step));
+    normDist = std::normal_distribution<double>(0,1);
 } // end constructor
 
 VMC::~VMC() {
@@ -362,8 +363,8 @@ void VMC::updateHessian(Eigen::MatrixXd &Hessian, const Eigen::MatrixXd &xnew,
 void VMC::calculate(const unsigned int maxCount, const char *destination) {
     /* function for running Monte Carlo integration */
     unsigned int halfIdx, uIdx, randomDim;
-    double testRatio, tmpEnergy, tmpPotentialEnergy, tmpKineticEnergy,
-           acceptance, tmpA, tmpB, A, ELA, B, ELB;
+    double testRatio, tmpEnergy, tmpPotentialEnergy, tmpKineticEnergy, tmpA,
+           tmpB, A, ELA, B, ELB;
 
     double determinantRatioD = 1;
     double determinantRatioU = 1;
@@ -481,7 +482,6 @@ void VMC::calculate(const unsigned int maxCount, const char *destination) {
             *determinantRatio = meth->determinantRatio(*newWave, *oldInv,
                     halfIdx);
             
-            newInv->setZero();
             meth->updateMatrixInverse(*oldWave, *newWave, *oldInv, *newInv,
                     *determinantRatio, halfIdx);
 
@@ -509,7 +509,7 @@ void VMC::calculate(const unsigned int maxCount, const char *destination) {
                             (oldPositions.row(i) - newPositions.row(i) -
                              0.5*step*qForceNew.row(i)).squaredNorm()));
             } //end if
-       
+      
             if (testRatio >= dist(mt) || testRatio > 1) {
                 /* update state according to Metropolis test */
                 acceptance++;
@@ -532,14 +532,14 @@ void VMC::calculate(const unsigned int maxCount, const char *destination) {
 
             // update first derivatives
             if (imp || jastrow) {
-                setFirstDerivatives(*oldWave, *oldInv, oldPositions, i,
+                setFirstDerivatives(*newWave, *oldInv, newPositions, i,
                         halfIdx, uIdx, *determinantRatio);
             } // end if
 
             // Accumulate local energy and local energy squared
-            tmpPotentialEnergy = calculatePotentialEnergy(oldPositions);
-            tmpKineticEnergy = calculateKineticEnergy(oldD, oldU, oldInvD,
-                    oldInvU, oldPositions, determinantRatioD,
+            tmpPotentialEnergy = calculatePotentialEnergy(newPositions);
+            tmpKineticEnergy = calculateKineticEnergy(newD, newU, oldInvD,
+                    oldInvU, newPositions, determinantRatioD,
                     determinantRatioU);
             tmpEnergy = tmpPotentialEnergy - tmpKineticEnergy;
             energy += tmpEnergy;
@@ -563,17 +563,17 @@ void VMC::calculate(const unsigned int maxCount, const char *destination) {
 
             // split spin up/down and calculate expected value(local) of first
             // derivative of wave function with respect to alpha
-            tmpA = Afunc(oldD, oldInvD, oldPositions.block(0, 0, halfSize,
-                        oldPositions.cols()), 0) + Afunc(oldU, oldInvU,
-                    oldPositions.block(halfSize, 0, halfSize,
-                        oldPositions.cols()),1);
+            tmpA = Afunc(newD, newInvD, newPositions.block(0, 0, halfSize,
+                        newPositions.cols()), 0) + Afunc(newU, newInvU,
+                    newPositions.block(halfSize, 0, halfSize,
+                        newPositions.cols()),1);
             A += tmpA;
             ELA += tmpEnergy*tmpA;
 //             std::cout << tmpA << std::endl;
 
             // No need for splitting when finding first derivative with respect
             // to beta(only Jastrow factor gives constribution)
-            tmpB = Bfunc(oldPositions);
+            tmpB = Bfunc(newPositions);
             B += tmpB;
             ELB += tmpEnergy*tmpB;
         } // end for cycles

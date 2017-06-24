@@ -52,7 +52,7 @@ class VMC {
 
         unsigned int dim, maxIterations;
         double alpha, beta, energy, energySq, step, kineticEnergy,
-               potentialEnergy;
+               potentialEnergy, acceptance;
         Eigen::MatrixXd newAlphaBeta, oldAlphaBeta;
 
         void oneBodyFirstDerivativeRatio(Eigen::MatrixXd&, const

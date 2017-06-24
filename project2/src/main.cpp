@@ -222,12 +222,13 @@ int main(int argc, char** argv) {
             begin).count();
 
     // gather and average energies from all processes
-    double energy, energySq;
+    double energy, energySq, acceptance;
     MPI_Reduce(&(vmcObj->energy), &energy, 1, MPI_DOUBLE, MPI_SUM, 0,
             MPI_COMM_WORLD);
     MPI_Reduce(&(vmcObj->energySq), &energySq, 1, MPI_DOUBLE, MPI_SUM, 0,
             MPI_COMM_WORLD);
-
+    MPI_Reduce(&(vmcObj->acceptance), &acceptance, 1, MPI_DOUBLE, MPI_SUM, 0,
+            MPI_COMM_WORLD);
     double totalTime;
     MPI_Reduce(&(myTime), &totalTime, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
 
@@ -235,6 +236,7 @@ int main(int argc, char** argv) {
         energy /= numProcs;
         energySq /= numProcs;
         totalTime /= numProcs;
+        acceptance /= numProcs;
 
         if (totalTime >= 100) {
             std::cout << "Calculation time: " << totalTime*0.001 << "s" <<
@@ -250,6 +252,8 @@ int main(int argc, char** argv) {
                 std::endl;
         } // end ifeifeifelse
 
+        std::cout << std::setprecision(16) << "Acceptance: " << acceptance <<
+            std::endl;
         std::cout << std::setprecision(16) << "<E> = " << energy << ", " <<
             "<E^2> = " << energySq << std::endl;
         std::cout << std::setprecision(16) << "var(E) = " << (energySq -
