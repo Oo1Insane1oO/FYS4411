@@ -79,7 +79,7 @@ int main(int argc, char** argv) {
     Eigen::initParallel();
 
     // divide number of variational runs between the processes evenly
-    int maxCount = 150;
+    int maxCount = 200;
     float tmpNum = (float)maxCount / numProcs;
     unsigned int myMaxCount = (myRank < maxCount % numProcs ? ceil(tmpNum) :
             floor(tmpNum));
@@ -108,14 +108,16 @@ int main(int argc, char** argv) {
     if (myRank == 0) {
         /* let master distribute seeds and initial variational parameters(and
          * make his own) */
-        std::istringstream stringBuffer("0 1 2 3 4 5 6 7 8 9 10");
-        std::istream_iterator<int> start(stringBuffer), end;
-        std::seed_seq seedSequence(start, end);
-        std::mt19937_64 generator(seedSequence);
-//         std::uniform_real_distribution<double> dista(0.8,1.0);
-//         std::uniform_real_distribution<double> distb(0.25,0.45);
-        std::uniform_real_distribution<double> dista(1.0,1.07);
-        std::uniform_real_distribution<double> distb(0.469,0.475);
+//         std::istringstream stringBuffer("0 1 2 3 4 5 6 7 8 9 10");
+//         std::istream_iterator<int> start(stringBuffer), end;
+//         std::seed_seq seedSequence(start, end);
+        mySeed = std::chrono::high_resolution_clock::now() .
+            time_since_epoch().count() * myRank;
+        std::mt19937_64 generator(mySeed);
+        std::uniform_real_distribution<double> dista(0.8,1.0);
+        std::uniform_real_distribution<double> distb(0.25,0.45);
+//         std::uniform_real_distribution<double> dista(1.0,1.07);
+//         std::uniform_real_distribution<double> distb(0.469,0.475);
         mySeed = std::chrono::high_resolution_clock::now() .
             time_since_epoch().count();
         myAlpha = dista(generator);
@@ -161,29 +163,16 @@ int main(int argc, char** argv) {
         vmcObj->calculate(myMaxCount);
     } // end if
 
-    double *recvAlpha;
-    double *recvBeta;
-    if (myRank == 0) {
-        recvAlpha = new double[numProcs];
-        recvBeta = new double[numProcs];
-    } // end if
-    MPI_Gather(&(vmcObj->alpha), 1, MPI_DOUBLE, recvAlpha, 1, MPI_DOUBLE, 0,
-            MPI_COMM_WORLD);
-    MPI_Gather(&(vmcObj->beta), 1, MPI_DOUBLE, recvBeta, 1, MPI_DOUBLE, 0,
-            MPI_COMM_WORLD);
-
-    // root sends new parameters to all
+    // root sends new parameters(averaged) to all
     double newAlpha = 0;
     double newBeta = 0;
+    MPI_Reduce(&(vmcObj->alpha), &newAlpha, 1, MPI_DOUBLE, MPI_SUM, 0,
+            MPI_COMM_WORLD);
+    MPI_Reduce(&(vmcObj->beta), &newBeta, 1, MPI_DOUBLE, MPI_SUM, 0,
+            MPI_COMM_WORLD);
     if (myRank == 0) {
-        for (unsigned int i = 0; i < numProcs; ++i) {
-            newAlpha += recvAlpha[i];
-            newBeta += recvBeta[i];
-        } // end fori
         newAlpha /= numProcs;
         newBeta /= numProcs;
-        delete recvAlpha;
-        delete recvBeta;
     } // end if
     MPI_Bcast(&newAlpha, 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
     MPI_Bcast(&newBeta, 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
@@ -194,9 +183,10 @@ int main(int argc, char** argv) {
         newBeta = atof(argv[11]);
     } // end if
 
-    // run last simulation and write to file
+    // set optimal parameters
     if (myRank == 0) {
-        std::cout << "Alpha: " << newAlpha << " Beta: "<< newBeta << std::endl;
+        std::cout << std::setprecision(16) << "Alpha: " << newAlpha << " Beta: \
+            "<< newBeta << std::endl;
     } // end if
     vmcObj->setAlpha(newAlpha);
     vmcObj->setBeta(newBeta);
@@ -214,6 +204,7 @@ int main(int argc, char** argv) {
         sprintf(myFileName, "%sP%d", filename, myRank);
     } // end fi
 
+    // run last simulation and write to file
     vmcObj->calculate(1, myFileName);
 
     std::chrono::steady_clock::time_point end;

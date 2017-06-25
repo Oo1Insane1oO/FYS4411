@@ -38,7 +38,7 @@ class VMC {
 
         Eigen::MatrixXd oldPositions, newPositions, qForceOld, qForceNew,
             steepb, prevSteepb, derOB, derJ, oldD, oldU, newD, newU, oldInvD,
-            oldInvU, newInvD, newInvU;
+            oldInvU, newInvD, newInvU, lapOB, lapJ;
 
         Eigen::MatrixXd buf, jbuf;
 
