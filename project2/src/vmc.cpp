@@ -242,7 +242,7 @@ double VMC::Afunc(const Eigen::MatrixXd &wave, const Eigen::MatrixXd &waveInv,
             tmp = -0.5*b->omega*R.row(j).squaredNorm();
             for (unsigned int d = 0; d < R.cols(); ++d) {
                 n = *(b->states[i+iStart][d]);
-                tmp += n/(2*alpha) * (1 + R(j,d) * (n-1) * sqrt(b->omega/alpha)
+                tmp += n/(2*alpha) * (1 + R(j,d) * (n-2) * sqrt(b->omega/alpha)
                         * H(awsqr*R(j,d),n-2)/H(awsqr*R(j,d),n));
             } // end ford
             A += tmp * wave(j,i/2) * waveInv(i/2,j);
@@ -315,8 +315,8 @@ void VMC::setFirstDerivatives(const Eigen::MatrixXd &wave, const
     derOB.row(k).setZero();
     for (unsigned int j = 0; j < R.rows(); j+=2) {
         oneBodyFirstDerivativeRatio(buf, R, k, j+jstart);
-        derOB.row(k) += buf * wave(kIdx,j/2) * waveInv(j/2,kIdx) / ratio;
-//         derOB.row(k) += buf * wave(kIdx,j/2) * waveInv(j/2,kIdx);
+//         derOB.row(k) += buf * wave(kIdx,j/2) * waveInv(j/2,kIdx) / ratio;
+        derOB.row(k) += buf * wave(kIdx,j/2) * waveInv(j/2,kIdx);
     } // end forj
     if (jastrow) {
         derJ.row(k).setZero();
@@ -623,6 +623,15 @@ void VMC::calculate(const unsigned int maxCount, const char *destination) {
 //                 << beta << " Energy: " << energy << " " << meth->variance(energy,
 //                         energySq, maxIterations) << " Pot: " << potentialEnergy <<
 //                 " Kin: " << kineticEnergy <<  std::endl;
+            
+            if ((newAlphaBeta.array() < 0).any() || (newAlphaBeta.array() >
+                        2).any()) {
+                newAlphaBeta = oldAlphaBeta;
+                runCount -= 1;
+            } else {
+                oldAlphaBeta = newAlphaBeta;
+            } // end ifelse
+//             std::cout << newAlphaBeta << std::endl;
 
             // update variational parameters
             setAlpha(newAlphaBeta(0));
