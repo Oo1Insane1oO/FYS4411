@@ -230,7 +230,7 @@
 \begin{center} \vspace{1cm}
     \textbf{\Large{\mtitle\hspace{0.01pt} - Computational Physics II: Quantum
     Mechanical Systems}}\\ \vspace{0.5cm}
-    \textbf{\large{\massignn\hspace{0.01pt} - Variatonal Monte Carlo Studies of
+    \textbf{\large{\massignn\hspace{0.01pt} - Variational Monte Carlo Studies of
     Electronic Systems.}}\\ \vspace{1cm}
     \textbf{\large{\mauthor}}\\ \vspace{0.5cm}
     \large{\url{https://www.github.com/Oo1Insane1oO/FYS4411}} \\ \vspace{0.5cm}
@@ -242,9 +242,9 @@
 
 \begin{center}
     \textbf{Abstract} \\
-    We have used the VMC method for calculating the ground-state energies for a
-    quantum-dot system. The results do not look correct and we conclude with an
-    error in the code.
+    We have used a variational monte carlo  method for calculating the
+    ground-state energies for a quantum-dot system. The results are promising
+    and are lower then the energies obtained from the Hartree-Fock method.
 \end{center}
 
 \section{INTRODUCTION}
@@ -254,8 +254,9 @@
     quantum dots for so-called closed shell systems.
 
     We use the usual approach by estimating expectation value of the ground
-    state energy with the variational principle and minimizing. The algorithm
-    used for the Monte Carlo method is the well known Metropolis algorithm.
+    state energy with the variational principle and minimize the energy
+    samples. The algorithm used for the Monte Carlo method is the well known
+    Metropolis algorithm(with a Hastings approach).
 
     The reason for using a Monte Carlo method for minimizing the trial ground
     state energy is because the expectation value would in general be a
@@ -1026,12 +1027,14 @@
         \end{tabular}
     \end{table}
 
-\twofigure{text/figures/Blocksize_w01_N2.pdf}{Blocking for $N=2$ and
-$\omega=1$}{blockN2w1}{text/figures/Blocksize_w01_N6.pdf}{Blocking for $N=6$
-and $\omega=1$}{blockN6w1}{Plots for $\omega=1$}
-\twofigure{text/figures/Blocksize_w01_N12.pdf}{Blocking for $N=12$ and
-$\omega=1$}{blockN12w1}{text/figures/Blocksize_w01_N20.pdf}{Blocking for $N=20$
-and $\omega=1$}{blockN20w1}{Plots for $\omega=1$}
+\twofigure{text/figures/Blocksize_w010_N2_WOJ.pdf}{Blocking for $N=2$ and
+$\omega=1$}{blockN2w1}{text/figures/Blocksize_w01_N6_WOJ.pdf}{Blocking for $N=6$
+and $\omega=1$}{blockN6w1}{Plots for $\omega=1$ and $M=1\times 10^{8}$ Monte
+Carly cycles.}
+\twofigure{text/figures/Blocksize_w010_N12_WOJ.pdf}{Blocking for $N=12$ and
+$\omega=1$}{blockN12w1}{text/figures/Blocksize_w010_N20_WOJ.pdf}{Blocking for $N=20$
+and $\omega=1$}{blockN20w1}{Plots for $\omega=1$ and $M=1\times 10^{8}$ Monte
+Carly cycles.}
 
 The rest of the figures are given in the mentioned github repository.\\
 
@@ -1054,42 +1057,59 @@ The rest of the figures are given in the mentioned github repository.\\
 \label{sub:with_jastrow}
 \subsubsection{Energies}
 \label{ssub:Energies}
-    As we can see from \Autoref{sec:results} the energies are rather strange
-    compared to the Hartree-Fock energies. Some of the energies obtained by the
-    VMC calculations are higher, which they should not be. There may be several
-    reasons for this, we might not have found the optimal parameters, or(much
-    more likely) there is an error in the code.
+    As we can see from \Autoref{sec:results} the energies are lower then the
+    energies found from Hartree-Fock method, especially for lower values of
+    oscillator frequency($\omega$). This is dues to fact that the VMC method
+    does not have a limit which the Hartree-Fock methods has.
 
 \subsubsection{Error}
 \label{ssub:Error}
-    With that said, the standard deviation is fairly good, however it increases
-    with the number of particles suggesting there might be an error in how the
-    derivatives are calculated in the VMC loop. \\
-    For the blocking part we have plots which have the expected form, but are a
-    bit jagged. The optimal standard deviation was found by smoothing out the
-    graph and taking an average over the most stationary area(the area with
-    lowest gradient).
+    The standard deviation is well within the assumed range and stays roughly
+    the same as we increase the number of particles. This increase is natural
+    as we have more variance with more electrons in the system, however the
+    increase is only marginal and acceptable. \\
+    For the blocking part we have plots which have the expected form that are
+    convergent. The blocking analysis was performed for only a selected number
+    of block sizes until a convergence was observed. The analysis could have
+    been further improved by introduced all the possible block sizes(just keep
+    splitting the data set in two).
 
 \subsection{Without Jastrow}
 \label{sub:without_jastrow}
-    As for the calculations without the Jastrow factor the energies are poor as
-    well.
+    For the energies without the Jastrow factor we can see that it does not
+    reach the minimum. This is dues to the cusp condition introduced by the
+    Jastrow factor. Removing that particular condition also removes the desired
+    cusp form or the energy, meaning the minimization does not reach the actual
+    minimum as one can see.
 
 \subsection{Speed-up}
 \label{sub:speed_up}
     We see that with MPI the speed-up almost follows by a factor number of
     processes, suggesting we have an almost perfect speed-up ratio per number
-    of processes. \\
+    of processes. This is natural since we basically split the iteration of the
+    program into individual pieces which as independent of each process(that is
+    to say there is no communication between the processes).\\
     As for the vectorization we see that we have more then a doubling in speed.
+    One note on the vectorization is that we have only made a simple
+    optimization on this manner by leaving the whole vectorization scheme to
+    the compiler entirely. Most of the loops in the program can still be
+    improved.
 
 \section{CONCLUSION}
 \label{sec:conclusion}
     We have in this project set up a program for calculating the ground-state
     energy of an electron system trapped in a quantum-dot with the harmonic
     oscillator functions as basis functions. \\
-    The resulting energies do not look promising as they are higher than the
-    ones obtained from Hartree-Fock calculations. \\
-    We conclude with that the poor results are due to an error in the code.
+    The resulting energies look good and are lower then the calculations made
+    with the Hartree-Fock method as expected. \\
+    The program can still be optimized in terms of vectorization and the script
+    for the blocking analysis can be much improved by parallelization. \\
+    The Blocking analysis would give a clearer view of the method of Blocking
+    is all block sizes was introduced, how ever the optimal standard deviation
+    was obtained in our calculation. \\
+    The goal of the calculations made were to see if the VMC method is good at
+    estimating the energy of our quantum-dot system, to which we can conclude
+    it is, or at least better then the Hartree-Fock method.
 
 \section{Appendix}
 \label{sec:appendix}
@@ -1331,7 +1351,7 @@ The rest of the figures are given in the mentioned github repository.\\
                 \frac{\nabla^2\det(\Phi)}{\det(\Phi)} &= \suml{k,j}{N} \nabla^2_k
                 \phi_j\left(\vec{r}_k,\alpha\right)
                 \phi^{-1}_{jk}\left(\vec{r},\alpha\right) \\
-                &= \alpha\omega\suml{k,j}{N} \left(\alpha^2\omega^2r^2_k -
+                &= \alpha\omega\suml{k,j}{N} \left(\alpha\omega r^2_k -
                 2\left(n_{x_j} + n_{y_j} + 1\right)\right) \Phi_{kj}\Phi^{-1}_{jk}
             \end{aligned}
             \label{eq:detdersecrat}

@@ -64,7 +64,7 @@ def blocking(data, numBlocks):
         tmpBlockNum = int(np.ceil(len(data)/float(blockSizes[i])))
         tmpMean = np.zeros(tmpBlockNum)
         for j in xrange(tmpBlockNum):
-            tmpMean[j] = np.mean(data[j*blockSizes[i]:(j+1)*blockSizes[i]]) / numBlocks
+            tmpMean[j] = np.mean(data[j*blockSizes[i]:(j+1)*blockSizes[i]]);
         blockMeans[i] = np.var(tmpMean) / tmpBlockNum
     # end fori
     return blockMeans, blockSizes
@@ -122,9 +122,9 @@ plt.plot(meansx,means, 'b-')
 #         alpha=0.2)
 # plt.errorbar(meansx[maskOff], means[maskOff], xerr=0, yerr=meanMean, fmt='o',
 #         capthick=0.5, markersize=2.)
-plt.xlabel("Blocksize")
+plt.xlabel("Number of Blocks")
 plt.ylabel("std. dev.")
 # plt.xscale("log", nonposx='clip')
 plt.yscale("log", nonposy='clip')
-plt.savefig("text/figures/Blocksize_" + fname + "_WOJ.pdf")
+plt.savefig("text/figures/Blocksize_" + fname + ".pdf")
 # plt.show()

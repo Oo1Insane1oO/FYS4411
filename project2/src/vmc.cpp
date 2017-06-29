@@ -190,17 +190,18 @@ double VMC::calculateKineticEnergy(const Eigen::MatrixXd &waveD, const
         for (unsigned int j = 0; j < R.rows(); j+=2) {
             if (k < half) {
                 /* spin down */
-                E -= 0.5 * oneBodySecondDerivativeRatio(R,k,j) * waveD(k,j/2) *
+                E += 0.5 * oneBodySecondDerivativeRatio(R,k,j) * waveD(k,j/2) *
                     waveInvD(j/2,k);
             } else {
                 /* spin up */
-                E -= 0.5 * oneBodySecondDerivativeRatio(R,k,j+1) *
+                E += 0.5 * oneBodySecondDerivativeRatio(R,k,j+1) *
                     waveU(k-half,j/2) * waveInvU(j/2,k-half);
             } // end ifelse
         } // end forj
     } // end fork
     Eigen::MatrixXd tmpOBbuf = Eigen::MatrixXd::Zero(1, dim);
     if (jastrow) {
+        /* cross-term */
         for (unsigned int k = 0; k < R.rows(); ++k) {
             tmpOBbuf.setZero();
             for (unsigned int j = 0; j < R.rows(); j+=2) {
@@ -215,7 +216,7 @@ double VMC::calculateKineticEnergy(const Eigen::MatrixXd &waveD, const
             E += 0.5 * jastrowSecondDerivativeRatio(R,k) +
                 (tmpOBbuf.row(0).dot(derJ.row(k)));
 //             E += 0.5 * jastrowSecondDerivativeRatio(R,k) +
-//                 (derOB.row(0).dot(derJ.row(k)));
+//                 derOB.row(k).dot(derJ.row(k));
         }  // end fork
     } // end if
     return E;
@@ -242,7 +243,7 @@ double VMC::Afunc(const Eigen::MatrixXd &wave, const Eigen::MatrixXd &waveInv,
             tmp = -0.5*b->omega*R.row(j).squaredNorm();
             for (unsigned int d = 0; d < R.cols(); ++d) {
                 n = *(b->states[i+iStart][d]);
-                tmp += n/(2*alpha) * (1 + R(j,d) * (n-2) * sqrt(b->omega/alpha)
+                tmp += n/(2*alpha) * (1 + R(j,d) * (n-1) * sqrt(b->omega/alpha)
                         * H(awsqr*R(j,d),n-2)/H(awsqr*R(j,d),n));
             } // end ford
             A += tmp * wave(j,i/2) * waveInv(i/2,j);
@@ -329,7 +330,8 @@ void VMC::initializePositions(Eigen::MatrixXd &R) {
     for (unsigned int i = 0; i < R.rows(); ++i) {
         for (unsigned int j = 0; j < R.cols(); ++j) {
             if (imp) {
-                R(i,j) = normDist(mt) * sqrt(step);
+//                 R(i,j) = normDist(mt) * sqrt(step);
+                R(i,j) = normDist(mt);
             } else {
                 R(i,j) = step*(dist(mt) - 0.5);
             } // end ifelse
@@ -375,7 +377,7 @@ void VMC::calculate(const unsigned int maxCount, const char *destination) {
     // set sizes
     initializeCalculationVariables();
     unsigned int halfSize = oldPositions.rows()/2;
-    double steepStep = 0.003;
+    double steepStep = 0.01;
 
     // File, runcountm, buffer(for filename) and write buffer
     std::ofstream outFile;
@@ -467,9 +469,11 @@ void VMC::calculate(const unsigned int maxCount, const char *destination) {
             // propose new position and move only in one dimension
             randomDim = (std::fabs(dist(mt)) < 0.5 ? 0 : 1);
             if (imp) {
+//                 newPositions(i,randomDim) = oldPositions(i,randomDim) +
+//                     0.5*qForceOld(i,randomDim)*step + normDist(mt) *
+//                     sqrt(step);
                 newPositions(i,randomDim) = oldPositions(i,randomDim) +
-                    0.5*qForceOld(i,randomDim)*step + normDist(mt) *
-                    sqrt(step);
+                    0.5*qForceOld(i,randomDim)*step + normDist(mt);
             } else {
                 newPositions(i,randomDim) = oldPositions(i,randomDim) +
                     step*(dist(mt)-0.5);
@@ -501,11 +505,16 @@ void VMC::calculate(const unsigned int maxCount, const char *destination) {
             if (imp) {
                 /* importance sampling, calculate transition function ratio
                  * for Metropolis test */
-                testRatio *= exp(-0.5*step * ((newPositions.row(i) -
-                                oldPositions.row(i) -
-                                0.5*step*qForceOld.row(i)).squaredNorm() -
-                            (oldPositions.row(i) - newPositions.row(i) -
-                             0.5*step*qForceNew.row(i)).squaredNorm()));
+//                 testRatio *= exp(-0.5*step * ((newPositions.row(i) -
+//                                 oldPositions.row(i) -
+//                                 0.5*step*qForceOld.row(i)).squaredNorm() -
+//                             (oldPositions.row(i) - newPositions.row(i) -
+//                              0.5*step*qForceNew.row(i)).squaredNorm()));
+                testRatio *= exp(1./(8*step) * ((oldPositions.row(i) -
+                                newPositions.row(i) -
+                                0.5*step*qForceNew.row(i)).squaredNorm() -
+                            (newPositions.row(i) - oldPositions.row(i) -
+                             0.5*step*qForceOld.row(i)).squaredNorm()));
             } //end if
       
             if (testRatio >= dist(mt) || testRatio > 1) {
@@ -539,7 +548,7 @@ void VMC::calculate(const unsigned int maxCount, const char *destination) {
             tmpKineticEnergy = calculateKineticEnergy(oldD, oldU, oldInvD,
                     oldInvU, oldPositions, determinantRatioD,
                     determinantRatioU);
-            tmpEnergy = tmpPotentialEnergy + tmpKineticEnergy;
+            tmpEnergy = tmpPotentialEnergy - tmpKineticEnergy;
             energy += tmpEnergy;
             energySq += tmpEnergy*tmpEnergy;
             potentialEnergy += tmpPotentialEnergy;
